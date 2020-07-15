@@ -12,9 +12,9 @@ export default new Router({
 			component: require('./views/Home').default
 		},
 		{
-			path: '/usuarios',
-			name: 'usuarios',
-			component: require('./views/Usuarios').default
+			path: '/usuarios/agregar',
+			name: 'agregar',
+			component: require('./views/Usuarios_Agregar').default
 		},
 		{
 			path: '/torneos',

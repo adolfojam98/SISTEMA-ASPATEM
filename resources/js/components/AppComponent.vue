@@ -15,16 +15,41 @@
         </v-list-item>
        
 
-        <v-list-item link :to="{name:'usuarios'}">
-          <v-list-item-action>
-            <v-icon>mdi-email</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>
-              Usuarios
-              </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+
+
+        <v-list-group>
+          <template v-slot:activator>
+            <v-list-item-action>
+              <v-icon>mdi-account</v-icon>
+            </v-list-item-action>
+            <v-list-item-title >Socios</v-list-item-title>
+          </template>
+      
+          <v-list-item link :to="{name: 'agregar'}">
+            <v-list-item-content>
+              <v-list-item-title><center>Agregar nuevo socio</center></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item link :to="{name: 'home'}">
+            <v-list-item-content>
+              <v-list-item-title><center>Ver lista de socios</center></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+
+        </v-list-group>
+
+        
+
+
+
+        
+
+
+
+
+          
 
         <v-list-item link :to="{name:'torneos'}">
           <v-list-item-action>
@@ -47,6 +72,9 @@
               </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+
+  
         
       </v-list>
     </v-navigation-drawer>

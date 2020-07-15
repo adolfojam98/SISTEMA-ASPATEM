@@ -6,6 +6,7 @@
 
 require('./bootstrap');
 
+
 window.Vue = require('vue');
 import Vuetify from 'vuetify'
 Vue.use(Vuetify);
@@ -22,6 +23,7 @@ Vue.use(Vuetify);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('app', require('./components/AppComponent.vue').default);
+Vue.component('cargar-usuario', require('./components/CargarUsuarioComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -29,10 +31,10 @@ Vue.component('app', require('./components/AppComponent.vue').default);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import router from './routes'
-
+import axios from 'axios';
 const app = new Vue({
     el: '#app',
     router,
-    vuetify: new Vuetify(),
+    vuetify: new Vuetify()
     
 });
