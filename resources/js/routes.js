@@ -17,6 +17,11 @@ export default new Router({
 			component: require('./views/Usuarios_Agregar').default
 		},
 		{
+			path: '/usuarios/lista',
+			name: 'lista',
+			component: require('./views/Usuarios_Lista').default
+		},
+		{
 			path: '/torneos',
 			name: 'torneos',
 			component: require('./views/Torneos').default

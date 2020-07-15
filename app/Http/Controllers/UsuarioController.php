@@ -62,7 +62,7 @@ class UsuarioController extends Controller
      */
     public function show(Usuario $request)
     {
-        $usuario = Usuario::findOrFail($request->dni);
+        $usuario = Usuario::findOrFail($request->mail);
         return $usuario;
         //Esta función devolverá los datos de una tarea que hayamos seleccionado para cargar el formulario con sus datos
     }
@@ -87,7 +87,7 @@ class UsuarioController extends Controller
      */
     public function update(Request $request, Usuario $usuario)
     {
-        $usuario = Usuario::findOrFail($request->dni);
+        $usuario = Usuario::findOrFail($request->mail);
 
         $usuario->nombre = $request->nombre;
         $usuario->apellido = $request->apellido;
@@ -110,7 +110,7 @@ class UsuarioController extends Controller
      */
     public function destroy(Usuario $request)
     {
-        $usuario = Usuario::destroy($request->dni);
+        $usuario = Usuario::destroy($request->mail);
         return $usuario;
         //Esta función obtendra el id de la tarea que hayamos seleccionado y la borrará de nuestra BD
    

@@ -24,6 +24,7 @@ Vue.use(Vuetify);
 
 Vue.component('app', require('./components/AppComponent.vue').default);
 Vue.component('cargar-usuario', require('./components/CargarUsuarioComponent.vue').default);
+Vue.component('mostrar-usuarios', require('./components/ListaUsuariosComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

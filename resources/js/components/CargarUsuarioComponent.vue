@@ -71,7 +71,6 @@
     methods:{
         cargarUsuario(){
           
-          console.log(mensaje)
             axios.post('/usuario/guardar',{
            'nombre': this.nombre,
             'apellido': this.apellido,

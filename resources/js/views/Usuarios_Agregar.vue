@@ -1,4 +1,5 @@
 <template>
-<cargar-usuario></cargar-usuario>
-
+<cargar-usuario>
+    
+</cargar-usuario>
 </template>

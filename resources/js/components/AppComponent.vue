@@ -31,7 +31,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item link :to="{name: 'home'}">
+          <v-list-item link :to="{name: 'lista'}">
             <v-list-item-content>
               <v-list-item-title><center>Ver lista de socios</center></v-list-item-title>
             </v-list-item-content>

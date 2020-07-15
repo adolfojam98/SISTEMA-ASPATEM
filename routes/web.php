@@ -23,7 +23,9 @@ Route::get('{path}', function () {
 })->where('path', '(.*)');
 
 
-
 Route::get('/', function () {
     return view('index');
 });
+
+
+Route::get('/usuario/mostrar','UsuarioController@index');
