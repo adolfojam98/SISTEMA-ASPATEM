@@ -12,12 +12,43 @@
           <v-list-item-content>
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item-content>
+          
         </v-list-item>
        
 
+<v-list-group
+          no-action
+          sub-group
+          value="true"
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>Socios</v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            link :to="{name: 'agregar'}" 
+          > 
+          
+            <v-list-item-title >Agregar socio</v-list-item-title>
+            <v-list-item-icon>
+            <v-icon>mdi-account-plus</v-icon> 
+            </v-list-item-icon>
+          </v-list-item>
+
+          <v-list-item
+            link :to="{name: 'lista'}" 
+          >
+            <v-list-item-title >Lista socios</v-list-item-title>
+            <v-list-item-icon>
+              <v-icon>mdi-account-group</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list-group>
 
 
-        <v-list-group>
+        <!-- <v-list-group>
           <template v-slot:activator>
             <v-list-item-action>
               <v-icon>mdi-account</v-icon>
@@ -38,7 +69,7 @@
           </v-list-item>
 
 
-        </v-list-group>
+        </v-list-group> -->
 
         
 

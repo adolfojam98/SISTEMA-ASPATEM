@@ -14,8 +14,7 @@ class UsuarioController extends Controller
      */
     public function index()
     {
-        $usuario = Usuario::all();
-        return $usuario;
+        
         
     }
 
@@ -26,7 +25,8 @@ class UsuarioController extends Controller
      */
     public function create()
     {
-        //
+        return Usuario::all(); 
+       
     }
 
     /**

@@ -14,12 +14,12 @@ export default new Router({
 		{
 			path: '/usuarios/agregar',
 			name: 'agregar',
-			component: require('./views/Usuarios_Agregar').default
+			component: require('./views/UsuariosAgregar').default
 		},
 		{
 			path: '/usuarios/lista',
 			name: 'lista',
-			component: require('./views/Usuarios_Lista').default
+			component: require('./views/UsuariosLista').default
 		},
 		{
 			path: '/torneos',
