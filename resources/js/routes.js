@@ -34,6 +34,11 @@ export default new Router({
 		{
             path: '/*',
 			component: require('./views/404').default
+		},
+		{
+			path: '/usuarios/modificar',
+			name: 'modificar',
+			component: require('./components/UsuarioEditar').default
 		}
 	],
 	mode: 'history',

@@ -85,9 +85,9 @@ class UsuarioController extends Controller
      * @param  \App\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Usuario $usuario)
+    public function update(Request $request)
     {
-        $usuario = Usuario::findOrFail($request->mail);
+        $usuario = Usuario::findOrFail($request->id);
 
         $usuario->nombre = $request->nombre;
         $usuario->apellido = $request->apellido;
@@ -108,11 +108,13 @@ class UsuarioController extends Controller
      * @param  \App\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Usuario $request)
+    public function destroy(Request $request)
     {
-        $usuario = Usuario::destroy($request->mail);
-        return $usuario;
+        $usuario = Usuario::findOrFail($request->id);
+        $usuario->delete();
+
         //Esta función obtendra el id de la tarea que hayamos seleccionado y la borrará de nuestra BD
    
     }
+
 }

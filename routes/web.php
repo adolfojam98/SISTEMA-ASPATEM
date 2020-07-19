@@ -20,4 +20,11 @@ Route::get('{path}', function () {
     return view('index');
 })->where('path', '(.*)');
 
+Route::delete('/usuario/borrar/{id}','UsuarioController@destroy');
+
+Route::get('/usuario/buscar','UsuarioController@show');
+
+Route::put('/usuario/actualizar','UsuarioController@update');
+
+
 
