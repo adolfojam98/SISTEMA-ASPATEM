@@ -24,7 +24,7 @@
               </v-icon>
               <v-icon
                 small
-                @click="deleteItem(item)"
+                @click="[eliminarUsuarioModal = true, usuarioEliminar = item]"
               >
                 mdi-delete
               </v-icon>
@@ -34,9 +34,23 @@
         
       </v-data-table>
 
-      
-
     </v-card>
+
+    <v-dialog v-model="editarUsuarioModal" max-width="600px">
+     <editar-usuario :usuario = 'usuarioEditar' ></editar-usuario>
+    </v-dialog>
+
+    <v-dialog v-model="eliminarUsuarioModal"  max-width="320">
+      <v-card>
+       <v-card-title class="headline">Desea borrar el usuario?</v-card-title>
+        <v-card-text>Este usuario no podra participar de ningun torneo, no saldrá en el ranking pero seguirá quedando registro de sus participaciones en torneos. ¿Desea continuar?.</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" outlined  @click="[eliminarUsuarioModal = false]">CANCELAR</v-btn>
+          <v-btn color="error" @click="[deleteItem(),eliminarUsuarioModal = false]">BORRAR</v-btn>
+        </v-card-actions> 
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -58,32 +72,35 @@ export default {
         { text: "Telefono", value: "telefono" },
         { text: "Puntos", value: "puntos" },
         { text: 'Actions', value: 'actions', sortable: false }
-      ]
+      ],
+      usuarioEditar : [],
+      editarUsuarioModal : false,
+      usuarioEliminar : [],
+      eliminarUsuarioModal : false
     };
   },
 
   methods: {
-    deleteItem(item){
+    deleteItem(){
                 let me=this
                 
-                if (confirm('¿Seguro que deseas borrar a este socio?')) {
-                    axios.delete(`/usuario/borrar/${item.id}`)
+               
+                    axios.delete(`/usuario/borrar/${me.usuarioEliminar.id}`)
                     .then(function(res){
                      me.created();
+                     me.usuarioEliminar = [];
                     })
                     .catch(function (error) {
                         console.log(error);
                     }); 
-                }
+                    
+                
             },
 
     editItem(item){
-      this.$router.push({
-      name: "modificar",
-      params:{
-      usuario: item,
-      }
-    });
+     
+      this.usuarioEditar = item;
+      this.editarUsuarioModal = true;
     },
 
     created() {

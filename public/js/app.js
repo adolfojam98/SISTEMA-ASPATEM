@@ -2224,6 +2224,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2250,28 +2264,26 @@ __webpack_require__.r(__webpack_exports__);
         text: 'Actions',
         value: 'actions',
         sortable: false
-      }]
+      }],
+      usuarioEditar: [],
+      editarUsuarioModal: false,
+      usuarioEliminar: [],
+      eliminarUsuarioModal: false
     };
   },
   methods: {
-    deleteItem: function deleteItem(item) {
+    deleteItem: function deleteItem() {
       var me = this;
-
-      if (confirm('¿Seguro que deseas borrar a este socio?')) {
-        axios["delete"]("/usuario/borrar/".concat(item.id)).then(function (res) {
-          me.created();
-        })["catch"](function (error) {
-          console.log(error);
-        });
-      }
+      axios["delete"]("/usuario/borrar/".concat(me.usuarioEliminar.id)).then(function (res) {
+        me.created();
+        me.usuarioEliminar = [];
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     editItem: function editItem(item) {
-      this.$router.push({
-        name: "modificar",
-        params: {
-          usuario: item
-        }
-      });
+      this.usuarioEditar = item;
+      this.editarUsuarioModal = true;
     },
     created: function created() {
       var _this = this;
@@ -2351,10 +2363,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["usuario"],
   data: function data() {
     return {
-      usuario: this.$route.params.usuario,
       valid: false,
       nombreRules: [function (v) {
         return !!v || "Nombre requerido";
@@ -38630,7 +38646,10 @@ var render = function() {
                         attrs: { small: "" },
                         on: {
                           click: function($event) {
-                            return _vm.deleteItem(item)
+                            ;[
+                              (_vm.eliminarUsuarioModal = true),
+                              (_vm.usuarioEliminar = item)
+                            ]
                           }
                         }
                       },
@@ -38641,6 +38660,91 @@ var render = function() {
               }
             ])
           })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "600px" },
+          model: {
+            value: _vm.editarUsuarioModal,
+            callback: function($$v) {
+              _vm.editarUsuarioModal = $$v
+            },
+            expression: "editarUsuarioModal"
+          }
+        },
+        [_c("editar-usuario", { attrs: { usuario: _vm.usuarioEditar } })],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "320" },
+          model: {
+            value: _vm.eliminarUsuarioModal,
+            callback: function($$v) {
+              _vm.eliminarUsuarioModal = $$v
+            },
+            expression: "eliminarUsuarioModal"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c("v-card-title", { staticClass: "headline" }, [
+                _vm._v("Desea borrar el usuario?")
+              ]),
+              _vm._v(" "),
+              _c("v-card-text", [
+                _vm._v(
+                  "Este usuario no podra participar de ningun torneo, no saldrá en el ranking pero seguirá quedando registro de sus participaciones en torneos. ¿Desea continuar?."
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                [
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "green darken-1", outlined: "" },
+                      on: {
+                        click: function($event) {
+                          ;[(_vm.eliminarUsuarioModal = false)]
+                        }
+                      }
+                    },
+                    [_vm._v("CANCELAR")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "error" },
+                      on: {
+                        click: function($event) {
+                          ;[
+                            _vm.deleteItem(),
+                            (_vm.eliminarUsuarioModal = false)
+                          ]
+                        }
+                      }
+                    },
+                    [_vm._v("BORRAR")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
         ],
         1
       )
@@ -38674,124 +38778,134 @@ var render = function() {
     "div",
     [
       _c(
-        "v-form",
-        {
-          ref: "form",
-          attrs: { "lazy-validation": "" },
-          model: {
-            value: _vm.valid,
-            callback: function($$v) {
-              _vm.valid = $$v
-            },
-            expression: "valid"
-          }
-        },
+        "v-card",
         [
           _c(
-            "v-container",
+            "v-form",
+            {
+              ref: "form",
+              attrs: { "lazy-validation": "" },
+              model: {
+                value: _vm.valid,
+                callback: function($$v) {
+                  _vm.valid = $$v
+                },
+                expression: "valid"
+              }
+            },
             [
-              _c("v-text-field", {
-                attrs: {
-                  rules: _vm.nombreRules,
-                  counter: 20,
-                  label: "Nombre",
-                  required: ""
-                },
-                model: {
-                  value: _vm.usuario.nombre,
-                  callback: function($$v) {
-                    _vm.$set(_vm.usuario, "nombre", $$v)
-                  },
-                  expression: "usuario.nombre"
-                }
-              }),
-              _vm._v(" "),
-              _c("v-text-field", {
-                attrs: {
-                  rules: _vm.apellidoRules,
-                  counter: 20,
-                  label: "Apellido",
-                  required: ""
-                },
-                model: {
-                  value: _vm.usuario.apellido,
-                  callback: function($$v) {
-                    _vm.$set(_vm.usuario, "apellido", $$v)
-                  },
-                  expression: "usuario.apellido"
-                }
-              }),
-              _vm._v(" "),
-              _c("v-text-field", {
-                attrs: { rules: _vm.emailRules, label: "E-mail", required: "" },
-                model: {
-                  value: _vm.usuario.mail,
-                  callback: function($$v) {
-                    _vm.$set(_vm.usuario, "mail", $$v)
-                  },
-                  expression: "usuario.mail"
-                }
-              }),
-              _vm._v(" "),
-              _c("v-text-field", {
-                attrs: {
-                  label: "telefono",
-                  rules: _vm.telefonoRules,
-                  required: ""
-                },
-                model: {
-                  value: _vm.usuario.telefono,
-                  callback: function($$v) {
-                    _vm.$set(_vm.usuario, "telefono", $$v)
-                  },
-                  expression: "usuario.telefono"
-                }
-              }),
-              _vm._v(" "),
-              _vm.puntosPersonalizados
-                ? _c("v-text-field", {
+              _c(
+                "v-container",
+                [
+                  _c("v-text-field", {
                     attrs: {
-                      rules: _vm.puntosRules,
-                      label: "puntos",
+                      rules: _vm.nombreRules,
+                      counter: 20,
+                      label: "Nombre",
                       required: ""
                     },
                     model: {
-                      value: _vm.usuario.puntos,
+                      value: _vm.usuario.nombre,
                       callback: function($$v) {
-                        _vm.$set(_vm.usuario, "puntos", $$v)
+                        _vm.$set(_vm.usuario, "nombre", $$v)
                       },
-                      expression: "usuario.puntos"
+                      expression: "usuario.nombre"
                     }
-                  })
-                : _vm._e(),
-              _vm._v(" "),
-              _c("v-switch", {
-                attrs: { label: "Ingresar puntos personalizados" },
-                model: {
-                  value: _vm.puntosPersonalizados,
-                  callback: function($$v) {
-                    _vm.puntosPersonalizados = $$v
-                  },
-                  expression: "puntosPersonalizados"
-                }
-              }),
-              _vm._v(" "),
-              _c(
-                "v-btn",
-                {
-                  attrs: {
-                    depressed: "",
-                    color: "primary",
-                    disabled: !_vm.valid
-                  },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.updateUsuario($event)
+                  }),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    attrs: {
+                      rules: _vm.apellidoRules,
+                      counter: 20,
+                      label: "Apellido",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.usuario.apellido,
+                      callback: function($$v) {
+                        _vm.$set(_vm.usuario, "apellido", $$v)
+                      },
+                      expression: "usuario.apellido"
                     }
-                  }
-                },
-                [_vm._v("Guardar cambios")]
+                  }),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    attrs: {
+                      rules: _vm.emailRules,
+                      label: "E-mail",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.usuario.mail,
+                      callback: function($$v) {
+                        _vm.$set(_vm.usuario, "mail", $$v)
+                      },
+                      expression: "usuario.mail"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    attrs: {
+                      label: "telefono",
+                      rules: _vm.telefonoRules,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.usuario.telefono,
+                      callback: function($$v) {
+                        _vm.$set(_vm.usuario, "telefono", $$v)
+                      },
+                      expression: "usuario.telefono"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.puntosPersonalizados
+                    ? _c("v-text-field", {
+                        attrs: {
+                          rules: _vm.puntosRules,
+                          label: "puntos",
+                          required: ""
+                        },
+                        model: {
+                          value: _vm.usuario.puntos,
+                          callback: function($$v) {
+                            _vm.$set(_vm.usuario, "puntos", $$v)
+                          },
+                          expression: "usuario.puntos"
+                        }
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("v-switch", {
+                    attrs: { label: "Ingresar puntos personalizados" },
+                    model: {
+                      value: _vm.puntosPersonalizados,
+                      callback: function($$v) {
+                        _vm.puntosPersonalizados = $$v
+                      },
+                      expression: "puntosPersonalizados"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        depressed: "",
+                        color: "primary",
+                        disabled: !_vm.valid
+                      },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.updateUsuario($event)
+                        }
+                      }
+                    },
+                    [_vm._v("Guardar cambios")]
+                  )
+                ],
+                1
               )
             ],
             1
@@ -98168,6 +98282,7 @@ Vue.use(vuetify__WEBPACK_IMPORTED_MODULE_0___default.a);
 Vue.component('app', __webpack_require__(/*! ./components/AppComponent.vue */ "./resources/js/components/AppComponent.vue")["default"]);
 Vue.component('cargar-usuario', __webpack_require__(/*! ./components/CargarUsuarioComponent.vue */ "./resources/js/components/CargarUsuarioComponent.vue")["default"]);
 Vue.component('mostrar-usuarios', __webpack_require__(/*! ./components/ListaUsuariosComponent.vue */ "./resources/js/components/ListaUsuariosComponent.vue")["default"]);
+Vue.component('editar-usuario', __webpack_require__(/*! ./components/UsuarioEditar.vue */ "./resources/js/components/UsuarioEditar.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -98928,8 +99043,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

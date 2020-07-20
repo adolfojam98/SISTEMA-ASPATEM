@@ -1,5 +1,7 @@
 <template>
 <div>
+  <v-card>
+
   <v-form v-model="valid" ref="form" lazy-validation>
     <v-container>
       <v-text-field v-model="usuario.nombre" :rules="nombreRules" :counter="20" label="Nombre" required></v-text-field>
@@ -18,6 +20,7 @@
     </v-container>
   </v-form>
 
+  </v-card>
 
 
 
@@ -52,11 +55,15 @@
 
 
 
+
 <script>
 export default {
-  data() {
+
+  props : ["usuario"],
+
+  data() { 
     return {
-        usuario:this.$route.params.usuario,
+        
         valid: false,
 
     nombreRules: [
