@@ -28,6 +28,14 @@
               >
                 mdi-delete
               </v-icon>
+              <v-icon
+                right
+                small
+                @click="gestionarRelaciones(item)"
+              >
+                mdi-account-group
+              </v-icon>
+
             
         </template>
 
@@ -50,6 +58,10 @@
           <v-btn color="error" @click="[deleteItem(),eliminarUsuarioModal = false]">BORRAR</v-btn>
         </v-card-actions> 
       </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="usuarioRelacionesModal" max-width="700px">
+     <relaciones-usuario :usuario = 'usuarioRelaciones' ></relaciones-usuario>
     </v-dialog>
   </div>
 </template>
@@ -76,10 +88,13 @@ export default {
       usuarioEditar : [],
       editarUsuarioModal : false,
       usuarioEliminar : [],
-      eliminarUsuarioModal : false
+      eliminarUsuarioModal : false,
+      usuarioRelaciones : [],
+      usuarioRelacionesModal : false,
     };
   },
-
+  
+  
   methods: {
     deleteItem(){
                 let me=this
@@ -97,10 +112,16 @@ export default {
                 
             },
 
+
     editItem(item){
-     
       this.usuarioEditar = item;
       this.editarUsuarioModal = true;
+    },
+
+    gestionarRelaciones(item){
+      this.usuarioRelaciones = [];
+      this.usuarioRelaciones = item;
+      this.usuarioRelacionesModal = true;
     },
 
     created() {

@@ -1,6 +1,7 @@
 <template>
 <div>
-  <v-card>
+  <v-card> 
+    <h1> <center>Modificar usuario</center></h1>
 
   <v-form v-model="valid" ref="form" lazy-validation>
     <v-container>
@@ -116,7 +117,6 @@ export default {
                 });
       }
     },
-  
 
   }
 

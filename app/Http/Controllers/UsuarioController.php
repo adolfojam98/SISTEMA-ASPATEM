@@ -117,4 +117,14 @@ class UsuarioController extends Controller
    
     }
 
+    public function show_dif_id(Request $request)
+    {
+        
+        $usuario = Usuario::where('id','!=',$request->id)
+        ->get();
+        return response()->json($usuario);
+        //Esta función devolverá todos los usuarios que no tengan la id del usuario que se paso por parametro
+    }
+
+
 }

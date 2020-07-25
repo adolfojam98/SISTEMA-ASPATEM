@@ -38,7 +38,7 @@ export default new Router({
 		{
 			path: '/usuarios/modificar',
 			name: 'modificar',
-			component: require('./components/UsuarioEditar').default
+			component: require('./components/UsuarioEditarComponent').default
 		}
 	],
 	mode: 'history',
