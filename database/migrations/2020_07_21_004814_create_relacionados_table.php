@@ -19,8 +19,11 @@ class CreateRelacionadosTable extends Migration
             $table->integer('id_socio_B');
             $table->string('ralacion',10);
             $table->timestamps();
+            $table->foreign('id_socio_A')->references('id')->on('usuarios');
+            $table->foreign('id_socio_B')->references('id')->on('usuarios');
         });
     }
+
 
     /**
      * Reverse the migrations.

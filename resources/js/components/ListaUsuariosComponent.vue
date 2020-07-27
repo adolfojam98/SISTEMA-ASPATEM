@@ -60,7 +60,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="usuarioRelacionesModal" max-width="700px">
+    <v-dialog v-model="usuarioRelacionesModal" id = 'adddd' max-width="700px">
      <relaciones-usuario :usuario = 'usuarioRelaciones' ></relaciones-usuario>
     </v-dialog>
   </div>

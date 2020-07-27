@@ -25,6 +25,7 @@ class CreateUsuariosTable extends Migration
         });
     }
 
+
     /**
      * Reverse the migrations.
      *

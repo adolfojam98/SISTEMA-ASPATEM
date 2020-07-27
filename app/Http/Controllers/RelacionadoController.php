@@ -38,7 +38,7 @@ class RelacionadoController extends Controller
         $relacionado = new Relacionado();
         $relacionado->id_socio_A = $request->id_socio_A;
         $relacionado->id_socio_B = $request->id_socio_B;
-        $relacionado->relacionado = $request->relacionado;
+        $relacionado->ralacion = $request->ralacion;
 
 
         $relacionado->save();
@@ -101,6 +101,38 @@ class RelacionadoController extends Controller
         $relacionado->delete();
 
         //Esta función obtendra el id de la tarea que hayamos seleccionado y la borrará de nuestra BD
+    }
+
+    public function existe(Request $request){
+        $existe=false;
+        if(!(Relacionado::where("id_socio_A",$request->id_socio_A)
+                        ->where("id_socio_B",$request->id_socio_B)->get())->isEmpty()){
+                            $existe=true;
+                        }
+
+        elseif(!(Relacionado::where("id_socio_A",$request->id_socio_B)
+                            ->where("id_socio_B",$request->id_socio_A)->get())->isEmpty()){
+                                $existe=true;
+                            }
+                            
+        return response()->json($existe);
+
+        // $prueba=Relacionado::where("id_socio_A",$request->id_socio_A)
+        // ->where("id_socio_B",$request->id_socio_B)->get();
+        
+        // $prueba2=Relacionado::where("id_socio_A",$request->id_socio_B)
+        // ->where("id_socio_B",$request->id_socio_A)->get();
+
+        //                     return response()->json([
+        //                         'id_socio_A' => $request->id_socio_A,
+        //                         'id_socio_B' => $request->id_socio_B,
+        //                         'existe'  => $existe,
+        //                         'prueba' => $prueba,
+        //                         'pruebaInversa' => $prueba2,
+                                
+        //                     ]);
+
+                                              
     }
 
 

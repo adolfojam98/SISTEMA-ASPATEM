@@ -24,6 +24,10 @@ Route::delete('/usuario/borrar/{id}','UsuarioController@destroy');
 
 Route::put('/usuario/actualizar','UsuarioController@update');
 
+Route::post('/usuario/relacion','RelacionadoController@store');
+
+Route::get('/usuario/relacion/existe','RelacionadoController@existe');
+
 
 
 Route::get('{path}', function () {
