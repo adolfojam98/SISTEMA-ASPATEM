@@ -10,6 +10,7 @@ require('./bootstrap');
 window.Vue = require('vue');
 import Vuetify from 'vuetify'
 Vue.use(Vuetify);
+import es from 'vuetify/es5/locale/es'
 
 /**
  * The following block of code may be used to automatically register your
@@ -33,11 +34,18 @@ Vue.component('relaciones-usuario', require('./components/UsuarioRelacionesCompo
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+
 import router from './routes'
-import axios from 'axios';
+
 const app = new Vue({
     el: '#app',
     router,
-    vuetify: new Vuetify()
+    vuetify: new Vuetify({
+        lang: {
+            locales: { es },
+            current: 'es',
+          },
+    })
     
 });

@@ -99370,6 +99370,89 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_vue__;
 
 /***/ }),
 
+/***/ "./node_modules/vuetify/es5/locale/es.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/es5/locale/es.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  badge: 'Placa',
+  close: 'Cerrar',
+  dataIterator: {
+    noResultsText: 'Ningún elemento coincide con la búsqueda',
+    loadingText: 'Cargando...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Filas por página:',
+    ariaLabel: {
+      sortDescending: 'Orden descendente.',
+      sortAscending: 'Orden ascendente.',
+      sortNone: 'Sin ordenar.',
+      activateNone: 'Pulse para quitar orden.',
+      activateDescending: 'Pulse para ordenar descendente.',
+      activateAscending: 'Pulse para ordenar ascendente.'
+    },
+    sortBy: 'Ordenado por'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Elementos por página:',
+    itemsPerPageAll: 'Todos',
+    nextPage: 'Página siguiente',
+    prevPage: 'Página anterior',
+    firstPage: 'Primer página',
+    lastPage: 'Última página',
+    pageText: '{0}-{1} de {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} seleccionados',
+    nextMonthAriaLabel: 'Próximo mes',
+    nextYearAriaLabel: 'Próximo año',
+    prevMonthAriaLabel: 'Mes anterior',
+    prevYearAriaLabel: 'Año anterior'
+  },
+  noDataText: 'No hay datos disponibles',
+  carousel: {
+    prev: 'Visual anterior',
+    next: 'Visual siguiente',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} más'
+  },
+  fileInput: {
+    counter: '{0} archivos',
+    counterSize: '{0} archivos ({1} en total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  },
+  pagination: {
+    ariaLabel: {
+      wrapper: 'Navegación de paginación',
+      next: 'Página siguiente',
+      previous: 'Página anterior',
+      page: 'Ir a la página {0}',
+      currentPage: 'Página actual, página {0}'
+    }
+  }
+};
+exports.default = _default;
+//# sourceMappingURL=es.js.map
+
+/***/ }),
+
 /***/ "./node_modules/webpack/buildin/global.js":
 /*!***********************************!*\
   !*** (webpack)/buildin/global.js ***!
@@ -99445,9 +99528,9 @@ module.exports = function(module) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
 /* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./routes */ "./resources/js/routes.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vuetify_es5_locale_es__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuetify/es5/locale/es */ "./node_modules/vuetify/es5/locale/es.js");
+/* harmony import */ var vuetify_es5_locale_es__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuetify_es5_locale_es__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./routes */ "./resources/js/routes.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -99458,6 +99541,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 
 Vue.use(vuetify__WEBPACK_IMPORTED_MODULE_0___default.a);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -99480,11 +99564,17 @@ Vue.component('relaciones-usuario', __webpack_require__(/*! ./components/Usuario
  */
 
 
-
 var app = new Vue({
   el: '#app',
-  router: _routes__WEBPACK_IMPORTED_MODULE_1__["default"],
-  vuetify: new vuetify__WEBPACK_IMPORTED_MODULE_0___default.a()
+  router: _routes__WEBPACK_IMPORTED_MODULE_2__["default"],
+  vuetify: new vuetify__WEBPACK_IMPORTED_MODULE_0___default.a({
+    lang: {
+      locales: {
+        es: vuetify_es5_locale_es__WEBPACK_IMPORTED_MODULE_1___default.a
+      },
+      current: 'es'
+    }
+  })
 });
 
 /***/ }),
