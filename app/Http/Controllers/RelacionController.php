@@ -105,16 +105,28 @@ class RelacionController extends Controller
 
     public function existe(Request $request)
     {
-        $existe=false;
-        if(Relacion::with('usuarios')->where('id'))
-        if (!(Relacion::where("id_socio_A", $request->id_socio_A)
-                    ->where("id_socio_B", $request->id_socio_B)->get())->isEmpty()) {
-            $existe=true;
-        } elseif (!(Relacion::where("id_socio_A", $request->id_socio_B)
-                        ->where("id_socio_B", $request->id_socio_A)->get())->isEmpty()) {
-            $existe=true;
+        $relaciones = Relacion::all();
+
+
+        foreach($relaciones as $relacion){
+            if($relacion->usuarios->contains($request->id_socio_A) && $relacion->usuarios->contains($request->id_socio_B)){
+                
+                return response()->json(true);
+            }
+
         }
+
+        return response()->json(false);
+        
+        // if(Relacion::with('usuarios')->where('id'))
+        // if (!(Relacion::where("id_socio_A", $request->id_socio_A)
+        //             ->where("id_socio_B", $request->id_socio_B)->get())->isEmpty()) {
+        //     $existe=true;
+        // } elseif (!(Relacion::where("id_socio_A", $request->id_socio_B)
+        //                 ->where("id_socio_B", $request->id_socio_A)->get())->isEmpty()) {
+        //     $existe=true;
+        // }
                         
-        return response()->json($existe);
+        
     }
 }

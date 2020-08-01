@@ -35,7 +35,7 @@
             <v-btn depressed color="primary" @click.prevent="agregarRelacion()">Agregar relacion</v-btn>
 
             <v-snackbar
-            v-model="snackbar"
+            v-model="snackbarAgregadocorrectamente"
             timeout="3000"
             >
             Relacion agregada corectamente
@@ -45,7 +45,27 @@
                 color="blue"
                 text
                 v-bind="attrs"
-                @click="snackbar = false"
+                @click="snackbarAgregadocorrectamente = false"
+                >
+                Cerrar
+                </v-btn>
+            </template>
+            </v-snackbar>
+
+            <v-snackbar
+            v-model="snackbarRelacionExistente"
+            color = "error"
+            timeout="3000"
+            top
+            >
+            Esa relacion ya existe
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                
+                text
+                v-bind="attrs"
+                @click="snackbarRelacionExistente = false"
                 >
                 Cerrar
                 </v-btn>
@@ -74,7 +94,8 @@ export default {
       relacionadoCon: null,
       usuarios : [],
       tipos: ['Amistad', 'Familiar', 'Referido'],
-      snackbar : false,
+      snackbarAgregadocorrectamente : false,
+      snackbarRelacionExistente : false,
       exist : Boolean,
         }
     },
@@ -94,32 +115,35 @@ export default {
 
            async agregarRelacion(){
                 
-                // const existeRelacion = await axios.get('/usuario/relacion/existe',{
-                //     params : {
-                //             id_socio_A: this.usuario.id,
-                //             id_socio_B: this.relacionadoCon,
-                //         }
-                // })
+                const existeRelacion = await axios.get('/usuario/relacion/existe',{
+                    params : {
+                            id_socio_A: this.usuario.id,
+                            id_socio_B: this.relacionadoCon,
+                        }
+                })
                 
-    try{
-
     
-                    // if(!existeRelacion.data){
+                    console.log(existeRelacion);
+    
+                    if(!existeRelacion.data){
                         const guardar = await axios.post('/usuario/relacion',{
                             "id_socio_A" :this.usuario.id,
                             "id_socio_B" :this.relacionadoCon,
                             "relacion" :this.relacion,
                         })
-                        this.snackbar = true;
-    }catch(error){
-        console.log(error)
+                        this.snackbarAgregadocorrectamente = true;
     }
-                    }
-                        // else {
-                        //     alert('Esta relacion ya existe');
-                        // }
-                // }
+                    
+                        else {
+                            this.snackbarRelacionExistente = true
+                        }
+                }
                   
+            },
+            watch: {
+                usuario : function(){
+                    this.posibles();
+                }
             },
 
             
@@ -130,11 +154,6 @@ export default {
       this.posibles();
    },
 
-   
-   updated(){
-
-      this.posibles();
-   }
 
        
 }

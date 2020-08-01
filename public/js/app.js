@@ -2538,6 +2538,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["usuario"],
   data: function data() {
@@ -2546,7 +2566,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       relacionadoCon: null,
       usuarios: [],
       tipos: ['Amistad', 'Familiar', 'Referido'],
-      snackbar: false,
+      snackbarAgregadocorrectamente: false,
+      snackbarRelacionExistente: false,
       exist: Boolean
     };
   },
@@ -2565,47 +2586,59 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var guardar;
+        var existeRelacion, guardar;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.prev = 0;
-                _context.next = 3;
+                _context.next = 2;
+                return axios.get('/usuario/relacion/existe', {
+                  params: {
+                    id_socio_A: _this2.usuario.id,
+                    id_socio_B: _this2.relacionadoCon
+                  }
+                });
+
+              case 2:
+                existeRelacion = _context.sent;
+                console.log(existeRelacion);
+
+                if (existeRelacion.data) {
+                  _context.next = 11;
+                  break;
+                }
+
+                _context.next = 7;
                 return axios.post('/usuario/relacion', {
                   "id_socio_A": _this2.usuario.id,
                   "id_socio_B": _this2.relacionadoCon,
                   "relacion": _this2.relacion
                 });
 
-              case 3:
+              case 7:
                 guardar = _context.sent;
-                _this2.snackbar = true;
-                _context.next = 10;
+                _this2.snackbarAgregadocorrectamente = true;
+                _context.next = 12;
                 break;
 
-              case 7:
-                _context.prev = 7;
-                _context.t0 = _context["catch"](0);
-                console.log(_context.t0);
+              case 11:
+                _this2.snackbarRelacionExistente = true;
 
-              case 10:
+              case 12:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 7]]);
+        }, _callee);
       }))();
-    } // else {
-    //     alert('Esta relacion ya existe');
-    // }
-    // }
-
+    }
+  },
+  watch: {
+    usuario: function usuario() {
+      this.posibles();
+    }
   },
   mounted: function mounted() {
-    this.posibles();
-  },
-  updated: function updated() {
     this.posibles();
   }
 });
@@ -40045,7 +40078,7 @@ var render = function() {
                         attrs: { color: "blue", text: "" },
                         on: {
                           click: function($event) {
-                            _vm.snackbar = false
+                            _vm.snackbarAgregadocorrectamente = false
                           }
                         }
                       },
@@ -40060,14 +40093,56 @@ var render = function() {
             }
           ]),
           model: {
-            value: _vm.snackbar,
+            value: _vm.snackbarAgregadocorrectamente,
             callback: function($$v) {
-              _vm.snackbar = $$v
+              _vm.snackbarAgregadocorrectamente = $$v
             },
-            expression: "snackbar"
+            expression: "snackbarAgregadocorrectamente"
           }
         },
         [_vm._v("\n        Relacion agregada corectamente\n\n        ")]
+      ),
+      _vm._v(" "),
+      _c(
+        "v-snackbar",
+        {
+          attrs: { color: "error", timeout: "3000", top: "" },
+          scopedSlots: _vm._u([
+            {
+              key: "action",
+              fn: function(ref) {
+                var attrs = ref.attrs
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._b(
+                      {
+                        attrs: { text: "" },
+                        on: {
+                          click: function($event) {
+                            _vm.snackbarRelacionExistente = false
+                          }
+                        }
+                      },
+                      "v-btn",
+                      attrs,
+                      false
+                    ),
+                    [_vm._v("\n            Cerrar\n            ")]
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.snackbarRelacionExistente,
+            callback: function($$v) {
+              _vm.snackbarRelacionExistente = $$v
+            },
+            expression: "snackbarRelacionExistente"
+          }
+        },
+        [_vm._v("\n        Esa relacion ya existe\n\n        ")]
       )
     ],
     1

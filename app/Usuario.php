@@ -11,7 +11,7 @@ class Usuario extends Model
 
     public function relaciones()
     {
-        return $this->belongsToMany(Relacion::class);
+        return $this->belongsToMany(Relacion::class)->withPivot('usuario_id');
     }
 }
 
