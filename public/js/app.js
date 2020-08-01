@@ -2164,7 +2164,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.valid) {
-        axios.post("/usuario/guardar", {
+        axios.post("/usuario", {
           nombre: this.nombre,
           apellido: this.apellido,
           mail: this.email,
@@ -2300,7 +2300,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     deleteItem: function deleteItem() {
       var me = this;
-      axios["delete"]("/usuario/borrar/".concat(me.usuarioEliminar.id)).then(function (res) {
+      axios["delete"]("/usuario/".concat(me.usuarioEliminar.id)).then(function (res) {
         me.created();
         me.usuarioEliminar = [];
       })["catch"](function (error) {
@@ -2319,7 +2319,7 @@ __webpack_require__.r(__webpack_exports__);
     created: function created() {
       var _this = this;
 
-      axios.get("/usuario/mostrar").then(function (res) {
+      axios.get("/usuario").then(function (res) {
         _this.usuarios = res.data;
       });
     }
@@ -2436,7 +2436,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.valid) {
-        axios.put('/usuario/actualizar', {
+        axios.put('/usuario', {
           'id': this.usuario.id,
           'nombre': this.usuario.nombre,
           'apellido': this.usuario.apellido,
@@ -2565,51 +2565,42 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var existeRelacion, guardar;
+        var guardar;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
-                return axios.get('/usuario/relacion/existe', {
-                  params: {
-                    id_socio_A: _this2.usuario.id,
-                    id_socio_B: _this2.relacionadoCon
-                  }
-                });
-
-              case 2:
-                existeRelacion = _context.sent;
-
-                if (existeRelacion.data) {
-                  _context.next = 10;
-                  break;
-                }
-
-                _context.next = 6;
+                _context.prev = 0;
+                _context.next = 3;
                 return axios.post('/usuario/relacion', {
-                  id_socio_A: _this2.usuario.id,
-                  id_socio_B: _this2.relacionadoCon,
-                  ralacion: _this2.relacion
+                  "id_socio_A": _this2.usuario.id,
+                  "id_socio_B": _this2.relacionadoCon,
+                  "relacion": _this2.relacion
                 });
 
-              case 6:
+              case 3:
                 guardar = _context.sent;
                 _this2.snackbar = true;
-                _context.next = 11;
+                _context.next = 10;
                 break;
 
-              case 10:
-                alert('Esta relacion ya existe');
+              case 7:
+                _context.prev = 7;
+                _context.t0 = _context["catch"](0);
+                console.log(_context.t0);
 
-              case 11:
+              case 10:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee);
+        }, _callee, null, [[0, 7]]);
       }))();
-    }
+    } // else {
+    //     alert('Esta relacion ya existe');
+    // }
+    // }
+
   },
   mounted: function mounted() {
     this.posibles();
@@ -100236,8 +100227,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

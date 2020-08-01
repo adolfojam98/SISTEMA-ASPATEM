@@ -100,7 +100,7 @@ export default {
  
     updateUsuario(){
       if (this.valid) {
-        axios.put('/usuario/actualizar',{
+        axios.put('/usuario',{
           'id': this.usuario.id,
           'nombre':this.usuario.nombre,
           'apellido':this.usuario.apellido,

@@ -11,22 +11,22 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 */
+Route::post('/usuario/relacion','RelacionController@store');
+Route::post('/usuario','UsuarioController@store');
 
-Route::post('/usuario/guardar','UsuarioController@store');
-
-Route::get('usuario/mostrar','UsuarioController@create');
+Route::get('/usuario','UsuarioController@create');
 
 Route::get('/usuario/{id}/relaciones','UsuarioController@show_dif_id');
 
-Route::delete('/usuario/borrar/{id}','UsuarioController@destroy');
+Route::delete('/usuario/{id}','UsuarioController@destroy');
 
 // Route::get('/usuario/buscar','UsuarioController@show');
 
-Route::put('/usuario/actualizar','UsuarioController@update');
+Route::put('/usuario','UsuarioController@update');
 
-Route::post('/usuario/relacion','RelacionadoController@store');
 
-Route::get('/usuario/relacion/existe','RelacionadoController@existe');
+
+Route::get('/usuario/relacion/existe','RelacionController@existe');
 
 
 

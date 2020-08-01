@@ -100,7 +100,7 @@ export default {
                 let me=this
                 
                
-                    axios.delete(`/usuario/borrar/${me.usuarioEliminar.id}`)
+                    axios.delete(`/usuario/${me.usuarioEliminar.id}`)
                     .then(function(res){
                      me.created();
                      me.usuarioEliminar = [];
@@ -125,7 +125,7 @@ export default {
     },
 
     created() {
-      axios.get("/usuario/mostrar").then(res => {
+      axios.get("/usuario").then(res => {
       this.usuarios = res.data;
       });
     },

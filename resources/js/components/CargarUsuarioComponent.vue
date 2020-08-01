@@ -80,7 +80,7 @@ export default {
     cargarUsuario() {
       if (this.valid) {
         axios
-          .post("/usuario/guardar", {
+          .post("/usuario", {
             nombre: this.nombre,
             apellido: this.apellido,
             mail: this.email,

@@ -94,26 +94,31 @@ export default {
 
            async agregarRelacion(){
                 
-                const existeRelacion = await axios.get('/usuario/relacion/existe',{
-                    params : {
-                            id_socio_A: this.usuario.id,
-                            id_socio_B: this.relacionadoCon,
-                        }
-                })
+                // const existeRelacion = await axios.get('/usuario/relacion/existe',{
+                //     params : {
+                //             id_socio_A: this.usuario.id,
+                //             id_socio_B: this.relacionadoCon,
+                //         }
+                // })
                 
+    try{
 
-                    if(!existeRelacion.data){
+    
+                    // if(!existeRelacion.data){
                         const guardar = await axios.post('/usuario/relacion',{
-                            id_socio_A:this.usuario.id,
-                            id_socio_B:this.relacionadoCon,
-                            ralacion:this.relacion,
+                            "id_socio_A" :this.usuario.id,
+                            "id_socio_B" :this.relacionadoCon,
+                            "relacion" :this.relacion,
                         })
                         this.snackbar = true;
+    }catch(error){
+        console.log(error)
+    }
                     }
-                        else {
-                            alert('Esta relacion ya existe');
-                        }
-                }
+                        // else {
+                        //     alert('Esta relacion ya existe');
+                        // }
+                // }
                   
             },
 

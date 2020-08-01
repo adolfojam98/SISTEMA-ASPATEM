@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use App\Relacion;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +11,7 @@ class Usuario extends Model
 
     public function relaciones()
     {
-        return $this->hasMany(Relaciones::Class);
+        return $this->belongsToMany(Relacion::class);
     }
 }
 
