@@ -98,8 +98,8 @@ class RelacionController extends Controller
      */
     public function destroy(Relacion $relacion)
     {
-        $relacionado = Relacion::findOrFail($relacion->id);
-        $relacionado->delete();
+        $relacionEliminar= Relacion::findOrFail($relacion->id);
+        $relacionEliminar->delete();
     }
 
 

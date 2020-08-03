@@ -16,7 +16,7 @@ Route::post('/usuario','UsuarioController@store');
 
 Route::get('/usuario','UsuarioController@create');
 
-Route::get('/usuario/{id}/relaciones','UsuarioController@show_dif_id');
+Route::get('/usuario/{id}/relacionables','UsuarioController@show_dif_id');
 
 Route::delete('/usuario/{id}','UsuarioController@destroy');
 
@@ -25,8 +25,11 @@ Route::delete('/usuario/{id}','UsuarioController@destroy');
 Route::put('/usuario','UsuarioController@update');
 
 Route::post('/usuario/relacion','RelacionController@store');
+Route::delete('/usuario/relacion','RelacionController@destroy');
 
 Route::get('/usuario/relacion/existe','RelacionController@existe');
+
+Route::get('/usuario/{id}/relaciones','UsuarioController@showRelacionesExitentes');
 
 
 

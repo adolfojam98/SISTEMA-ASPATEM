@@ -72,7 +72,7 @@
             </template>
             </v-snackbar>
         
-
+    <relaciones-usuario-lista :usuario = "usuario" ></relaciones-usuario-lista>
     </v-card>
 </template>
 
@@ -106,7 +106,7 @@ export default {
 
 
             posibles(){
-            axios.get(`/usuario/${this.usuario.id}/relaciones`).then(res => {
+            axios.get(`/usuario/${this.usuario.id}/relacionables`).then(res => {
             this.usuarios = res.data;
             })
         },
@@ -132,7 +132,8 @@ export default {
                             "relacion" :this.relacion,
                         })
                         this.snackbarAgregadocorrectamente = true;
-    }
+    
+    }                   
                     
                         else {
                             this.snackbarRelacionExistente = true

@@ -2262,6 +2262,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2285,8 +2296,8 @@ __webpack_require__.r(__webpack_exports__);
         text: "Puntos",
         value: "puntos"
       }, {
-        text: 'Actions',
-        value: 'actions',
+        text: "Acciones",
+        value: "actions",
         sortable: false
       }],
       usuarioEditar: [],
@@ -2578,7 +2589,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     posibles: function posibles() {
       var _this = this;
 
-      axios.get("/usuario/".concat(this.usuario.id, "/relaciones")).then(function (res) {
+      axios.get("/usuario/".concat(this.usuario.id, "/relacionables")).then(function (res) {
         _this.usuarios = res.data;
       });
     },
@@ -2640,6 +2651,72 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   mounted: function mounted() {
     this.posibles();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["usuario"],
+  data: function data() {
+    return {
+      relaciones: []
+    };
+  },
+  methods: {
+    relacionesExistentes: function relacionesExistentes() {
+      var _this = this;
+
+      axios.get("/usuario/".concat(this.usuario.id, "/relaciones")).then(function (res) {
+        _this.relaciones = res.data;
+      });
+    },
+    eliminarRelacion: function eliminarRelacion(relacion) {
+      axios["delete"]("usuario/relacion", {
+        relacion: relacion
+      }).then();
+    }
+  },
+  watch: {
+    usuario: function usuario() {
+      this.relacionesExistentes();
+    }
+  },
+  created: function created() {
+    this.relacionesExistentes();
   }
 });
 
@@ -39588,50 +39665,141 @@ var render = function() {
                   var item = ref.item
                   return [
                     _c(
-                      "v-icon",
+                      "v-tooltip",
                       {
-                        staticClass: "mr-2",
-                        attrs: { small: "" },
-                        on: {
-                          click: function($event) {
-                            return _vm.editItem(item)
-                          }
-                        }
-                      },
-                      [_vm._v("\n              mdi-pencil\n            ")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-icon",
-                      {
-                        attrs: { small: "" },
-                        on: {
-                          click: function($event) {
-                            ;[
-                              (_vm.eliminarUsuarioModal = true),
-                              (_vm.usuarioEliminar = item)
-                            ]
-                          }
-                        }
-                      },
-                      [_vm._v("\n              mdi-delete\n            ")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-icon",
-                      {
-                        attrs: { right: "", small: "" },
-                        on: {
-                          click: function($event) {
-                            return _vm.gestionarRelaciones(item)
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n              mdi-account-group\n            "
+                        attrs: { bottom: "" },
+                        scopedSlots: _vm._u(
+                          [
+                            {
+                              key: "activator",
+                              fn: function(ref) {
+                                var on = ref.on
+                                var attrs = ref.attrs
+                                return [
+                                  _c(
+                                    "v-icon",
+                                    _vm._g(
+                                      _vm._b(
+                                        {
+                                          staticClass: "mr-2",
+                                          attrs: { color: "success" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.editItem(item)
+                                            }
+                                          }
+                                        },
+                                        "v-icon",
+                                        attrs,
+                                        false
+                                      ),
+                                      on
+                                    ),
+                                    [_vm._v("mdi-pencil")]
+                                  )
+                                ]
+                              }
+                            }
+                          ],
+                          null,
+                          true
                         )
-                      ]
+                      },
+                      [_vm._v(" "), _c("span", [_vm._v("Editar")])]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "v-tooltip",
+                      {
+                        attrs: { bottom: "" },
+                        scopedSlots: _vm._u(
+                          [
+                            {
+                              key: "activator",
+                              fn: function(ref) {
+                                var on = ref.on
+                                var attrs = ref.attrs
+                                return [
+                                  _c(
+                                    "v-icon",
+                                    _vm._g(
+                                      _vm._b(
+                                        {
+                                          attrs: { color: "error" },
+                                          on: {
+                                            click: function($event) {
+                                              ;[
+                                                (_vm.eliminarUsuarioModal = true),
+                                                (_vm.usuarioEliminar = item)
+                                              ]
+                                            }
+                                          }
+                                        },
+                                        "v-icon",
+                                        attrs,
+                                        false
+                                      ),
+                                      on
+                                    ),
+                                    [_vm._v("mdi-delete")]
+                                  )
+                                ]
+                              }
+                            }
+                          ],
+                          null,
+                          true
+                        )
+                      },
+                      [_vm._v(" "), _c("span", [_vm._v("Eliminar")])]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "v-tooltip",
+                      {
+                        attrs: { bottom: "" },
+                        scopedSlots: _vm._u(
+                          [
+                            {
+                              key: "activator",
+                              fn: function(ref) {
+                                var on = ref.on
+                                var attrs = ref.attrs
+                                return [
+                                  _c(
+                                    "v-icon",
+                                    _vm._g(
+                                      _vm._b(
+                                        {
+                                          attrs: {
+                                            right: "",
+                                            color: "primary"
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.gestionarRelaciones(
+                                                item
+                                              )
+                                            }
+                                          }
+                                        },
+                                        "v-icon",
+                                        attrs,
+                                        false
+                                      ),
+                                      on
+                                    ),
+                                    [_vm._v("mdi-account-group")]
+                                  )
+                                ]
+                              }
+                            }
+                          ],
+                          null,
+                          true
+                        )
+                      },
+                      [_vm._v(" "), _c("span", [_vm._v("Relaciones")])]
                     )
                   ]
                 }
@@ -40143,10 +40311,95 @@ var render = function() {
           }
         },
         [_vm._v("\n        Esa relacion ya existe\n\n        ")]
-      )
+      ),
+      _vm._v(" "),
+      _c("relaciones-usuario-lista", { attrs: { usuario: _vm.usuario } })
     ],
     1
   )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=template&id=6c4278e8&":
+/*!**********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=template&id=6c4278e8& ***!
+  \**********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("v-simple-table", {
+    scopedSlots: _vm._u([
+      {
+        key: "default",
+        fn: function() {
+          return [
+            _c("thead", [
+              _c("tr", [
+                _c("th", { staticClass: "text-left" }, [_vm._v("Usuario")]),
+                _vm._v(" "),
+                _c("th", { staticClass: "text-left" }, [
+                  _vm._v("Tipo de Relacion")
+                ]),
+                _vm._v(" "),
+                _c("th", { staticClass: "text-left" }, [_vm._v("Eliminar")])
+              ])
+            ]),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.relaciones, function(item) {
+                return _c("tr", { key: item.id }, [
+                  _c("td", [
+                    _vm._v(
+                      _vm._s(item.usuario.nombre) +
+                        " , " +
+                        _vm._s(item.usuario.apellido)
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(item.relacion))]),
+                  _vm._v(" "),
+                  _c(
+                    "td",
+                    [
+                      _c(
+                        "v-icon",
+                        {
+                          attrs: { right: "", color: "error" },
+                          on: {
+                            click: function($event) {
+                              return _vm.eliminarRelacion(item)
+                            }
+                          }
+                        },
+                        [_vm._v("mdi-account-group")]
+                      )
+                    ],
+                    1
+                  )
+                ])
+              }),
+              0
+            )
+          ]
+        },
+        proxy: true
+      }
+    ])
+  })
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -99557,6 +99810,7 @@ Vue.component('cargar-usuario', __webpack_require__(/*! ./components/CargarUsuar
 Vue.component('mostrar-usuarios', __webpack_require__(/*! ./components/ListaUsuariosComponent.vue */ "./resources/js/components/ListaUsuariosComponent.vue")["default"]);
 Vue.component('editar-usuario', __webpack_require__(/*! ./components/UsuarioEditarComponent.vue */ "./resources/js/components/UsuarioEditarComponent.vue")["default"]);
 Vue.component('relaciones-usuario', __webpack_require__(/*! ./components/UsuarioRelacionesComponent.vue */ "./resources/js/components/UsuarioRelacionesComponent.vue")["default"]);
+Vue.component('relaciones-usuario-lista', __webpack_require__(/*! ./components/UsuarioRelacionesListaComponent.vue */ "./resources/js/components/UsuarioRelacionesListaComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -99964,6 +100218,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuarioRelacionesComponent_vue_vue_type_template_id_35702cbf___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuarioRelacionesComponent_vue_vue_type_template_id_35702cbf___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/UsuarioRelacionesListaComponent.vue":
+/*!*********************************************************************!*\
+  !*** ./resources/js/components/UsuarioRelacionesListaComponent.vue ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UsuarioRelacionesListaComponent_vue_vue_type_template_id_6c4278e8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UsuarioRelacionesListaComponent.vue?vue&type=template&id=6c4278e8& */ "./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=template&id=6c4278e8&");
+/* harmony import */ var _UsuarioRelacionesListaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UsuarioRelacionesListaComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _UsuarioRelacionesListaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UsuarioRelacionesListaComponent_vue_vue_type_template_id_6c4278e8___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UsuarioRelacionesListaComponent_vue_vue_type_template_id_6c4278e8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/UsuarioRelacionesListaComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuarioRelacionesListaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UsuarioRelacionesListaComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuarioRelacionesListaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=template&id=6c4278e8&":
+/*!****************************************************************************************************!*\
+  !*** ./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=template&id=6c4278e8& ***!
+  \****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuarioRelacionesListaComponent_vue_vue_type_template_id_6c4278e8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./UsuarioRelacionesListaComponent.vue?vue&type=template&id=6c4278e8& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UsuarioRelacionesListaComponent.vue?vue&type=template&id=6c4278e8&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuarioRelacionesListaComponent_vue_vue_type_template_id_6c4278e8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuarioRelacionesListaComponent_vue_vue_type_template_id_6c4278e8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

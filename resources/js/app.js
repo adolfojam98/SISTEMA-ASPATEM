@@ -28,6 +28,7 @@ Vue.component('cargar-usuario', require('./components/CargarUsuarioComponent.vue
 Vue.component('mostrar-usuarios', require('./components/ListaUsuariosComponent.vue').default);
 Vue.component('editar-usuario', require('./components/UsuarioEditarComponent.vue').default);
 Vue.component('relaciones-usuario', require('./components/UsuarioRelacionesComponent.vue').default);
+Vue.component('relaciones-usuario-lista', require('./components/UsuarioRelacionesListaComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

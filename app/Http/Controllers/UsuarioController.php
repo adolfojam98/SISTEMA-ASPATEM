@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Relacion;
 use App\Usuario;
 use Illuminate\Http\Request;
 
@@ -126,5 +127,26 @@ class UsuarioController extends Controller
         //Esta función devolverá todos los usuarios que no tengan la id del usuario que se paso por parametro
     }
 
+public function showRelacionesExitentes(Request $request){
+    $usuario = Usuario::with('relaciones.usuarios')->find($request->id);
 
+    $relaciones = $usuario->relaciones;
+   
+    foreach($relaciones as $relacion){
+        $usuarioRelacionado = $relacion->usuarios->filter(function($usuario, $key){
+            return $usuario->id != 1;
+        });
+        $relacion->usuario = $usuarioRelacionado->first();
+
+       
+        
+    }
+    
+
+    
+
+    return response()->json($relaciones);
 }
+   
+}
+
