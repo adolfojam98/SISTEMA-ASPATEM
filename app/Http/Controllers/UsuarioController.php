@@ -134,7 +134,7 @@ public function showRelacionesExitentes(Request $request){
    
     foreach($relaciones as $relacion){
         $usuarioRelacionado = $relacion->usuarios->filter(function($usuario, $key){
-            return $usuario->id != 1;
+            return $usuario->id != $this->request->id;
         });
         $relacion->usuario = $usuarioRelacionado->first();
 

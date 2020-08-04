@@ -72,7 +72,7 @@
             </template>
             </v-snackbar>
         
-    <relaciones-usuario-lista :usuario = "usuario" ></relaciones-usuario-lista>
+    <relaciones-usuario-lista :usuario = "usuario" :nuevaRelacion = "nuevaRelacion"></relaciones-usuario-lista>
     </v-card>
 </template>
 
@@ -97,6 +97,8 @@ export default {
       snackbarAgregadocorrectamente : false,
       snackbarRelacionExistente : false,
       exist : Boolean,
+      nuevaRelacion : [],
+      
         }
     },
 
@@ -123,15 +125,16 @@ export default {
                 })
                 
     
-                    console.log(existeRelacion);
+                    
     
                     if(!existeRelacion.data){
-                        const guardar = await axios.post('/usuario/relacion',{
+                        const nuevaRelacion = await axios.post('/usuario/relacion',{
                             "id_socio_A" :this.usuario.id,
                             "id_socio_B" :this.relacionadoCon,
                             "relacion" :this.relacion,
                         })
                         this.snackbarAgregadocorrectamente = true;
+                        this.nuevaRelacion = nuevaRelacion.data; 
     
     }                   
                     

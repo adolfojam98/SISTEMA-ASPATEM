@@ -39,10 +39,14 @@ class RelacionController extends Controller
         $relacion = new Relacion();
         $relacion->relacion = $request->relacion;
         $relacion->save();
-        $relacion->usuarios()->attach($request->id_socio_A);
         $relacion->usuarios()->attach($request->id_socio_B);
-       
         $relacion->save();
+        $response = Relacion::with('usuarios')->find($relacion->id);
+        $response->usuario = $response->usuarios->first();
+       $relacion->usuarios()->attach($request->id_socio_A);
+        $relacion->save();
+
+        return $response;
 
         
     }
@@ -96,10 +100,11 @@ class RelacionController extends Controller
      * @param  \App\Relacion  $relacion
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Relacion $relacion)
+    public function destroy(Request $relacion)
     {
         $relacionEliminar= Relacion::findOrFail($relacion->id);
         $relacionEliminar->delete();
+        return $relacionEliminar;
     }
 
 

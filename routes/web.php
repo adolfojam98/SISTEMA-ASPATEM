@@ -25,7 +25,7 @@ Route::delete('/usuario/{id}','UsuarioController@destroy');
 Route::put('/usuario','UsuarioController@update');
 
 Route::post('/usuario/relacion','RelacionController@store');
-Route::delete('/usuario/relacion','RelacionController@destroy');
+Route::delete('/usuario/relacion/{id}','RelacionController@destroy');
 
 Route::get('/usuario/relacion/existe','RelacionController@existe');
 

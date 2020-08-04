@@ -2579,7 +2579,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       tipos: ['Amistad', 'Familiar', 'Referido'],
       snackbarAgregadocorrectamente: false,
       snackbarRelacionExistente: false,
-      exist: Boolean
+      exist: Boolean,
+      nuevaRelacion: []
     };
   },
   methods: {
@@ -2597,7 +2598,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var existeRelacion, guardar;
+        var existeRelacion, nuevaRelacion;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -2612,23 +2613,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 existeRelacion = _context.sent;
-                console.log(existeRelacion);
 
                 if (existeRelacion.data) {
                   _context.next = 11;
                   break;
                 }
 
-                _context.next = 7;
+                _context.next = 6;
                 return axios.post('/usuario/relacion', {
                   "id_socio_A": _this2.usuario.id,
                   "id_socio_B": _this2.relacionadoCon,
                   "relacion": _this2.relacion
                 });
 
-              case 7:
-                guardar = _context.sent;
+              case 6:
+                nuevaRelacion = _context.sent;
                 _this2.snackbarAgregadocorrectamente = true;
+                _this2.nuevaRelacion = nuevaRelacion.data;
                 _context.next = 12;
                 break;
 
@@ -2689,8 +2690,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["usuario"],
+  props: ["usuario", "nuevaRelacion"],
   data: function data() {
     return {
       relaciones: []
@@ -2705,14 +2721,21 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     eliminarRelacion: function eliminarRelacion(relacion) {
-      axios["delete"]("usuario/relacion", {
-        relacion: relacion
-      }).then();
+      var _this2 = this;
+
+      axios["delete"]("/usuario/relacion/".concat(relacion.id)).then(function (res) {
+        _this2.relaciones = _this2.relaciones.filter(function (relacion) {
+          return relacion.id != res.data.id;
+        });
+      });
     }
   },
   watch: {
     usuario: function usuario() {
       this.relacionesExistentes();
+    },
+    nuevaRelacion: function nuevaRelacion() {
+      this.relaciones.push(this.nuevaRelacion);
     }
   },
   created: function created() {
@@ -40313,7 +40336,9 @@ var render = function() {
         [_vm._v("\n        Esa relacion ya existe\n\n        ")]
       ),
       _vm._v(" "),
-      _c("relaciones-usuario-lista", { attrs: { usuario: _vm.usuario } })
+      _c("relaciones-usuario-lista", {
+        attrs: { usuario: _vm.usuario, nuevaRelacion: _vm.nuevaRelacion }
+      })
     ],
     1
   )
@@ -40364,9 +40389,11 @@ var render = function() {
                 return _c("tr", { key: item.id }, [
                   _c("td", [
                     _vm._v(
-                      _vm._s(item.usuario.nombre) +
+                      "\n                    " +
+                        _vm._s(item.usuario.nombre) +
                         " , " +
-                        _vm._s(item.usuario.apellido)
+                        _vm._s(item.usuario.apellido) +
+                        "\n                "
                     )
                   ]),
                   _vm._v(" "),
@@ -40376,16 +40403,51 @@ var render = function() {
                     "td",
                     [
                       _c(
-                        "v-icon",
+                        "v-tooltip",
                         {
-                          attrs: { right: "", color: "error" },
-                          on: {
-                            click: function($event) {
-                              return _vm.eliminarRelacion(item)
-                            }
-                          }
+                          attrs: { bottom: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  var attrs = ref.attrs
+                                  return [
+                                    _c(
+                                      "v-icon",
+                                      _vm._g(
+                                        _vm._b(
+                                          {
+                                            attrs: {
+                                              right: "",
+                                              color: "error"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.eliminarRelacion(
+                                                  item
+                                                )
+                                              }
+                                            }
+                                          },
+                                          "v-icon",
+                                          attrs,
+                                          false
+                                        ),
+                                        on
+                                      ),
+                                      [_vm._v("mdi-delete")]
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
                         },
-                        [_vm._v("mdi-account-group")]
+                        [_vm._v(" "), _c("span", [_vm._v("Eliminar")])]
                       )
                     ],
                     1
