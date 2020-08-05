@@ -129,15 +129,12 @@ class UsuarioController extends Controller
 
 public function showRelacionesExitentes(Request $request){
     $usuario = Usuario::with('relaciones.usuarios')->find($request->id);
-
+  
     $relaciones = $usuario->relaciones;
-   
-    foreach($relaciones as $relacion){
-        $usuarioRelacionado = $relacion->usuarios->filter(function($usuario, $key){
-            return $usuario->id != $this->request->id;
-        });
-        $relacion->usuario = $usuarioRelacionado->first();
 
+    foreach($relaciones as $relacion){
+      
+        $relacion->usuario = $relacion->usuarios->firstWhere('id', '!=', $request->id);
        
         
     }
