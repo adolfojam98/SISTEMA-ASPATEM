@@ -139,9 +139,6 @@ public function showRelacionesExitentes(Request $request){
         
     }
     
-
-    
-
     return response()->json($relaciones);
 }
    

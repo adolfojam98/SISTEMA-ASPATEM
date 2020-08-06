@@ -45,8 +45,17 @@
               <v-icon>mdi-account-group</v-icon>
             </v-list-item-icon>
           </v-list-item>
-        </v-list-group>
+        
 
+          <v-list-item
+            link :to="{name: 'pagos'}" 
+          >
+            <v-list-item-title >Pagos</v-list-item-title>
+            <v-list-item-icon>
+              <v-icon>mdi-currency-usd</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+</v-list-group>
 
         <!-- <v-list-group>
           <template v-slot:activator>

@@ -31,15 +31,18 @@ export default new Router({
 			name: 'ranking',
 			component: require('./views/Ranking').default
 		},
+		
+		{
+			path: '/usuarios/pagos',
+			name: 'pagos',
+			component: require('./views/UsuariosPagos').default
+		},
+		
 		{
             path: '/*',
 			component: require('./views/404').default
 		},
-		{
-			path: '/usuarios/modificar',
-			name: 'modificar',
-			component: require('./components/UsuarioEditarComponent').default
-		}
+		
 	],
 	mode: 'history',
 	scrollBehavior() {
