@@ -8,13 +8,15 @@
 
       <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
 
-      <v-text-field v-model="telefono" label="telefono" :rules="telefonoRules" required></v-text-field>
+      <v-text-field v-model="telefono" label="Telefono" :rules="telefonoRules" required></v-text-field>
+
+      <v-text-field v-model="importe" label="Importe del corriente mes" :rules="importeRules" required></v-text-field>
 
       <v-text-field  v-if="puntosPersonalizados" v-model="puntos" :rules="puntosRules" label="puntos" required></v-text-field>
 
       <v-switch v-model="puntosPersonalizados" label="Ingresar puntos personalizados"></v-switch>
       
-      <v-btn depressed color="primary" :disabled="!valid" @click.prevent="cargarUsuario">Enviar</v-btn>
+      <v-btn depressed color="primary" :disabled="!valid" @click.prevent="cargarUsuario">Dar de alta y pagar</v-btn>
     </v-container>
   </v-form>
 
@@ -47,6 +49,9 @@
 export default {
   data: () => ({
     valid: false,
+    id_usuario: null,
+
+
     nombre: "",
     nombreRules: [
       v => !!v || "Nombre requerido",
@@ -67,14 +72,21 @@ export default {
     telefonoRules : [
       v => !!v || "Telefono requerido",
     ],
-    
+
+    importe: 0,
+    importeRules : [
+      v => !!v || "Importe requerido",
+      v => (v>=0) || "Importe no valido"
+    ],
     
     email: "",
     emailRules: [
       v => !!v || "E-mail requerido",
       v => /.+@.+/.test(v) || "E-mail no valido"
     ],
-    snackbar : false
+    snackbar : false,
+
+    
   }),
   methods: {
     cargarUsuario() {
@@ -89,15 +101,55 @@ export default {
             socio: true
           })
           .then(response => {
-           this.snackbar = true
+            this.snackbar = true;
+            this.id_usuario=response.data.id;
+
+
+            this.generarCuota();
           })
           .catch(error => {
             console.log(error.response);
           });
           
-      }
-        this.$refs.form.reset()
-    }
+        }
+      },
+
+    generarCuota(){
+      var fecha = new Date();
+      var mes = fecha.getMonth()+1;
+      var anio = fecha.getFullYear();
+
+
+      axios.post("/cuota",{
+        id_usuario: this.id_usuario,
+        mes: mes,
+        anio: anio,
+        importe: this.importe
+      })
+      .then(response => {
+        this.id_cuota = response.data.id;
+        this.pagarCuota();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+      this.$refs.form.reset()
+    },
+
+    pagarCuota(){
+      var fecha = new Date();
+      var dia = fecha.getDate();
+      var mes = fecha.getMonth()+1;
+      var anio = fecha.getFullYear();
+
+
+      axios.put("/cuota",{
+        'id': this.id_cuota,
+        'descuento': false,
+        'fechaPago': anio+"/"+mes+"/"+dia,
+      })
+    },
 
     }
   

@@ -2132,10 +2132,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       valid: false,
+      id_usuario: null,
       nombre: "",
       nombreRules: [function (v) {
         return !!v || "Nombre requerido";
@@ -2158,6 +2161,12 @@ __webpack_require__.r(__webpack_exports__);
       telefono: "",
       telefonoRules: [function (v) {
         return !!v || "Telefono requerido";
+      }],
+      importe: 0,
+      importeRules: [function (v) {
+        return !!v || "Importe requerido";
+      }, function (v) {
+        return v >= 0 || "Importe no valido";
       }],
       email: "",
       emailRules: [function (v) {
@@ -2182,12 +2191,44 @@ __webpack_require__.r(__webpack_exports__);
           socio: true
         }).then(function (response) {
           _this.snackbar = true;
+          _this.id_usuario = response.data.id;
+
+          _this.generarCuota();
         })["catch"](function (error) {
           console.log(error.response);
         });
       }
+    },
+    generarCuota: function generarCuota() {
+      var _this2 = this;
 
+      var fecha = new Date();
+      var mes = fecha.getMonth() + 1;
+      var anio = fecha.getFullYear();
+      axios.post("/cuota", {
+        id_usuario: this.id_usuario,
+        mes: mes,
+        anio: anio,
+        importe: this.importe
+      }).then(function (response) {
+        _this2.id_cuota = response.data.id;
+
+        _this2.pagarCuota();
+      })["catch"](function (error) {
+        console.log(error);
+      });
       this.$refs.form.reset();
+    },
+    pagarCuota: function pagarCuota() {
+      var fecha = new Date();
+      var dia = fecha.getDate();
+      var mes = fecha.getMonth() + 1;
+      var anio = fecha.getFullYear();
+      axios.put("/cuota", {
+        'id': this.id_cuota,
+        'descuento': false,
+        'fechaPago': anio + "/" + mes + "/" + dia
+      });
     }
   }
 });
@@ -3023,11 +3064,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       value: "",
-      usuarios: ''
+      usuarios: ""
     };
   },
   methods: {
@@ -39617,7 +39667,7 @@ var render = function() {
               _vm._v(" "),
               _c("v-text-field", {
                 attrs: {
-                  label: "telefono",
+                  label: "Telefono",
                   rules: _vm.telefonoRules,
                   required: ""
                 },
@@ -39627,6 +39677,21 @@ var render = function() {
                     _vm.telefono = $$v
                   },
                   expression: "telefono"
+                }
+              }),
+              _vm._v(" "),
+              _c("v-text-field", {
+                attrs: {
+                  label: "Importe del corriente mes",
+                  rules: _vm.importeRules,
+                  required: ""
+                },
+                model: {
+                  value: _vm.importe,
+                  callback: function($$v) {
+                    _vm.importe = $$v
+                  },
+                  expression: "importe"
                 }
               }),
               _vm._v(" "),
@@ -39673,7 +39738,7 @@ var render = function() {
                     }
                   }
                 },
-                [_vm._v("Enviar")]
+                [_vm._v("Dar de alta y pagar")]
               )
             ],
             1
@@ -39786,138 +39851,157 @@ var render = function() {
               items: _vm.usuarios,
               search: _vm.search
             },
-            scopedSlots: _vm._u([
-              {
-                key: "default",
-                fn: function() {
-                  return [
-                    _c(
-                      "v-tooltip",
-                      {
-                        attrs: { bottom: "" },
-                        scopedSlots: _vm._u([
-                          {
-                            key: "activator",
-                            fn: function(ref) {
-                              var on = ref.on
-                              var attrs = ref.attrs
-                              return [
-                                _c(
-                                  "v-icon",
-                                  _vm._g(
-                                    _vm._b(
-                                      {
-                                        staticClass: "mr-2",
-                                        attrs: { color: "success" },
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.editItem(_vm.item)
-                                          }
-                                        }
-                                      },
+            scopedSlots: _vm._u(
+              [
+                {
+                  key: "item.actions",
+                  fn: function(ref) {
+                    var item = ref.item
+                    return [
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { bottom: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  var attrs = ref.attrs
+                                  return [
+                                    _c(
                                       "v-icon",
-                                      attrs,
-                                      false
-                                    ),
-                                    on
-                                  ),
-                                  [_vm._v("mdi-pencil")]
-                                )
-                              ]
-                            }
-                          }
-                        ])
-                      },
-                      [_vm._v(" "), _c("span", [_vm._v("Editar")])]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-tooltip",
-                      {
-                        attrs: { bottom: "" },
-                        scopedSlots: _vm._u([
-                          {
-                            key: "activator",
-                            fn: function(ref) {
-                              var on = ref.on
-                              var attrs = ref.attrs
-                              return [
-                                _c(
-                                  "v-icon",
-                                  _vm._g(
-                                    _vm._b(
-                                      {
-                                        attrs: { color: "error" },
-                                        on: {
-                                          click: function($event) {
-                                            ;[
-                                              (_vm.eliminarUsuarioModal = true),
-                                              (_vm.usuarioEliminar = _vm.item)
-                                            ]
-                                          }
-                                        }
-                                      },
+                                      _vm._g(
+                                        _vm._b(
+                                          {
+                                            staticClass: "mr-2",
+                                            attrs: { color: "success" },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.editItem(item)
+                                              }
+                                            }
+                                          },
+                                          "v-icon",
+                                          attrs,
+                                          false
+                                        ),
+                                        on
+                                      ),
+                                      [_vm._v("mdi-pencil")]
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Editar")])]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { bottom: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  var attrs = ref.attrs
+                                  return [
+                                    _c(
                                       "v-icon",
-                                      attrs,
-                                      false
-                                    ),
-                                    on
-                                  ),
-                                  [_vm._v("mdi-delete")]
-                                )
-                              ]
-                            }
-                          }
-                        ])
-                      },
-                      [_vm._v(" "), _c("span", [_vm._v("Eliminar")])]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-tooltip",
-                      {
-                        attrs: { bottom: "" },
-                        scopedSlots: _vm._u([
-                          {
-                            key: "activator",
-                            fn: function(ref) {
-                              var on = ref.on
-                              var attrs = ref.attrs
-                              return [
-                                _c(
-                                  "v-icon",
-                                  _vm._g(
-                                    _vm._b(
-                                      {
-                                        attrs: { right: "", color: "primary" },
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.gestionarRelaciones(
-                                              _vm.item
-                                            )
-                                          }
-                                        }
-                                      },
+                                      _vm._g(
+                                        _vm._b(
+                                          {
+                                            attrs: { color: "error" },
+                                            on: {
+                                              click: function($event) {
+                                                ;[
+                                                  (_vm.eliminarUsuarioModal = true),
+                                                  (_vm.usuarioEliminar = item)
+                                                ]
+                                              }
+                                            }
+                                          },
+                                          "v-icon",
+                                          attrs,
+                                          false
+                                        ),
+                                        on
+                                      ),
+                                      [_vm._v("mdi-delete")]
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Eliminar")])]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { bottom: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  var attrs = ref.attrs
+                                  return [
+                                    _c(
                                       "v-icon",
-                                      attrs,
-                                      false
-                                    ),
-                                    on
-                                  ),
-                                  [_vm._v("mdi-account-group")]
-                                )
-                              ]
-                            }
-                          }
-                        ])
-                      },
-                      [_vm._v(" "), _c("span", [_vm._v("Relaciones")])]
-                    )
-                  ]
-                },
-                proxy: true
-              }
-            ])
+                                      _vm._g(
+                                        _vm._b(
+                                          {
+                                            attrs: {
+                                              right: "",
+                                              color: "primary"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.gestionarRelaciones(
+                                                  item
+                                                )
+                                              }
+                                            }
+                                          },
+                                          "v-icon",
+                                          attrs,
+                                          false
+                                        ),
+                                        on
+                                      ),
+                                      [_vm._v("mdi-account-group")]
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Relaciones")])]
+                      )
+                    ]
+                  }
+                }
+              ],
+              null,
+              true
+            )
           })
         ],
         1
@@ -101088,8 +101172,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

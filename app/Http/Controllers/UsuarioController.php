@@ -49,7 +49,8 @@ class UsuarioController extends Controller
         $usuario->save();
 
         return response()->json([
-            'message' => 'Nuevo usuario creado'
+            'message' => 'Nuevo usuario creado',
+            'id' => $usuario->id
         ]);
 
         //Esta función guardará las tareas que enviaremos mediante vuejs
