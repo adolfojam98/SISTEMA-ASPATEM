@@ -3,12 +3,18 @@
         <h1>Ruta pagos</h1>
         <v-container>
             <v-autocomplete
-                v-model="value"
+                v-model="usuarioSeleccionado"
                 :items="usuarios"
                 :item-text="nombreCompleto"
+                item-value="id"
                 filled
                 label="Ingrese el nombre del socio"
             ></v-autocomplete>
+            <div class="my-2">
+                <v-btn @click="buscarCuotasUsuario" large color="primary">
+                    Buscar
+                </v-btn>
+            </div>
         </v-container>
 
         <v-container>
@@ -23,29 +29,50 @@
                                 <th class="text-left"></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>03</td>
-                                <td>2020</td>
-                                <td>500</td>
+                        <tbody
+                            v-for="(cuota, index) in cuotasUsuario"
+                            :key="index"
+                        >
+                            <tr
+                                v-if="cuota.fechaPago"
+                                @click="
+                                    [
+                                        (infoCuotaPaga = !infoPagoCuota),
+                                        (cuotaActual = cuota)
+                                    ]
+                                "
+                            >
+                                <td>{{ cuota.mes }}</td>
+                                <td>{{ cuota.anio }}</td>
+                                <td>{{ cuota.importe }}</td>
                                 <td>
-                                    <v-chip color="error" dark>Pagar</v-chip>
+                                    <div class="text-center">
+                                        <v-chip color="success" dark>
+                                            Pagado
+                                        </v-chip>
+                                    </div>
                                 </td>
                             </tr>
-                            <tr color="pink">
-                                <td color="red">02</td>
-                                <td>2020</td>
-                                <td>500</td>
+
+                            <tr
+                                v-else
+                                @click="
+                                    [
+                                        (pagoCuota = !pagoCuota),
+                                        ,
+                                        (cuotaActual = cuota)
+                                    ]
+                                "
+                            >
+                                <td>{{ cuota.mes }}</td>
+                                <td>{{ cuota.anio }}</td>
+                                <td>{{ cuota.importe }}</td>
                                 <td>
-                                    <v-chip color="success" dark>Pagada</v-chip>
-                                </td>
-                            </tr>
-                            <tr color="success">
-                                <td>01</td>
-                                <td>2020</td>
-                                <td>500</td>
-                                <td>
-                                    <v-chip color="success" dark>Pagada</v-chip>
+                                    <div class="text-center">
+                                        <v-chip color="error" dark>
+                                            Pagar
+                                        </v-chip>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -53,6 +80,22 @@
                 </v-simple-table>
             </template>
         </v-container>
+
+        <v-dialog v-model="infoCuotaPaga" max-width="600px">
+            <v-card>
+                <h1>
+                    Aca pone lo de las cuotas que estan pagadas
+                </h1>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="pagoCuota" max-width="600px">
+            <v-card>
+                <h1>
+                    Aca pones lo de para persistir un pago de cuota
+                </h1>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -60,18 +103,30 @@
 export default {
     data() {
         return {
-            value: "",
-            usuarios: ""
+            usuarioSeleccionado: "",
+            usuarios: [],
+            cuotasUsuario: [],
+            infoCuotaPaga: false,
+            pagoCuota: false
         };
     },
     methods: {
-        nombreCompleto: item => item.apellido + " " + item.nombre
+        nombreCompleto: item => item.apellido + " " + item.nombre,
+        buscarCuotasUsuario() {
+            this.cuotasUsuario = [];
+            axios
+                .get(`/usuario/${this.usuarioSeleccionado}/cuotas`)
+                .then(res => {
+                    this.cuotasUsuario = res.data;
+                    console.log(res.data);
+                });
+        },
+       
     },
     created() {
         axios.get("/usuario").then(res => {
             this.usuarios = res.data;
         });
-        
     }
 };
 </script>

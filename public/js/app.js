@@ -2134,6 +2134,43 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2202,13 +2239,8 @@ __webpack_require__.r(__webpack_exports__);
     generarCuota: function generarCuota() {
       var _this2 = this;
 
-      var fecha = new Date();
-      var mes = fecha.getMonth() + 1;
-      var anio = fecha.getFullYear();
       axios.post("/cuota", {
         id_usuario: this.id_usuario,
-        mes: mes,
-        anio: anio,
         importe: this.importe
       }).then(function (response) {
         _this2.id_cuota = response.data.id;
@@ -2220,14 +2252,14 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.form.reset();
     },
     pagarCuota: function pagarCuota() {
-      var fecha = new Date();
-      var dia = fecha.getDate();
-      var mes = fecha.getMonth() + 1;
-      var anio = fecha.getFullYear();
       axios.put("/cuota", {
-        'id': this.id_cuota,
-        'descuento': false,
-        'fechaPago': anio + "/" + mes + "/" + dia
+        id: this.id_cuota,
+        descuento: false
+      });
+    },
+    generarCuotas: function generarCuotas() {
+      axios.post("/cuotas").then(function (res) {
+        return console.log(res.data);
       });
     }
   }
@@ -3073,23 +3105,78 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      value: "",
-      usuarios: ""
+      usuarioSeleccionado: "",
+      usuarios: [],
+      cuotasUsuario: [],
+      infoCuotaPaga: false,
+      pagoCuota: false
     };
   },
   methods: {
     nombreCompleto: function nombreCompleto(item) {
       return item.apellido + " " + item.nombre;
+    },
+    buscarCuotasUsuario: function buscarCuotasUsuario() {
+      var _this = this;
+
+      this.cuotasUsuario = [];
+      axios.get("/usuario/".concat(this.usuarioSeleccionado, "/cuotas")).then(function (res) {
+        _this.cuotasUsuario = res.data;
+        console.log(res.data);
+      });
     }
   },
   created: function created() {
-    var _this = this;
+    var _this2 = this;
 
     axios.get("/usuario").then(function (res) {
-      _this.usuarios = res.data;
+      _this2.usuarios = res.data;
     });
   }
 });
@@ -39742,7 +39829,11 @@ var render = function() {
               )
             ],
             1
-          )
+          ),
+          _vm._v(" "),
+          _c("v-btn", { on: { click: _vm.generarCuotas } }, [
+            _vm._v(" generar cuotas")
+          ])
         ],
         1
       ),
@@ -39772,7 +39863,7 @@ var render = function() {
                       attrs,
                       false
                     ),
-                    [_vm._v("\r\n          Cerrar\r\n        ")]
+                    [_vm._v("\n                Cerrar\n            ")]
                   )
                 ]
               }
@@ -39786,7 +39877,7 @@ var render = function() {
             expression: "snackbar"
           }
         },
-        [_vm._v("\r\n      Usuario agregado corectamente\r\n\r\n      ")]
+        [_vm._v("\n        Usuario agregado corectamente\n\n        ")]
       )
     ],
     1
@@ -41055,17 +41146,34 @@ var render = function() {
             attrs: {
               items: _vm.usuarios,
               "item-text": _vm.nombreCompleto,
+              "item-value": "id",
               filled: "",
               label: "Ingrese el nombre del socio"
             },
             model: {
-              value: _vm.value,
+              value: _vm.usuarioSeleccionado,
               callback: function($$v) {
-                _vm.value = $$v
+                _vm.usuarioSeleccionado = $$v
               },
-              expression: "value"
+              expression: "usuarioSeleccionado"
             }
-          })
+          }),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "my-2" },
+            [
+              _c(
+                "v-btn",
+                {
+                  attrs: { large: "", color: "primary" },
+                  on: { click: _vm.buscarCuotasUsuario }
+                },
+                [_vm._v("\n                Buscar\n            ")]
+              )
+            ],
+            1
+          )
         ],
         1
       ),
@@ -41098,67 +41206,97 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _c("tbody", [
-                        _c("tr", [
-                          _c("td", [_vm._v("03")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("2020")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("500")]),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            [
-                              _c(
-                                "v-chip",
-                                { attrs: { color: "error", dark: "" } },
-                                [_vm._v("Pagar")]
+                      _vm._l(_vm.cuotasUsuario, function(cuota, index) {
+                        return _c("tbody", { key: index }, [
+                          cuota.fechaPago
+                            ? _c(
+                                "tr",
+                                {
+                                  on: {
+                                    click: function($event) {
+                                      ;[
+                                        (_vm.infoCuotaPaga = !_vm.infoPagoCuota),
+                                        (_vm.cuotaActual = cuota)
+                                      ]
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("td", [_vm._v(_vm._s(cuota.mes))]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(cuota.anio))]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(cuota.importe))]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "div",
+                                      { staticClass: "text-center" },
+                                      [
+                                        _c(
+                                          "v-chip",
+                                          {
+                                            attrs: {
+                                              color: "success",
+                                              dark: ""
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                        Pagado\n                                    "
+                                            )
+                                          ]
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ])
+                                ]
                               )
-                            ],
-                            1
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("tr", { attrs: { color: "pink" } }, [
-                          _c("td", { attrs: { color: "red" } }, [_vm._v("02")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("2020")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("500")]),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            [
-                              _c(
-                                "v-chip",
-                                { attrs: { color: "success", dark: "" } },
-                                [_vm._v("Pagada")]
+                            : _c(
+                                "tr",
+                                {
+                                  on: {
+                                    click: function($event) {
+                                      ;[
+                                        (_vm.pagoCuota = !_vm.pagoCuota),
+                                        ,
+                                        (_vm.cuotaActual = cuota)
+                                      ]
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("td", [_vm._v(_vm._s(cuota.mes))]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(cuota.anio))]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(cuota.importe))]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "div",
+                                      { staticClass: "text-center" },
+                                      [
+                                        _c(
+                                          "v-chip",
+                                          {
+                                            attrs: { color: "error", dark: "" }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                        Pagar\n                                    "
+                                            )
+                                          ]
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ])
+                                ]
                               )
-                            ],
-                            1
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("tr", { attrs: { color: "success" } }, [
-                          _c("td", [_vm._v("01")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("2020")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("500")]),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            [
-                              _c(
-                                "v-chip",
-                                { attrs: { color: "success", dark: "" } },
-                                [_vm._v("Pagada")]
-                              )
-                            ],
-                            1
-                          )
                         ])
-                      ])
+                      })
                     ]
                   },
                   proxy: true
@@ -41168,6 +41306,54 @@ var render = function() {
           ]
         ],
         2
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "600px" },
+          model: {
+            value: _vm.infoCuotaPaga,
+            callback: function($$v) {
+              _vm.infoCuotaPaga = $$v
+            },
+            expression: "infoCuotaPaga"
+          }
+        },
+        [
+          _c("v-card", [
+            _c("h1", [
+              _vm._v(
+                "\n                Aca pone lo de las cuotas que estan pagadas\n            "
+              )
+            ])
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "600px" },
+          model: {
+            value: _vm.pagoCuota,
+            callback: function($$v) {
+              _vm.pagoCuota = $$v
+            },
+            expression: "pagoCuota"
+          }
+        },
+        [
+          _c("v-card", [
+            _c("h1", [
+              _vm._v(
+                "\n                Aca pones lo de para persistir un pago de cuota\n            "
+              )
+            ])
+          ])
+        ],
+        1
       )
     ],
     1
@@ -101172,8 +101358,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

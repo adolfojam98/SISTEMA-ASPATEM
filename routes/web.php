@@ -31,9 +31,15 @@ Route::get('/usuario/relacion/existe','RelacionController@existe');
 
 Route::get('/usuario/{id}/relaciones','UsuarioController@showRelacionesExitentes');
 
+Route::get('/usuario/{id}/cuotas', 'UsuarioController@obtenerCuotasUsuario');
+
 Route::post('/cuota','CuotaController@store');
 
 Route::put('/cuota','CuotaController@update');
+
+Route::post('/cuotas', 'CuotaController@generarCuotasFaltantes');
+
+
 
 
 

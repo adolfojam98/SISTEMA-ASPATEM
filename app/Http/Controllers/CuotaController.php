@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+
 use App\Cuota;
+use App\Usuario;
 use Illuminate\Http\Request;
 
 class CuotaController extends Controller
@@ -35,10 +38,12 @@ class CuotaController extends Controller
      */
     public function store(Request $request)
     {
+        $fechaActual = New Carbon();
+
         $cuota = new Cuota();
-        $cuota->id_usuario = $request->id_usuario;
-        $cuota->mes = $request->mes;
-        $cuota->anio = $request->anio;
+        $cuota->usuario_id = $request->id_usuario;
+        $cuota->mes = $fechaActual->month;
+        $cuota->anio = $fechaActual->year;
         $cuota->importe = $request->importe;
         //el importe tiene que ser igual al importe por defecto que este en configuracion
 
@@ -56,7 +61,7 @@ class CuotaController extends Controller
      * @param  \App\Cuota  $cuota
      * @return \Illuminate\Http\Response
      */
-    public function show(Cuota $cuota)
+    public function show(Request $request)
     {
         $cuota = Cuota::findOrFail($request->id);
         return $cuota;
@@ -80,16 +85,15 @@ class CuotaController extends Controller
      * @param  \App\Cuota  $cuota
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cuota $cuota)
-    {
+    public function update(Request $request)
+    {   
+       
         $cuota = Cuota::findOrFail($request->id);
 
-        $cuota->id_usuario = $cuota->id_usuario; //no es requerido
-        $cuota->mes = $cuota->mes;
-        $cuota->anio = $cuota->anio;
+        
         $cuota->descuento = $request->descuento;
-        $cuota->importe = $cuota->importe;
-        $cuota->fechaPago = $request->fechaPago;
+
+        $cuota->fechaPago = Carbon::today();
 
         $cuota->save();
 
@@ -102,10 +106,32 @@ class CuotaController extends Controller
      * @param  \App\Cuota  $cuota
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Cuota $cuota)
+    public function destroy(request $cuota)
     {
+        
         $cuota = Cuota::findOrFail($request->id);
         $cuota->delete();
         
     }
+
+
+
+public function generarCuotasFaltantes(){
+
+    $socios = Usuario::where('socio', true)->get();
+    $fechaActual = Carbon::today();
+    foreach ($socios as $socio){
+        
+        $cuota = new Cuota();
+        $cuota->usuario_id = $socio->id;
+        $cuota->importe = 1000;
+        $cuota->mes = $fechaActual->month;
+        $cuota->anio = $fechaActual->year;
+        $cuota->save();
+
+    }
+    
+
+}
+
 }

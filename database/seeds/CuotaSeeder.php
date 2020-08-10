@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Cuota;
+use Carbon\Carbon;
 
 class CuotaSeeder extends Seeder
 {
@@ -12,12 +13,28 @@ class CuotaSeeder extends Seeder
      */
     public function run()
     {
-        $cuota = new Cuota();
-        $cuota->id_usuario = 12;
-        $cuota->mes = 03;
-        $cuota->anio = 2020;
-        $cuota->importe = 230.033;
+        for ($j = 1 ; $j <= 14 ; $j++) {
+            $aux2 = rand(1,3);
+            $aux = rand($aux2 + 1, 7);
 
-        $cuota->save();
+            for ($i = $aux2 ; $i<$aux ; $i++) {
+                $cuota = new Cuota();
+                $cuota->usuario_id = $j;
+                $cuota->mes = $i;
+                $cuota->anio = 2020;
+                $cuota->importe = 300;
+                $cuota->fechaPago = Carbon::today();
+                $cuota->save();
+            }
+
+            for ($i = $aux ; $i <= 7 ; $i++) {
+                $cuota = new Cuota();
+                $cuota->usuario_id = $j;
+                $cuota->mes = $i;
+                $cuota->anio = 2020;
+                $cuota->importe = 300;
+                $cuota->save();
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App;
 use App\Relacion;
+use App\Cuota;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,9 +15,8 @@ class Usuario extends Model
         return $this->belongsToMany(Relacion::class)->withPivot('usuario_id');
     }
 
-    public function cuotas()
-    {
-        return $this->hasMany(Cuota::class);
-    }
+   public function cuotas(){
+       return $this->hasMany(Cuota::class)->orderByDesc('id');
+   }
 }
 
