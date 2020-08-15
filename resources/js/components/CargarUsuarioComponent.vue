@@ -1,5 +1,8 @@
 <template>
     <div>
+        <v-card>
+<v-container grid-list-xs>
+    
         <v-form v-model="valid" ref="form" lazy-validation>
             <v-container>
                 <v-text-field
@@ -36,6 +39,7 @@
                     v-model="importe"
                     label="Importe del corriente mes"
                     :rules="importeRules"
+                     prefix="$"
                     required
                 ></v-text-field>
 
@@ -62,6 +66,9 @@
             </v-container>
             <v-btn @click = 'generarCuotas'> generar cuotas</v-btn>
         </v-form>
+
+</v-container>
+        </v-card>
 
         
 
@@ -111,7 +118,7 @@ export default {
         telefono: "",
         telefonoRules: [v => !!v || "Telefono requerido"],
 
-        importe: 0,
+        importe : '',
         importeRules: [
             v => !!v || "Importe requerido",
             v => v >= 0 || "Importe no valido"

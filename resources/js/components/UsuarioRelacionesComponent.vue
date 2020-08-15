@@ -1,5 +1,8 @@
 <template>
     <v-card> 
+        <v-container grid-list-xs>
+            
+        
         <h1> <center>Gestionar relaciones del usuario: {{usuario.nombre}} {{usuario.apellido}}</center></h1>
 
 
@@ -73,7 +76,10 @@
             </v-snackbar>
         
     <relaciones-usuario-lista :usuario = "usuario" :nuevaRelacion = "nuevaRelacion"></relaciones-usuario-lista>
+   </v-container>
     </v-card>
+
+    
 </template>
 
 

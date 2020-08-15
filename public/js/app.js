@@ -2171,6 +2171,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2199,7 +2206,7 @@ __webpack_require__.r(__webpack_exports__);
       telefonoRules: [function (v) {
         return !!v || "Telefono requerido";
       }],
-      importe: 0,
+      importe: '',
       importeRules: [function (v) {
         return !!v || "Importe requerido";
       }, function (v) {
@@ -2651,6 +2658,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["usuario"],
   data: function data() {
@@ -2787,25 +2800,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["usuario", "nuevaRelacion"],
   data: function data() {
     return {
-      relaciones: []
+      relaciones: [],
+      relacionAEliminar: [],
+      confirmarEliminarModal: false
     };
   },
   methods: {
     relacionesExistentes: function relacionesExistentes() {
       var _this = this;
 
+      this.relaciones = [];
       axios.get("/usuario/".concat(this.usuario.id, "/relaciones")).then(function (res) {
         _this.relaciones = res.data;
       });
     },
-    eliminarRelacion: function eliminarRelacion(relacion) {
+    eliminarRelacion: function eliminarRelacion() {
       var _this2 = this;
 
-      axios["delete"]("/usuario/relacion/".concat(relacion.id)).then(function (res) {
+      axios["delete"]("/usuario/relacion/".concat(this.relacionAEliminar.id)).then(function (res) {
         _this2.relaciones = _this2.relaciones.filter(function (relacion) {
           return relacion.id != res.data.id;
         });
@@ -2818,6 +2850,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     nuevaRelacion: function nuevaRelacion() {
       this.relaciones.push(this.nuevaRelacion);
+    }
+  },
+  computed: {
+    existenRelaciones: function existenRelaciones() {
+      return this.relaciones.length !== 0;
     }
   },
   created: function created() {
@@ -39693,147 +39730,165 @@ var render = function() {
     "div",
     [
       _c(
-        "v-form",
-        {
-          ref: "form",
-          attrs: { "lazy-validation": "" },
-          model: {
-            value: _vm.valid,
-            callback: function($$v) {
-              _vm.valid = $$v
-            },
-            expression: "valid"
-          }
-        },
+        "v-card",
         [
           _c(
             "v-container",
+            { attrs: { "grid-list-xs": "" } },
             [
-              _c("v-text-field", {
-                attrs: {
-                  rules: _vm.nombreRules,
-                  counter: 20,
-                  label: "Nombre",
-                  required: ""
-                },
-                model: {
-                  value: _vm.nombre,
-                  callback: function($$v) {
-                    _vm.nombre = $$v
-                  },
-                  expression: "nombre"
-                }
-              }),
-              _vm._v(" "),
-              _c("v-text-field", {
-                attrs: {
-                  rules: _vm.apellidoRules,
-                  counter: 20,
-                  label: "Apellido",
-                  required: ""
-                },
-                model: {
-                  value: _vm.apellido,
-                  callback: function($$v) {
-                    _vm.apellido = $$v
-                  },
-                  expression: "apellido"
-                }
-              }),
-              _vm._v(" "),
-              _c("v-text-field", {
-                attrs: { rules: _vm.emailRules, label: "E-mail", required: "" },
-                model: {
-                  value: _vm.email,
-                  callback: function($$v) {
-                    _vm.email = $$v
-                  },
-                  expression: "email"
-                }
-              }),
-              _vm._v(" "),
-              _c("v-text-field", {
-                attrs: {
-                  label: "Telefono",
-                  rules: _vm.telefonoRules,
-                  required: ""
-                },
-                model: {
-                  value: _vm.telefono,
-                  callback: function($$v) {
-                    _vm.telefono = $$v
-                  },
-                  expression: "telefono"
-                }
-              }),
-              _vm._v(" "),
-              _c("v-text-field", {
-                attrs: {
-                  label: "Importe del corriente mes",
-                  rules: _vm.importeRules,
-                  required: ""
-                },
-                model: {
-                  value: _vm.importe,
-                  callback: function($$v) {
-                    _vm.importe = $$v
-                  },
-                  expression: "importe"
-                }
-              }),
-              _vm._v(" "),
-              _vm.puntosPersonalizados
-                ? _c("v-text-field", {
-                    attrs: {
-                      rules: _vm.puntosRules,
-                      label: "puntos",
-                      required: ""
-                    },
-                    model: {
-                      value: _vm.puntos,
-                      callback: function($$v) {
-                        _vm.puntos = $$v
-                      },
-                      expression: "puntos"
-                    }
-                  })
-                : _vm._e(),
-              _vm._v(" "),
-              _c("v-switch", {
-                attrs: { label: "Ingresar puntos personalizados" },
-                model: {
-                  value: _vm.puntosPersonalizados,
-                  callback: function($$v) {
-                    _vm.puntosPersonalizados = $$v
-                  },
-                  expression: "puntosPersonalizados"
-                }
-              }),
-              _vm._v(" "),
               _c(
-                "v-btn",
+                "v-form",
                 {
-                  attrs: {
-                    depressed: "",
-                    color: "primary",
-                    disabled: !_vm.valid
-                  },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.cargarUsuario($event)
-                    }
+                  ref: "form",
+                  attrs: { "lazy-validation": "" },
+                  model: {
+                    value: _vm.valid,
+                    callback: function($$v) {
+                      _vm.valid = $$v
+                    },
+                    expression: "valid"
                   }
                 },
-                [_vm._v("Dar de alta y pagar")]
+                [
+                  _c(
+                    "v-container",
+                    [
+                      _c("v-text-field", {
+                        attrs: {
+                          rules: _vm.nombreRules,
+                          counter: 20,
+                          label: "Nombre",
+                          required: ""
+                        },
+                        model: {
+                          value: _vm.nombre,
+                          callback: function($$v) {
+                            _vm.nombre = $$v
+                          },
+                          expression: "nombre"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          rules: _vm.apellidoRules,
+                          counter: 20,
+                          label: "Apellido",
+                          required: ""
+                        },
+                        model: {
+                          value: _vm.apellido,
+                          callback: function($$v) {
+                            _vm.apellido = $$v
+                          },
+                          expression: "apellido"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          rules: _vm.emailRules,
+                          label: "E-mail",
+                          required: ""
+                        },
+                        model: {
+                          value: _vm.email,
+                          callback: function($$v) {
+                            _vm.email = $$v
+                          },
+                          expression: "email"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          label: "Telefono",
+                          rules: _vm.telefonoRules,
+                          required: ""
+                        },
+                        model: {
+                          value: _vm.telefono,
+                          callback: function($$v) {
+                            _vm.telefono = $$v
+                          },
+                          expression: "telefono"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          label: "Importe del corriente mes",
+                          rules: _vm.importeRules,
+                          prefix: "$",
+                          required: ""
+                        },
+                        model: {
+                          value: _vm.importe,
+                          callback: function($$v) {
+                            _vm.importe = $$v
+                          },
+                          expression: "importe"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _vm.puntosPersonalizados
+                        ? _c("v-text-field", {
+                            attrs: {
+                              rules: _vm.puntosRules,
+                              label: "puntos",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.puntos,
+                              callback: function($$v) {
+                                _vm.puntos = $$v
+                              },
+                              expression: "puntos"
+                            }
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("v-switch", {
+                        attrs: { label: "Ingresar puntos personalizados" },
+                        model: {
+                          value: _vm.puntosPersonalizados,
+                          callback: function($$v) {
+                            _vm.puntosPersonalizados = $$v
+                          },
+                          expression: "puntosPersonalizados"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: {
+                            depressed: "",
+                            color: "primary",
+                            disabled: !_vm.valid
+                          },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.cargarUsuario($event)
+                            }
+                          }
+                        },
+                        [_vm._v("Dar de alta y pagar")]
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("v-btn", { on: { click: _vm.generarCuotas } }, [
+                    _vm._v(" generar cuotas")
+                  ])
+                ],
+                1
               )
             ],
             1
-          ),
-          _vm._v(" "),
-          _c("v-btn", { on: { click: _vm.generarCuotas } }, [
-            _vm._v(" generar cuotas")
-          ])
+          )
         ],
         1
       ),
@@ -39863,7 +39918,7 @@ var render = function() {
                       attrs,
                       false
                     ),
-                    [_vm._v("\n                Cerrar\n            ")]
+                    [_vm._v("\n                    Cerrar\n                ")]
                   )
                 ]
               }
@@ -39877,7 +39932,7 @@ var render = function() {
             expression: "snackbar"
           }
         },
-        [_vm._v("\n        Usuario agregado corectamente\n\n        ")]
+        [_vm._v("\n            Usuario agregado corectamente\n\n            ")]
       )
     ],
     1
@@ -40441,169 +40496,176 @@ var render = function() {
     "v-card",
     [
       _c(
-        "h1",
+        "v-container",
+        { attrs: { "grid-list-xs": "" } },
         [
-          _c("center", [
-            _vm._v(
-              "Gestionar relaciones del usuario: " +
-                _vm._s(_vm.usuario.nombre) +
-                " " +
-                _vm._s(_vm.usuario.apellido)
-            )
-          ])
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { attrs: { "max-width": "125px" } },
-        [
-          _c("v-autocomplete", {
-            attrs: {
-              items: _vm.usuarios,
-              "item-text": _vm.nombreCompleto,
-              "item-value": "id",
-              dense: "",
-              filled: "",
-              label: "Relacionado con"
+          _c(
+            "h1",
+            [
+              _c("center", [
+                _vm._v(
+                  "Gestionar relaciones del usuario: " +
+                    _vm._s(_vm.usuario.nombre) +
+                    " " +
+                    _vm._s(_vm.usuario.apellido)
+                )
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { attrs: { "max-width": "125px" } },
+            [
+              _c("v-autocomplete", {
+                attrs: {
+                  items: _vm.usuarios,
+                  "item-text": _vm.nombreCompleto,
+                  "item-value": "id",
+                  dense: "",
+                  filled: "",
+                  label: "Relacionado con"
+                },
+                model: {
+                  value: _vm.relacionadoCon,
+                  callback: function($$v) {
+                    _vm.relacionadoCon = $$v
+                  },
+                  expression: "relacionadoCon"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { attrs: { "max-width": "150px" } },
+            [
+              _c("v-autocomplete", {
+                attrs: {
+                  items: _vm.tipos,
+                  label: "Tipo de relacion",
+                  dense: "",
+                  filled: ""
+                },
+                model: {
+                  value: _vm.relacion,
+                  callback: function($$v) {
+                    _vm.relacion = $$v
+                  },
+                  expression: "relacion"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-btn",
+            {
+              attrs: { depressed: "", color: "primary" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.agregarRelacion()
+                }
+              }
             },
-            model: {
-              value: _vm.relacionadoCon,
-              callback: function($$v) {
-                _vm.relacionadoCon = $$v
-              },
-              expression: "relacionadoCon"
-            }
+            [_vm._v("Agregar relacion")]
+          ),
+          _vm._v(" "),
+          _c(
+            "v-snackbar",
+            {
+              attrs: { timeout: "3000" },
+              scopedSlots: _vm._u([
+                {
+                  key: "action",
+                  fn: function(ref) {
+                    var attrs = ref.attrs
+                    return [
+                      _c(
+                        "v-btn",
+                        _vm._b(
+                          {
+                            attrs: { color: "blue", text: "" },
+                            on: {
+                              click: function($event) {
+                                _vm.snackbarAgregadocorrectamente = false
+                              }
+                            }
+                          },
+                          "v-btn",
+                          attrs,
+                          false
+                        ),
+                        [_vm._v("\n             Cerrar\n             ")]
+                      )
+                    ]
+                  }
+                }
+              ]),
+              model: {
+                value: _vm.snackbarAgregadocorrectamente,
+                callback: function($$v) {
+                  _vm.snackbarAgregadocorrectamente = $$v
+                },
+                expression: "snackbarAgregadocorrectamente"
+              }
+            },
+            [_vm._v("\n         Relacion agregada corectamente\n\n         ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "v-snackbar",
+            {
+              attrs: { color: "error", timeout: "3000", top: "" },
+              scopedSlots: _vm._u([
+                {
+                  key: "action",
+                  fn: function(ref) {
+                    var attrs = ref.attrs
+                    return [
+                      _c(
+                        "v-btn",
+                        _vm._b(
+                          {
+                            attrs: { text: "" },
+                            on: {
+                              click: function($event) {
+                                _vm.snackbarRelacionExistente = false
+                              }
+                            }
+                          },
+                          "v-btn",
+                          attrs,
+                          false
+                        ),
+                        [_vm._v("\n             Cerrar\n             ")]
+                      )
+                    ]
+                  }
+                }
+              ]),
+              model: {
+                value: _vm.snackbarRelacionExistente,
+                callback: function($$v) {
+                  _vm.snackbarRelacionExistente = $$v
+                },
+                expression: "snackbarRelacionExistente"
+              }
+            },
+            [_vm._v("\n         Esa relacion ya existe\n\n         ")]
+          ),
+          _vm._v(" "),
+          _c("relaciones-usuario-lista", {
+            attrs: { usuario: _vm.usuario, nuevaRelacion: _vm.nuevaRelacion }
           })
         ],
         1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { attrs: { "max-width": "150px" } },
-        [
-          _c("v-autocomplete", {
-            attrs: {
-              items: _vm.tipos,
-              label: "Tipo de relacion",
-              dense: "",
-              filled: ""
-            },
-            model: {
-              value: _vm.relacion,
-              callback: function($$v) {
-                _vm.relacion = $$v
-              },
-              expression: "relacion"
-            }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-btn",
-        {
-          attrs: { depressed: "", color: "primary" },
-          on: {
-            click: function($event) {
-              $event.preventDefault()
-              return _vm.agregarRelacion()
-            }
-          }
-        },
-        [_vm._v("Agregar relacion")]
-      ),
-      _vm._v(" "),
-      _c(
-        "v-snackbar",
-        {
-          attrs: { timeout: "3000" },
-          scopedSlots: _vm._u([
-            {
-              key: "action",
-              fn: function(ref) {
-                var attrs = ref.attrs
-                return [
-                  _c(
-                    "v-btn",
-                    _vm._b(
-                      {
-                        attrs: { color: "blue", text: "" },
-                        on: {
-                          click: function($event) {
-                            _vm.snackbarAgregadocorrectamente = false
-                          }
-                        }
-                      },
-                      "v-btn",
-                      attrs,
-                      false
-                    ),
-                    [_vm._v("\n            Cerrar\n            ")]
-                  )
-                ]
-              }
-            }
-          ]),
-          model: {
-            value: _vm.snackbarAgregadocorrectamente,
-            callback: function($$v) {
-              _vm.snackbarAgregadocorrectamente = $$v
-            },
-            expression: "snackbarAgregadocorrectamente"
-          }
-        },
-        [_vm._v("\n        Relacion agregada corectamente\n\n        ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "v-snackbar",
-        {
-          attrs: { color: "error", timeout: "3000", top: "" },
-          scopedSlots: _vm._u([
-            {
-              key: "action",
-              fn: function(ref) {
-                var attrs = ref.attrs
-                return [
-                  _c(
-                    "v-btn",
-                    _vm._b(
-                      {
-                        attrs: { text: "" },
-                        on: {
-                          click: function($event) {
-                            _vm.snackbarRelacionExistente = false
-                          }
-                        }
-                      },
-                      "v-btn",
-                      attrs,
-                      false
-                    ),
-                    [_vm._v("\n            Cerrar\n            ")]
-                  )
-                ]
-              }
-            }
-          ]),
-          model: {
-            value: _vm.snackbarRelacionExistente,
-            callback: function($$v) {
-              _vm.snackbarRelacionExistente = $$v
-            },
-            expression: "snackbarRelacionExistente"
-          }
-        },
-        [_vm._v("\n        Esa relacion ya existe\n\n        ")]
-      ),
-      _vm._v(" "),
-      _c("relaciones-usuario-lista", {
-        attrs: { usuario: _vm.usuario, nuevaRelacion: _vm.nuevaRelacion }
-      })
+      )
     ],
     1
   )
@@ -40630,103 +40692,189 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("v-simple-table", {
-    scopedSlots: _vm._u([
-      {
-        key: "default",
-        fn: function() {
-          return [
-            _c("thead", [
-              _c("tr", [
-                _c("th", { staticClass: "text-left" }, [_vm._v("Usuario")]),
-                _vm._v(" "),
-                _c("th", { staticClass: "text-left" }, [
-                  _vm._v("Tipo de Relacion")
+  return _c(
+    "div",
+    [
+      _c("v-simple-table", {
+        scopedSlots: _vm._u([
+          {
+            key: "default",
+            fn: function() {
+              return [
+                _c("thead", [
+                  _vm.existenRelaciones
+                    ? _c("tr", [
+                        _c("th", { staticClass: "text-left" }, [
+                          _vm._v("Usuario")
+                        ]),
+                        _vm._v(" "),
+                        _c("th", { staticClass: "text-left" }, [
+                          _vm._v("Tipo de Relacion")
+                        ]),
+                        _vm._v(" "),
+                        _c("th", { staticClass: "text-left" }, [
+                          _vm._v("Eliminar")
+                        ])
+                      ])
+                    : _vm._e()
                 ]),
                 _vm._v(" "),
-                _c("th", { staticClass: "text-left" }, [_vm._v("Eliminar")])
-              ])
-            ]),
-            _vm._v(" "),
-            _c(
-              "tbody",
-              _vm._l(_vm.relaciones, function(item) {
-                return _c("tr", { key: item.id }, [
-                  _c("td", [
-                    _vm._v(
-                      "\n                    " +
-                        _vm._s(item.usuario.nombre) +
-                        " , " +
-                        _vm._s(item.usuario.apellido) +
-                        "\n                "
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(item.relacion))]),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.relaciones, function(relacion) {
+                    return _c("tr", { key: relacion.id }, [
+                      _c("td", [
+                        _vm._v(
+                          "\r\n                        " +
+                            _vm._s(relacion.usuario.nombre) +
+                            " , " +
+                            _vm._s(relacion.usuario.apellido) +
+                            "\r\n                    "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(relacion.relacion))]),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        [
+                          _c(
+                            "v-tooltip",
+                            {
+                              attrs: { bottom: "" },
+                              scopedSlots: _vm._u(
+                                [
+                                  {
+                                    key: "activator",
+                                    fn: function(ref) {
+                                      var on = ref.on
+                                      var attrs = ref.attrs
+                                      return [
+                                        _c(
+                                          "v-icon",
+                                          _vm._g(
+                                            _vm._b(
+                                              {
+                                                attrs: {
+                                                  right: "",
+                                                  color: "error"
+                                                },
+                                                on: {
+                                                  click: function($event) {
+                                                    ;[
+                                                      (_vm.confirmarEliminarModal = true),
+                                                      (_vm.relacionAEliminar = relacion)
+                                                    ]
+                                                  }
+                                                }
+                                              },
+                                              "v-icon",
+                                              attrs,
+                                              false
+                                            ),
+                                            on
+                                          ),
+                                          [
+                                            _vm._v(
+                                              "\r\n                                    mdi-delete\r\n                                    "
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    }
+                                  }
+                                ],
+                                null,
+                                true
+                              )
+                            },
+                            [_vm._v(" "), _c("span", [_vm._v("Eliminar")])]
+                          )
+                        ],
+                        1
+                      )
+                    ])
+                  }),
+                  0
+                )
+              ]
+            },
+            proxy: true
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "320" },
+          model: {
+            value: _vm.confirmarEliminarModal,
+            callback: function($$v) {
+              _vm.confirmarEliminarModal = $$v
+            },
+            expression: "confirmarEliminarModal"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c("v-card-title", { staticClass: "headline" }, [
+                _vm._v("Desea borrar la relacion?")
+              ]),
+              _vm._v(" "),
+              _c("v-card-text", [
+                _vm._v(
+                  "Esta acción se puede revertir volviendo a cargar la relación. ¿Desea continuar?."
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                [
+                  _c("v-spacer"),
                   _vm._v(" "),
                   _c(
-                    "td",
-                    [
-                      _c(
-                        "v-tooltip",
-                        {
-                          attrs: { bottom: "" },
-                          scopedSlots: _vm._u(
-                            [
-                              {
-                                key: "activator",
-                                fn: function(ref) {
-                                  var on = ref.on
-                                  var attrs = ref.attrs
-                                  return [
-                                    _c(
-                                      "v-icon",
-                                      _vm._g(
-                                        _vm._b(
-                                          {
-                                            attrs: {
-                                              right: "",
-                                              color: "error"
-                                            },
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.eliminarRelacion(
-                                                  item
-                                                )
-                                              }
-                                            }
-                                          },
-                                          "v-icon",
-                                          attrs,
-                                          false
-                                        ),
-                                        on
-                                      ),
-                                      [_vm._v("mdi-delete")]
-                                    )
-                                  ]
-                                }
-                              }
-                            ],
-                            null,
-                            true
-                          )
-                        },
-                        [_vm._v(" "), _c("span", [_vm._v("Eliminar")])]
-                      )
-                    ],
-                    1
+                    "v-btn",
+                    {
+                      attrs: { color: "green darken-1", outlined: "" },
+                      on: {
+                        click: function($event) {
+                          ;[(_vm.confirmarEliminarModal = false)]
+                        }
+                      }
+                    },
+                    [_vm._v("CANCELAR")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "error" },
+                      on: {
+                        click: function($event) {
+                          ;[
+                            _vm.eliminarRelacion(),
+                            (_vm.confirmarEliminarModal = false)
+                          ]
+                        }
+                      }
+                    },
+                    [_vm._v("BORRAR")]
                   )
-                ])
-              }),
-              0
-            )
-          ]
-        },
-        proxy: true
-      }
-    ])
-  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
