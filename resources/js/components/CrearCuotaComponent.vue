@@ -29,6 +29,25 @@
                 </v-col>
             </v-form>
         </v-card>
+
+        <v-snackbar v-model="snackbar" timeout="3000">
+            <div
+            v-text="message">
+            </div>
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    color="blue"
+                    text
+                    v-bind="attrs"
+                    @click="snackbar = false"
+                >
+                    Cerrar
+                </v-btn>
+            </template>
+        </v-snackbar>
+
+
     </div>
 </template>
 
@@ -40,6 +59,8 @@
 
     data() { 
     return {
+        snackbar:false,
+        message:"",
         valid: false,
         mes:null,
         anio:new Date().getFullYear(),
@@ -71,7 +92,9 @@
                usuario_id : this.usuarioID,
            })
            .then((res)=>{
-               console.log(res.data);
+               console.log(res.data.message);
+               this.message=res.data.message;
+               this.snackbar=true;
            })
 
            

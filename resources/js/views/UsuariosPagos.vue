@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>Ruta pagos</h1>
         <v-container>
             <v-autocomplete
                 v-model="usuarioSeleccionado"
@@ -15,12 +14,14 @@
                     Buscar
                 </v-btn>
                 
+                <center>
                 <div v-show='busco'>
                 <v-btn @click="[CrearCuotaModal = true]"
                     large color="primary">
                     Nueva cuota
                 </v-btn>
                 </div>
+                </center>
 
             </div>
 
@@ -50,7 +51,7 @@
                                 v-if="cuota.fechaPago"
                                 @click="
                                     [
-                                        (infoCuotaPaga = !infoPagoCuota),
+                                        (infoCuotaPaga = !infoCuotaPaga),
                                         (cuotaActual = cuota)
                                     ]
                                 "
@@ -94,21 +95,109 @@
             </template>
         </v-container>
 
-        <v-dialog v-model="infoCuotaPaga" max-width="600px">
+        <v-dialog v-model="infoCuotaPaga" max-width="500px">
             <v-card>
-                <h1>
-                    Aca pone lo de las cuotas que estan pagadas
-                </h1>
+                <v-card
+                class="pa-2"
+                outlined
+                style="background-color: lightgrey;"
+                tile
+                >
+                <h1 style="color:blue"> <center>ASPATEM</center> </h1>
+                </v-card>
+
+                <v-card
+                class="pa-2"
+                outlined
+                tile
+                >
+                Clave de usuario: {{ usuarioSeleccionado }}<br>
+                </v-card>
+
+                <v-card
+                class="pa-2"
+                outlined
+                tile
+                >
+                Mes al que corresponde: {{ cuotaActual.mes }}/{{ cuotaActual.anio }}<br>
+                </v-card>
+                
+                <v-card
+                class="pa-2"
+                outlined
+                tile
+                >
+                Importe de la cuota: ${{ cuotaActual.importe }}<br>
+                </v-card>
+
+                <v-card
+                class="pa-2"
+                outlined
+                tile
+                >
+                Fecha de pago: {{ cuotaActual.fechaPago }}<br>
+                </v-card>
+
+                
+                <div v-if="cuotaActual.descuento">
+                    <v-card
+                class="pa-2"
+                outlined
+                tile
+                >
+                <h2>Se aplico el descuento de Familiar/Amigo</h2>
+                </v-card>
+                    
+                </div>
+                
+
             </v-card>
         </v-dialog>
 
-        <v-dialog v-model="pagoCuota" max-width="600px">
+        <v-dialog v-model="pagoCuota" max-width="250px">
             <v-card>
-                <h1>
-                    Aca pones lo de para persistir un pago de cuota
-                </h1>
+                <v-card
+                class="pa-2"
+                outlined
+                style="background-color: lightgrey;"
+                tile
+                >
+                <h1 style="color:blue"> <center>ASPATEM</center> </h1>
+                </v-card>
+
+                <v-text-field
+                    v-model="importePersonalizado"
+                    label="Monto personalizado(opcional)"
+                    :rules="importeRules"
+                    prefix="$"
+                    required
+                ></v-text-field>
+
+                <center>
+                <v-btn @click="pagarCuota"
+                    large color="primary">
+                    Pagar cuota
+                </v-btn>
+                </center>
             </v-card>
         </v-dialog>
+
+        <v-snackbar v-model="snackbar" timeout="3000">
+            Cuota pagada
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    color="blue"
+                    text
+                    v-bind="attrs"
+                    @click="snackbar = false"
+                >
+                    Cerrar
+                </v-btn>
+            </template>
+        </v-snackbar>
+
+
     </div>
 </template>
 
@@ -116,6 +205,7 @@
 export default {
     data() {
         return {
+            cuotaActual:"",
             usuarioSeleccionado: "",
             usuarios: [],
             cuotasUsuario: [],
@@ -123,12 +213,20 @@ export default {
             pagoCuota: false,
             CrearCuotaModal: false,
             busco:false,
+            importePersonalizado:null,
+            snackbar:false,
+
+            importeRules: [
+            v => !!v || "Importe requerido",
+            v => v >= 0 || "Importe no valido"
+        ],
             
         };
     },
     methods: {
         nombreCompleto: item => item.apellido + " " + item.nombre,
         buscarCuotasUsuario() {
+            if(this.usuarioSeleccionado!=""){
             this.cuotasUsuario = [];
             axios
                 .get(`/usuario/${this.usuarioSeleccionado}/cuotas`)
@@ -137,7 +235,21 @@ export default {
                     console.log(res.data);
                     this.busco = true;
                 });
+            }
         },
+
+        pagarCuota(){
+            axios.put('/pagarCuota',{
+                importe : this.importePersonalizado,
+                id : this.cuotaActual.id,
+            })
+            .then(
+                this.importePersonalizado=null,
+                this.buscarCuotasUsuario(),
+                this.snackbar=true,
+                this.pagoCuota=false,
+            )
+        }
        
     },
     created() {

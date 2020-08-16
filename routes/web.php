@@ -46,6 +46,8 @@ Route::put('/configuraciones','ConfiguracionController@update');
 
 Route::post('/generarCuota','CuotaController@generarCuota');
 
+Route::put('/pagarCuota','CuotaController@pagar');
+
 
 
 Route::get('{path}', function () {

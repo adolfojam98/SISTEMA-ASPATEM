@@ -2426,10 +2426,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["usuarioID"],
   data: function data() {
     return {
+      snackbar: false,
+      message: "",
       valid: false,
       mes: null,
       anio: new Date().getFullYear(),
@@ -2475,12 +2496,16 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     generarCuota: function generarCuota() {
+      var _this = this;
+
       axios.post('/generarCuota', {
         mes: this.mes,
         anio: this.anio,
         usuario_id: this.usuarioID
       }).then(function (res) {
-        console.log(res.data);
+        console.log(res.data.message);
+        _this.message = res.data.message;
+        _this.snackbar = true;
       });
     }
   }
@@ -3412,16 +3437,113 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      cuotaActual: "",
       usuarioSeleccionado: "",
       usuarios: [],
       cuotasUsuario: [],
       infoCuotaPaga: false,
       pagoCuota: false,
       CrearCuotaModal: false,
-      busco: false
+      busco: false,
+      importePersonalizado: null,
+      snackbar: false,
+      importeRules: [function (v) {
+        return !!v || "Importe requerido";
+      }, function (v) {
+        return v >= 0 || "Importe no valido";
+      }]
     };
   },
   methods: {
@@ -3431,12 +3553,20 @@ __webpack_require__.r(__webpack_exports__);
     buscarCuotasUsuario: function buscarCuotasUsuario() {
       var _this = this;
 
-      this.cuotasUsuario = [];
-      axios.get("/usuario/".concat(this.usuarioSeleccionado, "/cuotas")).then(function (res) {
-        _this.cuotasUsuario = res.data;
-        console.log(res.data);
-        _this.busco = true;
-      });
+      if (this.usuarioSeleccionado != "") {
+        this.cuotasUsuario = [];
+        axios.get("/usuario/".concat(this.usuarioSeleccionado, "/cuotas")).then(function (res) {
+          _this.cuotasUsuario = res.data;
+          console.log(res.data);
+          _this.busco = true;
+        });
+      }
+    },
+    pagarCuota: function pagarCuota() {
+      axios.put('/pagarCuota', {
+        importe: this.importePersonalizado,
+        id: this.cuotaActual.id
+      }).then(this.importePersonalizado = null, this.buscarCuotasUsuario(), this.snackbar = true, this.pagoCuota = false);
     }
   },
   created: function created() {
@@ -40445,6 +40575,48 @@ var render = function() {
           )
         ],
         1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-snackbar",
+        {
+          attrs: { timeout: "3000" },
+          scopedSlots: _vm._u([
+            {
+              key: "action",
+              fn: function(ref) {
+                var attrs = ref.attrs
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._b(
+                      {
+                        attrs: { color: "blue", text: "" },
+                        on: {
+                          click: function($event) {
+                            _vm.snackbar = false
+                          }
+                        }
+                      },
+                      "v-btn",
+                      attrs,
+                      false
+                    ),
+                    [_vm._v("\n                Cerrar\n            ")]
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.snackbar,
+            callback: function($$v) {
+              _vm.snackbar = $$v
+            },
+            expression: "snackbar"
+          }
+        },
+        [_c("div", { domProps: { textContent: _vm._s(_vm.message) } })]
       )
     ],
     1
@@ -41821,8 +41993,6 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("h1", [_vm._v("Ruta pagos")]),
-      _vm._v(" "),
       _c(
         "v-container",
         [
@@ -41856,34 +42026,36 @@ var render = function() {
                 [_vm._v("\n                Buscar\n            ")]
               ),
               _vm._v(" "),
-              _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.busco,
-                      expression: "busco"
-                    }
-                  ]
-                },
-                [
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { large: "", color: "primary" },
-                      on: {
-                        click: function($event) {
-                          ;[(_vm.CrearCuotaModal = true)]
-                        }
+              _c("center", [
+                _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.busco,
+                        expression: "busco"
                       }
-                    },
-                    [_vm._v("\n                Nueva cuota\n            ")]
-                  )
-                ],
-                1
-              )
+                    ]
+                  },
+                  [
+                    _c(
+                      "v-btn",
+                      {
+                        attrs: { large: "", color: "primary" },
+                        on: {
+                          click: function($event) {
+                            ;[(_vm.CrearCuotaModal = true)]
+                          }
+                        }
+                      },
+                      [_vm._v("\n                Nueva cuota\n            ")]
+                    )
+                  ],
+                  1
+                )
+              ])
             ],
             1
           ),
@@ -41948,7 +42120,7 @@ var render = function() {
                                   on: {
                                     click: function($event) {
                                       ;[
-                                        (_vm.infoCuotaPaga = !_vm.infoPagoCuota),
+                                        (_vm.infoCuotaPaga = !_vm.infoCuotaPaga),
                                         (_vm.cuotaActual = cuota)
                                       ]
                                     }
@@ -42044,7 +42216,7 @@ var render = function() {
       _c(
         "v-dialog",
         {
-          attrs: { "max-width": "600px" },
+          attrs: { "max-width": "500px" },
           model: {
             value: _vm.infoCuotaPaga,
             callback: function($$v) {
@@ -42054,13 +42226,99 @@ var render = function() {
           }
         },
         [
-          _c("v-card", [
-            _c("h1", [
-              _vm._v(
-                "\n                Aca pone lo de las cuotas que estan pagadas\n            "
-              )
-            ])
-          ])
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-card",
+                {
+                  staticClass: "pa-2",
+                  staticStyle: { "background-color": "lightgrey" },
+                  attrs: { outlined: "", tile: "" }
+                },
+                [
+                  _c(
+                    "h1",
+                    { staticStyle: { color: "blue" } },
+                    [_c("center", [_vm._v("ASPATEM")])],
+                    1
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card",
+                { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
+                [
+                  _vm._v(
+                    "\n            Clave de usuario: " +
+                      _vm._s(_vm.usuarioSeleccionado)
+                  ),
+                  _c("br")
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card",
+                { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
+                [
+                  _vm._v(
+                    "\n            Mes al que corresponde: " +
+                      _vm._s(_vm.cuotaActual.mes) +
+                      "/" +
+                      _vm._s(_vm.cuotaActual.anio)
+                  ),
+                  _c("br")
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card",
+                { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
+                [
+                  _vm._v(
+                    "\n            Importe de la cuota: $" +
+                      _vm._s(_vm.cuotaActual.importe)
+                  ),
+                  _c("br")
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card",
+                { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
+                [
+                  _vm._v(
+                    "\n            Fecha de pago: " +
+                      _vm._s(_vm.cuotaActual.fechaPago)
+                  ),
+                  _c("br")
+                ]
+              ),
+              _vm._v(" "),
+              _vm.cuotaActual.descuento
+                ? _c(
+                    "div",
+                    [
+                      _c(
+                        "v-card",
+                        {
+                          staticClass: "pa-2",
+                          attrs: { outlined: "", tile: "" }
+                        },
+                        [
+                          _c("h2", [
+                            _vm._v("Se aplico el descuento de Familiar/Amigo")
+                          ])
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                : _vm._e()
+            ],
+            1
+          )
         ],
         1
       ),
@@ -42068,7 +42326,7 @@ var render = function() {
       _c(
         "v-dialog",
         {
-          attrs: { "max-width": "600px" },
+          attrs: { "max-width": "250px" },
           model: {
             value: _vm.pagoCuota,
             callback: function($$v) {
@@ -42078,15 +42336,103 @@ var render = function() {
           }
         },
         [
-          _c("v-card", [
-            _c("h1", [
-              _vm._v(
-                "\n                Aca pones lo de para persistir un pago de cuota\n            "
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-card",
+                {
+                  staticClass: "pa-2",
+                  staticStyle: { "background-color": "lightgrey" },
+                  attrs: { outlined: "", tile: "" }
+                },
+                [
+                  _c(
+                    "h1",
+                    { staticStyle: { color: "blue" } },
+                    [_c("center", [_vm._v("ASPATEM")])],
+                    1
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c("v-text-field", {
+                attrs: {
+                  label: "Monto personalizado(opcional)",
+                  rules: _vm.importeRules,
+                  prefix: "$",
+                  required: ""
+                },
+                model: {
+                  value: _vm.importePersonalizado,
+                  callback: function($$v) {
+                    _vm.importePersonalizado = $$v
+                  },
+                  expression: "importePersonalizado"
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "center",
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { large: "", color: "primary" },
+                      on: { click: _vm.pagarCuota }
+                    },
+                    [_vm._v("\n                Pagar cuota\n            ")]
+                  )
+                ],
+                1
               )
-            ])
-          ])
+            ],
+            1
+          )
         ],
         1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-snackbar",
+        {
+          attrs: { timeout: "3000" },
+          scopedSlots: _vm._u([
+            {
+              key: "action",
+              fn: function(ref) {
+                var attrs = ref.attrs
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._b(
+                      {
+                        attrs: { color: "blue", text: "" },
+                        on: {
+                          click: function($event) {
+                            _vm.snackbar = false
+                          }
+                        }
+                      },
+                      "v-btn",
+                      attrs,
+                      false
+                    ),
+                    [_vm._v("\n                Cerrar\n            ")]
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.snackbar,
+            callback: function($$v) {
+              _vm.snackbar = $$v
+            },
+            expression: "snackbar"
+          }
+        },
+        [_vm._v("\n        Cuota pagada\n\n        ")]
       )
     ],
     1
@@ -102288,8 +102634,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\adolf\Desktop\Nueva carpeta\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\adolf\Desktop\Nueva carpeta\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

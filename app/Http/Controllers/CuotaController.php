@@ -128,6 +128,7 @@ class CuotaController extends Controller
         }
     }
 
+
     public function generarCuota(Request $request)
     {
         $mes = $request->mes;
@@ -135,8 +136,8 @@ class CuotaController extends Controller
     
 
         $ExisteEstaCuota = Cuota::where('mes', $mes)
-    ->where('anio', $request->anio)
-    ->where('usuario_id', $request->usuario_id)->first();
+        ->where('anio', $request->anio)
+        ->where('usuario_id', $request->usuario_id)->first();
 
      
         if ($ExisteEstaCuota==null) {
@@ -158,37 +159,50 @@ class CuotaController extends Controller
                 }
             }
         }
-        
-    }
-    else {
-         return response()->json([
-            'message' => 'Esta cuota ya existe'
+
+        $configuracion = Configuracion::first();
+
+        if($configuracion == NULL){
+            return response()->json([
+                'message' => 'Primero debe establecer los montos desde configuracion'
+            ]);
+        }
+        else{
+            if($cuota->descuento){$cuota->importe = $configuracion->montoCuotaDescuento;}
+            else{$cuota->importe = $configuracion->montoCuota;}
+        }
+    
+        $cuota->save();
+    
+        return response()->json([
+            'message' => 'Cuota creada'
         ]);
+
+        }
+        
+
+        else {
+            return response()->json([
+                'message' => 'Esta cuota ya existe'
+            ]);
+        }
+
     }
 
 
-//     $configuracion = Configuracion::first();
 
-//     if($configuracion == NULL){
-//         return response()->json([
-//             'message' => 'Primero debe establecer los montos desde configuracion'
-//         ]);
-//     }
+    public function pagar(Request $request){
+        $cuota = Cuota::find($request->id);
 
-//     else{
-//         if($descuento){$cuota->importe = $configuracion->montoCuotaDescuento;}
-//         else{$cuota->importe = $configuracion->montoCuota;}
-//     }
+        $cuota->fechaPago = Carbon::today();
 
+        if($request->importe!=NULL){
+            $cuota->importe = $request->importe;
+        }
 
-//     $cuota->save();
-
-//     return response()->json([
-//         'message' => 'Cuota creada'
-//     ]);
-
-
-
-// }
+        $cuota->save();
     }
+
+
+
 }
