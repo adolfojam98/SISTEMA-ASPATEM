@@ -6,6 +6,8 @@
                     <v-select
                     v-model="mes"
                     :items="meses"
+                    item-text = "nombre"
+                    item-value="id"
                     filled
                     label="Mes"
                     ></v-select>
@@ -41,7 +43,21 @@
         valid: false,
         mes:null,
         anio:new Date().getFullYear(),
-        meses:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+        meses: [
+            {'id' : 1,  "nombre" : "Enero"},
+            {'id' : 2,  "nombre" : "Febrero"},
+            {'id' : 3,  "nombre" : "Marzo"},
+            {'id' : 4,  "nombre" : "Abril"},
+            {'id' : 5,  "nombre" : "Mayo"},
+            {'id' : 6,  "nombre" : "Junio"},
+            {'id' : 7,  "nombre" : "Julio"},
+            {'id' : 8,  "nombre" : "Agosto"},
+            {'id' : 9,  "nombre" : "Septiembre"},
+            {'id' : 10, "nombre" : "Octubre"},
+            {'id' : 11, "nombre" : "Noviembre"},
+            {'id' : 12, "nombre" : "Diciembre"},
+
+        ],
         anios: [new Date().getFullYear(),new Date().getFullYear()-1],
         }
     },
@@ -55,7 +71,7 @@
                usuario_id : this.usuarioID,
            })
            .then((res)=>{
-               console.log(res.data.message);
+               console.log(res.data);
            })
 
            
@@ -63,6 +79,7 @@
        
        
     },
+   
 
 
 

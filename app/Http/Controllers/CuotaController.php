@@ -6,6 +6,7 @@ use Carbon\Carbon;
 
 use App\Cuota;
 use App\Usuario;
+use App\Configuracion;
 use Illuminate\Http\Request;
 
 class CuotaController extends Controller
@@ -38,7 +39,7 @@ class CuotaController extends Controller
      */
     public function store(Request $request)
     {
-        $fechaActual = New Carbon();
+        $fechaActual = new Carbon();
 
         $cuota = new Cuota();
         $cuota->usuario_id = $request->id_usuario;
@@ -86,8 +87,7 @@ class CuotaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
-    {   
-       
+    {
         $cuota = Cuota::findOrFail($request->id);
 
         
@@ -108,129 +108,87 @@ class CuotaController extends Controller
      */
     public function destroy(request $cuota)
     {
-        
-        $cuota = Cuota::findOrFail($request->id);
+        $cuota = Cuota::findOrFail($cuota->id);
         $cuota->delete();
+    }
+
+
+
+    public function generarCuotasFaltantes()
+    {
+        $socios = Usuario::where('socio', true)->get();
+        $fechaActual = Carbon::today();
+        foreach ($socios as $socio) {
+            $cuota = new Cuota();
+            $cuota->usuario_id = $socio->id;
+            $cuota->importe = 1000;
+            $cuota->mes = $fechaActual->month;
+            $cuota->anio = $fechaActual->year;
+            $cuota->save();
+        }
+    }
+
+    public function generarCuota(Request $request)
+    {
+        $mes = $request->mes;
+
+    
+
+        $ExisteEstaCuota = Cuota::where('mes', $mes)
+    ->where('anio', $request->anio)
+    ->where('usuario_id', $request->usuario_id)->first();
+
+     
+        if ($ExisteEstaCuota==null) {
+            $cuota = new Cuota();
+            $cuota->mes = $mes;
+            $cuota->anio = $request->anio;
+            $cuota->usuario_id = $request->usuario_id;
         
-    }
-
-
-
-public function generarCuotasFaltantes(){
-
-    $socios = Usuario::where('socio', true)->get();
-    $fechaActual = Carbon::today();
-    foreach ($socios as $socio){
+        $usuario = Usuario::find($request->usuario_id);
+        $relaciones = $usuario->relaciones;
+     
         
-        $cuota = new Cuota();
-        $cuota->usuario_id = $socio->id;
-        $cuota->importe = 1000;
-        $cuota->mes = $fechaActual->month;
-        $cuota->anio = $fechaActual->year;
-        $cuota->save();
 
-    }
-}
-
-public function generarCuota(Request $request){
-    $mes = null;
-
-    switch ($request->mes) {
-        case 'Enero':
-            $mes = 1;
-            break;
-        case 'Febrero':
-            $mes = 2;
-            break;
-        case 'Marzo':
-            $mes = 3;
-            break;
-        case 'Abril':
-            $mes = 4;
-            break;        
-        case 'Mayo':
-            $mes = 5;
-            break;
-        case 'Junio':
-            $mes = 6;
-            break;    
-        case 'Julio':
-            $mes = 7;
-            break;
-        case 'Agosto':
-            $mes = 8;
-            break;
-        case 'Septiembre':
-            $mes = 9;
-            break;
-        case 'Octubre':
-            $mes = 10;
-            break;        
-        case 'Noviembre':
-            $mes = 11;
-            break;
-        case 'Diciembre':
-            $mes = 12;
-            break;
-    }
-
-    $ExisteEstaCuota = Cuota::where('mes',$mes)
-    ->where('anio',$request->anio)
-    ->where('usuario_id',$request->usuario_id)->first();
-
-
-    if($ExisteEstaCuota==NULL){
-
-        $cuota = new Cuota();
-        $cuota->mes = $mes;
-        $cuota->anio = $request->anio;
-        $cuota->usuario_id = $request->usuario_id;
-
-
-        $usuario = Usuario::where('usuario_id',$request->usuario_id);
-        $relaciones=$usuario->relaciones->usuarios();
-        $descuento=false;
-
-        foreach ($relaciones as $relacion){
-            if($relacion->socio=true){
-                $descuento=true;
+        foreach ($relaciones as $relacion) {
+            foreach ($relacion->usuarios as $usuario) {
+                if ($usuario->socio = true && $usuario->id != $request->usuario_id) {
+                  
+                    $cuota->descuento = true;
+                }
             }
         }
-
-        $cuota->descuento = $descuento;
+        
     }
-
     else {
-        return response()->json([
+         return response()->json([
             'message' => 'Esta cuota ya existe'
         ]);
     }
 
 
-    $configuracion = Configuracion::first();
+//     $configuracion = Configuracion::first();
 
-    if($configuracion == NULL){
-        return response()->json([
-            'message' => 'Primero debe establecer los montos desde configuracion'
-        ]);
+//     if($configuracion == NULL){
+//         return response()->json([
+//             'message' => 'Primero debe establecer los montos desde configuracion'
+//         ]);
+//     }
+
+//     else{
+//         if($descuento){$cuota->importe = $configuracion->montoCuotaDescuento;}
+//         else{$cuota->importe = $configuracion->montoCuota;}
+//     }
+
+
+//     $cuota->save();
+
+//     return response()->json([
+//         'message' => 'Cuota creada'
+//     ]);
+
+
+
+// }
     }
-
-    else{
-        if($descuento){$cuota->importe = $configuracion->montoCuotaDescuento;}
-        else{$cuota->importe = $configuracion->montoCuota;}
-    }
-
-
-    $cuota->save();
-
-    return response()->json([
-        'message' => 'Cuota creada'
-    ]);
-
-
-
-}
-
-
-
 }

@@ -2424,6 +2424,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["usuarioID"],
   data: function data() {
@@ -2431,7 +2433,43 @@ __webpack_require__.r(__webpack_exports__);
       valid: false,
       mes: null,
       anio: new Date().getFullYear(),
-      meses: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+      meses: [{
+        'id': 1,
+        "nombre": "Enero"
+      }, {
+        'id': 2,
+        "nombre": "Febrero"
+      }, {
+        'id': 3,
+        "nombre": "Marzo"
+      }, {
+        'id': 4,
+        "nombre": "Abril"
+      }, {
+        'id': 5,
+        "nombre": "Mayo"
+      }, {
+        'id': 6,
+        "nombre": "Junio"
+      }, {
+        'id': 7,
+        "nombre": "Julio"
+      }, {
+        'id': 8,
+        "nombre": "Agosto"
+      }, {
+        'id': 9,
+        "nombre": "Septiembre"
+      }, {
+        'id': 10,
+        "nombre": "Octubre"
+      }, {
+        'id': 11,
+        "nombre": "Noviembre"
+      }, {
+        'id': 12,
+        "nombre": "Diciembre"
+      }],
       anios: [new Date().getFullYear(), new Date().getFullYear() - 1]
     };
   },
@@ -2442,7 +2480,7 @@ __webpack_require__.r(__webpack_exports__);
         anio: this.anio,
         usuario_id: this.usuarioID
       }).then(function (res) {
-        console.log(res.data.message);
+        console.log(res.data);
       });
     }
   }
@@ -40355,7 +40393,13 @@ var render = function() {
                 "v-col",
                 [
                   _c("v-select", {
-                    attrs: { items: _vm.meses, filled: "", label: "Mes" },
+                    attrs: {
+                      items: _vm.meses,
+                      "item-text": "nombre",
+                      "item-value": "id",
+                      filled: "",
+                      label: "Mes"
+                    },
                     model: {
                       value: _vm.mes,
                       callback: function($$v) {
@@ -102244,8 +102288,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\adolf\Desktop\Nueva carpeta\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\adolf\Desktop\Nueva carpeta\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
