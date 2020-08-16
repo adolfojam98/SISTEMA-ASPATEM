@@ -25,6 +25,7 @@ Route::delete('/usuario/{id}','UsuarioController@destroy');
 Route::put('/usuario','UsuarioController@update');
 
 Route::post('/usuario/relacion','RelacionController@store');
+
 Route::delete('/usuario/relacion/{id}','RelacionController@destroy');
 
 Route::get('/usuario/relacion/existe','RelacionController@existe');
@@ -39,7 +40,11 @@ Route::put('/cuota','CuotaController@update');
 
 Route::post('/cuotas', 'CuotaController@generarCuotasFaltantes');
 
+Route::get('/configuraciones','ConfiguracionController@show');
 
+Route::put('/configuraciones','ConfiguracionController@update');
+
+Route::post('/generarCuota','CuotaController@generarCuota');
 
 
 

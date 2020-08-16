@@ -64,7 +64,6 @@
                     >Dar de alta y pagar</v-btn
                 >
             </v-container>
-            <v-btn @click = 'generarCuotas'> generar cuotas</v-btn>
         </v-form>
 
 </v-container>
@@ -178,10 +177,6 @@ export default {
                 descuento: false
             });
         },
-        generarCuotas() {
-            axios.post("/cuotas")
-            .then(res => console.log(res.data))
-        }
     }
 };
 </script>

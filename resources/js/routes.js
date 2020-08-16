@@ -37,6 +37,12 @@ export default new Router({
 			name: 'pagos',
 			component: require('./views/UsuariosPagos').default
 		},
+
+		{
+			path: '/configuracion',
+			name: 'configuracion',
+			component: require('./views/Configuracion').default
+		},
 		
 		{
             path: '/*',

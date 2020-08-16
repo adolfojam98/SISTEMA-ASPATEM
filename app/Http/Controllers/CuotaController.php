@@ -130,8 +130,107 @@ public function generarCuotasFaltantes(){
         $cuota->save();
 
     }
-    
+}
+
+public function generarCuota(Request $request){
+    $mes = null;
+
+    switch ($request->mes) {
+        case 'Enero':
+            $mes = 1;
+            break;
+        case 'Febrero':
+            $mes = 2;
+            break;
+        case 'Marzo':
+            $mes = 3;
+            break;
+        case 'Abril':
+            $mes = 4;
+            break;        
+        case 'Mayo':
+            $mes = 5;
+            break;
+        case 'Junio':
+            $mes = 6;
+            break;    
+        case 'Julio':
+            $mes = 7;
+            break;
+        case 'Agosto':
+            $mes = 8;
+            break;
+        case 'Septiembre':
+            $mes = 9;
+            break;
+        case 'Octubre':
+            $mes = 10;
+            break;        
+        case 'Noviembre':
+            $mes = 11;
+            break;
+        case 'Diciembre':
+            $mes = 12;
+            break;
+    }
+
+    $ExisteEstaCuota = Cuota::where('mes',$mes)
+    ->where('anio',$request->anio)
+    ->where('usuario_id',$request->usuario_id)->first();
+
+
+    if($ExisteEstaCuota==NULL){
+
+        $cuota = new Cuota();
+        $cuota->mes = $mes;
+        $cuota->anio = $request->anio;
+        $cuota->usuario_id = $request->usuario_id;
+
+
+        $usuario = Usuario::where('usuario_id',$request->usuario_id);
+        $relaciones=$usuario->relaciones->usuarios();
+        $descuento=false;
+
+        foreach ($relaciones as $relacion){
+            if($relacion->socio=true){
+                $descuento=true;
+            }
+        }
+
+        $cuota->descuento = $descuento;
+    }
+
+    else {
+        return response()->json([
+            'message' => 'Esta cuota ya existe'
+        ]);
+    }
+
+
+    $configuracion = Configuracion::first();
+
+    if($configuracion == NULL){
+        return response()->json([
+            'message' => 'Primero debe establecer los montos desde configuracion'
+        ]);
+    }
+
+    else{
+        if($descuento){$cuota->importe = $configuracion->montoCuotaDescuento;}
+        else{$cuota->importe = $configuracion->montoCuota;}
+    }
+
+
+    $cuota->save();
+
+    return response()->json([
+        'message' => 'Cuota creada'
+    ]);
+
+
 
 }
+
+
 
 }

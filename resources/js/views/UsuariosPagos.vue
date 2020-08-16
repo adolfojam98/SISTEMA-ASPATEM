@@ -14,7 +14,20 @@
                 <v-btn @click="buscarCuotasUsuario" large color="primary">
                     Buscar
                 </v-btn>
+                
+                <div v-show='busco'>
+                <v-btn @click="[CrearCuotaModal = true]"
+                    large color="primary">
+                    Nueva cuota
+                </v-btn>
+                </div>
+
             </div>
+
+            <v-dialog v-model="CrearCuotaModal" max-width="600px">
+            <crear-cuota :usuarioID="usuarioSeleccionado"></crear-cuota>
+            </v-dialog>
+            
         </v-container>
 
         <v-container>
@@ -107,7 +120,10 @@ export default {
             usuarios: [],
             cuotasUsuario: [],
             infoCuotaPaga: false,
-            pagoCuota: false
+            pagoCuota: false,
+            CrearCuotaModal: false,
+            busco:false,
+            
         };
     },
     methods: {
@@ -119,6 +135,7 @@ export default {
                 .then(res => {
                     this.cuotasUsuario = res.data;
                     console.log(res.data);
+                    this.busco = true;
                 });
         },
        

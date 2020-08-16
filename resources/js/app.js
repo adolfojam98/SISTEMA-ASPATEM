@@ -29,6 +29,9 @@ Vue.component('mostrar-usuarios', require('./components/ListaUsuariosComponent.v
 Vue.component('editar-usuario', require('./components/UsuarioEditarComponent.vue').default);
 Vue.component('relaciones-usuario', require('./components/UsuarioRelacionesComponent.vue').default);
 Vue.component('relaciones-usuario-lista', require('./components/UsuarioRelacionesListaComponent.vue').default);
+Vue.component('configuraciones', require('./components/ConfiguracionComponent.vue').default);
+Vue.component('crear-cuota', require('./components/CrearCuotaComponent.vue').default);
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
