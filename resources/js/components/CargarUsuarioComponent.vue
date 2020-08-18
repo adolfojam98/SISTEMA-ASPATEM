@@ -43,18 +43,7 @@
                     required
                 ></v-text-field>
 
-                <v-text-field
-                    v-if="puntosPersonalizados"
-                    v-model="puntos"
-                    :rules="puntosRules"
-                    label="puntos"
-                    required
-                ></v-text-field>
-
-                <v-switch
-                    v-model="puntosPersonalizados"
-                    label="Ingresar puntos personalizados"
-                ></v-switch>
+                
 
                 <v-btn
                     depressed
@@ -108,12 +97,7 @@ export default {
                 (v && v.length <= 20) ||
                 "El apellido debe ser menor a 20 caracteres"
         ],
-        puntosPersonalizados: false,
-        puntos: 0,
-        puntosRules: [
-            v => !!v || "Puntos requeridos",
-            v => /^([0-9])*$/.test(v) || "Debe ingresar solo numeros"
-        ],
+       
         telefono: "",
         telefonoRules: [v => !!v || "Telefono requerido"],
 
@@ -138,7 +122,6 @@ export default {
                         nombre: this.nombre,
                         apellido: this.apellido,
                         mail: this.email,
-                        puntos: this.puntos,
                         telefono: this.telefono,
                         socio: true
                     })

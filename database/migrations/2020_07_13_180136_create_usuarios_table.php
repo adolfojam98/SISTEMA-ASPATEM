@@ -18,7 +18,6 @@ class CreateUsuariosTable extends Migration
             $table->string('nombre',20);
             $table->string('apellido',20);
             $table->string('mail',50);
-            $table->integer('puntos');
             $table->string('telefono',12);
             $table->boolean('socio');
             $table->timestamps();

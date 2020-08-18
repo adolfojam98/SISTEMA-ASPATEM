@@ -2178,17 +2178,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2205,13 +2194,6 @@ __webpack_require__.r(__webpack_exports__);
         return !!v || "Apellido requerido";
       }, function (v) {
         return v && v.length <= 20 || "El apellido debe ser menor a 20 caracteres";
-      }],
-      puntosPersonalizados: false,
-      puntos: 0,
-      puntosRules: [function (v) {
-        return !!v || "Puntos requeridos";
-      }, function (v) {
-        return /^([0-9])*$/.test(v) || "Debe ingresar solo numeros";
       }],
       telefono: "",
       telefonoRules: [function (v) {
@@ -2241,7 +2223,6 @@ __webpack_require__.r(__webpack_exports__);
           nombre: this.nombre,
           apellido: this.apellido,
           mail: this.email,
-          puntos: this.puntos,
           telefono: this.telefono,
           socio: true
         }).then(function (response) {
@@ -2608,7 +2589,6 @@ __webpack_require__.r(__webpack_exports__);
       search: "",
       headers: [{
         text: "Nombre",
-        align: "start",
         sortable: true,
         value: "nombre"
       }, {
@@ -2616,13 +2596,12 @@ __webpack_require__.r(__webpack_exports__);
         value: "apellido"
       }, {
         text: "Mail",
-        value: "mail"
+        value: "mail",
+        sortable: false
       }, {
         text: "Telefono",
-        value: "telefono"
-      }, {
-        text: "Puntos",
-        value: "puntos"
+        value: "telefono",
+        sortable: false
       }, {
         text: "Acciones",
         value: "actions",
@@ -2735,9 +2714,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["usuario"],
   data: function data() {
@@ -2752,12 +2728,6 @@ __webpack_require__.r(__webpack_exports__);
         return !!v || "Apellido requerido";
       }, function (v) {
         return v && v.length <= 20 || "El apellido debe ser menor a 20 caracteres";
-      }],
-      puntosPersonalizados: false,
-      puntosRules: [function (v) {
-        return !!v || "Puntos requeridos";
-      }, function (v) {
-        return /^([0-9])*$/.test(v) || "Debe ingresar solo numeros";
       }],
       telefonoRules: [function (v) {
         return !!v || "Telefono requerido";
@@ -2780,7 +2750,6 @@ __webpack_require__.r(__webpack_exports__);
           'nombre': this.usuario.nombre,
           'apellido': this.usuario.apellido,
           'mail': this.usuario.mail,
-          'puntos': this.usuario.puntos,
           'telefono': this.usuario.telefono,
           'socio': this.usuario.socio
         }).then(function (response) {
@@ -40214,34 +40183,6 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
-                      _vm.puntosPersonalizados
-                        ? _c("v-text-field", {
-                            attrs: {
-                              rules: _vm.puntosRules,
-                              label: "puntos",
-                              required: ""
-                            },
-                            model: {
-                              value: _vm.puntos,
-                              callback: function($$v) {
-                                _vm.puntos = $$v
-                              },
-                              expression: "puntos"
-                            }
-                          })
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _c("v-switch", {
-                        attrs: { label: "Ingresar puntos personalizados" },
-                        model: {
-                          value: _vm.puntosPersonalizados,
-                          callback: function($$v) {
-                            _vm.puntosPersonalizados = $$v
-                          },
-                          expression: "puntosPersonalizados"
-                        }
-                      }),
-                      _vm._v(" "),
                       _c(
                         "v-btn",
                         {
@@ -41051,34 +40992,6 @@ var render = function() {
                         _vm.$set(_vm.usuario, "telefono", $$v)
                       },
                       expression: "usuario.telefono"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _vm.puntosPersonalizados
-                    ? _c("v-text-field", {
-                        attrs: {
-                          rules: _vm.puntosRules,
-                          label: "puntos",
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.usuario.puntos,
-                          callback: function($$v) {
-                            _vm.$set(_vm.usuario, "puntos", $$v)
-                          },
-                          expression: "usuario.puntos"
-                        }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c("v-switch", {
-                    attrs: { label: "Ingresar puntos personalizados" },
-                    model: {
-                      value: _vm.puntosPersonalizados,
-                      callback: function($$v) {
-                        _vm.puntosPersonalizados = $$v
-                      },
-                      expression: "puntosPersonalizados"
                     }
                   }),
                   _vm._v(" "),
@@ -102634,8 +102547,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\gonza\Proyectos\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

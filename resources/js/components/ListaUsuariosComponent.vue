@@ -86,14 +86,12 @@ export default {
       headers: [
         {
           text: "Nombre",
-          align: "start",
           sortable: true,
           value: "nombre",
         },
         { text: "Apellido", value: "apellido" },
-        { text: "Mail", value: "mail" },
-        { text: "Telefono", value: "telefono" },
-        { text: "Puntos", value: "puntos" },
+        { text: "Mail", value: "mail", sortable: false },
+        { text: "Telefono", value: "telefono", sortable: false },
         { text: "Acciones", value: "actions", sortable: false },
       ],
       usuarioEditar: [],
