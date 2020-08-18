@@ -5,30 +5,35 @@
                 v-model="usuarioSeleccionado"
                 :items="usuarios"
                 :item-text="nombreCompleto"
-                item-value="id"
+                return-object
+
                 filled
                 label="Ingrese el nombre del socio"
             ></v-autocomplete>
-            <div class="my-2">
-                <v-btn @click="buscarCuotasUsuario" large color="primary">
-                    Buscar
-                </v-btn>
-                
-                <center>
-                <div v-show='busco'>
-                <v-btn @click="[CrearCuotaModal = true]"
-                    large color="primary">
-                    Nueva cuota
-                </v-btn>
-                </div>
-                </center>
+            <v-row>
+                <v-col>
+                    <v-btn @click="buscarCuotasUsuario" large color="primary">
+                        Buscar
+                    </v-btn>
+                </v-col>
 
-            </div>
+                <v-col>
+                    <div v-show="busco">
+                        <v-btn
+                            @click="[(CrearCuotaModal = true)]"
+                            large
+                            color="teal lighten-3"
+                            class="white--text"
+                        >
+                            Nueva cuota
+                        </v-btn>
+                    </div>
+                </v-col>
+            </v-row>
 
             <v-dialog v-model="CrearCuotaModal" max-width="600px">
-            <crear-cuota :usuarioID="usuarioSeleccionado"></crear-cuota>
+                <crear-cuota :usuarioID="usuarioSeleccionado.id"></crear-cuota>
             </v-dialog>
-            
         </v-container>
 
         <v-container>
@@ -58,7 +63,7 @@
                             >
                                 <td>{{ cuota.mes }}</td>
                                 <td>{{ cuota.anio }}</td>
-                                <td>{{ cuota.importe }}</td>
+                                <td>${{ cuota.importe }}</td>
                                 <td>
                                     <div class="text-center">
                                         <v-chip color="success" dark>
@@ -80,7 +85,7 @@
                             >
                                 <td>{{ cuota.mes }}</td>
                                 <td>{{ cuota.anio }}</td>
-                                <td>{{ cuota.importe }}</td>
+                                <td>${{ cuota.importe }}</td>
                                 <td>
                                     <div class="text-center">
                                         <v-chip color="error" dark>
@@ -96,73 +101,18 @@
         </v-container>
 
         <v-dialog v-model="infoCuotaPaga" max-width="500px">
-            <v-card>
-                <v-card
-                class="pa-2"
-                outlined
-                style="background-color: lightgrey;"
-                tile
-                >
-                <h1 style="color:blue"> <center>ASPATEM</center> </h1>
-                </v-card>
-
-                <v-card
-                class="pa-2"
-                outlined
-                tile
-                >
-                Clave de usuario: {{ usuarioSeleccionado }}<br>
-                </v-card>
-
-                <v-card
-                class="pa-2"
-                outlined
-                tile
-                >
-                Mes al que corresponde: {{ cuotaActual.mes }}/{{ cuotaActual.anio }}<br>
-                </v-card>
-                
-                <v-card
-                class="pa-2"
-                outlined
-                tile
-                >
-                Importe de la cuota: ${{ cuotaActual.importe }}<br>
-                </v-card>
-
-                <v-card
-                class="pa-2"
-                outlined
-                tile
-                >
-                Fecha de pago: {{ cuotaActual.fechaPago }}<br>
-                </v-card>
-
-                
-                <div v-if="cuotaActual.descuento">
-                    <v-card
-                class="pa-2"
-                outlined
-                tile
-                >
-                <h2>Se aplico el descuento de Familiar/Amigo</h2>
-                </v-card>
-                    
-                </div>
-                
-
-            </v-card>
+            <info-cuota-paga :usuario = "usuarioSeleccionado" :cuota = "cuotaActual"></info-cuota-paga>
         </v-dialog>
 
         <v-dialog v-model="pagoCuota" max-width="250px">
             <v-card>
                 <v-card
-                class="pa-2"
-                outlined
-                style="background-color: lightgrey;"
-                tile
+                    class="pa-2"
+                    outlined
+                    style="background-color: lightgrey;"
+                    tile
                 >
-                <h1 style="color:blue"> <center>ASPATEM</center> </h1>
+                    <h1 style="color:blue"><center>ASPATEM</center></h1>
                 </v-card>
 
                 <v-text-field
@@ -174,10 +124,9 @@
                 ></v-text-field>
 
                 <center>
-                <v-btn @click="pagarCuota"
-                    large color="primary">
-                    Pagar cuota
-                </v-btn>
+                    <v-btn @click="pagarCuota" large color="primary">
+                        Pagar cuota
+                    </v-btn>
                 </center>
             </v-card>
         </v-dialog>
@@ -196,8 +145,6 @@
                 </v-btn>
             </template>
         </v-snackbar>
-
-
     </div>
 </template>
 
@@ -205,52 +152,51 @@
 export default {
     data() {
         return {
-            cuotaActual:"",
+            cuotaActual: "",
             usuarioSeleccionado: "",
             usuarios: [],
             cuotasUsuario: [],
             infoCuotaPaga: false,
             pagoCuota: false,
             CrearCuotaModal: false,
-            busco:false,
-            importePersonalizado:null,
-            snackbar:false,
+            busco: false,
+            importePersonalizado: null,
+            snackbar: false,
 
             importeRules: [
-            v => !!v || "Importe requerido",
-            v => v >= 0 || "Importe no valido"
-        ],
-            
+                v => !!v || "Importe requerido",
+                v => v >= 0 || "Importe no valido"
+            ]
         };
     },
     methods: {
         nombreCompleto: item => item.apellido + " " + item.nombre,
         buscarCuotasUsuario() {
-            if(this.usuarioSeleccionado!=""){
-            this.cuotasUsuario = [];
-            axios
-                .get(`/usuario/${this.usuarioSeleccionado}/cuotas`)
-                .then(res => {
-                    this.cuotasUsuario = res.data;
-                    console.log(res.data);
-                    this.busco = true;
-                });
+            if (this.usuarioSeleccionado != "") {
+                this.cuotasUsuario = [];
+                axios
+                    .get(`/usuario/${this.usuarioSeleccionado.id}/cuotas`)
+                    .then(res => {
+                        this.cuotasUsuario = res.data;
+                        console.log(res.data);
+                        this.busco = true;
+                    });
             }
         },
 
-        pagarCuota(){
-            axios.put('/pagarCuota',{
-                importe : this.importePersonalizado,
-                id : this.cuotaActual.id,
-            })
-            .then(
-                this.importePersonalizado=null,
-                this.buscarCuotasUsuario(),
-                this.snackbar=true,
-                this.pagoCuota=false,
-            )
+        pagarCuota() {
+            axios
+                .put("/pagarCuota", {
+                    importe: this.importePersonalizado,
+                    id: this.cuotaActual.id
+                })
+                .then(
+                    (this.importePersonalizado = null),
+                    this.buscarCuotasUsuario(),
+                    (this.snackbar = true),
+                    (this.pagoCuota = false)
+                );
         }
-       
     },
     created() {
         axios.get("/usuario").then(res => {

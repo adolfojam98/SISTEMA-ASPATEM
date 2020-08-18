@@ -3072,6 +3072,60 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/infoCuotaPagaComponent.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/infoCuotaPagaComponent.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['usuario', 'cuota']
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/Ranking.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/Ranking.vue?vue&type=script&lang=js& ***!
@@ -3442,59 +3496,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3524,7 +3525,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.usuarioSeleccionado != "") {
         this.cuotasUsuario = [];
-        axios.get("/usuario/".concat(this.usuarioSeleccionado, "/cuotas")).then(function (res) {
+        axios.get("/usuario/".concat(this.usuarioSeleccionado.id, "/cuotas")).then(function (res) {
           _this.cuotasUsuario = res.data;
           console.log(res.data);
           _this.busco = true;
@@ -3532,7 +3533,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     pagarCuota: function pagarCuota() {
-      axios.put('/pagarCuota', {
+      axios.put("/pagarCuota", {
         importe: this.importePersonalizado,
         id: this.cuotaActual.id
       }).then(this.importePersonalizado = null, this.buscarCuotasUsuario(), this.snackbar = true, this.pagoCuota = false);
@@ -41480,6 +41481,127 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/infoCuotaPagaComponent.vue?vue&type=template&id=af19a07e&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/infoCuotaPagaComponent.vue?vue&type=template&id=af19a07e& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "v-card",
+        [
+          _c(
+            "v-card",
+            {
+              staticClass: "pa-2",
+              staticStyle: { "background-color": "lightgrey" },
+              attrs: { outlined: "", tile: "" }
+            },
+            [
+              _c(
+                "h1",
+                { staticStyle: { color: "blue" } },
+                [_c("center", [_vm._v("ASPATEM")])],
+                1
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "v-card",
+            { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
+            [
+              _vm._v(
+                "\n                Clave de usuario: " +
+                  _vm._s(_vm.usuario.nombre) +
+                  " " +
+                  _vm._s(_vm.usuario.apellido)
+              ),
+              _c("br")
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "v-card",
+            { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
+            [
+              _vm._v(
+                "\n                Mes al que corresponde: " +
+                  _vm._s(_vm.cuota.mes) +
+                  "/" +
+                  _vm._s(_vm.cuota.anio)
+              ),
+              _c("br")
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "v-card",
+            { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
+            [
+              _vm._v(
+                "\n                Importe de la cuota: $" +
+                  _vm._s(_vm.cuota.importe)
+              ),
+              _c("br")
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "v-card",
+            { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
+            [
+              _vm._v(
+                "\n                Fecha de pago: " +
+                  _vm._s(_vm.cuota.fechaPago)
+              ),
+              _c("br")
+            ]
+          ),
+          _vm._v(" "),
+          _vm.cuota.descuento
+            ? _c(
+                "div",
+                [
+                  _c(
+                    "v-card",
+                    { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
+                    [
+                      _c("h2", [
+                        _vm._v("Se aplico el descuento de Familiar/Amigo")
+                      ])
+                    ]
+                  )
+                ],
+                1
+              )
+            : _vm._e()
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/404.vue?vue&type=template&id=d215c3ee&":
 /*!*************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/404.vue?vue&type=template&id=d215c3ee& ***!
@@ -41913,7 +42035,7 @@ var render = function() {
             attrs: {
               items: _vm.usuarios,
               "item-text": _vm.nombreCompleto,
-              "item-value": "id",
+              "return-object": "",
               filled: "",
               label: "Ingrese el nombre del socio"
             },
@@ -41927,19 +42049,24 @@ var render = function() {
           }),
           _vm._v(" "),
           _c(
-            "div",
-            { staticClass: "my-2" },
+            "v-row",
             [
               _c(
-                "v-btn",
-                {
-                  attrs: { large: "", color: "primary" },
-                  on: { click: _vm.buscarCuotasUsuario }
-                },
-                [_vm._v("\n                Buscar\n            ")]
+                "v-col",
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { large: "", color: "primary" },
+                      on: { click: _vm.buscarCuotasUsuario }
+                    },
+                    [_vm._v("\n                    Buscar\n                ")]
+                  )
+                ],
+                1
               ),
               _vm._v(" "),
-              _c("center", [
+              _c("v-col", [
                 _c(
                   "div",
                   {
@@ -41956,14 +42083,19 @@ var render = function() {
                     _c(
                       "v-btn",
                       {
-                        attrs: { large: "", color: "primary" },
+                        staticClass: "white--text",
+                        attrs: { large: "", color: "teal lighten-3" },
                         on: {
                           click: function($event) {
                             ;[(_vm.CrearCuotaModal = true)]
                           }
                         }
                       },
-                      [_vm._v("\n                Nueva cuota\n            ")]
+                      [
+                        _vm._v(
+                          "\n                        Nueva cuota\n                    "
+                        )
+                      ]
                     )
                   ],
                   1
@@ -41987,7 +42119,7 @@ var render = function() {
             },
             [
               _c("crear-cuota", {
-                attrs: { usuarioID: _vm.usuarioSeleccionado }
+                attrs: { usuarioID: _vm.usuarioSeleccionado.id }
               })
             ],
             1
@@ -42044,7 +42176,9 @@ var render = function() {
                                   _vm._v(" "),
                                   _c("td", [_vm._v(_vm._s(cuota.anio))]),
                                   _vm._v(" "),
-                                  _c("td", [_vm._v(_vm._s(cuota.importe))]),
+                                  _c("td", [
+                                    _vm._v("$" + _vm._s(cuota.importe))
+                                  ]),
                                   _vm._v(" "),
                                   _c("td", [
                                     _c(
@@ -42089,7 +42223,9 @@ var render = function() {
                                   _vm._v(" "),
                                   _c("td", [_vm._v(_vm._s(cuota.anio))]),
                                   _vm._v(" "),
-                                  _c("td", [_vm._v(_vm._s(cuota.importe))]),
+                                  _c("td", [
+                                    _vm._v("$" + _vm._s(cuota.importe))
+                                  ]),
                                   _vm._v(" "),
                                   _c("td", [
                                     _c(
@@ -42139,99 +42275,9 @@ var render = function() {
           }
         },
         [
-          _c(
-            "v-card",
-            [
-              _c(
-                "v-card",
-                {
-                  staticClass: "pa-2",
-                  staticStyle: { "background-color": "lightgrey" },
-                  attrs: { outlined: "", tile: "" }
-                },
-                [
-                  _c(
-                    "h1",
-                    { staticStyle: { color: "blue" } },
-                    [_c("center", [_vm._v("ASPATEM")])],
-                    1
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "v-card",
-                { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
-                [
-                  _vm._v(
-                    "\n            Clave de usuario: " +
-                      _vm._s(_vm.usuarioSeleccionado)
-                  ),
-                  _c("br")
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "v-card",
-                { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
-                [
-                  _vm._v(
-                    "\n            Mes al que corresponde: " +
-                      _vm._s(_vm.cuotaActual.mes) +
-                      "/" +
-                      _vm._s(_vm.cuotaActual.anio)
-                  ),
-                  _c("br")
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "v-card",
-                { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
-                [
-                  _vm._v(
-                    "\n            Importe de la cuota: $" +
-                      _vm._s(_vm.cuotaActual.importe)
-                  ),
-                  _c("br")
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "v-card",
-                { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
-                [
-                  _vm._v(
-                    "\n            Fecha de pago: " +
-                      _vm._s(_vm.cuotaActual.fechaPago)
-                  ),
-                  _c("br")
-                ]
-              ),
-              _vm._v(" "),
-              _vm.cuotaActual.descuento
-                ? _c(
-                    "div",
-                    [
-                      _c(
-                        "v-card",
-                        {
-                          staticClass: "pa-2",
-                          attrs: { outlined: "", tile: "" }
-                        },
-                        [
-                          _c("h2", [
-                            _vm._v("Se aplico el descuento de Familiar/Amigo")
-                          ])
-                        ]
-                      )
-                    ],
-                    1
-                  )
-                : _vm._e()
-            ],
-            1
-          )
+          _c("info-cuota-paga", {
+            attrs: { usuario: _vm.usuarioSeleccionado, cuota: _vm.cuotaActual }
+          })
         ],
         1
       ),
@@ -42294,7 +42340,11 @@ var render = function() {
                       attrs: { large: "", color: "primary" },
                       on: { click: _vm.pagarCuota }
                     },
-                    [_vm._v("\n                Pagar cuota\n            ")]
+                    [
+                      _vm._v(
+                        "\n                    Pagar cuota\n                "
+                      )
+                    ]
                   )
                 ],
                 1
@@ -101379,6 +101429,7 @@ Vue.component('relaciones-usuario', __webpack_require__(/*! ./components/Usuario
 Vue.component('relaciones-usuario-lista', __webpack_require__(/*! ./components/UsuarioRelacionesListaComponent.vue */ "./resources/js/components/UsuarioRelacionesListaComponent.vue")["default"]);
 Vue.component('configuraciones', __webpack_require__(/*! ./components/ConfiguracionComponent.vue */ "./resources/js/components/ConfiguracionComponent.vue")["default"]);
 Vue.component('crear-cuota', __webpack_require__(/*! ./components/CrearCuotaComponent.vue */ "./resources/js/components/CrearCuotaComponent.vue")["default"]);
+Vue.component('info-cuota-paga', __webpack_require__(/*! ./components/infoCuotaPagaComponent.vue */ "./resources/js/components/infoCuotaPagaComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -101993,6 +102044,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuarioRelacionesListaComponent_vue_vue_type_template_id_6c4278e8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuarioRelacionesListaComponent_vue_vue_type_template_id_6c4278e8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/infoCuotaPagaComponent.vue":
+/*!************************************************************!*\
+  !*** ./resources/js/components/infoCuotaPagaComponent.vue ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _infoCuotaPagaComponent_vue_vue_type_template_id_af19a07e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./infoCuotaPagaComponent.vue?vue&type=template&id=af19a07e& */ "./resources/js/components/infoCuotaPagaComponent.vue?vue&type=template&id=af19a07e&");
+/* harmony import */ var _infoCuotaPagaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./infoCuotaPagaComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/infoCuotaPagaComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _infoCuotaPagaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _infoCuotaPagaComponent_vue_vue_type_template_id_af19a07e___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _infoCuotaPagaComponent_vue_vue_type_template_id_af19a07e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/infoCuotaPagaComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/infoCuotaPagaComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/infoCuotaPagaComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_infoCuotaPagaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./infoCuotaPagaComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/infoCuotaPagaComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_infoCuotaPagaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/infoCuotaPagaComponent.vue?vue&type=template&id=af19a07e&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/infoCuotaPagaComponent.vue?vue&type=template&id=af19a07e& ***!
+  \*******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_infoCuotaPagaComponent_vue_vue_type_template_id_af19a07e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./infoCuotaPagaComponent.vue?vue&type=template&id=af19a07e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/infoCuotaPagaComponent.vue?vue&type=template&id=af19a07e&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_infoCuotaPagaComponent_vue_vue_type_template_id_af19a07e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_infoCuotaPagaComponent_vue_vue_type_template_id_af19a07e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
