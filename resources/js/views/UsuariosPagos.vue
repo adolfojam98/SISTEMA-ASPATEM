@@ -41,7 +41,7 @@
                 <v-simple-table>
                     <template v-slot:default>
                         <thead>
-                            <tr>
+                            <tr v-if="cuotasUsuario != ''">
                                 <th class="text-left">Mes</th>
                                 <th class="text-left">Año</th>
                                 <th class="text-left">Monto</th>
@@ -105,36 +105,13 @@
         </v-dialog>
 
         <v-dialog v-model="pagoCuota" max-width="250px">
-            <v-card>
-                <v-card
-                    class="pa-2"
-                    outlined
-                    style="background-color: lightgrey;"
-                    tile
-                >
-                    <h1 style="color:blue"><center>ASPATEM</center></h1>
-                </v-card>
-
-                <v-text-field
-                    v-model="importePersonalizado"
-                    label="Monto personalizado(opcional)"
-                    :rules="importeRules"
-                    prefix="$"
-                    required
-                ></v-text-field>
-
-                <center>
-                    <v-btn @click="pagarCuota" large color="primary">
-                        Pagar cuota
-                    </v-btn>
-                </center>
-            </v-card>
+           <pago-cuota :cuota = 'cuotaActual' :usuario = 'usuarioSeleccionado' @recargarCuotas = 'recargarCuotas = $event'></pago-cuota>
         </v-dialog>
 
-        <v-snackbar v-model="snackbar" timeout="3000">
+  <v-snackbar v-model="snackbar" timeout="3000">
             Cuota pagada
 
-            <template v-slot:action="{ attrs }">
+        <template v-slot:action="{ attrs }">
                 <v-btn
                     color="blue"
                     text
@@ -155,18 +132,15 @@ export default {
             cuotaActual: "",
             usuarioSeleccionado: "",
             usuarios: [],
-            cuotasUsuario: [],
+            cuotasUsuario: '',
             infoCuotaPaga: false,
             pagoCuota: false,
             CrearCuotaModal: false,
             busco: false,
-            importePersonalizado: null,
+            recargarCuotas :false,
             snackbar: false,
 
-            importeRules: [
-                v => !!v || "Importe requerido",
-                v => v >= 0 || "Importe no valido"
-            ]
+            
         };
     },
     methods: {
@@ -183,21 +157,18 @@ export default {
                     });
             }
         },
+        
 
-        pagarCuota() {
-            axios
-                .put("/pagarCuota", {
-                    importe: this.importePersonalizado,
-                    id: this.cuotaActual.id
-                })
-                .then(
-                    (this.importePersonalizado = null),
-                    this.buscarCuotasUsuario(),
-                    (this.snackbar = true),
-                    (this.pagoCuota = false)
-                );
-        }
+       
     },
+    watch: {
+            recargarCuotas : function(){
+                this.buscarCuotasUsuario()
+                this.pagoCuota = false
+                this.snackbar = true
+            }
+            
+        },
     created() {
         axios.get("/usuario").then(res => {
             this.usuarios = res.data;

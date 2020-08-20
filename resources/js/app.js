@@ -32,6 +32,7 @@ Vue.component('relaciones-usuario-lista', require('./components/UsuarioRelacione
 Vue.component('configuraciones', require('./components/ConfiguracionComponent.vue').default);
 Vue.component('crear-cuota', require('./components/CrearCuotaComponent.vue').default);
 Vue.component('info-cuota-paga', require('./components/infoCuotaPagaComponent.vue').default);
+Vue.component('pago-cuota', require('./components/pagoCuotaComponent.vue').default);
 
 
 /**

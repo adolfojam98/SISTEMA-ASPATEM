@@ -6,6 +6,7 @@ use App\Relacion;
 use App\Usuario;
 use App\Cuota;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class UsuarioController extends Controller
 {
@@ -130,8 +131,12 @@ class UsuarioController extends Controller
 
     public function obtenerCuotasUsuario(Request $request){
        
-        $cuota = Usuario::find($request->id)->cuotas;
-        return $cuota;
+        $cuotas = Usuario::find($request->id)->cuotas;
+        $cuotas->each(function($cuota){
+            $cuota->mes = Carbon::create(null,$cuota->mes)->locale('es')->monthName;
+            $cuota->fechaPagoNombre = Carbon::create($cuota->fechaPago)->locale('es')->isoFormat('LLL');
+        });
+        return $cuotas;
     }
 
 public function showRelacionesExitentes(Request $request){

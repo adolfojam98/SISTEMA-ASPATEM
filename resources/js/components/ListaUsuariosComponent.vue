@@ -86,8 +86,8 @@ export default {
       headers: [
         {
           text: "Nombre",
-          sortable: true,
-          value: "nombre",
+      
+          value: "nombre"
         },
         { text: "Apellido", value: "apellido" },
         { text: "Mail", value: "mail", sortable: false },
