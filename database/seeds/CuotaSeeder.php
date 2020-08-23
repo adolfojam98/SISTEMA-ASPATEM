@@ -23,7 +23,7 @@ class CuotaSeeder extends Seeder
                 $cuota->mes = $i;
                 $cuota->anio = 2020;
                 $cuota->importe = 300;
-                $cuota->fechaPago = Carbon::today();
+                $cuota->fechaPago = Carbon::now('GMT-3');
                 $cuota->save();
             }
 

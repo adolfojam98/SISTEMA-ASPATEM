@@ -131,18 +131,18 @@ class CuotaController extends Controller
 
     public function generarCuota(Request $request)
     {
-        $mes = $request->mes;
+       
 
     
 
-        $ExisteEstaCuota = Cuota::where('mes', $mes)
+        $ExisteEstaCuota = Cuota::where('mes', $request->mes)
         ->where('anio', $request->anio)
         ->where('usuario_id', $request->usuario_id)->first();
 
      
         if ($ExisteEstaCuota==null) {
             $cuota = new Cuota();
-            $cuota->mes = $mes;
+            $cuota->mes = $request->mes;
             $cuota->anio = $request->anio;
             $cuota->usuario_id = $request->usuario_id;
         
@@ -194,7 +194,7 @@ class CuotaController extends Controller
     public function pagar(Request $request){
         $cuota = Cuota::find($request->id);
 
-        $cuota->fechaPago = Carbon::today();
+        $cuota->fechaPago = Carbon::now('GMT-3');
 
         if($request->importe!=NULL){
             $cuota->importe = $request->importe;

@@ -100,11 +100,11 @@
             </template>
         </v-container>
 
-        <v-dialog v-model="infoCuotaPaga" max-width="500px">
+        <v-dialog v-model="infoCuotaPaga" max-width="350px">
             <info-cuota-paga :usuario = "usuarioSeleccionado" :cuota = "cuotaActual"></info-cuota-paga>
         </v-dialog>
 
-        <v-dialog v-model="pagoCuota" max-width="250px">
+        <v-dialog v-model="pagoCuota" max-width="400px">
            <pago-cuota :cuota = 'cuotaActual' :usuario = 'usuarioSeleccionado' @recargarCuotas = 'recargarCuotas = $event'></pago-cuota>
         </v-dialog>
 

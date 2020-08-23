@@ -3119,8 +3119,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['usuario', 'cuota']
+  props: ["usuario", "cuota"]
 });
 
 /***/ }),
@@ -3134,6 +3140,96 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3167,23 +3263,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['cuota', 'usuario'],
+  props: ["cuota", "usuario"],
   data: function data() {
     return {
-      importePersonalizado: '',
+      fecha: new Date().toISOString().substr(0, 10),
+      formatoFecha: this.darFormatoFecha(new Date().toISOString().substr(0, 10)),
+      menuFecha: false,
+      importePersonalizado: "",
       importeRules: [function (v) {
         return !!v || "Importe requerido";
       }, function (v) {
         return v >= 0 || "Importe no valido";
-      }]
+      }],
+      editarMonto: true
     };
+  },
+  watch: {
+    fecha: function fecha(val) {
+      this.formatoFecha = this.darFormatoFecha(this.fecha);
+    }
   },
   methods: {
     pagarCuota: function pagarCuota() {
       axios.put("/pagarCuota", {
         importe: this.importePersonalizado,
         id: this.cuota.id
-      }).then(this.importePersonalizado = null, this.$emit('recargarCuotas', true), this.snackbar = true);
+      }).then(this.importePersonalizado = null, this.$emit("recargarCuotas", true), this.snackbar = true);
+    },
+    darFormatoFecha: function darFormatoFecha(fecha) {
+      if (!fecha) return null;
+      console.log(fecha);
+
+      var _fecha$split = fecha.split("-"),
+          _fecha$split2 = _slicedToArray(_fecha$split, 3),
+          anio = _fecha$split2[0],
+          mes = _fecha$split2[1],
+          dia = _fecha$split2[2];
+
+      return "".concat(dia, "/").concat(mes, "/").concat(anio);
     }
   }
 });
@@ -41557,74 +41674,69 @@ var render = function() {
           ),
           _vm._v(" "),
           _c(
-            "v-card",
-            { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
+            "div",
+            { staticClass: "ml-3 mt-3" },
             [
-              _vm._v(
-                "\n                Clave de usuario: " +
-                  _vm._s(_vm.usuario.nombre) +
-                  " " +
-                  _vm._s(_vm.usuario.apellido)
-              ),
+              _c("div", { staticClass: "text-h6" }, [_vm._v("Usuario")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "text-body-1 ml-1" }, [
+                _vm._v(
+                  "\n                " +
+                    _vm._s(_vm.usuario.nombre) +
+                    " " +
+                    _vm._s(_vm.usuario.apellido) +
+                    "\n            "
+                )
+              ]),
+              _vm._v(" "),
+              _c("v-divider", { staticClass: "mt-3" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "text-h6" }, [
+                _vm._v("Mes al que corresponde")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "ml-1 text-body-1" }, [
+                _vm._v(
+                  "\n                " +
+                    _vm._s(_vm.cuota.mes) +
+                    " del " +
+                    _vm._s(_vm.cuota.anio) +
+                    "\n            "
+                )
+              ]),
+              _vm._v(" "),
+              _c("v-divider", { staticClass: "mt-3" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "text-h6" }, [
+                _vm._v("Importe de la cuota")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "ml-1 text-body-1" }, [
+                _vm._v("$" + _vm._s(_vm.cuota.importe))
+              ]),
+              _vm._v(" "),
+              _vm.cuota.descuento
+                ? _c("div", [
+                    _c("h5", { staticClass: "text--secondary" }, [
+                      _vm._v(
+                        "\n                    (*)Se aplico el descuento de Familiar/Amigo\n                "
+                      )
+                    ])
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("v-divider", { staticClass: "mt-3" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "text-h6" }, [_vm._v("Fecha de pago")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "ml-1 text-body-1" }, [
+                _vm._v(_vm._s(_vm.cuota.fechaPagoNombre))
+              ]),
+              _vm._v(" "),
               _c("br")
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "v-card",
-            { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
-            [
-              _vm._v(
-                "\n                Mes al que corresponde: " +
-                  _vm._s(_vm.cuota.mes) +
-                  "/" +
-                  _vm._s(_vm.cuota.anio)
-              ),
-              _c("br")
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "v-card",
-            { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
-            [
-              _vm._v(
-                "\n                Importe de la cuota: $" +
-                  _vm._s(_vm.cuota.importe)
-              ),
-              _c("br")
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "v-card",
-            { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
-            [
-              _vm._v(
-                "\n                Fecha de pago: " +
-                  _vm._s(_vm.cuota.fechaPago)
-              ),
-              _c("br")
-            ]
-          ),
-          _vm._v(" "),
-          _vm.cuota.descuento
-            ? _c(
-                "div",
-                [
-                  _c(
-                    "v-card",
-                    { staticClass: "pa-2", attrs: { outlined: "", tile: "" } },
-                    [
-                      _c("h2", [
-                        _vm._v("Se aplico el descuento de Familiar/Amigo")
-                      ])
-                    ]
-                  )
-                ],
-                1
-              )
-            : _vm._e()
+            ],
+            1
+          )
         ],
         1
       )
@@ -41657,59 +41769,280 @@ var render = function() {
   return _c(
     "div",
     [
-      _c(
-        "v-card",
-        [
-          _c(
-            "v-card",
-            {
-              staticClass: "pa-2",
-              staticStyle: { "background-color": "lightgrey" },
-              attrs: { outlined: "", tile: "" }
-            },
-            [
-              _c(
-                "h1",
-                { staticStyle: { color: "blue" } },
-                [_c("center", [_vm._v("ASPATEM")])],
-                1
+      _c("v-card", [
+        _c(
+          "div",
+          {
+            staticClass: "pa-2",
+            staticStyle: { "background-color": "lightgrey" },
+            attrs: { outlined: "", tile: "" }
+          },
+          [
+            _c(
+              "h1",
+              { staticStyle: { color: "blue" } },
+              [_c("center", [_vm._v("ASPATEM")])],
+              1
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "ml-3 mt-3" },
+          [
+            _c("div", { staticClass: "text-h6" }, [_vm._v("Usuario")]),
+            _vm._v(" "),
+            _c("div", { staticClass: "text-body-1 ml-1" }, [
+              _vm._v(
+                "\n                " +
+                  _vm._s(_vm.usuario.nombre) +
+                  " " +
+                  _vm._s(_vm.usuario.apellido) +
+                  "\n            "
               )
-            ]
-          ),
-          _vm._v(" "),
-          _c("v-text-field", {
-            attrs: {
-              label: "Monto personalizado(opcional)",
-              rules: _vm.importeRules,
-              prefix: "$",
-              required: ""
-            },
-            model: {
-              value: _vm.importePersonalizado,
-              callback: function($$v) {
-                _vm.importePersonalizado = $$v
-              },
-              expression: "importePersonalizado"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "center",
-            [
-              _c(
-                "v-btn",
-                {
-                  attrs: { large: "", color: "primary" },
-                  on: { click: _vm.pagarCuota }
-                },
-                [_vm._v("\n                    Pagar cuota\n                ")]
+            ]),
+            _vm._v(" "),
+            _c("v-divider", { staticClass: "mt-3" }),
+            _vm._v(" "),
+            _c("div", { staticClass: "text-h6" }, [
+              _vm._v("Mes al que corresponde")
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "ml-1 text-body-1" }, [
+              _vm._v(
+                "\n                " +
+                  _vm._s(_vm.cuota.mes) +
+                  " del " +
+                  _vm._s(_vm.cuota.anio) +
+                  "\n            "
               )
-            ],
-            1
-          )
-        ],
-        1
-      )
+            ]),
+            _vm._v(" "),
+            _c("v-divider", { staticClass: "mt-3" }),
+            _vm._v(" "),
+            _c("div", { staticClass: "text-h6" }, [
+              _vm._v("Importe de la cuota")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "ml-1 text-body-1" },
+              [
+                _c(
+                  "v-row",
+                  { attrs: { dense: "", justify: "space-between" } },
+                  [
+                    _c(
+                      "v-col",
+                      { attrs: { cols: "6" } },
+                      [
+                        _c("v-text-field", {
+                          attrs: {
+                            label: "Solo",
+                            prefix: "$",
+                            outlined: "",
+                            flat: "",
+                            solo: "",
+                            dense: "",
+                            disabled: _vm.editarMonto,
+                            rules: _vm.importeRules
+                          },
+                          model: {
+                            value: _vm.cuota.importe,
+                            callback: function($$v) {
+                              _vm.$set(_vm.cuota, "importe", $$v)
+                            },
+                            expression: "cuota.importe"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "v-col",
+                      { attrs: { cols: "5" } },
+                      [
+                        _c(
+                          "v-tooltip",
+                          {
+                            attrs: { bottom: "" },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  var attrs = ref.attrs
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: {
+                                          color: "teal lighten-3",
+                                          fab: "",
+                                          small: "",
+                                          dark: ""
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "v-icon",
+                                          _vm._g(
+                                            _vm._b(
+                                              {
+                                                on: {
+                                                  click: function($event) {
+                                                    _vm.editarMonto = !_vm.editarMonto
+                                                  }
+                                                }
+                                              },
+                                              "v-icon",
+                                              attrs,
+                                              false
+                                            ),
+                                            on
+                                          ),
+                                          [
+                                            _vm._v(
+                                              "\n                                        mdi-border-color"
+                                            )
+                                          ]
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ])
+                          },
+                          [_vm._v(" "), _c("span", [_vm._v("Editar monto")])]
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("v-divider"),
+            _vm._v(" "),
+            _c("div", { staticClass: "text-h6" }, [_vm._v("Fecha de pago")]),
+            _vm._v(" "),
+            _c(
+              "v-row",
+              [
+                _c(
+                  "v-col",
+                  { attrs: { dense: "", cols: "7" } },
+                  [
+                    _c(
+                      "v-menu",
+                      {
+                        attrs: {
+                          transition: "scale-transition",
+                          "offset-y": "",
+                          "min-width": "290px"
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "activator",
+                            fn: function(ref) {
+                              var on = ref.on
+                              var attrs = ref.attrs
+                              return [
+                                _c(
+                                  "v-text-field",
+                                  _vm._g(
+                                    _vm._b(
+                                      {
+                                        attrs: {
+                                          dense: "",
+                                          "append-icon": "mdi-calendar",
+                                          outlined: "",
+                                          readonly: ""
+                                        },
+                                        model: {
+                                          value: _vm.formatoFecha,
+                                          callback: function($$v) {
+                                            _vm.formatoFecha = $$v
+                                          },
+                                          expression: "formatoFecha"
+                                        }
+                                      },
+                                      "v-text-field",
+                                      attrs,
+                                      false
+                                    ),
+                                    on
+                                  )
+                                )
+                              ]
+                            }
+                          }
+                        ]),
+                        model: {
+                          value: _vm.menuFecha,
+                          callback: function($$v) {
+                            _vm.menuFecha = $$v
+                          },
+                          expression: "menuFecha"
+                        }
+                      },
+                      [
+                        _vm._v(" "),
+                        _c("v-date-picker", {
+                          on: {
+                            input: function($event) {
+                              _vm.menuFecha = false
+                            }
+                          },
+                          model: {
+                            value: _vm.fecha,
+                            callback: function($$v) {
+                              _vm.fecha = $$v
+                            },
+                            expression: "fecha"
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "center",
+              [
+                _c(
+                  "v-btn",
+                  {
+                    attrs: { large: "", color: "primary" },
+                    on: { click: _vm.pagarCuota }
+                  },
+                  [
+                    _vm._v(
+                      "\n                    Pagar cuota\n                "
+                    )
+                  ]
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("br")
+          ],
+          1
+        )
+      ])
     ],
     1
   )
@@ -42390,7 +42723,7 @@ var render = function() {
       _c(
         "v-dialog",
         {
-          attrs: { "max-width": "500px" },
+          attrs: { "max-width": "350px" },
           model: {
             value: _vm.infoCuotaPaga,
             callback: function($$v) {
@@ -42410,7 +42743,7 @@ var render = function() {
       _c(
         "v-dialog",
         {
-          attrs: { "max-width": "250px" },
+          attrs: { "max-width": "400px" },
           model: {
             value: _vm.pagoCuota,
             callback: function($$v) {

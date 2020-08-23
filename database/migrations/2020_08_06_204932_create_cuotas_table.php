@@ -19,7 +19,7 @@ class CreateCuotasTable extends Migration
             $table->integer('anio');
             $table->boolean('descuento')->default(false);
             $table->decimal('importe',8,2);
-            $table->date('fechaPago')->nullable();
+            $table->dateTimeTz('fechaPago')->nullable();
             $table->BigInteger('usuario_id')->unsigned();
             $table->timestamps();
 
