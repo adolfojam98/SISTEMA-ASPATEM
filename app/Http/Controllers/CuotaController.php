@@ -194,7 +194,7 @@ class CuotaController extends Controller
     public function pagar(Request $request){
         $cuota = Cuota::find($request->id);
 
-        $cuota->fechaPago = Carbon::now('GMT-3');
+        $cuota->fechaPago = $request->fecha;
 
         if($request->importe!=NULL){
             $cuota->importe = $request->importe;

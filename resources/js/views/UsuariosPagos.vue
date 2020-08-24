@@ -166,6 +166,7 @@ export default {
                 this.buscarCuotasUsuario()
                 this.pagoCuota = false
                 this.snackbar = true
+                this.recargarCuotas = false
             }
             
         },

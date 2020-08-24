@@ -3281,14 +3281,29 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   watch: {
     fecha: function fecha(val) {
       this.formatoFecha = this.darFormatoFecha(this.fecha);
+    },
+    cuota: function cuota() {
+      this.fecha = new Date().toISOString().substr(0, 10);
+      this.editarMonto = true;
     }
   },
   methods: {
     pagarCuota: function pagarCuota() {
+      var _this = this;
+
       axios.put("/pagarCuota", {
-        importe: this.importePersonalizado,
+        importe: this.cuota.importe,
+        fecha: this.fecha,
         id: this.cuota.id
-      }).then(this.importePersonalizado = null, this.$emit("recargarCuotas", true), this.snackbar = true);
+      }).then(function (res) {
+        _this.importePersonalizado = null;
+
+        _this.$emit("recargarCuotas", true);
+
+        _this.snackbar = true;
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     darFormatoFecha: function darFormatoFecha(fecha) {
       if (!fecha) return null;
@@ -3691,6 +3706,7 @@ __webpack_require__.r(__webpack_exports__);
       this.buscarCuotasUsuario();
       this.pagoCuota = false;
       this.snackbar = true;
+      this.recargarCuotas = false;
     }
   },
   created: function created() {

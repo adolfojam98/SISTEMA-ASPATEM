@@ -118,6 +118,7 @@ export default {
                 new Date().toISOString().substr(0, 10)
             ),
             menuFecha: false,
+           
 
             importePersonalizado: "",
             importeRules: [
@@ -130,20 +131,30 @@ export default {
     watch: {
         fecha(val) {
             this.formatoFecha = this.darFormatoFecha(this.fecha);
+        },
+        cuota(){
+            this.fecha = new Date().toISOString().substr(0, 10)
+            this.editarMonto = true
         }
     },
     methods: {
         pagarCuota() {
             axios
                 .put("/pagarCuota", {
-                    importe: this.importePersonalizado,
+                    importe: this.cuota.importe,
+                    fecha : this.fecha,
                     id: this.cuota.id
                 })
-                .then(
-                    (this.importePersonalizado = null),
-                    this.$emit("recargarCuotas", true),
-                    (this.snackbar = true)
-                );
+                .then(res => {
+
+                
+                    this.importePersonalizado = null
+                    this.$emit("recargarCuotas", true)
+                    this.snackbar = true
+                })
+                .catch(error => {
+                    console.log(error)
+                })
         },
 
         darFormatoFecha(fecha) {
