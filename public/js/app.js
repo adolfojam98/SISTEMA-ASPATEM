@@ -2487,6 +2487,10 @@ __webpack_require__.r(__webpack_exports__);
         console.log(res.data.message);
         _this.message = res.data.message;
         _this.snackbar = true;
+
+        _this.$emit("recargarCuotas", true);
+      })["catch"](function (error) {
+        console.log(error);
       });
     }
   }
@@ -3542,6 +3546,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -42575,26 +42580,6 @@ var render = function() {
               ])
             ],
             1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-dialog",
-            {
-              attrs: { "max-width": "600px" },
-              model: {
-                value: _vm.CrearCuotaModal,
-                callback: function($$v) {
-                  _vm.CrearCuotaModal = $$v
-                },
-                expression: "CrearCuotaModal"
-              }
-            },
-            [
-              _c("crear-cuota", {
-                attrs: { usuarioID: _vm.usuarioSeleccionado.id }
-              })
-            ],
-            1
           )
         ],
         1
@@ -42734,6 +42719,31 @@ var render = function() {
           ]
         ],
         2
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "600px" },
+          model: {
+            value: _vm.CrearCuotaModal,
+            callback: function($$v) {
+              _vm.CrearCuotaModal = $$v
+            },
+            expression: "CrearCuotaModal"
+          }
+        },
+        [
+          _c("crear-cuota", {
+            attrs: { usuarioID: _vm.usuarioSeleccionado.id },
+            on: {
+              recargarCuotas: function($event) {
+                _vm.recargarCuotas = $event
+              }
+            }
+          })
+        ],
+        1
       ),
       _vm._v(" "),
       _c(

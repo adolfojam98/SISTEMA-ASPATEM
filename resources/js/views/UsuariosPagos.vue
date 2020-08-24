@@ -31,9 +31,7 @@
                 </v-col>
             </v-row>
 
-            <v-dialog v-model="CrearCuotaModal" max-width="600px">
-                <crear-cuota :usuarioID="usuarioSeleccionado.id"></crear-cuota>
-            </v-dialog>
+            
         </v-container>
 
         <v-container>
@@ -99,6 +97,9 @@
                 </v-simple-table>
             </template>
         </v-container>
+        <v-dialog v-model="CrearCuotaModal" max-width="600px">
+                <crear-cuota :usuarioID="usuarioSeleccionado.id" @recargarCuotas = 'recargarCuotas = $event'></crear-cuota>
+            </v-dialog>
 
         <v-dialog v-model="infoCuotaPaga" max-width="350px">
             <info-cuota-paga :usuario = "usuarioSeleccionado" :cuota = "cuotaActual"></info-cuota-paga>
@@ -163,6 +164,7 @@ export default {
     },
     watch: {
             recargarCuotas : function(){
+                
                 this.buscarCuotasUsuario()
                 this.pagoCuota = false
                 this.snackbar = true

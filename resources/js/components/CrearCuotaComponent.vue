@@ -95,6 +95,10 @@
                console.log(res.data.message);
                this.message=res.data.message;
                this.snackbar=true;
+               this.$emit("recargarCuotas", true)
+           })
+           .catch(error =>{
+               console.log(error)
            })
 
            
