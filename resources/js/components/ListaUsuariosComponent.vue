@@ -84,14 +84,11 @@ export default {
       usuarios: [],
       search: "",
       headers: [
-        {
-          text: "Nombre",
-      
-          value: "nombre"
-        },
+        { text: "Nombre", value: "nombre"},
         { text: "Apellido", value: "apellido" },
         { text: "Mail", value: "mail", sortable: false },
         { text: "Telefono", value: "telefono", sortable: false },
+        { text: "Fecha de alta", value: "fechaAlta", sortable: true },
         { text: "Acciones", value: "actions", sortable: false },
       ],
       usuarioEditar: [],
@@ -132,8 +129,20 @@ export default {
     created() {
       axios.get("/usuario").then((res) => {
         this.usuarios = res.data;
-      });
+        this.usuarios.forEach(usuario =>{
+          usuario.fechaAlta = this.darFormatoFecha(usuario.created_at)
+        })
+
+      })
+      .catch(error => console.log(error));
     },
+    darFormatoFecha(fecha) {
+            if (!fecha) return null;
+            fecha = fecha.substr(0,10);
+            console.log(fecha);
+            const [anio, mes, dia] = fecha.split("-");
+            return `${dia}/${mes}/${anio}`;
+        }
   },
 
   mounted() {

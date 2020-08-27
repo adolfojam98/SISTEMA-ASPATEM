@@ -24,7 +24,7 @@
                         color="primary"
                         :disabled="!valid"
                         @click.prevent="generarCuota"
-                        >Generer cuota
+                        >Generar cuota
                     </v-btn>
                 </v-col>
             </v-form>

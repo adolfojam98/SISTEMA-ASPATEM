@@ -28,7 +28,8 @@ class UsuarioController extends Controller
      */
     public function create()
     {
-        return Usuario::all(); 
+         
+        return Usuario::all();
        
     }
 

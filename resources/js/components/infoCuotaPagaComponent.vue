@@ -26,9 +26,9 @@
 
                 <div class="text-h6">Importe de la cuota</div>
                 <div class="ml-1 text-body-1">${{ cuota.importe }}</div>
-                <div v-if="cuota.descuento">
+                <div v-if="cuota.observacion">
                     <h5 class="text--secondary">
-                        (*)Se aplico el descuento de Familiar/Amigo
+                        (*) {{cuota.observacion}}
                     </h5>
                 </div>
 

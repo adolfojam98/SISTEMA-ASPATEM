@@ -156,6 +156,7 @@ class CuotaController extends Controller
                 if ($usuario->socio = true && $usuario->id != $request->usuario_id) {
                   
                     $cuota->descuento = true;
+                    $cuota->observacion = 'Se aplico el descuento de Familiar/Amigo';
                 }
             }
         }
@@ -198,6 +199,9 @@ class CuotaController extends Controller
 
         if($request->importe!=NULL){
             $cuota->importe = $request->importe;
+        }
+        if($request->observacion != NULL){
+            $cuota->observacion = $request->observacion;
         }
 
         $cuota->save();

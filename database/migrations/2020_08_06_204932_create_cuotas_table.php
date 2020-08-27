@@ -17,10 +17,13 @@ class CreateCuotasTable extends Migration
             $table->id();
             $table->integer('mes');
             $table->integer('anio');
+            $table->string('observacion')->nullable();
             $table->boolean('descuento')->default(false);
             $table->decimal('importe',8,2);
             $table->dateTimeTz('fechaPago')->nullable();
             $table->BigInteger('usuario_id')->unsigned();
+
+            
             $table->timestamps();
 
             $table->foreign('usuario_id')->references('id')->on('usuarios')

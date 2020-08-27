@@ -43,6 +43,7 @@
                                 <th class="text-left">Mes</th>
                                 <th class="text-left">Año</th>
                                 <th class="text-left">Monto</th>
+                                <th class="text-left">Fecha Pago</th>
                                 <th class="text-left"></th>
                             </tr>
                         </thead>
@@ -62,6 +63,7 @@
                                 <td>{{ cuota.mes }}</td>
                                 <td>{{ cuota.anio }}</td>
                                 <td>${{ cuota.importe }}</td>
+                                <td>{{ cuota.fechaPago }}</td>
                                 <td>
                                     <div class="text-center">
                                         <v-chip color="success" dark>
@@ -84,6 +86,7 @@
                                 <td>{{ cuota.mes }}</td>
                                 <td>{{ cuota.anio }}</td>
                                 <td>${{ cuota.importe }}</td>
+                                <td>{{cuota.fechaPago}}</td>
                                 <td>
                                     <div class="text-center">
                                         <v-chip color="error" dark>
@@ -154,10 +157,21 @@ export default {
                     .then(res => {
                         this.cuotasUsuario = res.data;
                         console.log(res.data);
+                        this.cuotasUsuario.forEach(cuota =>{
+                            console.log(cuota.fechaPago)
+                            cuota.fechaPago = this.darFormatoFecha(cuota.fechaPago)
+                        })
                         this.busco = true;
                     });
             }
         },
+        darFormatoFecha(fecha) {
+            if (!fecha) return null;
+            console.log(fecha);
+             fecha = fecha.substr(0,10);
+            const [anio, mes, dia] = fecha.split("-");
+            return `${dia}/${mes}/${anio}`;
+        }
         
 
        

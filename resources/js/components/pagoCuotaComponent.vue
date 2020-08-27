@@ -27,11 +27,16 @@
 
                 <div class="text-h6">Importe de la cuota</div>
 
-                <div class="ml-1 text-body-1">
-                    <v-row dense justify="space-between">
+                <div class="text-body-1">
+                    <v-row
+                        dense
+                        justify="space-between"
+                        class="white"
+                        no-gutters
+                    >
                         <v-col cols="6">
                             <v-text-field
-                                label="Solo"
+                                label="Ingresar monto"
                                 prefix="$"
                                 outlined
                                 flat
@@ -64,13 +69,27 @@
                             </v-tooltip>
                         </v-col>
                     </v-row>
+
+                    <div v-if="!editarMonto">
+<v-divider></v-divider> 
+                    <v-row dense  no-gutters  >
+                        
+                        <v-col cols = '11'>
+                            <v-text-field 
+                                v-model="observacion"
+                                label="Observacion del cambio de monto"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                    </div>
+                    
                 </div>
 
                 <v-divider></v-divider>
 
                 <div class="text-h6">Fecha de pago</div>
 
-                <v-row>
+                <v-row no-gutters>
                     <v-col dense cols="7">
                         <v-menu
                             v-model="menuFecha"
@@ -118,23 +137,26 @@ export default {
                 new Date().toISOString().substr(0, 10)
             ),
             menuFecha: false,
-           
 
             importePersonalizado: "",
             importeRules: [
                 v => !!v || "Importe requerido",
                 v => v >= 0 || "Importe no valido"
             ],
-            editarMonto: true
+            editarMonto: true,
+            observacion : null
         };
     },
     watch: {
         fecha(val) {
             this.formatoFecha = this.darFormatoFecha(this.fecha);
         },
-        cuota(){
-            this.fecha = new Date().toISOString().substr(0, 10)
-            this.editarMonto = true
+        cuota() {
+            this.fecha = new Date().toISOString().substr(0, 10);
+            this.editarMonto = true;
+        },
+        editarMonto(){
+            this.observacion = null
         }
     },
     methods: {
@@ -142,19 +164,18 @@ export default {
             axios
                 .put("/pagarCuota", {
                     importe: this.cuota.importe,
-                    fecha : this.fecha,
-                    id: this.cuota.id
+                    fecha: this.fecha,
+                    id: this.cuota.id,
+                    observacion : this.observacion
                 })
                 .then(res => {
-
-                
-                    this.importePersonalizado = null
-                    this.$emit("recargarCuotas", true)
-                    this.snackbar = true
+                    this.importePersonalizado = null;
+                    this.$emit("recargarCuotas", true);
+                    this.snackbar = true;
                 })
                 .catch(error => {
-                    console.log(error)
-                })
+                    console.log(error);
+                });
         },
 
         darFormatoFecha(fecha) {

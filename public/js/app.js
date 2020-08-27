@@ -2507,6 +2507,18 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 //
 //
 //
@@ -2606,6 +2618,10 @@ __webpack_require__.r(__webpack_exports__);
         value: "telefono",
         sortable: false
       }, {
+        text: "Fecha de alta",
+        value: "fechaAlta",
+        sortable: true
+      }, {
         text: "Acciones",
         value: "actions",
         sortable: false
@@ -2642,7 +2658,26 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get("/usuario").then(function (res) {
         _this.usuarios = res.data;
+
+        _this.usuarios.forEach(function (usuario) {
+          usuario.fechaAlta = _this.darFormatoFecha(usuario.created_at);
+        });
+      })["catch"](function (error) {
+        return console.log(error);
       });
+    },
+    darFormatoFecha: function darFormatoFecha(fecha) {
+      if (!fecha) return null;
+      fecha = fecha.substr(0, 10);
+      console.log(fecha);
+
+      var _fecha$split = fecha.split("-"),
+          _fecha$split2 = _slicedToArray(_fecha$split, 3),
+          anio = _fecha$split2[0],
+          mes = _fecha$split2[1],
+          dia = _fecha$split2[2];
+
+      return "".concat(dia, "/").concat(mes, "/").concat(anio);
     }
   },
   mounted: function mounted() {
@@ -3266,6 +3301,25 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["cuota", "usuario"],
   data: function data() {
@@ -3279,7 +3333,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       }, function (v) {
         return v >= 0 || "Importe no valido";
       }],
-      editarMonto: true
+      editarMonto: true,
+      observacion: null
     };
   },
   watch: {
@@ -3289,6 +3344,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     cuota: function cuota() {
       this.fecha = new Date().toISOString().substr(0, 10);
       this.editarMonto = true;
+    },
+    editarMonto: function editarMonto() {
+      this.observacion = null;
     }
   },
   methods: {
@@ -3298,7 +3356,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       axios.put("/pagarCuota", {
         importe: this.cuota.importe,
         fecha: this.fecha,
-        id: this.cuota.id
+        id: this.cuota.id,
+        observacion: this.observacion
       }).then(function (res) {
         _this.importePersonalizado = null;
 
@@ -3546,6 +3605,21 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+//
+//
+//
 //
 //
 //
@@ -3701,9 +3775,28 @@ __webpack_require__.r(__webpack_exports__);
         axios.get("/usuario/".concat(this.usuarioSeleccionado.id, "/cuotas")).then(function (res) {
           _this.cuotasUsuario = res.data;
           console.log(res.data);
+
+          _this.cuotasUsuario.forEach(function (cuota) {
+            console.log(cuota.fechaPago);
+            cuota.fechaPago = _this.darFormatoFecha(cuota.fechaPago);
+          });
+
           _this.busco = true;
         });
       }
+    },
+    darFormatoFecha: function darFormatoFecha(fecha) {
+      if (!fecha) return null;
+      console.log(fecha);
+      fecha = fecha.substr(0, 10);
+
+      var _fecha$split = fecha.split("-"),
+          _fecha$split2 = _slicedToArray(_fecha$split, 3),
+          anio = _fecha$split2[0],
+          mes = _fecha$split2[1],
+          dia = _fecha$split2[2];
+
+      return "".concat(dia, "/").concat(mes, "/").concat(anio);
     }
   },
   watch: {
@@ -40682,7 +40775,7 @@ var render = function() {
                         }
                       }
                     },
-                    [_vm._v("Generer cuota\n                ")]
+                    [_vm._v("Generar cuota\n                ")]
                   )
                 ],
                 1
@@ -41736,11 +41829,13 @@ var render = function() {
                 _vm._v("$" + _vm._s(_vm.cuota.importe))
               ]),
               _vm._v(" "),
-              _vm.cuota.descuento
+              _vm.cuota.observacion
                 ? _c("div", [
                     _c("h5", { staticClass: "text--secondary" }, [
                       _vm._v(
-                        "\n                    (*)Se aplico el descuento de Familiar/Amigo\n                "
+                        "\n                    (*) " +
+                          _vm._s(_vm.cuota.observacion) +
+                          "\n                "
                       )
                     ])
                   ])
@@ -41816,11 +41911,11 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "text-body-1 ml-1" }, [
               _vm._v(
-                "\n                " +
+                "\n                    " +
                   _vm._s(_vm.usuario.nombre) +
                   " " +
                   _vm._s(_vm.usuario.apellido) +
-                  "\n            "
+                  "\n                "
               )
             ]),
             _vm._v(" "),
@@ -41832,11 +41927,11 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "ml-1 text-body-1" }, [
               _vm._v(
-                "\n                " +
+                "\n                    " +
                   _vm._s(_vm.cuota.mes) +
                   " del " +
                   _vm._s(_vm.cuota.anio) +
-                  "\n            "
+                  "\n                "
               )
             ]),
             _vm._v(" "),
@@ -41848,11 +41943,18 @@ var render = function() {
             _vm._v(" "),
             _c(
               "div",
-              { staticClass: "ml-1 text-body-1" },
+              { staticClass: "text-body-1" },
               [
                 _c(
                   "v-row",
-                  { attrs: { dense: "", justify: "space-between" } },
+                  {
+                    staticClass: "white",
+                    attrs: {
+                      dense: "",
+                      justify: "space-between",
+                      "no-gutters": ""
+                    }
+                  },
                   [
                     _c(
                       "v-col",
@@ -41860,7 +41962,7 @@ var render = function() {
                       [
                         _c("v-text-field", {
                           attrs: {
-                            label: "Solo",
+                            label: "Ingresar monto",
                             prefix: "$",
                             outlined: "",
                             flat: "",
@@ -41926,7 +42028,7 @@ var render = function() {
                                           ),
                                           [
                                             _vm._v(
-                                              "\n                                        mdi-border-color"
+                                              "\n                                            mdi-border-color"
                                             )
                                           ]
                                         )
@@ -41945,7 +42047,44 @@ var render = function() {
                     )
                   ],
                   1
-                )
+                ),
+                _vm._v(" "),
+                !_vm.editarMonto
+                  ? _c(
+                      "div",
+                      [
+                        _c("v-divider"),
+                        _vm._v(" "),
+                        _c(
+                          "v-row",
+                          { attrs: { dense: "", "no-gutters": "" } },
+                          [
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "11" } },
+                              [
+                                _c("v-text-field", {
+                                  attrs: {
+                                    label: "Observacion del cambio de monto"
+                                  },
+                                  model: {
+                                    value: _vm.observacion,
+                                    callback: function($$v) {
+                                      _vm.observacion = $$v
+                                    },
+                                    expression: "observacion"
+                                  }
+                                })
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  : _vm._e()
               ],
               1
             ),
@@ -41956,6 +42095,7 @@ var render = function() {
             _vm._v(" "),
             _c(
               "v-row",
+              { attrs: { "no-gutters": "" } },
               [
                 _c(
                   "v-col",
@@ -42051,7 +42191,7 @@ var render = function() {
                   },
                   [
                     _vm._v(
-                      "\n                    Pagar cuota\n                "
+                      "\n                        Pagar cuota\n                    "
                     )
                   ]
                 )
@@ -42610,6 +42750,10 @@ var render = function() {
                                 _vm._v("Monto")
                               ]),
                               _vm._v(" "),
+                              _c("th", { staticClass: "text-left" }, [
+                                _vm._v("Fecha Pago")
+                              ]),
+                              _vm._v(" "),
                               _c("th", { staticClass: "text-left" })
                             ])
                           : _vm._e()
@@ -42638,6 +42782,8 @@ var render = function() {
                                   _c("td", [
                                     _vm._v("$" + _vm._s(cuota.importe))
                                   ]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(cuota.fechaPago))]),
                                   _vm._v(" "),
                                   _c("td", [
                                     _c(
@@ -42685,6 +42831,8 @@ var render = function() {
                                   _c("td", [
                                     _vm._v("$" + _vm._s(cuota.importe))
                                   ]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(cuota.fechaPago))]),
                                   _vm._v(" "),
                                   _c("td", [
                                     _c(
