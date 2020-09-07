@@ -38,6 +38,6 @@ DB_PASSWORD= //Aca indicamos la contraseña del usuario
 
 Luego de esto, teniendo la base de datos ya funcionando, tenemos que migrar las tablas, para eso ejecutamos el comando: php artisan migrate --seed  (la bandera --seed sirve para que cargue datos de prueba)
 
-Por ultimo ejecutamos el siguiente comando para dar de alta el proyecto en un servidor local : php artisan migrate
+Por ultimo ejecutamos el siguiente comando para dar de alta el proyecto en un servidor local : php artisan serve
 
 
