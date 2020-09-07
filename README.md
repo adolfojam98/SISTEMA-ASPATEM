@@ -23,11 +23,17 @@ cp .env.example .env
 php artisan key:generate
 
 Ahora lo siguiente es abrir el proyecto en un esitor de codigo
+que qq
 Buscamos el archivo .env que se encuentra en la raiz
+
 Luego modificamos las siguientes lineas:
+
 DB_CONNECTION=mysql //Aca indicamos que motor de base de datos vamos a usar
+
 DB_DATABASE=lraravel //Aca indicamos que base de datos vamos a usar(se tiene que crear previamente)
+
 DB_USERNMAE=root //Aca indicamos que usuario se va a conectar
+
 DB_PASSWORD= //Aca indicamos la contraseña del usuario
 
 Luego de esto, teniendo la base de datos ya funcionando, tenemos que migrar las tablas, para eso ejecutamos el comando: php artisan migrate --seed  (la bandera --seed sirve para que cargue datos de prueba)
