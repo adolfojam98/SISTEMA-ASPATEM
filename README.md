@@ -11,7 +11,7 @@ Tener instalado algun Sistema Gestor de Base de Datos(preferiblemente para manej
 
 Instalar LARAVEL(framework de php) : ejecutar el siguiente comando en un terminal : composer global require laravel/installer
 
-Si cuentan con Git instalado , en la terminal ejecutan eñ siguiente comando para traer el proyecto : git clone https://github.com/adolfojam98/SISTEMA-ASPATEM
+Si cuentan con Git instalado , en la terminal ejecutan el siguiente comando para traer el proyecto : git clone https://github.com/adolfojam98/SISTEMA-ASPATEM
 
 entran al proyecto con la misma teminal poniendo cd SISTEMA-ASPATEM
 
