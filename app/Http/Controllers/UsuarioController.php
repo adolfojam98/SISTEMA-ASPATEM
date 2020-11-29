@@ -46,7 +46,13 @@ class UsuarioController extends Controller
         $usuario->apellido = $request->apellido;
         $usuario->mail = $request->mail;
         $usuario->telefono = $request->telefono;
-        $usuario->socio = $request->socio;
+        if($request->socio){
+
+            $usuario->socio = 1;
+        }else{
+            $usuario->socio = 0;
+
+        }
 
         $usuario->save();
 

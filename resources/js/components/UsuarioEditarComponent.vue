@@ -14,7 +14,7 @@
       <v-text-field v-model="usuario.telefono" label="telefono" :rules="telefonoRules" required></v-text-field>
 
       
-      <v-btn depressed color="primary" :disabled="!valid" @click.prevent="updateUsuario">Guardar cambios</v-btn>
+      <v-btn block large depressed color="primary" :disabled="!valid" @click.prevent="updateUsuario">Guardar cambios</v-btn>
     </v-container>
   </v-form>
 

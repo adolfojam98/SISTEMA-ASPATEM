@@ -47,11 +47,11 @@
                                 <th class="text-left"></th>
                             </tr>
                         </thead>
-                        <tbody
+                        <tbody 
                             v-for="(cuota, index) in cuotasUsuario"
                             :key="index"
                         >
-                            <tr
+                            <tr style="cursor: pointer"
                                 v-if="cuota.fechaPago"
                                 @click="
                                     [
@@ -73,8 +73,9 @@
                                 </td>
                             </tr>
 
-                            <tr
+                            <tr 
                                 v-else
+                                style="cursor: pointer"
                                 @click="
                                     [
                                         (pagoCuota = !pagoCuota),
@@ -156,9 +157,9 @@ export default {
                     .get(`/usuario/${this.usuarioSeleccionado.id}/cuotas`)
                     .then(res => {
                         this.cuotasUsuario = res.data;
-                        console.log(res.data);
+                        
                         this.cuotasUsuario.forEach(cuota =>{
-                            console.log(cuota.fechaPago)
+                            
                             cuota.fechaPago = this.darFormatoFecha(cuota.fechaPago)
                         })
                         this.busco = true;
@@ -167,7 +168,7 @@ export default {
         },
         darFormatoFecha(fecha) {
             if (!fecha) return null;
-            console.log(fecha);
+            console.log(fecha)
              fecha = fecha.substr(0,10);
             const [anio, mes, dia] = fecha.split("-");
             return `${dia}/${mes}/${anio}`;

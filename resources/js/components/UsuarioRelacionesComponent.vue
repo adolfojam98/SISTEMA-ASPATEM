@@ -35,7 +35,7 @@
                 ></v-autocomplete>
             </div>
             
-            <v-btn depressed color="primary" @click.prevent="agregarRelacion()">Agregar relacion</v-btn>
+            <v-btn block large depressed color="primary" @click.prevent="agregarRelacion()">Agregar relacion</v-btn>
 
             <v-snackbar
             v-model="snackbarAgregadocorrectamente"

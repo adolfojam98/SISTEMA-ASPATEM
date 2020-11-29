@@ -1,5 +1,5 @@
 <template>
-<cargar-usuario>
+<cargar-usuario es_socio>
     
 </cargar-usuario>
 </template>

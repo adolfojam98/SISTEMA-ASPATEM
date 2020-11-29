@@ -2178,7 +2178,73 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    es_socio: Boolean
+  },
   data: function data() {
     return {
       valid: false,
@@ -2224,12 +2290,14 @@ __webpack_require__.r(__webpack_exports__);
           apellido: this.apellido,
           mail: this.email,
           telefono: this.telefono,
-          socio: true
+          socio: this.es_socio
         }).then(function (response) {
           _this.snackbar = true;
           _this.id_usuario = response.data.id;
 
-          _this.generarCuota();
+          if (_this.es_socio) {
+            _this.generarCuota();
+          }
         })["catch"](function (error) {
           console.log(error.response);
         });
@@ -3320,6 +3388,21 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["cuota", "usuario"],
   data: function data() {
@@ -3362,11 +3445,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         _this.importePersonalizado = null;
 
         _this.$emit("recargarCuotas", true);
-
-        _this.snackbar = true;
       })["catch"](function (error) {
         console.log(error);
       });
+      this.snackbar = true;
     },
     darFormatoFecha: function darFormatoFecha(fecha) {
       if (!fecha) return null;
@@ -3748,6 +3830,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3774,10 +3857,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         this.cuotasUsuario = [];
         axios.get("/usuario/".concat(this.usuarioSeleccionado.id, "/cuotas")).then(function (res) {
           _this.cuotasUsuario = res.data;
-          console.log(res.data);
 
           _this.cuotasUsuario.forEach(function (cuota) {
-            console.log(cuota.fechaPago);
             cuota.fechaPago = _this.darFormatoFecha(cuota.fechaPago);
           });
 
@@ -40357,124 +40438,239 @@ var render = function() {
             "v-container",
             { attrs: { "grid-list-xs": "" } },
             [
-              _c(
-                "v-form",
-                {
-                  ref: "form",
-                  attrs: { "lazy-validation": "" },
-                  model: {
-                    value: _vm.valid,
-                    callback: function($$v) {
-                      _vm.valid = $$v
+              _vm.es_socio
+                ? _c(
+                    "v-form",
+                    {
+                      ref: "form",
+                      attrs: { "lazy-validation": "" },
+                      model: {
+                        value: _vm.valid,
+                        callback: function($$v) {
+                          _vm.valid = $$v
+                        },
+                        expression: "valid"
+                      }
                     },
-                    expression: "valid"
-                  }
-                },
-                [
-                  _c(
-                    "v-container",
                     [
-                      _c("v-text-field", {
-                        attrs: {
-                          rules: _vm.nombreRules,
-                          counter: 20,
-                          label: "Nombre",
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.nombre,
-                          callback: function($$v) {
-                            _vm.nombre = $$v
-                          },
-                          expression: "nombre"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          rules: _vm.apellidoRules,
-                          counter: 20,
-                          label: "Apellido",
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.apellido,
-                          callback: function($$v) {
-                            _vm.apellido = $$v
-                          },
-                          expression: "apellido"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          rules: _vm.emailRules,
-                          label: "E-mail",
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.email,
-                          callback: function($$v) {
-                            _vm.email = $$v
-                          },
-                          expression: "email"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          label: "Telefono",
-                          rules: _vm.telefonoRules,
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.telefono,
-                          callback: function($$v) {
-                            _vm.telefono = $$v
-                          },
-                          expression: "telefono"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          label: "Importe del corriente mes",
-                          rules: _vm.importeRules,
-                          prefix: "$",
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.importe,
-                          callback: function($$v) {
-                            _vm.importe = $$v
-                          },
-                          expression: "importe"
-                        }
-                      }),
-                      _vm._v(" "),
                       _c(
-                        "v-btn",
-                        {
-                          attrs: {
-                            depressed: "",
-                            color: "primary",
-                            disabled: !_vm.valid
-                          },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.cargarUsuario($event)
+                        "v-container",
+                        [
+                          _c("v-text-field", {
+                            attrs: {
+                              rules: _vm.nombreRules,
+                              counter: 20,
+                              label: "Nombre",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.nombre,
+                              callback: function($$v) {
+                                _vm.nombre = $$v
+                              },
+                              expression: "nombre"
                             }
-                          }
-                        },
-                        [_vm._v("Dar de alta y pagar")]
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              rules: _vm.apellidoRules,
+                              counter: 20,
+                              label: "Apellido",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.apellido,
+                              callback: function($$v) {
+                                _vm.apellido = $$v
+                              },
+                              expression: "apellido"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              rules: _vm.emailRules,
+                              label: "E-mail",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.email,
+                              callback: function($$v) {
+                                _vm.email = $$v
+                              },
+                              expression: "email"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              label: "Telefono",
+                              rules: _vm.telefonoRules,
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.telefono,
+                              callback: function($$v) {
+                                _vm.telefono = $$v
+                              },
+                              expression: "telefono"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              label: "Importe del corriente mes",
+                              rules: _vm.importeRules,
+                              prefix: "$",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.importe,
+                              callback: function($$v) {
+                                _vm.importe = $$v
+                              },
+                              expression: "importe"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                block: "",
+                                large: "",
+                                depressed: "",
+                                color: "primary",
+                                disabled: !_vm.valid
+                              },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.cargarUsuario($event)
+                                }
+                              }
+                            },
+                            [_vm._v("Dar de alta y pagar")]
+                          )
+                        ],
+                        1
                       )
                     ],
                     1
                   )
-                ],
-                1
-              )
+                : _vm._e()
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-container",
+            { attrs: { "grid-list-xs": "" } },
+            [
+              !_vm.es_socio
+                ? _c(
+                    "v-form",
+                    {
+                      ref: "form",
+                      attrs: { "lazy-validation": "" },
+                      model: {
+                        value: _vm.valid,
+                        callback: function($$v) {
+                          _vm.valid = $$v
+                        },
+                        expression: "valid"
+                      }
+                    },
+                    [
+                      _c(
+                        "v-container",
+                        [
+                          _c("h1", [_vm._v("no es socio")]),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              rules: _vm.nombreRules,
+                              counter: 20,
+                              label: "Nombre",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.nombre,
+                              callback: function($$v) {
+                                _vm.nombre = $$v
+                              },
+                              expression: "nombre"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              rules: _vm.apellidoRules,
+                              counter: 20,
+                              label: "Apellido",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.apellido,
+                              callback: function($$v) {
+                                _vm.apellido = $$v
+                              },
+                              expression: "apellido"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: { rules: _vm.emailRules, label: "E-mail" },
+                            model: {
+                              value: _vm.email,
+                              callback: function($$v) {
+                                _vm.email = $$v
+                              },
+                              expression: "email"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              label: "Telefono",
+                              rules: _vm.telefonoRules
+                            },
+                            model: {
+                              value: _vm.telefono,
+                              callback: function($$v) {
+                                _vm.telefono = $$v
+                              },
+                              expression: "telefono"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                block: "",
+                                large: "",
+                                depressed: "",
+                                color: "primary",
+                                disabled: !_vm.valid
+                              },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.cargarUsuario($event)
+                                }
+                              }
+                            },
+                            [_vm._v("Dar de Alta")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                : _vm._e()
             ],
             1
           )
@@ -41268,6 +41464,8 @@ var render = function() {
                     "v-btn",
                     {
                       attrs: {
+                        block: "",
+                        large: "",
                         depressed: "",
                         color: "primary",
                         disabled: !_vm.valid
@@ -41431,7 +41629,7 @@ var render = function() {
           _c(
             "v-btn",
             {
-              attrs: { depressed: "", color: "primary" },
+              attrs: { block: "", large: "", depressed: "", color: "primary" },
               on: {
                 click: function($event) {
                   $event.preventDefault()
@@ -42203,7 +42401,49 @@ var render = function() {
           ],
           1
         )
-      ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "v-snackbar",
+        {
+          attrs: { timeout: "3000" },
+          scopedSlots: _vm._u([
+            {
+              key: "action",
+              fn: function(ref) {
+                var attrs = ref.attrs
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._b(
+                      {
+                        attrs: { color: "blue", text: "" },
+                        on: {
+                          click: function($event) {
+                            _vm.snackbar = false
+                          }
+                        }
+                      },
+                      "v-btn",
+                      attrs,
+                      false
+                    ),
+                    [_vm._v("\n                    Cerrar\n                ")]
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.snackbar,
+            callback: function($$v) {
+              _vm.snackbar = $$v
+            },
+            expression: "snackbar"
+          }
+        },
+        [_vm._v("\n            Cuota pagada\n\n        ")]
+      )
     ],
     1
   )
@@ -42590,7 +42830,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("cargar-usuario")
+  return _c("cargar-usuario", { attrs: { es_socio: "" } })
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -42765,6 +43005,7 @@ var render = function() {
                             ? _c(
                                 "tr",
                                 {
+                                  staticStyle: { cursor: "pointer" },
                                   on: {
                                     click: function($event) {
                                       ;[
@@ -42813,6 +43054,7 @@ var render = function() {
                             : _c(
                                 "tr",
                                 {
+                                  staticStyle: { cursor: "pointer" },
                                   on: {
                                     click: function($event) {
                                       ;[
@@ -103320,8 +103562,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\adolf\Desktop\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\adolf\Desktop\Nueva carpeta\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\adolf\Desktop\Nueva carpeta\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

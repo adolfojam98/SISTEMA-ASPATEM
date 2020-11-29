@@ -124,6 +124,21 @@
                 <br />
             </div>
         </v-card>
+        
+  <v-snackbar v-model="snackbar" timeout="3000">
+            Cuota pagada
+
+        <template v-slot:action="{ attrs }">
+                <v-btn
+                    color="blue"
+                    text
+                    v-bind="attrs"
+                    @click="snackbar = false"
+                >
+                    Cerrar
+                </v-btn>
+            </template>
+        </v-snackbar>
     </div>
 </template>
 
@@ -170,12 +185,15 @@ export default {
                 })
                 .then(res => {
                     this.importePersonalizado = null;
+                    
                     this.$emit("recargarCuotas", true);
-                    this.snackbar = true;
+                    
                 })
                 .catch(error => {
                     console.log(error);
                 });
+                  this.snackbar = true;
+
         },
 
         darFormatoFecha(fecha) {

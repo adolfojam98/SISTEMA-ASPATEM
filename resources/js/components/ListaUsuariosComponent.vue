@@ -12,7 +12,7 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="usuarios" :search="search">
+      <v-data-table :headers="headers" :items="usuarios" :search="search" >
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">

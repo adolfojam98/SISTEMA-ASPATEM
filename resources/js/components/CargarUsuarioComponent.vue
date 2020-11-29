@@ -3,7 +3,7 @@
         <v-card>
 <v-container grid-list-xs>
     
-        <v-form v-model="valid" ref="form" lazy-validation>
+        <v-form v-model="valid" ref="form" v-if="es_socio" lazy-validation >
             <v-container>
                 <v-text-field
                     v-model="nombre"
@@ -46,6 +46,8 @@
                 
 
                 <v-btn
+                    block 
+                    large
                     depressed
                     color="primary"
                     :disabled="!valid"
@@ -56,6 +58,63 @@
         </v-form>
 
 </v-container>
+
+
+
+<v-container grid-list-xs>
+    
+        <v-form v-model="valid" ref="form" v-if="!es_socio" lazy-validation >
+            <v-container>
+                <h1>no es socio</h1>
+                <v-text-field
+                    v-model="nombre"
+                    :rules="nombreRules"
+                    :counter="20"
+                    label="Nombre"
+                    required
+                ></v-text-field>
+
+                <v-text-field
+                    v-model="apellido"
+                    :rules="apellidoRules"
+                    :counter="20"
+                    label="Apellido"
+                    required
+                ></v-text-field>
+
+                <v-text-field
+                    v-model="email"
+                    :rules="emailRules"
+                    label="E-mail"
+                    
+                ></v-text-field>
+
+                <v-text-field
+                    v-model="telefono"
+                    label="Telefono"
+                    :rules="telefonoRules"
+                    
+                ></v-text-field>
+
+                
+
+
+                <v-btn
+                    block 
+                    large
+                    depressed
+                    color="primary"
+                    :disabled="!valid"
+                    @click.prevent="cargarUsuario"
+                    >Dar de Alta</v-btn
+                >
+            </v-container>
+        </v-form>
+
+</v-container>
+
+
+
         </v-card>
 
         
@@ -74,11 +133,18 @@
                 </v-btn>
             </template>
         </v-snackbar>
+
+
+
+
     </div>
 </template>
 
 <script>
 export default {
+    props : {
+      es_socio : Boolean  
+    },
     data: () => ({
         valid: false,
         id_usuario: null,
@@ -123,13 +189,15 @@ export default {
                         apellido: this.apellido,
                         mail: this.email,
                         telefono: this.telefono,
-                        socio: true
+                        socio: this.es_socio
                     })
                     .then(response => {
                         this.snackbar = true;
                         this.id_usuario = response.data.id;
+                            if(this.es_socio){
+                                this.generarCuota();
 
-                        this.generarCuota();
+                            }
                     })
                     .catch(error => {
                         console.log(error.response);
