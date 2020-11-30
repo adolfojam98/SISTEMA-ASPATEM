@@ -9,6 +9,8 @@
 
       <v-text-field v-model="usuario.apellido" :rules="apellidoRules" :counter="20" label="Apellido" required></v-text-field>
 
+      <v-text-field v-model="usuario.dni" :rules="dniRules" label="DNI" required></v-text-field>
+
       <v-text-field v-model="usuario.mail" :rules="emailRules" label="E-mail" required></v-text-field>
 
       <v-text-field v-model="usuario.telefono" label="telefono" :rules="telefonoRules" required></v-text-field>
@@ -78,10 +80,18 @@ export default {
       v => !!v || "Telefono requerido",
     ],
     
-    emailRules: [
-      v => !!v || "E-mail requerido",
-      v => /.+@.+/.test(v) || "E-mail no valido"
-    ],
+    dni: "",
+        dniRules:[
+            v => !!v || "Importe requerido",
+            v => v >= 10000000 || "El DNI debe tener 8 caracteres",
+            v => v < 100000000 || "El DNI debe tener 8 caracteres"
+        ],
+
+        email: "",
+        emailRules: [
+            v => !!v || "E-mail requerido",
+            v => /.+@.+[.].+/.test(v) || "E-mail no valido"
+        ],
     snackbar : false
     }
   },
@@ -98,6 +108,7 @@ export default {
           'mail':this.usuario.mail,
           'telefono':this.usuario.telefono,
           'socio':this.usuario.socio,
+          'dni':this.usuario.dni,
         })
         .then(response => {
            this.snackbar = true

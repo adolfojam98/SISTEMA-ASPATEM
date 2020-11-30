@@ -2241,6 +2241,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     es_socio: Boolean
@@ -2271,11 +2285,19 @@ __webpack_require__.r(__webpack_exports__);
       }, function (v) {
         return v >= 0 || "Importe no valido";
       }],
+      dni: "",
+      dniRules: [function (v) {
+        return !!v || "Importe requerido";
+      }, function (v) {
+        return v >= 10000000 || "El DNI debe tener 8 caracteres";
+      }, function (v) {
+        return v < 100000000 || "El DNI debe tener 8 caracteres";
+      }],
       email: "",
       emailRules: [function (v) {
         return !!v || "E-mail requerido";
       }, function (v) {
-        return /.+@.+/.test(v) || "E-mail no valido";
+        return /.+@.+[.].+/.test(v) || "E-mail no valido";
       }],
       snackbar: false
     };
@@ -2290,7 +2312,8 @@ __webpack_require__.r(__webpack_exports__);
           apellido: this.apellido,
           mail: this.email,
           telefono: this.telefono,
-          socio: this.es_socio
+          socio: this.es_socio,
+          dni: this.dni
         }).then(function (response) {
           _this.snackbar = true;
           _this.id_usuario = response.data.id;
@@ -2672,15 +2695,18 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       usuarios: [],
       search: "",
       headers: [{
-        text: "Nombre",
-        value: "nombre"
-      }, {
         text: "Apellido",
         value: "apellido"
       }, {
+        text: "Nombre",
+        value: "nombre"
+      }, {
+        text: "DNI",
+        value: "dni"
+      }, {
         text: "Mail",
         value: "mail",
-        sortable: false
+        sortable: true
       }, {
         text: "Telefono",
         value: "telefono",
@@ -2820,6 +2846,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["usuario"],
   data: function data() {
@@ -2838,10 +2866,19 @@ __webpack_require__.r(__webpack_exports__);
       telefonoRules: [function (v) {
         return !!v || "Telefono requerido";
       }],
+      dni: "",
+      dniRules: [function (v) {
+        return !!v || "Importe requerido";
+      }, function (v) {
+        return v >= 10000000 || "El DNI debe tener 8 caracteres";
+      }, function (v) {
+        return v < 100000000 || "El DNI debe tener 8 caracteres";
+      }],
+      email: "",
       emailRules: [function (v) {
         return !!v || "E-mail requerido";
       }, function (v) {
-        return /.+@.+/.test(v) || "E-mail no valido";
+        return /.+@.+[.].+/.test(v) || "E-mail no valido";
       }],
       snackbar: false
     };
@@ -2857,7 +2894,8 @@ __webpack_require__.r(__webpack_exports__);
           'apellido': this.usuario.apellido,
           'mail': this.usuario.mail,
           'telefono': this.usuario.telefono,
-          'socio': this.usuario.socio
+          'socio': this.usuario.socio,
+          'dni': this.usuario.dni
         }).then(function (response) {
           _this.snackbar = true;
         })["catch"](function (error) {
@@ -3173,6 +3211,227 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.relacionesExistentes();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UsuariosPagosComponent.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UsuariosPagosComponent.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      cuotaActual: "",
+      usuarioSeleccionado: "",
+      usuarios: [],
+      cuotasUsuario: '',
+      infoCuotaPaga: false,
+      pagoCuota: false,
+      CrearCuotaModal: false,
+      busco: false,
+      recargarCuotas: false,
+      snackbar: false
+    };
+  },
+  methods: {
+    nombreCompleto: function nombreCompleto(item) {
+      return item.apellido + " " + item.nombre;
+    },
+    buscarCuotasUsuario: function buscarCuotasUsuario() {
+      var _this = this;
+
+      if (this.usuarioSeleccionado != "") {
+        this.cuotasUsuario = [];
+        axios.get("/usuario/".concat(this.usuarioSeleccionado.id, "/cuotas")).then(function (res) {
+          _this.cuotasUsuario = res.data;
+
+          _this.cuotasUsuario.forEach(function (cuota) {
+            cuota.fechaPago = _this.darFormatoFecha(cuota.fechaPago);
+          });
+
+          _this.busco = true;
+        });
+      }
+    },
+    darFormatoFecha: function darFormatoFecha(fecha) {
+      if (!fecha) return null;
+      console.log(fecha);
+      fecha = fecha.substr(0, 10);
+
+      var _fecha$split = fecha.split("-"),
+          _fecha$split2 = _slicedToArray(_fecha$split, 3),
+          anio = _fecha$split2[0],
+          mes = _fecha$split2[1],
+          dia = _fecha$split2[2];
+
+      return "".concat(dia, "/").concat(mes, "/").concat(anio);
+    }
+  },
+  watch: {
+    recargarCuotas: function recargarCuotas() {
+      this.buscarCuotasUsuario();
+      this.pagoCuota = false;
+      this.snackbar = false;
+      this.recargarCuotas = false;
+    }
+  },
+  created: function created() {
+    var _this2 = this;
+
+    axios.get("/usuario").then(function (res) {
+      _this2.usuarios = res.data;
+    });
   }
 });
 
@@ -3673,227 +3932,6 @@ __webpack_require__.r(__webpack_exports__);
     resetValidation: function resetValidation() {
       this.$refs.form.resetValidation();
     }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/UsuariosPagos.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/UsuariosPagos.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      cuotaActual: "",
-      usuarioSeleccionado: "",
-      usuarios: [],
-      cuotasUsuario: '',
-      infoCuotaPaga: false,
-      pagoCuota: false,
-      CrearCuotaModal: false,
-      busco: false,
-      recargarCuotas: false,
-      snackbar: false
-    };
-  },
-  methods: {
-    nombreCompleto: function nombreCompleto(item) {
-      return item.apellido + " " + item.nombre;
-    },
-    buscarCuotasUsuario: function buscarCuotasUsuario() {
-      var _this = this;
-
-      if (this.usuarioSeleccionado != "") {
-        this.cuotasUsuario = [];
-        axios.get("/usuario/".concat(this.usuarioSeleccionado.id, "/cuotas")).then(function (res) {
-          _this.cuotasUsuario = res.data;
-
-          _this.cuotasUsuario.forEach(function (cuota) {
-            cuota.fechaPago = _this.darFormatoFecha(cuota.fechaPago);
-          });
-
-          _this.busco = true;
-        });
-      }
-    },
-    darFormatoFecha: function darFormatoFecha(fecha) {
-      if (!fecha) return null;
-      console.log(fecha);
-      fecha = fecha.substr(0, 10);
-
-      var _fecha$split = fecha.split("-"),
-          _fecha$split2 = _slicedToArray(_fecha$split, 3),
-          anio = _fecha$split2[0],
-          mes = _fecha$split2[1],
-          dia = _fecha$split2[2];
-
-      return "".concat(dia, "/").concat(mes, "/").concat(anio);
-    }
-  },
-  watch: {
-    recargarCuotas: function recargarCuotas() {
-      this.buscarCuotasUsuario();
-      this.pagoCuota = false;
-      this.snackbar = true;
-      this.recargarCuotas = false;
-    }
-  },
-  created: function created() {
-    var _this2 = this;
-
-    axios.get("/usuario").then(function (res) {
-      _this2.usuarios = res.data;
-    });
   }
 });
 
@@ -19234,7 +19272,7 @@ return jQuery;
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.15';
+  var VERSION = '4.17.20';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -22941,8 +22979,21 @@ return jQuery;
      * @returns {Array} Returns the new sorted array.
      */
     function baseOrderBy(collection, iteratees, orders) {
+      if (iteratees.length) {
+        iteratees = arrayMap(iteratees, function(iteratee) {
+          if (isArray(iteratee)) {
+            return function(value) {
+              return baseGet(value, iteratee.length === 1 ? iteratee[0] : iteratee);
+            }
+          }
+          return iteratee;
+        });
+      } else {
+        iteratees = [identity];
+      }
+
       var index = -1;
-      iteratees = arrayMap(iteratees.length ? iteratees : [identity], baseUnary(getIteratee()));
+      iteratees = arrayMap(iteratees, baseUnary(getIteratee()));
 
       var result = baseMap(collection, function(value, key, collection) {
         var criteria = arrayMap(iteratees, function(iteratee) {
@@ -23199,6 +23250,10 @@ return jQuery;
         var key = toKey(path[index]),
             newValue = value;
 
+        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+          return object;
+        }
+
         if (index != lastIndex) {
           var objValue = nested[key];
           newValue = customizer ? customizer(objValue, key, nested) : undefined;
@@ -23351,11 +23406,14 @@ return jQuery;
      *  into `array`.
      */
     function baseSortedIndexBy(array, value, iteratee, retHighest) {
-      value = iteratee(value);
-
       var low = 0,
-          high = array == null ? 0 : array.length,
-          valIsNaN = value !== value,
+          high = array == null ? 0 : array.length;
+      if (high === 0) {
+        return 0;
+      }
+
+      value = iteratee(value);
+      var valIsNaN = value !== value,
           valIsNull = value === null,
           valIsSymbol = isSymbol(value),
           valIsUndefined = value === undefined;
@@ -24840,10 +24898,11 @@ return jQuery;
       if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
         return false;
       }
-      // Assume cyclic values are equal.
-      var stacked = stack.get(array);
-      if (stacked && stack.get(other)) {
-        return stacked == other;
+      // Check that cyclic values are equal.
+      var arrStacked = stack.get(array);
+      var othStacked = stack.get(other);
+      if (arrStacked && othStacked) {
+        return arrStacked == other && othStacked == array;
       }
       var index = -1,
           result = true,
@@ -25005,10 +25064,11 @@ return jQuery;
           return false;
         }
       }
-      // Assume cyclic values are equal.
-      var stacked = stack.get(object);
-      if (stacked && stack.get(other)) {
-        return stacked == other;
+      // Check that cyclic values are equal.
+      var objStacked = stack.get(object);
+      var othStacked = stack.get(other);
+      if (objStacked && othStacked) {
+        return objStacked == other && othStacked == object;
       }
       var result = true;
       stack.set(object, other);
@@ -28389,6 +28449,10 @@ return jQuery;
      * // The `_.property` iteratee shorthand.
      * _.filter(users, 'active');
      * // => objects for ['barney']
+     *
+     * // Combining several predicates using `_.overEvery` or `_.overSome`.
+     * _.filter(users, _.overSome([{ 'age': 36 }, ['age', 40]]));
+     * // => objects for ['fred', 'barney']
      */
     function filter(collection, predicate) {
       var func = isArray(collection) ? arrayFilter : baseFilter;
@@ -29138,15 +29202,15 @@ return jQuery;
      * var users = [
      *   { 'user': 'fred',   'age': 48 },
      *   { 'user': 'barney', 'age': 36 },
-     *   { 'user': 'fred',   'age': 40 },
+     *   { 'user': 'fred',   'age': 30 },
      *   { 'user': 'barney', 'age': 34 }
      * ];
      *
      * _.sortBy(users, [function(o) { return o.user; }]);
-     * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]
+     * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 30]]
      *
      * _.sortBy(users, ['user', 'age']);
-     * // => objects for [['barney', 34], ['barney', 36], ['fred', 40], ['fred', 48]]
+     * // => objects for [['barney', 34], ['barney', 36], ['fred', 30], ['fred', 48]]
      */
     var sortBy = baseRest(function(collection, iteratees) {
       if (collection == null) {
@@ -34021,11 +34085,11 @@ return jQuery;
 
       // Use a sourceURL for easier debugging.
       // The sourceURL gets injected into the source that's eval-ed, so be careful
-      // with lookup (in case of e.g. prototype pollution), and strip newlines if any.
-      // A newline wouldn't be a valid sourceURL anyway, and it'd enable code injection.
+      // to normalize all kinds of whitespace, so e.g. newlines (and unicode versions of it) can't sneak in
+      // and escape the comment, thus injecting code that gets evaled.
       var sourceURL = '//# sourceURL=' +
         (hasOwnProperty.call(options, 'sourceURL')
-          ? (options.sourceURL + '').replace(/[\r\n]/g, ' ')
+          ? (options.sourceURL + '').replace(/\s/g, ' ')
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -34058,8 +34122,6 @@ return jQuery;
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      // Like with sourceURL, we take care to not check the option's prototype,
-      // as this configuration is a code injection vector.
       var variable = hasOwnProperty.call(options, 'variable') && options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
@@ -34766,6 +34828,9 @@ return jQuery;
      * values against any array or object value, respectively. See `_.isEqual`
      * for a list of supported value comparisons.
      *
+     * **Note:** Multiple values can be checked by combining several matchers
+     * using `_.overSome`
+     *
      * @static
      * @memberOf _
      * @since 3.0.0
@@ -34781,6 +34846,10 @@ return jQuery;
      *
      * _.filter(objects, _.matches({ 'a': 4, 'c': 6 }));
      * // => [{ 'a': 4, 'b': 5, 'c': 6 }]
+     *
+     * // Checking for several possible values
+     * _.filter(objects, _.overSome([_.matches({ 'a': 1 }), _.matches({ 'a': 4 })]));
+     * // => [{ 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 }]
      */
     function matches(source) {
       return baseMatches(baseClone(source, CLONE_DEEP_FLAG));
@@ -34794,6 +34863,9 @@ return jQuery;
      * **Note:** Partial comparisons will match empty array and empty object
      * `srcValue` values against any array or object value, respectively. See
      * `_.isEqual` for a list of supported value comparisons.
+     *
+     * **Note:** Multiple values can be checked by combining several matchers
+     * using `_.overSome`
      *
      * @static
      * @memberOf _
@@ -34811,6 +34883,10 @@ return jQuery;
      *
      * _.find(objects, _.matchesProperty('a', 4));
      * // => { 'a': 4, 'b': 5, 'c': 6 }
+     *
+     * // Checking for several possible values
+     * _.filter(objects, _.overSome([_.matchesProperty('a', 1), _.matchesProperty('a', 4)]));
+     * // => [{ 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 }]
      */
     function matchesProperty(path, srcValue) {
       return baseMatchesProperty(path, baseClone(srcValue, CLONE_DEEP_FLAG));
@@ -35034,6 +35110,10 @@ return jQuery;
      * Creates a function that checks if **all** of the `predicates` return
      * truthy when invoked with the arguments it receives.
      *
+     * Following shorthands are possible for providing predicates.
+     * Pass an `Object` and it will be used as an parameter for `_.matches` to create the predicate.
+     * Pass an `Array` of parameters for `_.matchesProperty` and the predicate will be created using them.
+     *
      * @static
      * @memberOf _
      * @since 4.0.0
@@ -35060,6 +35140,10 @@ return jQuery;
      * Creates a function that checks if **any** of the `predicates` return
      * truthy when invoked with the arguments it receives.
      *
+     * Following shorthands are possible for providing predicates.
+     * Pass an `Object` and it will be used as an parameter for `_.matches` to create the predicate.
+     * Pass an `Array` of parameters for `_.matchesProperty` and the predicate will be created using them.
+     *
      * @static
      * @memberOf _
      * @since 4.0.0
@@ -35079,6 +35163,9 @@ return jQuery;
      *
      * func(NaN);
      * // => false
+     *
+     * var matchesFunc = _.overSome([{ 'a': 1 }, { 'a': 2 }])
+     * var matchesPropertyFunc = _.overSome([['a', 1], ['a', 2]])
      */
     var overSome = createOver(arraySome);
 
@@ -39179,6 +39266,24 @@ var runtime = (function (exports) {
   var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
   var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
 
+  function define(obj, key, value) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+    return obj[key];
+  }
+  try {
+    // IE 8 has a broken Object.defineProperty that only works on DOM objects.
+    define({}, "");
+  } catch (err) {
+    define = function(obj, key, value) {
+      return obj[key] = value;
+    };
+  }
+
   function wrap(innerFn, outerFn, self, tryLocsList) {
     // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
     var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
@@ -39249,16 +39354,19 @@ var runtime = (function (exports) {
     Generator.prototype = Object.create(IteratorPrototype);
   GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
   GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
+  GeneratorFunction.displayName = define(
+    GeneratorFunctionPrototype,
+    toStringTagSymbol,
+    "GeneratorFunction"
+  );
 
   // Helper for defining the .next, .throw, and .return methods of the
   // Iterator interface in terms of a single ._invoke method.
   function defineIteratorMethods(prototype) {
     ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
+      define(prototype, method, function(arg) {
         return this._invoke(method, arg);
-      };
+      });
     });
   }
 
@@ -39277,9 +39385,7 @@ var runtime = (function (exports) {
       Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
     } else {
       genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
+      define(genFun, toStringTagSymbol, "GeneratorFunction");
     }
     genFun.prototype = Object.create(Gp);
     return genFun;
@@ -39549,7 +39655,7 @@ var runtime = (function (exports) {
   // unified ._invoke helper method.
   defineIteratorMethods(Gp);
 
-  Gp[toStringTagSymbol] = "Generator";
+  define(Gp, toStringTagSymbol, "Generator");
 
   // A Generator should always return itself as the iterator object when the
   // @@iterator function is called on it. Some browsers' implementations of the
@@ -40490,6 +40596,21 @@ var render = function() {
                           _vm._v(" "),
                           _c("v-text-field", {
                             attrs: {
+                              rules: _vm.dniRules,
+                              label: "DNI",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.dni,
+                              callback: function($$v) {
+                                _vm.dni = $$v
+                              },
+                              expression: "dni"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
                               rules: _vm.emailRules,
                               label: "E-mail",
                               required: ""
@@ -40617,6 +40738,21 @@ var render = function() {
                                 _vm.apellido = $$v
                               },
                               expression: "apellido"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              rules: _vm.dniRules,
+                              label: "DNI",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.dni,
+                              callback: function($$v) {
+                                _vm.dni = $$v
+                              },
+                              expression: "dni"
                             }
                           }),
                           _vm._v(" "),
@@ -41059,7 +41195,7 @@ var render = function() {
           _c(
             "v-card-title",
             [
-              _vm._v("\n      Usuarios\n      "),
+              _vm._v("\n      Concurrentes\n      "),
               _c("v-spacer"),
               _vm._v(" "),
               _c("v-text-field", {
@@ -41427,6 +41563,17 @@ var render = function() {
                         _vm.$set(_vm.usuario, "apellido", $$v)
                       },
                       expression: "usuario.apellido"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    attrs: { rules: _vm.dniRules, label: "DNI", required: "" },
+                    model: {
+                      value: _vm.usuario.dni,
+                      callback: function($$v) {
+                        _vm.$set(_vm.usuario, "dni", $$v)
+                      },
+                      expression: "usuario.dni"
                     }
                   }),
                   _vm._v(" "),
@@ -41935,6 +42082,376 @@ var render = function() {
           )
         ],
         1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UsuariosPagosComponent.vue?vue&type=template&id=62f8fbb3&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UsuariosPagosComponent.vue?vue&type=template&id=62f8fbb3& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "v-container",
+        [
+          _c("v-autocomplete", {
+            attrs: {
+              items: _vm.usuarios,
+              "item-text": _vm.nombreCompleto,
+              "return-object": "",
+              filled: "",
+              label: "Ingrese el nombre del socio"
+            },
+            model: {
+              value: _vm.usuarioSeleccionado,
+              callback: function($$v) {
+                _vm.usuarioSeleccionado = $$v
+              },
+              expression: "usuarioSeleccionado"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "v-row",
+            [
+              _c(
+                "v-col",
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { large: "", color: "primary" },
+                      on: { click: _vm.buscarCuotasUsuario }
+                    },
+                    [
+                      _vm._v(
+                        "\n                      Buscar\n                  "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("v-col", [
+                _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.busco,
+                        expression: "busco"
+                      }
+                    ]
+                  },
+                  [
+                    _c(
+                      "v-btn",
+                      {
+                        staticClass: "white--text",
+                        attrs: { large: "", color: "teal lighten-3" },
+                        on: {
+                          click: function($event) {
+                            ;[(_vm.CrearCuotaModal = true)]
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                          Nueva cuota\n                      "
+                        )
+                      ]
+                    )
+                  ],
+                  1
+                )
+              ])
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-container",
+        [
+          [
+            _c("v-simple-table", {
+              scopedSlots: _vm._u([
+                {
+                  key: "default",
+                  fn: function() {
+                    return [
+                      _c("thead", [
+                        _vm.cuotasUsuario != ""
+                          ? _c("tr", [
+                              _c("th", { staticClass: "text-left" }, [
+                                _vm._v("Mes")
+                              ]),
+                              _vm._v(" "),
+                              _c("th", { staticClass: "text-left" }, [
+                                _vm._v("Año")
+                              ]),
+                              _vm._v(" "),
+                              _c("th", { staticClass: "text-left" }, [
+                                _vm._v("Monto")
+                              ]),
+                              _vm._v(" "),
+                              _c("th", { staticClass: "text-left" }, [
+                                _vm._v("Fecha Pago")
+                              ]),
+                              _vm._v(" "),
+                              _c("th", { staticClass: "text-left" })
+                            ])
+                          : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.cuotasUsuario, function(cuota, index) {
+                        return _c("tbody", { key: index }, [
+                          cuota.fechaPago
+                            ? _c(
+                                "tr",
+                                {
+                                  staticStyle: { cursor: "pointer" },
+                                  on: {
+                                    click: function($event) {
+                                      ;[
+                                        (_vm.infoCuotaPaga = !_vm.infoCuotaPaga),
+                                        (_vm.cuotaActual = cuota)
+                                      ]
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("td", [_vm._v(_vm._s(cuota.mes))]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(cuota.anio))]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _vm._v("$" + _vm._s(cuota.importe))
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(cuota.fechaPago))]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "div",
+                                      { staticClass: "text-center" },
+                                      [
+                                        _c(
+                                          "v-chip",
+                                          {
+                                            attrs: {
+                                              color: "success",
+                                              dark: ""
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                          Pagado\n                                      "
+                                            )
+                                          ]
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ])
+                                ]
+                              )
+                            : _c(
+                                "tr",
+                                {
+                                  staticStyle: { cursor: "pointer" },
+                                  on: {
+                                    click: function($event) {
+                                      ;[
+                                        (_vm.pagoCuota = !_vm.pagoCuota),
+                                        ,
+                                        (_vm.cuotaActual = cuota)
+                                      ]
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("td", [_vm._v(_vm._s(cuota.mes))]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(cuota.anio))]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _vm._v("$" + _vm._s(cuota.importe))
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v(_vm._s(cuota.fechaPago))]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "div",
+                                      { staticClass: "text-center" },
+                                      [
+                                        _c(
+                                          "v-chip",
+                                          {
+                                            attrs: { color: "error", dark: "" }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                          Pagar\n                                      "
+                                            )
+                                          ]
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ])
+                                ]
+                              )
+                        ])
+                      })
+                    ]
+                  },
+                  proxy: true
+                }
+              ])
+            })
+          ]
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "600px" },
+          model: {
+            value: _vm.CrearCuotaModal,
+            callback: function($$v) {
+              _vm.CrearCuotaModal = $$v
+            },
+            expression: "CrearCuotaModal"
+          }
+        },
+        [
+          _c("crear-cuota", {
+            attrs: { usuarioID: _vm.usuarioSeleccionado.id },
+            on: {
+              recargarCuotas: function($event) {
+                _vm.recargarCuotas = $event
+              }
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "350px" },
+          model: {
+            value: _vm.infoCuotaPaga,
+            callback: function($$v) {
+              _vm.infoCuotaPaga = $$v
+            },
+            expression: "infoCuotaPaga"
+          }
+        },
+        [
+          _c("info-cuota-paga", {
+            attrs: { usuario: _vm.usuarioSeleccionado, cuota: _vm.cuotaActual }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "400px" },
+          model: {
+            value: _vm.pagoCuota,
+            callback: function($$v) {
+              _vm.pagoCuota = $$v
+            },
+            expression: "pagoCuota"
+          }
+        },
+        [
+          _c("pago-cuota", {
+            attrs: { cuota: _vm.cuotaActual, usuario: _vm.usuarioSeleccionado },
+            on: {
+              recargarCuotas: function($event) {
+                _vm.recargarCuotas = $event
+              }
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-snackbar",
+        {
+          attrs: { timeout: "3000" },
+          scopedSlots: _vm._u([
+            {
+              key: "action",
+              fn: function(ref) {
+                var attrs = ref.attrs
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._b(
+                      {
+                        attrs: { color: "blue", text: "" },
+                        on: {
+                          click: function($event) {
+                            _vm.snackbar = false
+                          }
+                        }
+                      },
+                      "v-btn",
+                      attrs,
+                      false
+                    ),
+                    [_vm._v("\n                  Cerrar\n              ")]
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.snackbar,
+            callback: function($$v) {
+              _vm.snackbar = $$v
+            },
+            expression: "snackbar"
+          }
+        },
+        [_vm._v("\n          Cuota pagada\n\n      ")]
       )
     ],
     1
@@ -42474,7 +42991,7 @@ var render = function() {
     "div",
     [
       _c("v-alert", { attrs: { type: "warning" } }, [
-        _vm._v("\n\n        Ruta no encontrada\n    ")
+        _vm._v("\n        Ruta no encontrada\n    ")
       ])
     ],
     1
@@ -42878,353 +43395,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "v-container",
-        [
-          _c("v-autocomplete", {
-            attrs: {
-              items: _vm.usuarios,
-              "item-text": _vm.nombreCompleto,
-              "return-object": "",
-              filled: "",
-              label: "Ingrese el nombre del socio"
-            },
-            model: {
-              value: _vm.usuarioSeleccionado,
-              callback: function($$v) {
-                _vm.usuarioSeleccionado = $$v
-              },
-              expression: "usuarioSeleccionado"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "v-row",
-            [
-              _c(
-                "v-col",
-                [
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { large: "", color: "primary" },
-                      on: { click: _vm.buscarCuotasUsuario }
-                    },
-                    [
-                      _vm._v(
-                        "\n                      Buscar\n                  "
-                      )
-                    ]
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c("v-col", [
-                _c(
-                  "div",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: _vm.busco,
-                        expression: "busco"
-                      }
-                    ]
-                  },
-                  [
-                    _c(
-                      "v-btn",
-                      {
-                        staticClass: "white--text",
-                        attrs: { large: "", color: "teal lighten-3" },
-                        on: {
-                          click: function($event) {
-                            ;[(_vm.CrearCuotaModal = true)]
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                          Nueva cuota\n                      "
-                        )
-                      ]
-                    )
-                  ],
-                  1
-                )
-              ])
-            ],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-container",
-        [
-          [
-            _c("v-simple-table", {
-              scopedSlots: _vm._u([
-                {
-                  key: "default",
-                  fn: function() {
-                    return [
-                      _c("thead", [
-                        _vm.cuotasUsuario != ""
-                          ? _c("tr", [
-                              _c("th", { staticClass: "text-left" }, [
-                                _vm._v("Mes")
-                              ]),
-                              _vm._v(" "),
-                              _c("th", { staticClass: "text-left" }, [
-                                _vm._v("Año")
-                              ]),
-                              _vm._v(" "),
-                              _c("th", { staticClass: "text-left" }, [
-                                _vm._v("Monto")
-                              ]),
-                              _vm._v(" "),
-                              _c("th", { staticClass: "text-left" }, [
-                                _vm._v("Fecha Pago")
-                              ]),
-                              _vm._v(" "),
-                              _c("th", { staticClass: "text-left" })
-                            ])
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _vm._l(_vm.cuotasUsuario, function(cuota, index) {
-                        return _c("tbody", { key: index }, [
-                          cuota.fechaPago
-                            ? _c(
-                                "tr",
-                                {
-                                  staticStyle: { cursor: "pointer" },
-                                  on: {
-                                    click: function($event) {
-                                      ;[
-                                        (_vm.infoCuotaPaga = !_vm.infoCuotaPaga),
-                                        (_vm.cuotaActual = cuota)
-                                      ]
-                                    }
-                                  }
-                                },
-                                [
-                                  _c("td", [_vm._v(_vm._s(cuota.mes))]),
-                                  _vm._v(" "),
-                                  _c("td", [_vm._v(_vm._s(cuota.anio))]),
-                                  _vm._v(" "),
-                                  _c("td", [
-                                    _vm._v("$" + _vm._s(cuota.importe))
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("td", [_vm._v(_vm._s(cuota.fechaPago))]),
-                                  _vm._v(" "),
-                                  _c("td", [
-                                    _c(
-                                      "div",
-                                      { staticClass: "text-center" },
-                                      [
-                                        _c(
-                                          "v-chip",
-                                          {
-                                            attrs: {
-                                              color: "success",
-                                              dark: ""
-                                            }
-                                          },
-                                          [
-                                            _vm._v(
-                                              "\n                                          Pagado\n                                      "
-                                            )
-                                          ]
-                                        )
-                                      ],
-                                      1
-                                    )
-                                  ])
-                                ]
-                              )
-                            : _c(
-                                "tr",
-                                {
-                                  staticStyle: { cursor: "pointer" },
-                                  on: {
-                                    click: function($event) {
-                                      ;[
-                                        (_vm.pagoCuota = !_vm.pagoCuota),
-                                        ,
-                                        (_vm.cuotaActual = cuota)
-                                      ]
-                                    }
-                                  }
-                                },
-                                [
-                                  _c("td", [_vm._v(_vm._s(cuota.mes))]),
-                                  _vm._v(" "),
-                                  _c("td", [_vm._v(_vm._s(cuota.anio))]),
-                                  _vm._v(" "),
-                                  _c("td", [
-                                    _vm._v("$" + _vm._s(cuota.importe))
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("td", [_vm._v(_vm._s(cuota.fechaPago))]),
-                                  _vm._v(" "),
-                                  _c("td", [
-                                    _c(
-                                      "div",
-                                      { staticClass: "text-center" },
-                                      [
-                                        _c(
-                                          "v-chip",
-                                          {
-                                            attrs: { color: "error", dark: "" }
-                                          },
-                                          [
-                                            _vm._v(
-                                              "\n                                          Pagar\n                                      "
-                                            )
-                                          ]
-                                        )
-                                      ],
-                                      1
-                                    )
-                                  ])
-                                ]
-                              )
-                        ])
-                      })
-                    ]
-                  },
-                  proxy: true
-                }
-              ])
-            })
-          ]
-        ],
-        2
-      ),
-      _vm._v(" "),
-      _c(
-        "v-dialog",
-        {
-          attrs: { "max-width": "600px" },
-          model: {
-            value: _vm.CrearCuotaModal,
-            callback: function($$v) {
-              _vm.CrearCuotaModal = $$v
-            },
-            expression: "CrearCuotaModal"
-          }
-        },
-        [
-          _c("crear-cuota", {
-            attrs: { usuarioID: _vm.usuarioSeleccionado.id },
-            on: {
-              recargarCuotas: function($event) {
-                _vm.recargarCuotas = $event
-              }
-            }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-dialog",
-        {
-          attrs: { "max-width": "350px" },
-          model: {
-            value: _vm.infoCuotaPaga,
-            callback: function($$v) {
-              _vm.infoCuotaPaga = $$v
-            },
-            expression: "infoCuotaPaga"
-          }
-        },
-        [
-          _c("info-cuota-paga", {
-            attrs: { usuario: _vm.usuarioSeleccionado, cuota: _vm.cuotaActual }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-dialog",
-        {
-          attrs: { "max-width": "400px" },
-          model: {
-            value: _vm.pagoCuota,
-            callback: function($$v) {
-              _vm.pagoCuota = $$v
-            },
-            expression: "pagoCuota"
-          }
-        },
-        [
-          _c("pago-cuota", {
-            attrs: { cuota: _vm.cuotaActual, usuario: _vm.usuarioSeleccionado },
-            on: {
-              recargarCuotas: function($event) {
-                _vm.recargarCuotas = $event
-              }
-            }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-snackbar",
-        {
-          attrs: { timeout: "3000" },
-          scopedSlots: _vm._u([
-            {
-              key: "action",
-              fn: function(ref) {
-                var attrs = ref.attrs
-                return [
-                  _c(
-                    "v-btn",
-                    _vm._b(
-                      {
-                        attrs: { color: "blue", text: "" },
-                        on: {
-                          click: function($event) {
-                            _vm.snackbar = false
-                          }
-                        }
-                      },
-                      "v-btn",
-                      attrs,
-                      false
-                    ),
-                    [_vm._v("\n                  Cerrar\n              ")]
-                  )
-                ]
-              }
-            }
-          ]),
-          model: {
-            value: _vm.snackbar,
-            callback: function($$v) {
-              _vm.snackbar = $$v
-            },
-            expression: "snackbar"
-          }
-        },
-        [_vm._v("\n          Cuota pagada\n\n      ")]
-      )
-    ],
-    1
-  )
+  return _c("usuarios-pagos")
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -102256,6 +102427,7 @@ Vue.component('configuraciones', __webpack_require__(/*! ./components/Configurac
 Vue.component('crear-cuota', __webpack_require__(/*! ./components/CrearCuotaComponent.vue */ "./resources/js/components/CrearCuotaComponent.vue")["default"]);
 Vue.component('info-cuota-paga', __webpack_require__(/*! ./components/infoCuotaPagaComponent.vue */ "./resources/js/components/infoCuotaPagaComponent.vue")["default"]);
 Vue.component('pago-cuota', __webpack_require__(/*! ./components/pagoCuotaComponent.vue */ "./resources/js/components/pagoCuotaComponent.vue")["default"]);
+Vue.component('usuarios-pagos', __webpack_require__(/*! ./components/UsuariosPagosComponent.vue */ "./resources/js/components/UsuariosPagosComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -102875,6 +103047,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/UsuariosPagosComponent.vue":
+/*!************************************************************!*\
+  !*** ./resources/js/components/UsuariosPagosComponent.vue ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UsuariosPagosComponent_vue_vue_type_template_id_62f8fbb3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UsuariosPagosComponent.vue?vue&type=template&id=62f8fbb3& */ "./resources/js/components/UsuariosPagosComponent.vue?vue&type=template&id=62f8fbb3&");
+/* harmony import */ var _UsuariosPagosComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UsuariosPagosComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/UsuariosPagosComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _UsuariosPagosComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UsuariosPagosComponent_vue_vue_type_template_id_62f8fbb3___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UsuariosPagosComponent_vue_vue_type_template_id_62f8fbb3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/UsuariosPagosComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/UsuariosPagosComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/UsuariosPagosComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuariosPagosComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UsuariosPagosComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UsuariosPagosComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuariosPagosComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/UsuariosPagosComponent.vue?vue&type=template&id=62f8fbb3&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/UsuariosPagosComponent.vue?vue&type=template&id=62f8fbb3& ***!
+  \*******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuariosPagosComponent_vue_vue_type_template_id_62f8fbb3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./UsuariosPagosComponent.vue?vue&type=template&id=62f8fbb3& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UsuariosPagosComponent.vue?vue&type=template&id=62f8fbb3&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuariosPagosComponent_vue_vue_type_template_id_62f8fbb3___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuariosPagosComponent_vue_vue_type_template_id_62f8fbb3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/infoCuotaPagaComponent.vue":
 /*!************************************************************!*\
   !*** ./resources/js/components/infoCuotaPagaComponent.vue ***!
@@ -103485,17 +103726,15 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _UsuariosPagos_vue_vue_type_template_id_b33b3834___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UsuariosPagos.vue?vue&type=template&id=b33b3834& */ "./resources/js/views/UsuariosPagos.vue?vue&type=template&id=b33b3834&");
-/* harmony import */ var _UsuariosPagos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UsuariosPagos.vue?vue&type=script&lang=js& */ "./resources/js/views/UsuariosPagos.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
-
-
+var script = {}
 
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _UsuariosPagos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
+  script,
   _UsuariosPagos_vue_vue_type_template_id_b33b3834___WEBPACK_IMPORTED_MODULE_0__["render"],
   _UsuariosPagos_vue_vue_type_template_id_b33b3834___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
@@ -103509,20 +103748,6 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 if (false) { var api; }
 component.options.__file = "resources/js/views/UsuariosPagos.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/views/UsuariosPagos.vue?vue&type=script&lang=js&":
-/*!***********************************************************************!*\
-  !*** ./resources/js/views/UsuariosPagos.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuariosPagos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UsuariosPagos.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/UsuariosPagos.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UsuariosPagos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -103562,8 +103787,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\adolf\Desktop\Nueva carpeta\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\adolf\Desktop\Nueva carpeta\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\gonza\Desktop\J\Proyectos\SISTEMA-ASPATEM\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\gonza\Desktop\J\Proyectos\SISTEMA-ASPATEM\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

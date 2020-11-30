@@ -33,7 +33,7 @@ Vue.component('configuraciones', require('./components/ConfiguracionComponent.vu
 Vue.component('crear-cuota', require('./components/CrearCuotaComponent.vue').default);
 Vue.component('info-cuota-paga', require('./components/infoCuotaPagaComponent.vue').default);
 Vue.component('pago-cuota', require('./components/pagoCuotaComponent.vue').default);
-
+Vue.component('usuarios-pagos', require('./components/UsuariosPagosComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

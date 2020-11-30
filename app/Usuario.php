@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Usuario extends Model
 {
-    protected $fillable = ['nombre','apellido','mail','puntos','telefono','socio'];
+    protected $fillable = ['nombre','apellido','mail','puntos','telefono','socio','dni'];
 
     public function relaciones()
     {

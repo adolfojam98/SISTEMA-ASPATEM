@@ -2,7 +2,7 @@
   <div>
     <v-card>
       <v-card-title>
-        Usuarios
+        Concurrentes
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -84,9 +84,10 @@ export default {
       usuarios: [],
       search: "",
       headers: [
-        { text: "Nombre", value: "nombre"},
         { text: "Apellido", value: "apellido" },
-        { text: "Mail", value: "mail", sortable: false },
+        { text: "Nombre", value: "nombre"},
+        { text: "DNI", value: "dni"},
+        { text: "Mail", value: "mail", sortable: true },
         { text: "Telefono", value: "telefono", sortable: false },
         { text: "Fecha de alta", value: "fechaAlta", sortable: true },
         { text: "Acciones", value: "actions", sortable: false },

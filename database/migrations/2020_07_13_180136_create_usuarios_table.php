@@ -20,6 +20,7 @@ class CreateUsuariosTable extends Migration
             $table->string('mail',50);
             $table->string('telefono',12);
             $table->boolean('socio');
+            $table->integer('dni');
             $table->timestamps();
         });
     }

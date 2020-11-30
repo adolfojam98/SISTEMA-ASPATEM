@@ -46,6 +46,7 @@ class UsuarioController extends Controller
         $usuario->apellido = $request->apellido;
         $usuario->mail = $request->mail;
         $usuario->telefono = $request->telefono;
+        $usuario->dni = $request->dni;
         if($request->socio){
 
             $usuario->socio = 1;
@@ -104,6 +105,7 @@ class UsuarioController extends Controller
         $usuario->mail = $request->mail;
         $usuario->telefono = $request->telefono;
         $usuario->socio = $request->socio;
+        $usuario->dni = $request->dni;
 
         $usuario->save();
 
