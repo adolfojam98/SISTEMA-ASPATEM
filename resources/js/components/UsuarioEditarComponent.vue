@@ -13,8 +13,11 @@
 
       <v-text-field v-model="usuario.mail" :rules="emailRules" label="E-mail" required></v-text-field>
 
-      <v-text-field v-model="usuario.telefono" label="telefono" :rules="telefonoRules" required></v-text-field>
+      <v-text-field v-model="usuario.telefono" label="Telefono" :rules="telefonoRules" required></v-text-field>
 
+      <v-layout justify-center align-center>
+      <v-switch center="true" v-model="usuario.socio" label="Socio" class="mx-4"></v-switch>
+      </v-layout>
       
       <v-btn block large depressed color="primary" :disabled="!valid" @click.prevent="updateUsuario">Guardar cambios</v-btn>
     </v-container>
@@ -111,7 +114,8 @@ export default {
           'dni':this.usuario.dni,
         })
         .then(response => {
-           this.snackbar = true
+           this.snackbar = true;
+           this.$emit("reFiltrar");
           })
         .catch(function (error) {
                     console.log(error);

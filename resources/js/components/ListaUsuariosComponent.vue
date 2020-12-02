@@ -2,8 +2,25 @@
   <div>
     <v-card>
       <v-card-title>
-        Concurrentes
+
+        <v-checkbox
+          v-model="verSocios"
+          @click="filtrar()"
+          hide-details
+          label="Ver Socios"
+        ></v-checkbox>
+        
         <v-spacer></v-spacer>
+
+        <v-checkbox
+          v-model="verNoSocios"
+          @click="filtrar()"
+          hide-details
+          label="Ver No Socios"
+        ></v-checkbox>
+
+        <v-spacer></v-spacer>
+        
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -12,7 +29,8 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="usuarios" :search="search" >
+      
+      <v-data-table :headers="headers" :items="usuariosFiltrados" :search="search"> <!-- :custom-filter="filtrarPorSocio" -->
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -56,7 +74,7 @@
     </v-card>
 
     <v-dialog v-model="editarUsuarioModal" max-width="600px">
-      <editar-usuario :usuario="usuarioEditar"></editar-usuario>
+      <editar-usuario :usuario="usuarioEditar" @reFiltrar = 'reFiltrar = $event'></editar-usuario>
     </v-dialog>
 
     <v-dialog v-model="eliminarUsuarioModal" max-width="320">
@@ -79,18 +97,23 @@
 
 <script>
 export default {
+  name: 'vm',
   data() {
     return {
+      reFiltrar: false,
+      verSocios: true,
+      verNoSocios: false,
       usuarios: [],
+      usuariosFiltrados: [],
       search: "",
       headers: [
         { text: "Apellido", value: "apellido" },
         { text: "Nombre", value: "nombre"},
         { text: "DNI", value: "dni"},
-        { text: "Mail", value: "mail", sortable: true },
-        { text: "Telefono", value: "telefono", sortable: false },
-        { text: "Fecha de alta", value: "fechaAlta", sortable: true },
-        { text: "Acciones", value: "actions", sortable: false },
+        { text: "Mail", value: "mail", sortable: true, filterable: false},
+        { text: "Telefono", value: "telefono", sortable: false, filterable: false},
+        { text: "Fecha de alta", value: "fechaAlta", sortable: true, filterable: false},
+        { text: "Acciones", value: "actions", sortable: false, filterable: false},
       ],
       usuarioEditar: [],
       editarUsuarioModal: false,
@@ -127,27 +150,69 @@ export default {
       this.usuarioRelacionesModal = true;
     },
 
-    created() {
-      axios.get("/usuario").then((res) => {
+    async created() {
+        await axios.get("/usuario").then((res) => {
         this.usuarios = res.data;
         this.usuarios.forEach(usuario =>{
-          usuario.fechaAlta = this.darFormatoFecha(usuario.created_at)
+          usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
         })
 
       })
       .catch(error => console.log(error));
+      this.filtrar();
     },
     darFormatoFecha(fecha) {
             if (!fecha) return null;
             fecha = fecha.substr(0,10);
-            console.log(fecha);
             const [anio, mes, dia] = fecha.split("-");
             return `${dia}/${mes}/${anio}`;
-        }
+        },
+
+    /*filtrarPorSocio(value, search, items) {
+      
+      let inName = RegExp(search,'i').test(items.nombre);
+      let inLastname = RegExp(search,'i').test(items.apellido);
+
+      //if (items.socio==false && this.verNoSocios==true ||items.socio==true && this.verSocios==true){condiciones_socio_noSocio.push(this,items);}
+      if (items.socio==false && this.verNoSocios==true ||items.socio==true && this.verSocios==true){return true;}
+      else return false;
+
+      /*let condiciones_socio_noSocio = items.filter(unItem => {
+          if (unItem.socio==false && this.verNoSocios==true || unItem.socio==true && this.verSocios==true) {
+            return true;}
+          else return false;
+        });
+        
+       console.log();
+
+      return inName || inLastname;
+    },*/
+
+  
+
+    filtrar(){
+      this.usuariosFiltrados=[];
+
+      this.usuarios.forEach(usuario => {
+        if((usuario.socio==false && this.verNoSocios==true) || (usuario.socio==true && this.verSocios==true)) {this.usuariosFiltrados.push(usuario);}
+      });
+    },
+
+
   },
+
+      watch: {
+            reFiltrar : function(){
+                this.filtrar();
+                this.reFiltrar=false;
+            }
+  },
+
+
 
   mounted() {
     this.created();
   },
 };
 </script>
+<!-- Comment -->

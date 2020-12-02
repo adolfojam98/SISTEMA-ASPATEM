@@ -18,14 +18,11 @@
 
 <v-list-group
           no-action
-          sub-group
-          value="true"
+          prepend-icon="mdi-account"
         >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title>Socios</v-list-item-title>
-            </v-list-item-content>
-          </template>
+        <template v-slot:activator>
+          <v-list-item-title>Socios</v-list-item-title>
+        </template>
 
           <v-list-item
             link :to="{name: 'agregar'}" 

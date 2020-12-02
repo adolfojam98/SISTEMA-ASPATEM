@@ -2074,9 +2074,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     source: String
@@ -2598,6 +2595,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -2610,6 +2611,28 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2690,9 +2713,14 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'vm',
   data: function data() {
     return {
+      reFiltrar: false,
+      verSocios: true,
+      verNoSocios: false,
       usuarios: [],
+      usuariosFiltrados: [],
       search: "",
       headers: [{
         text: "Apellido",
@@ -2706,19 +2734,23 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       }, {
         text: "Mail",
         value: "mail",
-        sortable: true
+        sortable: true,
+        filterable: false
       }, {
         text: "Telefono",
         value: "telefono",
-        sortable: false
+        sortable: false,
+        filterable: false
       }, {
         text: "Fecha de alta",
         value: "fechaAlta",
-        sortable: true
+        sortable: true,
+        filterable: false
       }, {
         text: "Acciones",
         value: "actions",
-        sortable: false
+        sortable: false,
+        filterable: false
       }],
       usuarioEditar: [],
       editarUsuarioModal: false,
@@ -2750,20 +2782,36 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     created: function created() {
       var _this = this;
 
-      axios.get("/usuario").then(function (res) {
-        _this.usuarios = res.data;
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return axios.get("/usuario").then(function (res) {
+                  _this.usuarios = res.data;
 
-        _this.usuarios.forEach(function (usuario) {
-          usuario.fechaAlta = _this.darFormatoFecha(usuario.created_at);
-        });
-      })["catch"](function (error) {
-        return console.log(error);
-      });
+                  _this.usuarios.forEach(function (usuario) {
+                    usuario.fechaAlta = _this.darFormatoFecha(usuario.created_at);
+                  });
+                })["catch"](function (error) {
+                  return console.log(error);
+                });
+
+              case 2:
+                _this.filtrar();
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
     },
     darFormatoFecha: function darFormatoFecha(fecha) {
       if (!fecha) return null;
       fecha = fecha.substr(0, 10);
-      console.log(fecha);
 
       var _fecha$split = fecha.split("-"),
           _fecha$split2 = _slicedToArray(_fecha$split, 3),
@@ -2772,6 +2820,39 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
           dia = _fecha$split2[2];
 
       return "".concat(dia, "/").concat(mes, "/").concat(anio);
+    },
+
+    /*filtrarPorSocio(value, search, items) {
+      
+      let inName = RegExp(search,'i').test(items.nombre);
+      let inLastname = RegExp(search,'i').test(items.apellido);
+        //if (items.socio==false && this.verNoSocios==true ||items.socio==true && this.verSocios==true){condiciones_socio_noSocio.push(this,items);}
+      if (items.socio==false && this.verNoSocios==true ||items.socio==true && this.verSocios==true){return true;}
+      else return false;
+        /*let condiciones_socio_noSocio = items.filter(unItem => {
+          if (unItem.socio==false && this.verNoSocios==true || unItem.socio==true && this.verSocios==true) {
+            return true;}
+          else return false;
+        });
+        
+       console.log();
+        return inName || inLastname;
+    },*/
+    filtrar: function filtrar() {
+      var _this2 = this;
+
+      this.usuariosFiltrados = [];
+      this.usuarios.forEach(function (usuario) {
+        if (usuario.socio == false && _this2.verNoSocios == true || usuario.socio == true && _this2.verSocios == true) {
+          _this2.usuariosFiltrados.push(usuario);
+        }
+      });
+    }
+  },
+  watch: {
+    reFiltrar: function reFiltrar() {
+      this.filtrar();
+      this.reFiltrar = false;
     }
   },
   mounted: function mounted() {
@@ -2790,6 +2871,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -2898,6 +2982,8 @@ __webpack_require__.r(__webpack_exports__);
           'dni': this.usuario.dni
         }).then(function (response) {
           _this.snackbar = true;
+
+          _this.$emit("reFiltrar");
         })["catch"](function (error) {
           console.log(error);
         });
@@ -3704,6 +3790,18 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         _this.importePersonalizado = null;
 
         _this.$emit("recargarCuotas", true);
+
+        if (!usuario.socio) {
+          axios.put('/usuario', {
+            'id': _this.usuario.id,
+            'nombre': _this.usuario.nombre,
+            'apellido': _this.usuario.apellido,
+            'mail': _this.usuario.mail,
+            'telefono': _this.usuario.telefono,
+            'socio': true,
+            'dni': _this.usuario.dni
+          });
+        }
       })["catch"](function (error) {
         console.log(error);
       });
@@ -40330,18 +40428,12 @@ var render = function() {
               _c(
                 "v-list-group",
                 {
-                  attrs: { "no-action": "", "sub-group": "", value: "true" },
+                  attrs: { "no-action": "", "prepend-icon": "mdi-account" },
                   scopedSlots: _vm._u([
                     {
                       key: "activator",
                       fn: function() {
-                        return [
-                          _c(
-                            "v-list-item-content",
-                            [_c("v-list-item-title", [_vm._v("Socios")])],
-                            1
-                          )
-                        ]
+                        return [_c("v-list-item-title", [_vm._v("Socios")])]
                       },
                       proxy: true
                     }
@@ -41195,7 +41287,40 @@ var render = function() {
           _c(
             "v-card-title",
             [
-              _vm._v("\n      Concurrentes\n      "),
+              _c("v-checkbox", {
+                attrs: { "hide-details": "", label: "Ver Socios" },
+                on: {
+                  click: function($event) {
+                    return _vm.filtrar()
+                  }
+                },
+                model: {
+                  value: _vm.verSocios,
+                  callback: function($$v) {
+                    _vm.verSocios = $$v
+                  },
+                  expression: "verSocios"
+                }
+              }),
+              _vm._v(" "),
+              _c("v-spacer"),
+              _vm._v(" "),
+              _c("v-checkbox", {
+                attrs: { "hide-details": "", label: "Ver No Socios" },
+                on: {
+                  click: function($event) {
+                    return _vm.filtrar()
+                  }
+                },
+                model: {
+                  value: _vm.verNoSocios,
+                  callback: function($$v) {
+                    _vm.verNoSocios = $$v
+                  },
+                  expression: "verNoSocios"
+                }
+              }),
+              _vm._v(" "),
               _c("v-spacer"),
               _vm._v(" "),
               _c("v-text-field", {
@@ -41220,7 +41345,7 @@ var render = function() {
           _c("v-data-table", {
             attrs: {
               headers: _vm.headers,
-              items: _vm.usuarios,
+              items: _vm.usuariosFiltrados,
               search: _vm.search
             },
             scopedSlots: _vm._u(
@@ -41391,7 +41516,16 @@ var render = function() {
             expression: "editarUsuarioModal"
           }
         },
-        [_c("editar-usuario", { attrs: { usuario: _vm.usuarioEditar } })],
+        [
+          _c("editar-usuario", {
+            attrs: { usuario: _vm.usuarioEditar },
+            on: {
+              reFiltrar: function($event) {
+                _vm.reFiltrar = $event
+              }
+            }
+          })
+        ],
         1
       ),
       _vm._v(" "),
@@ -41594,7 +41728,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("v-text-field", {
                     attrs: {
-                      label: "telefono",
+                      label: "Telefono",
                       rules: _vm.telefonoRules,
                       required: ""
                     },
@@ -41606,6 +41740,25 @@ var render = function() {
                       expression: "usuario.telefono"
                     }
                   }),
+                  _vm._v(" "),
+                  _c(
+                    "v-layout",
+                    { attrs: { "justify-center": "", "align-center": "" } },
+                    [
+                      _c("v-switch", {
+                        staticClass: "mx-4",
+                        attrs: { center: "true", label: "Socio" },
+                        model: {
+                          value: _vm.usuario.socio,
+                          callback: function($$v) {
+                            _vm.$set(_vm.usuario, "socio", $$v)
+                          },
+                          expression: "usuario.socio"
+                        }
+                      })
+                    ],
+                    1
+                  ),
                   _vm._v(" "),
                   _c(
                     "v-btn",
