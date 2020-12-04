@@ -48,6 +48,8 @@ Route::post('/generarCuota','CuotaController@generarCuota');
 
 Route::put('/pagarCuota','CuotaController@pagar');
 
+Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion');
+
 
 
 Route::get('{path}', function () {

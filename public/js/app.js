@@ -2414,11 +2414,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       valid: false,
       snackbar: false,
+      automatizar: true,
       montoCuota: 0,
       montoCuotaDescuento: 0,
       montoRules: [function (v) {
@@ -2435,6 +2442,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/configuraciones').then(function (res) {
         _this.montoCuota = res.data.montoCuota;
         _this.montoCuotaDescuento = res.data.montoCuotaDescuento;
+        _this.automatizar = res.data.automatizarBajasSocios;
       });
     },
     guardarConfiguracion: function guardarConfiguracion() {
@@ -2442,6 +2450,11 @@ __webpack_require__.r(__webpack_exports__);
         montoCuota: this.montoCuota,
         montoCuotaDescuento: this.montoCuotaDescuento
       }).then(this.cargarConfiguracion(), this.snackbar = true);
+    },
+    automatizarBajasDeSocios: function automatizarBajasDeSocios() {
+      axios.put('/configuraciones/automatizacion', {
+        automatizarBajasSocios: this.automatizar
+      });
     }
   },
   mounted: function mounted() {
@@ -2560,7 +2573,7 @@ __webpack_require__.r(__webpack_exports__);
         'id': 12,
         "nombre": "Diciembre"
       }],
-      anios: [new Date().getFullYear(), new Date().getFullYear() - 1]
+      anios: [new Date().getFullYear() + 1, new Date().getFullYear(), new Date().getFullYear() - 1]
     };
   },
   methods: {
@@ -3455,6 +3468,15 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3762,7 +3784,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         return v >= 0 || "Importe no valido";
       }],
       editarMonto: true,
-      observacion: null
+      observacion: null,
+      snackbar: false
     };
   },
   watch: {
@@ -3790,18 +3813,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         _this.importePersonalizado = null;
 
         _this.$emit("recargarCuotas", true);
-
-        if (!usuario.socio) {
-          axios.put('/usuario', {
-            'id': _this.usuario.id,
-            'nombre': _this.usuario.nombre,
-            'apellido': _this.usuario.apellido,
-            'mail': _this.usuario.mail,
-            'telefono': _this.usuario.telefono,
-            'socio': true,
-            'dni': _this.usuario.dni
-          });
-        }
       })["catch"](function (error) {
         console.log(error);
       });
@@ -41054,6 +41065,35 @@ var render = function() {
                   )
                 ],
                 1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-form",
+                [
+                  _c(
+                    "v-layout",
+                    { attrs: { "justify-center": "", "align-center": "" } },
+                    [
+                      _c("v-switch", {
+                        staticClass: "mx-4",
+                        attrs: {
+                          center: "true",
+                          click: _vm.automatizarBajasDeSocios(),
+                          label: "Dar de baja de forma automatica a los socios"
+                        },
+                        model: {
+                          value: _vm.automatizar,
+                          callback: function($$v) {
+                            _vm.automatizar = $$v
+                          },
+                          expression: "automatizar"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
               )
             ],
             1
@@ -42307,6 +42347,8 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
+              _c("v-spacer"),
+              _vm._v(" "),
               _c("v-col", [
                 _c(
                   "div",
@@ -42341,7 +42383,9 @@ var render = function() {
                   ],
                   1
                 )
-              ])
+              ]),
+              _vm._v(" "),
+              _c("v-spacer")
             ],
             1
           )

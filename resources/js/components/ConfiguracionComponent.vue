@@ -31,6 +31,12 @@
             </v-container>
         </v-form>
 
+        <v-form>
+            <v-layout justify-center align-center>
+                <v-switch center="true" v-model="automatizar"  :click="automatizarBajasDeSocios()" label="Dar de baja de forma automatica a los socios" class="mx-4"></v-switch>
+            </v-layout>
+        </v-form>
+
 </v-container>
         </v-card>
         <v-snackbar v-model="snackbar" timeout="3000">
@@ -59,6 +65,7 @@ export default {
     data: () => ({
         valid: false,
         snackbar: false,
+        automatizar: true,
         montoCuota:0,
         montoCuotaDescuento:0,
         
@@ -79,6 +86,7 @@ export default {
             .then((res) => {
             this.montoCuota = res.data.montoCuota;
             this.montoCuotaDescuento = res.data.montoCuotaDescuento;
+            this.automatizar = res.data.automatizarBajasSocios;
             });
         },
 
@@ -91,6 +99,12 @@ export default {
                 this.cargarConfiguracion(),
                 this.snackbar=true
             );
+        },
+
+        automatizarBajasDeSocios(){
+            axios.put('/configuraciones/automatizacion',{
+                automatizarBajasSocios : this.automatizar,
+            });
         }
     },
 

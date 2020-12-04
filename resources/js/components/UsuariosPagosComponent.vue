@@ -11,12 +11,15 @@
                 label="Ingrese el nombre del socio"
             ></v-autocomplete>
             <v-row>
+                
                 <v-col>
                     <v-btn @click="buscarCuotasUsuario" large color="primary">
                         Buscar
                     </v-btn>
                 </v-col>
 
+                
+                <v-spacer></v-spacer>
                 <v-col>
                     <div v-show="busco">
                         <v-btn
@@ -29,7 +32,13 @@
                         </v-btn>
                     </div>
                 </v-col>
+                
+                <v-spacer></v-spacer>
+
             </v-row>
+
+
+
 
             
         </v-container>
@@ -180,10 +189,10 @@ export default {
     watch: {
             recargarCuotas : function(){
                 
-                this.buscarCuotasUsuario()
-                this.pagoCuota = false
-                this.snackbar = false
-                this.recargarCuotas = false
+                this.buscarCuotasUsuario();
+                this.pagoCuota = false;
+                this.snackbar = false;
+                this.recargarCuotas = false;
             }
             
         },

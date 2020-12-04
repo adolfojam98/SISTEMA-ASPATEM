@@ -159,7 +159,8 @@ export default {
                 v => v >= 0 || "Importe no valido"
             ],
             editarMonto: true,
-            observacion : null
+            observacion : null,
+            snackbar : false,
         };
     },
     watch: {
@@ -187,18 +188,6 @@ export default {
                     this.importePersonalizado = null;
                     
                     this.$emit("recargarCuotas", true);
-
-                    if(!usuario.socio){
-                    axios.put('/usuario',{
-                    'id': this.usuario.id,
-                    'nombre':this.usuario.nombre,
-                    'apellido':this.usuario.apellido,
-                    'mail':this.usuario.mail,
-                    'telefono':this.usuario.telefono,
-                    'socio':true,
-                    'dni':this.usuario.dni,
-                    })
-                    }
                     
                 })
                 .catch(error => {

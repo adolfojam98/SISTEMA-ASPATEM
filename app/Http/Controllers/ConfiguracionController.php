@@ -101,4 +101,14 @@ class ConfiguracionController extends Controller
     {
         //
     }
+
+    public function modificarAutomatizacion(Request $request)
+    {
+        $configuracion = Configuracion::first();
+        $configuracion->automatizarBajasSocios = $request->automatizarBajasSocios;
+        $configuracion->save();
+    }
+
+
+
 }

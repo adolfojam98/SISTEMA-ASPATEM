@@ -17,6 +17,7 @@ class CreateConfiguracionsTable extends Migration
             $table->id();
             $table->decimal('montoCuota',8,2)->default(0);
             $table->decimal('montoCuotaDescuento',8,2)->default(0);
+            $table->boolean('automatizarBajasSocios')->default(true);
             $table->timestamps();
         });
     }

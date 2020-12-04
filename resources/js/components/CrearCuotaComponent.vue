@@ -79,7 +79,7 @@
             {'id' : 12, "nombre" : "Diciembre"},
 
         ],
-        anios: [new Date().getFullYear(),new Date().getFullYear()-1],
+        anios: [new Date().getFullYear()+1,new Date().getFullYear(),new Date().getFullYear()-1],
         }
     },
 

@@ -132,9 +132,6 @@ class CuotaController extends Controller
     public function generarCuota(Request $request)
     {
        
-
-    
-
         $ExisteEstaCuota = Cuota::where('mes', $request->mes)
         ->where('anio', $request->anio)
         ->where('usuario_id', $request->usuario_id)->first();
@@ -205,6 +202,11 @@ class CuotaController extends Controller
         }
 
         $cuota->save();
+
+
+        $usuario = Usuario::where('id',$cuota->usuario_id)->first();
+        $usuario->socio = true;
+        $usuario->save();
     }
 
 
