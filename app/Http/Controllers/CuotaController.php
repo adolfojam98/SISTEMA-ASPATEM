@@ -131,6 +131,64 @@ class CuotaController extends Controller
 
     public function generarCuota(Request $request)
     {
+
+        //antes de generar la cuota hace un control de quienes son socios para que aplique el descuento solo si es debido
+        $configuracion = Configuracion::firstOrFail();
+        if($configuracion->automatizarBajasSocios){
+
+            $fechaActual = carbon::now();
+            $fechaMesSiguiente = carbon::now();
+            $fechaUnMesAntes = carbon::now();
+            $fechaDosMesesAntes = carbon::now();
+            $fechaTresMesesAntes = carbon::now();
+
+            $fechaMesSiguiente->addMonth(1);
+            $fechaUnMesAntes->subMonth(1);
+            $fechaDosMesesAntes->subMonth(2);
+            $fechaTresMesesAntes->subMonth(3);
+
+            $socios = Usuario::where('socio', true)->get();
+
+
+            foreach ($socios as $socio) {
+
+                $cuotas = Cuota::where('mes', $fechaActual->month)
+                                ->where('anio', $fechaActual->year)
+                                ->where('usuario_id', $socio->id)
+                                ->where('fechaPago','<>','')
+
+                                ->orWhere('mes',$fechaUnMesAntes->month)
+                                ->where('anio', $fechaUnMesAntes->year)
+                                ->where('usuario_id', $socio->id)
+                                ->where('fechaPago','<>','')
+
+                                ->orWhere('mes',$fechaDosMesesAntes->month)
+                                ->where('anio', $fechaDosMesesAntes->year)
+                                ->where('usuario_id', $socio->id)
+                                ->where('fechaPago','<>','')
+
+                                ->orWhere('mes',$fechaTresMesesAntes->month)
+                                ->where('anio', $fechaTresMesesAntes->year)
+                                ->where('usuario_id', $socio->id)
+                                ->where('fechaPago','<>','')
+
+                                ->orWhere('mes',$fechaMesSiguiente->month)
+                                ->where('anio', $fechaMesSiguiente->year)
+                                ->where('usuario_id', $socio->id)
+                                ->where('fechaPago','<>','')->get();
+                
+                    if($cuotas=='[]'){
+                        
+                        $socio->socio=false;
+                        $socio->save();
+                    }
+
+            }
+       
+        }
+        //aqui termina el calculo de si es socio
+        
+
        
         $ExisteEstaCuota = Cuota::where('mes', $request->mes)
         ->where('anio', $request->anio)

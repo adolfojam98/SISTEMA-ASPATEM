@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Relacion;
 use App\Usuario;
 use App\Cuota;
+use App\Configuracion;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
