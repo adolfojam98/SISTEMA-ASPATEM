@@ -22,9 +22,9 @@ export default new Router({
 			component: require('./views/UsuariosLista').default
 		},
 		{
-			path: '/torneos',
-			name: 'torneos',
-			component: require('./views/Torneos').default
+			path: '/torneos/crear',
+			name: 'crear-torneos',
+			component: require('./views/TorneoCrear').default
 		},
 		{
 			path: '/ranking',

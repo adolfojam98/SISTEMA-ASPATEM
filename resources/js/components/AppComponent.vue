@@ -3,6 +3,7 @@
     <v-navigation-drawer
       v-model="drawer"
       app
+      color=#CFD8DC
     >
       <v-list>
         <v-list-item link :to="{name: 'home'}">
@@ -54,50 +55,26 @@
           </v-list-item>
 </v-list-group>
 
-        <!-- <v-list-group>
+
+        <v-list-group
+          no-action
+          prepend-icon="mdi-tournament">
           <template v-slot:activator>
-            <v-list-item-action>
-              <v-icon>mdi-account</v-icon>
-            </v-list-item-action>
-            <v-list-item-title >Socios</v-list-item-title>
+            <v-list-item-title>Torneos</v-list-item-title>
           </template>
-      
-          <v-list-item link :to="{name: 'agregar'}">
-            <v-list-item-content>
-              <v-list-item-title><center>Agregar nuevo socio</center></v-list-item-title>
-            </v-list-item-content>
+
+              <v-list-item
+            link :to="{name: 'crear-torneos'}"
+          >
+            <v-list-item-title>Nuevo torneo</v-list-item-title>
+            <v-list-item-icon>
+              <v-icon>mdi-plus</v-icon>
+            </v-list-item-icon>
           </v-list-item>
-
-          <v-list-item link :to="{name: 'lista'}">
-            <v-list-item-content>
-              <v-list-item-title><center>Ver lista de socios</center></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+            
 
 
-        </v-list-group> -->
-
-        
-
-
-
-        
-
-
-
-
-          
-
-        <v-list-item link :to="{name:'torneos'}">
-          <v-list-item-action>
-            <v-icon>mdi-battery-charging-30</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>
-              torneos
-              </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        </v-list-group>
 
         <v-list-item link :to="{name:'ranking'}">
           <v-list-item-action>
@@ -130,11 +107,11 @@
 
     <v-app-bar
       app
-      color="indigo"
+      color=#1A237E
       dark
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>ASPATEM</v-toolbar-title>
+      <v-toolbar-title> ASPATEM </v-toolbar-title>
     </v-app-bar>
 
     <v-main>
@@ -144,7 +121,7 @@
    </v-container>
     </v-main>
     <v-footer
-      color="indigo"
+      color=#1A237E
       app
     >
       <span class="white--text">&copy; {{ new Date().getFullYear() }}</span>
