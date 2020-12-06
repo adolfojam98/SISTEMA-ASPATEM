@@ -2999,6 +2999,170 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3017,6 +3181,18 @@ __webpack_require__.r(__webpack_exports__);
       dniJugador: null,
       puntosJugador: null,
       nuevoJugador: false,
+      snackbar: false,
+      menssage: "",
+      gestionPuntos: {
+        gestionPunmismaCat_MayorNivel_Ganador: null,
+        mismaCat_MayorNivel_Perdedor: null,
+        mismaCat_MenorNivel_Ganador: null,
+        mismaCat_MenorNivel_Perdedor: null,
+        diferenteCat_MayorNivel_Ganador: null,
+        diferenteCat_MayorNivel_Perdedor: null,
+        diferenteCat_MenorNivel_Ganador: null,
+        diferenteCat_MenorNivel_Perdedor: null
+      },
       headers: [{
         text: 'Apellido',
         value: 'apellido'
@@ -3034,18 +3210,35 @@ __webpack_require__.r(__webpack_exports__);
         value: "actions",
         sortable: false,
         filterable: false
+      }],
+      puntosRules: [function (v) {
+        return !!v || "Puntos requeridos";
+      }, function (v) {
+        return /^([0-9]*)?[0-9]+$/.test(v) || "Los puntos deben ser numeros enteros";
       }]
     };
   },
   methods: {
     agregarCategoria: function agregarCategoria() {
-      var categoria = {
-        nombre: this.nombreNuevaCategoria,
-        puntosMinimo: this.puntosMinimos
-      };
-      this.arrayCategorias.push(categoria);
-      this.nombreNuevaCategoria = "";
-      this.puntosMinimos = "";
+      if (this.arrayCategorias.length < 6) {
+        var categoria = {
+          nombre: this.nombreNuevaCategoria,
+          puntosMinimo: this.puntosMinimos,
+          puntosMaximo: 999999
+        };
+        this.arrayCategorias.push(categoria);
+        console.log(this.arrayCategorias.length);
+
+        if (this.arrayCategorias.length > 1) {
+          this.arrayCategorias[this.arrayCategorias.length - 2].puntosMaximo = categoria.puntosMinimo - 1;
+        }
+
+        this.nombreNuevaCategoria = "";
+        this.puntosMinimos = "";
+      } else {
+        this.menssage = "Limite de categorias alcanzado";
+        this.snackbar = true;
+      }
     },
     eliminarCategoria: function eliminarCategoria(indice) {
       this.arrayCategorias.splice(indice, 1);
@@ -3065,6 +3258,20 @@ __webpack_require__.r(__webpack_exports__);
     },
     eliminarJugador: function eliminarJugador(indice) {
       this.listaJugadores.splice(indice, 1);
+    },
+    generarTorneo: function generarTorneo() {
+      var _this = this;
+
+      axios.post('/torneo', {
+        nombreTorneo: this.nombreTorneo
+      }).then(function (res) {
+        axios.post('/categorias', {
+          id_torneo: res.data,
+          categorias: _this.arrayCategorias
+        }).then(function (res) {
+          console.log(res.data);
+        });
+      });
     }
   }
 });
@@ -41691,157 +41898,89 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "v-stepper",
-    {
-      attrs: { vertical: "" },
-      model: {
-        value: _vm.e6,
-        callback: function($$v) {
-          _vm.e6 = $$v
-        },
-        expression: "e6"
-      }
-    },
+    "div",
     [
       _c(
-        "v-stepper-step",
-        { attrs: { complete: _vm.e6 > 1, editable: "", step: "1" } },
-        [_vm._v("\n    Nombre y Categorias\n  ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "v-stepper-content",
-        { attrs: { step: "1" } },
+        "v-stepper",
+        {
+          attrs: { vertical: "" },
+          model: {
+            value: _vm.e6,
+            callback: function($$v) {
+              _vm.e6 = $$v
+            },
+            expression: "e6"
+          }
+        },
         [
           _c(
-            "v-card",
-            {
-              staticClass: "mb-12",
-              attrs: { color: "#039BE5", height: "350px" }
-            },
+            "v-stepper-step",
+            { attrs: { complete: _vm.e6 > 1, editable: "", step: "1" } },
+            [_vm._v("\n      Nombre y Categorias\n    ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "v-stepper-content",
+            { attrs: { step: "1" } },
             [
               _c(
-                "v-row",
+                "v-card",
+                {
+                  staticClass: "mb-12",
+                  attrs: { color: "#90A4AE", height: "360px" }
+                },
                 [
                   _c(
-                    "v-col",
-                    { attrs: { cols: "12", md: "5" } },
+                    "v-row",
                     [
                       _c(
-                        "v-form",
-                        {
-                          attrs: { "v-model": _vm.valid, "lazy-validation": "" }
-                        },
+                        "v-col",
+                        { attrs: { cols: "8", md: "4" } },
                         [
                           _c(
-                            "v-container",
+                            "v-form",
+                            {
+                              attrs: {
+                                "v-model": _vm.valid,
+                                "lazy-validation": ""
+                              }
+                            },
                             [
-                              _c("v-text-field", {
-                                staticClass: "subheading font-weight-bold",
-                                attrs: {
-                                  color: "#212121",
-                                  label: "Nombre del Torneo",
-                                  required: ""
-                                },
-                                model: {
-                                  value: _vm.nombreTorneo,
-                                  callback: function($$v) {
-                                    _vm.nombreTorneo = $$v
-                                  },
-                                  expression: "nombreTorneo"
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("v-spacer"),
-                              _vm._v(" "),
-                              !_vm.nuevaCategoria
-                                ? _c(
-                                    "v-btn",
-                                    {
-                                      attrs: {
-                                        dark: "",
-                                        color: "#009688",
-                                        height: "25%",
-                                        width: "70%"
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          ;[
-                                            (_vm.nuevaCategoria = !_vm.nuevaCategoria)
-                                          ]
-                                        }
-                                      },
-                                      model: {
-                                        value: _vm.nuevaCategoria,
-                                        callback: function($$v) {
-                                          _vm.nuevaCategoria = $$v
-                                        },
-                                        expression: "nuevaCategoria"
-                                      }
+                              _c(
+                                "v-container",
+                                [
+                                  _c("v-text-field", {
+                                    staticClass: "subheading font-weight-bold",
+                                    attrs: {
+                                      color: "#212121",
+                                      label: "Nombre del Torneo",
+                                      required: ""
                                     },
-                                    [
-                                      _c("v-icon", [_vm._v("mdi-plus")]),
-                                      _vm._v(
-                                        "\n          Nueva categoria\n          "
-                                      )
-                                    ],
-                                    1
-                                  )
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm.nuevaCategoria
-                                ? _c(
-                                    "div",
-                                    [
-                                      _c("v-text-field", {
-                                        staticClass:
-                                          "subheading font-weight-bold",
-                                        attrs: {
-                                          color: "#212121",
-                                          label: "Nombre de la Categoria",
-                                          required: ""
-                                        },
-                                        model: {
-                                          value: _vm.nombreNuevaCategoria,
-                                          callback: function($$v) {
-                                            _vm.nombreNuevaCategoria = $$v
-                                          },
-                                          expression: "nombreNuevaCategoria"
-                                        }
-                                      }),
-                                      _vm._v(" "),
-                                      _c("v-text-field", {
-                                        staticClass:
-                                          "subheading font-weight-bold",
-                                        attrs: {
-                                          color: "#212121",
-                                          label:
-                                            "Puntos Minimos de la Categoria",
-                                          required: ""
-                                        },
-                                        model: {
-                                          value: _vm.puntosMinimos,
-                                          callback: function($$v) {
-                                            _vm.puntosMinimos = $$v
-                                          },
-                                          expression: "puntosMinimos"
-                                        }
-                                      }),
-                                      _vm._v(" "),
-                                      _c(
+                                    model: {
+                                      value: _vm.nombreTorneo,
+                                      callback: function($$v) {
+                                        _vm.nombreTorneo = $$v
+                                      },
+                                      expression: "nombreTorneo"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("v-spacer"),
+                                  _vm._v(" "),
+                                  !_vm.nuevaCategoria
+                                    ? _c(
                                         "v-btn",
                                         {
                                           attrs: {
                                             dark: "",
                                             color: "#009688",
-                                            height: "25%",
-                                            width: "40%"
+                                            height: "25",
+                                            width: "200"
                                           },
                                           on: {
                                             click: function($event) {
                                               ;[
-                                                ((_vm.nuevaCategoria = !_vm.nuevaCategoria),
-                                                _vm.agregarCategoria())
+                                                (_vm.nuevaCategoria = !_vm.nuevaCategoria)
                                               ]
                                             }
                                           },
@@ -41853,6 +41992,536 @@ var render = function() {
                                             expression: "nuevaCategoria"
                                           }
                                         },
+                                        [
+                                          _c("v-icon", [_vm._v("mdi-plus")]),
+                                          _vm._v(
+                                            "\n            Nueva categoria\n            "
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.nuevaCategoria
+                                    ? _c(
+                                        "div",
+                                        [
+                                          _c("v-text-field", {
+                                            staticClass:
+                                              "subheading font-weight-bold",
+                                            attrs: {
+                                              color: "#212121",
+                                              label: "Nombre de la Categoria",
+                                              required: ""
+                                            },
+                                            model: {
+                                              value: _vm.nombreNuevaCategoria,
+                                              callback: function($$v) {
+                                                _vm.nombreNuevaCategoria = $$v
+                                              },
+                                              expression: "nombreNuevaCategoria"
+                                            }
+                                          }),
+                                          _vm._v(" "),
+                                          _c("v-text-field", {
+                                            staticClass:
+                                              "subheading font-weight-bold",
+                                            attrs: {
+                                              color: "#212121",
+                                              rules: _vm.puntosRules,
+                                              label:
+                                                "Puntos Minimos de la Categoria",
+                                              required: ""
+                                            },
+                                            model: {
+                                              value: _vm.puntosMinimos,
+                                              callback: function($$v) {
+                                                _vm.puntosMinimos = $$v
+                                              },
+                                              expression: "puntosMinimos"
+                                            }
+                                          }),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-btn",
+                                            {
+                                              attrs: {
+                                                dark: "",
+                                                color: "#009688",
+                                                height: "20",
+                                                width: "150"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  ;[
+                                                    ((_vm.nuevaCategoria = !_vm.nuevaCategoria),
+                                                    _vm.agregarCategoria())
+                                                  ]
+                                                }
+                                              },
+                                              model: {
+                                                value: _vm.nuevaCategoria,
+                                                callback: function($$v) {
+                                                  _vm.nuevaCategoria = $$v
+                                                },
+                                                expression: "nuevaCategoria"
+                                              }
+                                            },
+                                            [_vm._v("Agregar")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-btn",
+                                            {
+                                              attrs: {
+                                                dark: "",
+                                                color: "#009688",
+                                                height: "20",
+                                                width: "150"
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  ;[
+                                                    ((_vm.nuevaCategoria = !_vm.nuevaCategoria),
+                                                    (_vm.puntosMinimos = null),
+                                                    (_vm.nombreNuevaCategoria =
+                                                      ""))
+                                                  ]
+                                                }
+                                              },
+                                              model: {
+                                                value: _vm.nuevaCategoria,
+                                                callback: function($$v) {
+                                                  _vm.nuevaCategoria = $$v
+                                                },
+                                                expression: "nuevaCategoria"
+                                              }
+                                            },
+                                            [_vm._v("Cancelar")]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    : _vm._e()
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-col",
+                        [
+                          _c(
+                            "v-container",
+                            { attrs: { fluid: true } },
+                            [
+                              _c("v-simple-table", {
+                                attrs: { dark: "" },
+                                scopedSlots: _vm._u([
+                                  {
+                                    key: "default",
+                                    fn: function() {
+                                      return [
+                                        _c("thead", [
+                                          _c("tr", [
+                                            _c(
+                                              "th",
+                                              { staticClass: "text-center" },
+                                              [
+                                                _vm._v(
+                                                  "\n                    Categoria\n                  "
+                                                )
+                                              ]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "th",
+                                              { staticClass: "text-center" },
+                                              [
+                                                _vm._v(
+                                                  "\n                    Rango de puntos\n                  "
+                                                )
+                                              ]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "th",
+                                              { staticClass: "text-center" },
+                                              [
+                                                _vm._v(
+                                                  "\n                    Eliminar\n                  "
+                                                )
+                                              ]
+                                            )
+                                          ])
+                                        ]),
+                                        _vm._v(" "),
+                                        _c(
+                                          "tbody",
+                                          _vm._l(_vm.arrayCategorias, function(
+                                            categoria,
+                                            indice
+                                          ) {
+                                            return _c(
+                                              "tr",
+                                              { key: categoria.nombre },
+                                              [
+                                                _c(
+                                                  "td",
+                                                  [
+                                                    _c("center", [
+                                                      _vm._v(
+                                                        _vm._s(categoria.nombre)
+                                                      )
+                                                    ])
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _vm.arrayCategorias[
+                                                  indice + 1
+                                                ] != null
+                                                  ? _c(
+                                                      "td",
+                                                      [
+                                                        _c("center", [
+                                                          _vm._v(
+                                                            _vm._s(
+                                                              categoria.puntosMinimo
+                                                            ) +
+                                                              " - " +
+                                                              _vm._s(
+                                                                _vm
+                                                                  .arrayCategorias[
+                                                                  indice + 1
+                                                                ].puntosMinimo -
+                                                                  1
+                                                              )
+                                                          )
+                                                        ])
+                                                      ],
+                                                      1
+                                                    )
+                                                  : _vm._e(),
+                                                _vm._v(" "),
+                                                _vm.arrayCategorias[
+                                                  indice + 1
+                                                ] == null
+                                                  ? _c(
+                                                      "td",
+                                                      [
+                                                        _c("center", [
+                                                          _vm._v(
+                                                            _vm._s(
+                                                              categoria.puntosMinimo
+                                                            ) + " - ∞ "
+                                                          )
+                                                        ])
+                                                      ],
+                                                      1
+                                                    )
+                                                  : _vm._e(),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-tooltip",
+                                                  {
+                                                    attrs: { bottom: "" },
+                                                    scopedSlots: _vm._u(
+                                                      [
+                                                        {
+                                                          key: "activator",
+                                                          fn: function(ref) {
+                                                            var on = ref.on
+                                                            var attrs =
+                                                              ref.attrs
+                                                            return [
+                                                              _c(
+                                                                "center",
+                                                                [
+                                                                  _c(
+                                                                    "v-icon",
+                                                                    _vm._g(
+                                                                      _vm._b(
+                                                                        {
+                                                                          attrs: {
+                                                                            color:
+                                                                              "error"
+                                                                          },
+                                                                          on: {
+                                                                            click: function(
+                                                                              $event
+                                                                            ) {
+                                                                              ;[
+                                                                                _vm.eliminarCategoria(
+                                                                                  indice
+                                                                                )
+                                                                              ]
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        "v-icon",
+                                                                        attrs,
+                                                                        false
+                                                                      ),
+                                                                      on
+                                                                    ),
+                                                                    [
+                                                                      _vm._v(
+                                                                        "mdi-delete"
+                                                                      )
+                                                                    ]
+                                                                  )
+                                                                ],
+                                                                1
+                                                              )
+                                                            ]
+                                                          }
+                                                        }
+                                                      ],
+                                                      null,
+                                                      true
+                                                    )
+                                                  },
+                                                  [
+                                                    _vm._v(" "),
+                                                    _c("span", [
+                                                      _vm._v("Eliminar")
+                                                    ])
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          }),
+                                          0
+                                        )
+                                      ]
+                                    },
+                                    proxy: true
+                                  }
+                                ])
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                {
+                  attrs: { color: "primary" },
+                  on: {
+                    click: function($event) {
+                      _vm.e6 = 2
+                    }
+                  }
+                },
+                [_vm._v("\n        Continuar\n      ")]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-stepper-step",
+            { attrs: { complete: _vm.e6 > 2, editable: "", step: "2" } },
+            [_vm._v("\n      Importar lista de jugadores\n    ")]
+          ),
+          _vm._v(" "),
+          _c(
+            "v-stepper-content",
+            { attrs: { step: "2" } },
+            [
+              _c(
+                "v-card",
+                {
+                  staticClass: "mb-12",
+                  attrs: { color: "#90A4AE", height: "390px" }
+                },
+                [
+                  _c(
+                    "v-row",
+                    [
+                      _c(
+                        "v-col",
+                        { attrs: { cols: "8", md: "4" } },
+                        [
+                          _c(
+                            "v-container",
+                            [
+                              !_vm.importarJugadores
+                                ? _c(
+                                    "v-btn",
+                                    {
+                                      attrs: {
+                                        dark: "",
+                                        color: "#009688",
+                                        height: "35",
+                                        width: "270"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          ;[
+                                            (_vm.importarJugadores = !_vm.importarJugadores)
+                                          ]
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.importarJugadores,
+                                        callback: function($$v) {
+                                          _vm.importarJugadores = $$v
+                                        },
+                                        expression: "importarJugadores"
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n            Importar lista de jugadores\n            "
+                                      )
+                                    ]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _c("v-container"),
+                              _vm._v(" "),
+                              !_vm.nuevoJugador
+                                ? _c(
+                                    "v-btn",
+                                    {
+                                      attrs: {
+                                        dark: "",
+                                        color: "#009688",
+                                        height: "35",
+                                        width: "270"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          ;[
+                                            (_vm.nuevoJugador = !_vm.nuevoJugador)
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("v-icon"),
+                                      _vm._v(
+                                        "\n            Agregar jugador a la lista\n            "
+                                      )
+                                    ],
+                                    1
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.nuevoJugador
+                                ? _c(
+                                    "v-form",
+                                    [
+                                      _c("v-text-field", {
+                                        staticClass:
+                                          "subheading font-weight-bold",
+                                        attrs: {
+                                          color: "#212121",
+                                          label: "Apellido del jugador",
+                                          required: ""
+                                        },
+                                        model: {
+                                          value: _vm.apellidoJugador,
+                                          callback: function($$v) {
+                                            _vm.apellidoJugador = $$v
+                                          },
+                                          expression: "apellidoJugador"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("v-text-field", {
+                                        staticClass:
+                                          "subheading font-weight-bold",
+                                        attrs: {
+                                          color: "#212121",
+                                          label: "Nombre del jugador",
+                                          required: ""
+                                        },
+                                        model: {
+                                          value: _vm.nombreJugador,
+                                          callback: function($$v) {
+                                            _vm.nombreJugador = $$v
+                                          },
+                                          expression: "nombreJugador"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("v-text-field", {
+                                        staticClass:
+                                          "subheading font-weight-bold",
+                                        attrs: {
+                                          color: "#212121",
+                                          label: "DNI del jugador",
+                                          required: ""
+                                        },
+                                        model: {
+                                          value: _vm.dniJugador,
+                                          callback: function($$v) {
+                                            _vm.dniJugador = $$v
+                                          },
+                                          expression: "dniJugador"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("v-text-field", {
+                                        staticClass:
+                                          "subheading font-weight-bold",
+                                        attrs: {
+                                          color: "#212121",
+                                          label: "Puntos del jugador",
+                                          required: ""
+                                        },
+                                        model: {
+                                          value: _vm.puntosJugador,
+                                          callback: function($$v) {
+                                            _vm.puntosJugador = $$v
+                                          },
+                                          expression: "puntosJugador"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            dark: "",
+                                            color: "#009688",
+                                            height: "20",
+                                            width: "150"
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              ;[
+                                                ((_vm.nuevoJugador = !_vm.nuevoJugador),
+                                                _vm.agregarJugador())
+                                              ]
+                                            }
+                                          },
+                                          model: {
+                                            value: _vm.nuevoJugador,
+                                            callback: function($$v) {
+                                              _vm.nuevoJugador = $$v
+                                            },
+                                            expression: "nuevoJugador"
+                                          }
+                                        },
                                         [_vm._v("Agregar")]
                                       ),
                                       _vm._v(" "),
@@ -41862,24 +42531,26 @@ var render = function() {
                                           attrs: {
                                             dark: "",
                                             color: "#009688",
-                                            height: "25%",
-                                            width: "40%"
+                                            height: "20",
+                                            width: "150"
                                           },
                                           on: {
                                             click: function($event) {
                                               ;[
-                                                ((_vm.nuevaCategoria = !_vm.nuevaCategoria),
-                                                (_vm.puntosMinimos = null),
-                                                (_vm.nombreNuevaCategoria = ""))
+                                                ((_vm.apellidoJugador = ""),
+                                                (_vm.nombreJugador = ""),
+                                                (_vm.dniJugador = null),
+                                                (_vm.puntosJugador = null),
+                                                (_vm.nuevoJugador = false))
                                               ]
                                             }
                                           },
                                           model: {
-                                            value: _vm.nuevaCategoria,
+                                            value: _vm.nuevoJugador,
                                             callback: function($$v) {
-                                              _vm.nuevaCategoria = $$v
+                                              _vm.nuevoJugador = $$v
                                             },
-                                            expression: "nuevaCategoria"
+                                            expression: "nuevoJugador"
                                           }
                                         },
                                         [_vm._v("Cancelar")]
@@ -41893,101 +42564,29 @@ var render = function() {
                           )
                         ],
                         1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-col",
-                    [
-                      _c("v-simple-table", {
-                        attrs: { dark: "" },
-                        scopedSlots: _vm._u([
-                          {
-                            key: "default",
-                            fn: function() {
-                              return [
-                                _c("thead", [
-                                  _c("tr", [
-                                    _c("th", { staticClass: "text-center" }, [
-                                      _vm._v(
-                                        "\n                  Categoria\n                "
-                                      )
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("th", { staticClass: "text-center" }, [
-                                      _vm._v(
-                                        "\n                  Rango de puntos\n                "
-                                      )
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("th", { staticClass: "text-center" }, [
-                                      _vm._v(
-                                        "\n                  Eliminar\n                "
-                                      )
-                                    ])
-                                  ])
-                                ]),
-                                _vm._v(" "),
-                                _c(
-                                  "tbody",
-                                  _vm._l(_vm.arrayCategorias, function(
-                                    categoria,
-                                    indice
-                                  ) {
-                                    return _c(
-                                      "tr",
-                                      { key: categoria.nombre },
-                                      [
-                                        _c(
-                                          "td",
-                                          [
-                                            _c("center", [
-                                              _vm._v(_vm._s(categoria.nombre))
-                                            ])
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _vm.arrayCategorias[indice + 1] != null
-                                          ? _c(
-                                              "td",
-                                              [
-                                                _c("center", [
-                                                  _vm._v(
-                                                    _vm._s(
-                                                      categoria.puntosMinimo
-                                                    ) +
-                                                      " - " +
-                                                      _vm._s(
-                                                        _vm.arrayCategorias[
-                                                          indice + 1
-                                                        ].puntosMinimo - 1
-                                                      )
-                                                  )
-                                                ])
-                                              ],
-                                              1
-                                            )
-                                          : _vm._e(),
-                                        _vm._v(" "),
-                                        _vm.arrayCategorias[indice + 1] == null
-                                          ? _c(
-                                              "td",
-                                              [
-                                                _c("center", [
-                                                  _vm._v(
-                                                    _vm._s(
-                                                      categoria.puntosMinimo
-                                                    ) + " - ∞ "
-                                                  )
-                                                ])
-                                              ],
-                                              1
-                                            )
-                                          : _vm._e(),
-                                        _vm._v(" "),
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-col",
+                        [
+                          [
+                            _c("v-data-table", {
+                              staticClass: "elevation-1 mr-2",
+                              attrs: {
+                                dense: "",
+                                headers: _vm.headers,
+                                items: _vm.listaJugadores,
+                                "item-key": "dni",
+                                dark: "",
+                                "items-per-page": 5
+                              },
+                              scopedSlots: _vm._u(
+                                [
+                                  {
+                                    key: "item.actions",
+                                    fn: function(ref) {
+                                      var item = ref.item
+                                      return [
                                         _c(
                                           "v-tooltip",
                                           {
@@ -42001,353 +42600,12 @@ var render = function() {
                                                     var attrs = ref.attrs
                                                     return [
                                                       _c(
-                                                        "center",
-                                                        [
-                                                          _c(
-                                                            "v-icon",
-                                                            _vm._g(
-                                                              _vm._b(
-                                                                {
-                                                                  attrs: {
-                                                                    color:
-                                                                      "error"
-                                                                  },
-                                                                  on: {
-                                                                    click: function(
-                                                                      $event
-                                                                    ) {
-                                                                      ;[
-                                                                        _vm.eliminarCategoria(
-                                                                          indice
-                                                                        )
-                                                                      ]
-                                                                    }
-                                                                  }
-                                                                },
-                                                                "v-icon",
-                                                                attrs,
-                                                                false
-                                                              ),
-                                                              on
-                                                            ),
-                                                            [
-                                                              _vm._v(
-                                                                "mdi-delete"
-                                                              )
-                                                            ]
-                                                          )
-                                                        ],
-                                                        1
-                                                      )
-                                                    ]
-                                                  }
-                                                }
-                                              ],
-                                              null,
-                                              true
-                                            )
-                                          },
-                                          [
-                                            _vm._v(" "),
-                                            _c("span", [_vm._v("Eliminar")])
-                                          ]
-                                        )
-                                      ],
-                                      1
-                                    )
-                                  }),
-                                  0
-                                )
-                              ]
-                            },
-                            proxy: true
-                          }
-                        ])
-                      })
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-btn",
-            {
-              attrs: { color: "primary" },
-              on: {
-                click: function($event) {
-                  _vm.e6 = 2
-                }
-              }
-            },
-            [_vm._v("\n      Continue\n    ")]
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-stepper-step",
-        { attrs: { complete: _vm.e6 > 2, editable: "", step: "2" } },
-        [_vm._v("\n    Importar lista de jugadores\n  ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "v-stepper-content",
-        { attrs: { step: "2" } },
-        [
-          _c(
-            "v-card",
-            {
-              staticClass: "mb-12",
-              attrs: { color: "#039BE5", height: "390px" }
-            },
-            [
-              _c(
-                "v-row",
-                [
-                  _c(
-                    "v-col",
-                    { attrs: { cols: "12", md: "5" } },
-                    [
-                      _c(
-                        "v-container",
-                        [
-                          !_vm.importarJugadores
-                            ? _c(
-                                "v-btn",
-                                {
-                                  attrs: { dark: "", color: "#009688" },
-                                  on: {
-                                    click: function($event) {
-                                      ;[
-                                        (_vm.importarJugadores = !_vm.importarJugadores)
-                                      ]
-                                    }
-                                  },
-                                  model: {
-                                    value: _vm.importarJugadores,
-                                    callback: function($$v) {
-                                      _vm.importarJugadores = $$v
-                                    },
-                                    expression: "importarJugadores"
-                                  }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n          Importar lista de jugadores\n          "
-                                  )
-                                ]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _c("v-container"),
-                          _vm._v(" "),
-                          !_vm.nuevoJugador
-                            ? _c(
-                                "v-btn",
-                                {
-                                  attrs: { dark: "", color: "#009688" },
-                                  on: {
-                                    click: function($event) {
-                                      ;[(_vm.nuevoJugador = !_vm.nuevoJugador)]
-                                    }
-                                  }
-                                },
-                                [
-                                  _c("v-icon"),
-                                  _vm._v(
-                                    "\n          Agregar jugador a la lista\n          "
-                                  )
-                                ],
-                                1
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _vm.nuevoJugador
-                            ? _c(
-                                "v-form",
-                                [
-                                  _c("v-text-field", {
-                                    staticClass: "subheading font-weight-bold",
-                                    attrs: {
-                                      color: "#212121",
-                                      label: "Apellido del jugador",
-                                      required: ""
-                                    },
-                                    model: {
-                                      value: _vm.apellidoJugador,
-                                      callback: function($$v) {
-                                        _vm.apellidoJugador = $$v
-                                      },
-                                      expression: "apellidoJugador"
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("v-text-field", {
-                                    staticClass: "subheading font-weight-bold",
-                                    attrs: {
-                                      color: "#212121",
-                                      label: "Nombre del jugador",
-                                      required: ""
-                                    },
-                                    model: {
-                                      value: _vm.nombreJugador,
-                                      callback: function($$v) {
-                                        _vm.nombreJugador = $$v
-                                      },
-                                      expression: "nombreJugador"
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("v-text-field", {
-                                    staticClass: "subheading font-weight-bold",
-                                    attrs: {
-                                      color: "#212121",
-                                      label: "DNI del jugador",
-                                      required: ""
-                                    },
-                                    model: {
-                                      value: _vm.dniJugador,
-                                      callback: function($$v) {
-                                        _vm.dniJugador = $$v
-                                      },
-                                      expression: "dniJugador"
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("v-text-field", {
-                                    staticClass: "subheading font-weight-bold",
-                                    attrs: {
-                                      color: "#212121",
-                                      label: "Puntos del jugador",
-                                      required: ""
-                                    },
-                                    model: {
-                                      value: _vm.puntosJugador,
-                                      callback: function($$v) {
-                                        _vm.puntosJugador = $$v
-                                      },
-                                      expression: "puntosJugador"
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-btn",
-                                    {
-                                      attrs: {
-                                        dark: "",
-                                        color: "#009688",
-                                        height: "25%",
-                                        width: "40%"
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          ;[
-                                            ((_vm.nuevoJugador = !_vm.nuevoJugador),
-                                            _vm.agregarJugador())
-                                          ]
-                                        }
-                                      },
-                                      model: {
-                                        value: _vm.nuevoJugador,
-                                        callback: function($$v) {
-                                          _vm.nuevoJugador = $$v
-                                        },
-                                        expression: "nuevoJugador"
-                                      }
-                                    },
-                                    [_vm._v("Agregar")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-btn",
-                                    {
-                                      attrs: {
-                                        dark: "",
-                                        color: "#009688",
-                                        height: "25%",
-                                        width: "40%"
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          ;[
-                                            ((_vm.apellidoJugador = ""),
-                                            (_vm.nombreJugador = ""),
-                                            (_vm.dniJugador = null),
-                                            (_vm.puntosJugador = null),
-                                            (_vm.nuevoJugador = false))
-                                          ]
-                                        }
-                                      },
-                                      model: {
-                                        value: _vm.nuevoJugador,
-                                        callback: function($$v) {
-                                          _vm.nuevoJugador = $$v
-                                        },
-                                        expression: "nuevoJugador"
-                                      }
-                                    },
-                                    [_vm._v("Cancelar")]
-                                  )
-                                ],
-                                1
-                              )
-                            : _vm._e()
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-col",
-                    [
-                      [
-                        _c("v-data-table", {
-                          staticClass: "elevation-1",
-                          attrs: {
-                            dense: "",
-                            headers: _vm.headers,
-                            items: _vm.listaJugadores,
-                            "item-key": "dni",
-                            dark: "",
-                            "items-per-page": 5
-                          },
-                          scopedSlots: _vm._u(
-                            [
-                              {
-                                key: "item.actions",
-                                fn: function(ref) {
-                                  var item = ref.item
-                                  return [
-                                    _c(
-                                      "v-tooltip",
-                                      {
-                                        attrs: { bottom: "" },
-                                        scopedSlots: _vm._u(
-                                          [
-                                            {
-                                              key: "activator",
-                                              fn: function(ref) {
-                                                var on = ref.on
-                                                var attrs = ref.attrs
-                                                return [
-                                                  _c(
-                                                    "center",
-                                                    [
-                                                      _c(
                                                         "v-icon",
                                                         _vm._g(
                                                           _vm._b(
                                                             {
                                                               staticClass:
-                                                                "mr-2",
+                                                                "ml-4",
                                                               attrs: {
                                                                 color: "error"
                                                               },
@@ -42369,160 +42627,451 @@ var render = function() {
                                                         ),
                                                         [_vm._v("mdi-delete")]
                                                       )
-                                                    ],
-                                                    1
-                                                  )
-                                                ]
-                                              }
-                                            }
-                                          ],
-                                          null,
-                                          true
+                                                    ]
+                                                  }
+                                                }
+                                              ],
+                                              null,
+                                              true
+                                            )
+                                          },
+                                          [
+                                            _vm._v(" "),
+                                            _c("span", [_vm._v("Eliminar")])
+                                          ]
                                         )
-                                      },
-                                      [
-                                        _vm._v(" "),
-                                        _c("span", [_vm._v("Eliminar")])
                                       ]
-                                    )
-                                  ]
-                                }
-                              }
-                            ],
-                            null,
-                            true
-                          )
-                        })
-                      ]
+                                    }
+                                  }
+                                ],
+                                null,
+                                true
+                              )
+                            })
+                          ]
+                        ],
+                        2
+                      )
                     ],
-                    2
+                    1
                   )
                 ],
                 1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                {
+                  attrs: { color: "primary" },
+                  on: {
+                    click: function($event) {
+                      _vm.e6 = 3
+                    }
+                  }
+                },
+                [_vm._v("\n        Continue\n      ")]
               )
             ],
             1
           ),
           _vm._v(" "),
+          _c("v-stepper-step", { attrs: { step: "3", editable: "" } }, [
+            _vm._v("\n      Configuracion de puntos\n    ")
+          ]),
+          _vm._v(" "),
           _c(
-            "v-btn",
-            {
-              attrs: { color: "primary" },
-              on: {
-                click: function($event) {
-                  _vm.e6 = 3
-                }
-              }
-            },
-            [_vm._v("\n      Continue\n    ")]
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c("v-stepper-step", { attrs: { step: "3", editable: "" } }, [
-        _vm._v("\n    Configuracion de puntos\n  ")
-      ]),
-      _vm._v(" "),
-      _c(
-        "v-stepper-content",
-        { attrs: { step: "3" } },
-        [
-          _c(
-            "v-card",
-            {
-              staticClass: "mb-12",
-              attrs: { color: "#039BE5", height: "450px" }
-            },
+            "v-stepper-content",
+            { attrs: { step: "3" } },
             [
               _c(
-                "v-row",
+                "v-card",
+                {
+                  staticClass: "mb-12",
+                  attrs: { color: "#90A4AE", height: "625px" }
+                },
                 [
                   _c(
-                    "v-col",
+                    "v-container",
                     [
                       _c(
-                        "v-container",
+                        "v-card",
+                        {
+                          staticClass: "elevation-2",
+                          attrs: { color: "#424242", dark: "" }
+                        },
                         [
                           _c("center", [
-                            _c("h2", { staticStyle: { color: "#212121" } }, [
-                              _vm._v("Puntos segun las categorias")
+                            _c("h2", { staticStyle: { color: "'#FAFAFA'" } }, [
+                              _vm._v(" Jugadores de la misma categoria")
                             ])
                           ]),
                           _vm._v(" "),
                           _c(
-                            "v-card",
-                            {
-                              staticClass: "elevation-2",
-                              attrs: { color: "#000000", dark: "" }
-                            },
+                            "v-row",
                             [
-                              _c("center", [
-                                _vm._v("Jugadores de la misma categoria")
-                              ]),
-                              _vm._v(" "),
-                              _c(
-                                "v-row",
-                                [
-                                  _c("v-col", {
-                                    attrs: { cols: "12", md: "4" }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-col",
-                                    [_c("center", [_vm._v("El ganador suma")])],
-                                    1
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-col",
-                                    [
-                                      _c("center", [
-                                        _vm._v("El perdedor resta")
-                                      ])
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-row",
-                                [
-                                  _c(
-                                    "v-col",
-                                    { attrs: { cols: "12", md: "3" } },
-                                    [
-                                      _vm._v(
-                                        "\n            El ganador tiene mayor nivel de juego\n\n            "
-                                      ),
-                                      _c("v-text-field", {
-                                        attrs: { solo: "", label: "Prepend" }
-                                      })
-                                    ],
-                                    1
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-col",
-                                    { attrs: { cols: "12", md: "3" } },
-                                    [
-                                      _c("v-text-field", {
-                                        attrs: { solo: "", label: "Prepend" }
-                                      })
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              ),
+                              _c("v-col", { attrs: { cols: "12", md: "4" } }),
                               _vm._v(" "),
                               _c("v-col", [
                                 _vm._v(
-                                  "\n            El ganador tiene menor nivel de juego\n          "
+                                  "\n              El ganador suma\n            "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("v-col", [
+                                _vm._v(
+                                  "\n              El perdedor resta\n            "
                                 )
                               ])
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-row",
+                            [
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12", md: "4" } },
+                                [
+                                  _c("v-container", [
+                                    _vm._v(
+                                      "\n              El ganador tiene mayor nivel de juego\n              "
+                                    )
+                                  ])
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                [
+                                  _c("v-text-field", {
+                                    staticClass: "mr-2",
+                                    attrs: {
+                                      rules: _vm.puntosRules,
+                                      solo: "",
+                                      label: "Ej: 8"
+                                    },
+                                    model: {
+                                      value:
+                                        _vm.gestionPuntos
+                                          .mismaCat_MayorNivel_Ganador,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.gestionPuntos,
+                                          "mismaCat_MayorNivel_Ganador",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "gestionPuntos.mismaCat_MayorNivel_Ganador"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                [
+                                  _c("v-text-field", {
+                                    staticClass: "mr-2",
+                                    attrs: {
+                                      rules: _vm.puntosRules,
+                                      solo: "",
+                                      label: "Ej: 8"
+                                    },
+                                    model: {
+                                      value:
+                                        _vm.gestionPuntos
+                                          .mismaCat_MayorNivel_Perdedor,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.gestionPuntos,
+                                          "mismaCat_MayorNivel_Perdedor",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "gestionPuntos.mismaCat_MayorNivel_Perdedor"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-row",
+                            [
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12", md: "4" } },
+                                [
+                                  _c("v-container", [
+                                    _vm._v(
+                                      "\n              El ganador tiene menor nivel de juego\n              "
+                                    )
+                                  ])
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                [
+                                  _c("v-text-field", {
+                                    staticClass: "mr-2",
+                                    attrs: {
+                                      rules: _vm.puntosRules,
+                                      solo: "",
+                                      label: "Ej: 11"
+                                    },
+                                    model: {
+                                      value:
+                                        _vm.gestionPuntos
+                                          .mismaCat_MenorNivel_Ganador,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.gestionPuntos,
+                                          "mismaCat_MenorNivel_Ganador",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "gestionPuntos.mismaCat_MenorNivel_Ganador"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                [
+                                  _c("v-text-field", {
+                                    staticClass: "mr-2",
+                                    attrs: {
+                                      rules: _vm.puntosRules,
+                                      solo: "",
+                                      label: "Ej: 11"
+                                    },
+                                    model: {
+                                      value:
+                                        _vm.gestionPuntos
+                                          .mismaCat_MenorNivel_Perdedor,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.gestionPuntos,
+                                          "mismaCat_MenorNivel_Perdedor",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "gestionPuntos.mismaCat_MenorNivel_Perdedor"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-container",
+                    [
+                      _c(
+                        "v-card",
+                        {
+                          staticClass: "elevation-2",
+                          attrs: { color: "#424242", dark: "" }
+                        },
+                        [
+                          _c("center", [
+                            _c("h2", { staticStyle: { color: "'#FAFAFA'" } }, [
+                              _vm._v(" Jugadores de diferentes categorias")
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "v-row",
+                            [
+                              _c("v-col", { attrs: { cols: "12", md: "4" } }),
+                              _vm._v(" "),
+                              _c("v-col", [
+                                _vm._v(
+                                  "\n              El ganador suma\n            "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("v-col", [
+                                _vm._v(
+                                  "\n              El perdedor resta\n            "
+                                )
+                              ])
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-row",
+                            [
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12", md: "4" } },
+                                [
+                                  _c("v-container", [
+                                    _vm._v(
+                                      "\n              El ganador tiene mayor categoria\n              "
+                                    )
+                                  ])
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                [
+                                  _c("v-text-field", {
+                                    staticClass: "mr-2",
+                                    attrs: {
+                                      rules: _vm.puntosRules,
+                                      solo: "",
+                                      label: "Ej: 5"
+                                    },
+                                    model: {
+                                      value:
+                                        _vm.gestionPuntos
+                                          .diferenteCat_MayorNivel_Ganador,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.gestionPuntos,
+                                          "diferenteCat_MayorNivel_Ganador",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "gestionPuntos.diferenteCat_MayorNivel_Ganador"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                [
+                                  _c("v-text-field", {
+                                    staticClass: "mr-2",
+                                    attrs: {
+                                      rules: _vm.puntosRules,
+                                      solo: "",
+                                      label: "Ej: 0"
+                                    },
+                                    model: {
+                                      value:
+                                        _vm.gestionPuntos
+                                          .diferenteCat_MayorNivel_Perdedor,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.gestionPuntos,
+                                          "diferenteCat_MayorNivel_Perdedor",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "gestionPuntos.diferenteCat_MayorNivel_Perdedor"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-row",
+                            [
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12", md: "4" } },
+                                [
+                                  _c("v-container", [
+                                    _vm._v(
+                                      "\n              El ganador tiene menor categoria\n              "
+                                    )
+                                  ])
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                [
+                                  _c("v-text-field", {
+                                    staticClass: "mr-2",
+                                    attrs: {
+                                      rules: _vm.puntosRules,
+                                      solo: "",
+                                      label: "Ej: 11"
+                                    },
+                                    model: {
+                                      value:
+                                        _vm.gestionPuntos
+                                          .diferenteCat_MenorNivel_Ganador,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.gestionPuntos,
+                                          "diferenteCat_MenorNivel_Ganador",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "gestionPuntos.diferenteCat_MenorNivel_Ganador"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                [
+                                  _c("v-text-field", {
+                                    staticClass: "mr-2",
+                                    attrs: {
+                                      rules: _vm.puntosRules,
+                                      solo: "",
+                                      label: "Ej: 0"
+                                    },
+                                    model: {
+                                      value:
+                                        _vm.gestionPuntos
+                                          .diferenteCat_MenorNivel_Perdedor,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.gestionPuntos,
+                                          "diferenteCat_MenorNivel_Perdedor",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "gestionPuntos.diferenteCat_MenorNivel_Perdedor"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
                             ],
                             1
                           )
@@ -42534,25 +43083,67 @@ var render = function() {
                   )
                 ],
                 1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                {
+                  attrs: { color: "primary" },
+                  on: {
+                    click: function($event) {
+                      return _vm.generarTorneo()
+                    }
+                  }
+                },
+                [_vm._v("\n        Guardar\n      ")]
               )
             ],
             1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-btn",
-            {
-              attrs: { color: "primary" },
-              on: {
-                click: function($event) {
-                  _vm.e6 = _vm.e6
-                }
-              }
-            },
-            [_vm._v("\n      Guardar\n    ")]
           )
         ],
         1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-snackbar",
+        {
+          attrs: { timeout: "3000" },
+          scopedSlots: _vm._u([
+            {
+              key: "action",
+              fn: function(ref) {
+                var attrs = ref.attrs
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._b(
+                      {
+                        attrs: { color: "blue", text: "" },
+                        on: {
+                          click: function($event) {
+                            _vm.snackbar = false
+                          }
+                        }
+                      },
+                      "v-btn",
+                      attrs,
+                      false
+                    ),
+                    [_vm._v("\n                    Cerrar\n                ")]
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.snackbar,
+            callback: function($$v) {
+              _vm.snackbar = $$v
+            },
+            expression: "snackbar"
+          }
+        },
+        [_c("div", { domProps: { textContent: _vm._s(_vm.menssage) } })]
       )
     ],
     1

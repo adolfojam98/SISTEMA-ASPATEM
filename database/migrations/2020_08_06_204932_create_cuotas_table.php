@@ -23,12 +23,12 @@ class CreateCuotasTable extends Migration
             $table->dateTimeTz('fechaPago')->nullable();
             $table->BigInteger('usuario_id')->unsigned();
 
-            
-            $table->timestamps();
-
             $table->foreign('usuario_id')->references('id')->on('usuarios')
             ->onDelete('cascade')
             ->onUpdate('cascade');
+            
+            $table->timestamps();
+
         });
     }
 

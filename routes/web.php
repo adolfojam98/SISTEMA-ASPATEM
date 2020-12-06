@@ -50,7 +50,10 @@ Route::put('/pagarCuota','CuotaController@pagar');
 
 Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion');
 
+Route::post('/torneo', 'TorneoController@store');
 
+
+Route::post('/categorias', 'CategoriaController@storeCategorias');
 
 Route::get('{path}', function () {
     return view('index');
