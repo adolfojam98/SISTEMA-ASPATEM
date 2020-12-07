@@ -36,8 +36,19 @@ class TorneoController extends Controller
     public function store(Request $request)
     {
         
+        $gestionPuntos = $request->gestionPuntos;
+        
         $torneo = new Torneo();
+       
         $torneo->nombre = $request->nombreTorneo;
+        $torneo->misma_categoria_mayor_nivel_ganador    = $gestionPuntos['mismaCat_MayorNivel_Ganador'];
+        $torneo->misma_categoria_mayor_nivel_perdedor   = $gestionPuntos['mismaCat_MayorNivel_Perdedor'];
+        $torneo->misma_categoria_menor_nivel_ganador    = $gestionPuntos['mismaCat_MenorNivel_Ganador'];
+        $torneo->misma_categoria_menor_nivel_perdedor   = $gestionPuntos['mismaCat_MenorNivel_Perdedor'];
+        $torneo->mayor_categoria_ganador                = $gestionPuntos['diferenteCat_MayorNivel_Ganador'];
+        $torneo->mayor_categoria_perdedor               = $gestionPuntos['diferenteCat_MayorNivel_Perdedor'];
+        $torneo->menor_categoria_ganador                = $gestionPuntos['diferenteCat_MenorNivel_Ganador'];
+        $torneo->menor_categoria_perdedor               = $gestionPuntos['diferenteCat_MenorNivel_Perdedor'];
         $torneo->vigencia = 1;
         $torneo->save();
         return $torneo->id;

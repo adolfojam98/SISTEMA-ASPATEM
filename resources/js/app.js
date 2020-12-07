@@ -35,6 +35,7 @@ Vue.component('info-cuota-paga', require('./components/infoCuotaPagaComponent.vu
 Vue.component('pago-cuota', require('./components/pagoCuotaComponent.vue').default);
 Vue.component('usuarios-pagos', require('./components/UsuariosPagosComponent.vue').default);
 Vue.component('crear-torneo',require('./components/CrearTorneoComponent.vue').default);
+Vue.component('importar-jugadores',require('./components/ImportarJugadoresComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

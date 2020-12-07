@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "moment": "^2.27.0",
-        "vuetify": "^2.3.4"
+        "vuetify": "^2.3.4",
+        "xlsx": "^0.16.9"
     }
 }

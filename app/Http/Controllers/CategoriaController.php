@@ -86,11 +86,8 @@ class CategoriaController extends Controller
     public function storeCategorias(Request $request ){
         
         foreach ($request->categorias as $key => $categoriaActual) {
-            // dd($categoriaActual);
-            //  return $categoriaActual;
             $categoria = new Categoria();
             $categoria->nombre = $categoriaActual['nombre'];
-            // $categoria->nombre = $categoriaActual->nombre;
             $categoria->puntos_minimos = $categoriaActual['puntosMinimo'];
             $categoria->puntos_maximos = $categoriaActual['puntosMaximo'];
             $categoria->torneo_id = $request->id_torneo;
