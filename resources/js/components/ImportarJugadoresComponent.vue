@@ -11,13 +11,19 @@
                 style="display: none;"
             /> 
           
-            <label for="file-excel" class="subir text-button" style="background-color: #212121;border-radius: 5px">    
+           
+                <label 
+                    for="file-excel" 
+                    class="subir text-button v-btn v-btn--block v-btn--contained theme--dark v-size--default"
+                    >
+                    Seleccione un excel
+                </label>
+            
           
           
-     SELECCIONE UN EXCEL
 
 
-   </label>          
+            
        
             
         </div>
@@ -121,16 +127,10 @@ export default {
 
 
 <style>
- .subir{
-    padding: 9px 89px;
-    /* background: #5E35B1; */
-    color:#fff;
-    border:0px solid #fff;
-}
+ 
  
 .subir:hover{
-    color:#fff;
-    /* background: #5E35B1; */
+   
     cursor:pointer
 }
 </style>

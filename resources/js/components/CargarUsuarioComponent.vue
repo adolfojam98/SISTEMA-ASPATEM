@@ -134,7 +134,7 @@
         
 
         <v-snackbar v-model="snackbar" timeout="3000">
-            Usuario agregado corectamente
+            <div v-text="message"></div>
 
             <template v-slot:action="{ attrs }">
                 <v-btn
@@ -162,6 +162,7 @@ export default {
     data: () => ({
         valid: false,
         id_usuario: null,
+        message: "",
 
         nombre: "",
         nombreRules: [
@@ -214,12 +215,13 @@ export default {
                         dni: this.dni
                     })
                     .then(response => {
-                        this.snackbar = true;
+                        
                         this.id_usuario = response.data.id;
-                            if(this.es_socio){
+                        this.message = response.data.message;
+                            if(this.es_socio && this.id_usuario!=null){
                                 this.generarCuota();
-
                             }
+                        this.snackbar = true;
                     })
                     .catch(error => {
                         console.log(error.response);

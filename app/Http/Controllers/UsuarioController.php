@@ -41,6 +41,10 @@ class UsuarioController extends Controller
      */
     public function store(Request $request)
     {
+        $usuarios = Usuario::where('dni','=',$request->dni)->first();
+
+        if(empty($usuarios)){
+
         $usuario = new Usuario();
         $usuario->nombre = $request->nombre;
         $usuario->apellido = $request->apellido;
@@ -61,6 +65,14 @@ class UsuarioController extends Controller
             'message' => 'Nuevo usuario creado',
             'id' => $usuario->id
         ]);
+
+        }
+
+        else {
+                return response()->json([
+                'message' => 'Ya existe un usuario con este DNI',
+            ]);
+        }
 
         //Esta función guardará las tareas que enviaremos mediante vuejs
     }

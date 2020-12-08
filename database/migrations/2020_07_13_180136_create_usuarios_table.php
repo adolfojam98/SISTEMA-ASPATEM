@@ -17,8 +17,8 @@ class CreateUsuariosTable extends Migration
             $table->id();
             $table->string('nombre',20);
             $table->string('apellido',20);
-            $table->string('mail',50);
-            $table->string('telefono',12);
+            $table->string('mail',50)->nullable();
+            $table->string('telefono',12)->nullable();
             $table->boolean('socio');
             $table->integer('dni');
             $table->timestamps();

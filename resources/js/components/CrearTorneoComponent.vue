@@ -317,7 +317,7 @@
       <v-stepper-content step="3">
         <v-card color="#546E7A" class="mb-12" height="625px">
           <v-container>
-            <v-card class="elevation-2" color="#424242" dark>
+            <v-card class="elevation-2" color="#90A4AE" dark>
               <v-form v-model="valid" lazy-validation>
                 <center>
                   <h2 style="color: '#FAFAFA'">
@@ -394,7 +394,7 @@
 
           <!--segunda tabla-->
           <v-container>
-            <v-card class="elevation-2" color="#424242" dark>
+            <v-card class="elevation-2" color="#90A4AE" dark>
               <v-form v-model="valid" lazy-validation>
                 <center>
                   <h2 style="color: '#FAFAFA'">
@@ -476,7 +476,7 @@
     </v-stepper>
 
     <v-snackbar v-model="snackbar" timeout="3000">
-      <div v-text="menssage"></div>
+      <div v-text="message"></div>
 
       <template v-slot:action="{ attrs }">
         <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
@@ -510,7 +510,7 @@ export default {
     puntosJugador: null,
     nuevoJugador: false,
     snackbar: false,
-    menssage: "",
+    message: "",
     nuevosJugadores: [],
     gestionPuntos: {
       mismaCat_MayorNivel_Ganador: null,
@@ -592,7 +592,7 @@ export default {
         this.nombreNuevaCategoria = "";
         this.puntosMinimos = "";
       } else {
-        this.menssage = "Limite de categorias alcanzado";
+        this.message = "Limite de categorias alcanzado";
         this.snackbar = true;
       }
     },
