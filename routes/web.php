@@ -52,8 +52,9 @@ Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarA
 
 Route::post('/torneo', 'TorneoController@store');
 
-
 Route::post('/categorias', 'CategoriaController@storeCategorias');
+
+Route::post('/jugadores', 'TorneoController@storeJugadores');
 
 Route::get('{path}', function () {
     return view('index');

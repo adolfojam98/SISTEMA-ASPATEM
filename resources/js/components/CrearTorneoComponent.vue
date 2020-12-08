@@ -6,7 +6,7 @@
       </v-stepper-step>
 
       <v-stepper-content step="1">
-        <v-card color="#546E7A" class="mb-12" height="360px">
+        <v-card color="#546E7A" class="mb-12" min-height="360px">
           <v-row>
             <v-col cols="8" md="4">
               <v-container>
@@ -315,7 +315,7 @@
         Configuracion de puntos
       </v-stepper-step>
       <v-stepper-content step="3">
-        <v-card color="#546E7A" class="mb-12" height="625px">
+        <v-card color="#546E7A" class="mb-12" min-height="625px">
           <v-container>
             <v-card class="elevation-2" color="#90A4AE" dark>
               <v-form v-model="valid" lazy-validation>
@@ -626,16 +626,21 @@ export default {
           gestionPuntos: this.gestionPuntos,
         })
         .then((res) => {
-          console.log(res.data);
-          axios
-            .post("/categorias", {
+        axios.post("/jugadores",{
+          id_torneo : res.data,
+          jugadores : this.listaJugadores
+        }).then((res)=> console.log(res.data))
+
+
+
+          axios.post("/categorias", {
               id_torneo: res.data,
               categorias: this.arrayCategorias,
             })
             .then((res) => {
-              console.log(res.data);
+              
             });
-        });
+        }).catch((error)=> console.log(error));
     },
 
     rulesCategorias() {

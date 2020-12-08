@@ -3,7 +3,7 @@
 namespace App;
 use App\Relacion;
 use App\Cuota;
-
+use App\Torneo;
 use Illuminate\Database\Eloquent\Model;
 
 class Usuario extends Model
@@ -13,6 +13,11 @@ class Usuario extends Model
     public function relaciones()
     {
         return $this->belongsToMany(Relacion::class)->withPivot('usuario_id');
+    }
+
+    public function torneos()
+    {
+        return $this->belongsToMany(Torneo::class)->withPivot('puntos');
     }
 
    public function cuotas(){

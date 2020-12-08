@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Torneo;
+use App\Usuario;
 use Illuminate\Http\Request;
 
 class TorneoController extends Controller
@@ -98,5 +99,35 @@ class TorneoController extends Controller
     public function destroy(Torneo $torneo)
     {
         //
+    }
+
+    public function storeJugadores(Request $request){
+
+        $jugadores = $request->jugadores;
+
+        foreach ($jugadores as $jugador) {
+// return $jugador;
+            $usuario = Usuario::where('dni','=',$request->dni)->first();
+
+            if(empty($usuario)){
+                
+                $nuevoUsuario = new Usuario();
+
+                $nuevoUsuario->nombre =     $jugador['nombre'];                
+                $nuevoUsuario->apellido =   $jugador['apellido'];
+                $nuevoUsuario->dni =        $jugador['dni'];
+                $nuevoUsuario->socio = 0;
+                $nuevoUsuario->save();
+                $usuario = $nuevoUsuario;
+            }
+
+            $usuario->torneos()->attach($request->id_torneo, ['puntos' => $jugador['puntos']]);
+
+        $usuario->save();
+
+            
+        }
+
+
     }
 }
