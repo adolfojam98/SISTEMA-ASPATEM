@@ -105,8 +105,16 @@ class ConfiguracionController extends Controller
     public function modificarAutomatizacion(Request $request)
     {
         $configuracion = Configuracion::first();
-        $configuracion->automatizarBajasSocios = $request->automatizarBajasSocios;
-        $configuracion->save();
+
+        if($configuracion!=NULL){
+            $configuracion->automatizarBajasSocios = $request->automatizarBajasSocios;
+            $configuracion->save();
+        }
+        else{
+            $configuracion = new Configuracion();
+            $configuracion->automatizarBajasSocios = $request->automatizarBajasSocios;
+            $configuracion->save();
+        }
     }
 
 

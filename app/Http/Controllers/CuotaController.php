@@ -133,7 +133,14 @@ class CuotaController extends Controller
     {
 
         //antes de generar la cuota hace un control de quienes son socios para que aplique el descuento solo si es debido
-        $configuracion = Configuracion::firstOrFail();
+        $configuracion = Configuracion::first();
+
+        if($configuracion == NULL){
+            return response()->json([
+                'message' => 'Las configuraciones aun no existen'
+            ]);
+        }
+
         if($configuracion->automatizarBajasSocios){
 
             $fechaActual = carbon::now();
@@ -216,17 +223,18 @@ class CuotaController extends Controller
             }
         }
 
-        $configuracion = Configuracion::first();
-
-        if($configuracion == NULL){
-            return response()->json([
-                'message' => 'Primero debe establecer los montos desde configuracion'
-            ]);
-        }
-        else{
+        
+        if($configuracion->montoCuota!=NULL && $configuracion->montoCuotaDescuento!=NULL){
             if($cuota->descuento){$cuota->importe = $configuracion->montoCuotaDescuento;}
             else{$cuota->importe = $configuracion->montoCuota;}
         }
+        else
+            {
+                return response()->json([
+                    'message' => 'Primero debe establecer los montos desde configuracion'
+                ]);
+            }
+        
     
         $cuota->save();
     

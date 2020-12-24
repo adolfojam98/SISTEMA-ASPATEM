@@ -2,6 +2,7 @@
 
 namespace App;
 use App\Categoria;
+use App\Usuario;
 
 use Illuminate\Database\Eloquent\Model;
 

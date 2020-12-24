@@ -15,8 +15,8 @@ class CreateConfiguracionsTable extends Migration
     {
         Schema::create('configuracions', function (Blueprint $table) {
             $table->id();
-            $table->decimal('montoCuota',8,2)->default(0);
-            $table->decimal('montoCuotaDescuento',8,2)->default(0);
+            $table->decimal('montoCuota',8,2)->nullable()->default(null);
+            $table->decimal('montoCuotaDescuento',8,2)->nullable()->default(null);
             $table->boolean('automatizarBajasSocios')->default(true);
             $table->timestamps();
         });

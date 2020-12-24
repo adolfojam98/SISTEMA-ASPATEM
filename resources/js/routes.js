@@ -43,6 +43,12 @@ export default new Router({
 			name: 'configuracion',
 			component: require('./views/Configuracion').default
 		},
+
+		{
+			path: '/torneos/crearfecha',
+			name: 'crear-fecha',
+			component: require('./views/TorneoCrearFecha').default
+		},
 		
 		{
             path: '/*',

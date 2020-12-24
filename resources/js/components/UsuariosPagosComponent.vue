@@ -6,6 +6,8 @@
                 :items="usuarios"
                 :item-text="nombreCompleto"
                 return-object
+                background-color="#90A4AE"
+                dark
 
                 filled
                 label="Ingrese el nombre del socio"

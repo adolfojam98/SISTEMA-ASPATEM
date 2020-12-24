@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Torneo;
 use App\Usuario;
+
 use Illuminate\Http\Request;
 
 class TorneoController extends Controller
@@ -25,7 +26,8 @@ class TorneoController extends Controller
      */
     public function create()
     {
-        //
+        $torneos = Torneo::all();
+        return $torneos;
     }
 
     /**
@@ -64,7 +66,7 @@ class TorneoController extends Controller
      */
     public function show(Torneo $torneo)
     {
-        //
+        //        
     }
 
     /**
@@ -129,5 +131,15 @@ class TorneoController extends Controller
         }
 
 
+    }
+
+    public function getJugadores(Request $request){
+        $torneo = Torneo::find($request->id);
+        return $torneo->jugadores;
+    }
+
+    public function getCategorias(Request $request){
+        $torneo = Torneo::find($request->id);
+        return $torneo->categorias;
     }
 }

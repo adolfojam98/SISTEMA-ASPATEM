@@ -561,7 +561,7 @@ export default {
     aynRules: [
       (v) => !!v || "Campo obligatorio",
       (v) =>
-        /^([A-Z][a-z]*([ \t\n\r\f]?[A-Za-z])*)+$/.test(v) || "Nombre invalido",
+        /^([A-Za-z][A-Za-z]*([ \t\n\r\f]?[A-Za-z])*)+$/.test(v) || "Nombre invalido",
       (v) => v.length <= 30 || "Demasiado largo",
     ],
 
@@ -576,25 +576,65 @@ export default {
 
   methods: {
     agregarCategoria() {
-      if (this.arrayCategorias.length < 6) {
-        var categoria = {
-          nombre: this.nombreNuevaCategoria,
-          puntosMinimo: this.puntosMinimos,
-          puntosMaximo: 999999,
-        };
+      // if (this.arrayCategorias.length < 6) {
+        var nombreExistente = false;
+        this.arrayCategorias.forEach(categoria => {
+          if(categoria.nombre === this.nombreNuevaCategoria){nombreExistente = true;}
+        });
+        
 
-        this.arrayCategorias.push(categoria);
+        if(nombreExistente === false){
+            var categoria = {
+              nombre: this.nombreNuevaCategoria,
+              puntosMinimo: parseInt(this.puntosMinimos),
+              puntosMaximo: 9999999,
+            };
 
-        if (this.arrayCategorias.length > 1) {
-          this.arrayCategorias[this.arrayCategorias.length - 2].puntosMaximo =
-            categoria.puntosMinimo - 1;
+            if(this.arrayCategorias.length === 0){this.arrayCategorias.push(categoria);}
+            else{
+
+            for(var i=0; i < this.arrayCategorias.length; i++){              
+
+              if(parseInt(this.arrayCategorias[i].puntosMinimo) > parseInt(this.puntosMinimos)){
+
+                if(this.arrayCategorias.length > i){
+
+                  if (this.arrayCategorias.length > 1) {
+                  this.arrayCategorias[--i].puntosMaximo = parseInt(this.puntosMinimos)-1;
+                  i++;
+                  }
+                  categoria.puntosMaximo = parseInt(this.arrayCategorias[i].puntosMinimo)-1;
+                  }
+
+                  if((i+1)==this.arrayCategorias.length){this.arrayCategorias[i].puntosMaximo = 9999999;}
+
+                this.arrayCategorias.splice(i, 0, categoria);
+                break;
+              }
+//falta la que es menor e i ==0
+              if(parseInt(this.arrayCategorias[i].puntosMinimo) < parseInt(this.puntosMinimos) && i==0){
+                categoria.puntosMaximo = parseInt(this.arrayCategorias[i].puntosMinimo)-1;
+                this.arrayCategorias.push(categoria);
+                break;
+              }
+              //ver si quedo^^
+
+              if(parseInt(this.arrayCategorias[i].puntosMinimo) < parseInt(this.puntosMinimos) && this.arrayCategorias.length===(i+1)){
+                this.arrayCategorias[i--].puntosMaximo = parseInt(this.puntosMinimos)-1;
+                i++;
+                
+                this.arrayCategorias.push(categoria);
+                break;
+              }
+            };
+            }
+            this.nombreNuevaCategoria = "";
+            this.puntosMinimos = null;
         }
-        this.nombreNuevaCategoria = "";
-        this.puntosMinimos = "";
-      } else {
-        this.message = "Limite de categorias alcanzado";
-        this.snackbar = true;
-      }
+        else{
+          this.message = "Ya existe una categoria con este nombre";
+          this.snackbar = true;
+        }
     },
 
     eliminarCategoria(indice) {

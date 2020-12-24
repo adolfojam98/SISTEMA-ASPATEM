@@ -71,6 +71,15 @@
               <v-icon>mdi-plus</v-icon>
             </v-list-item-icon>
           </v-list-item>
+
+          <v-list-item
+            link :to="{name: 'crear-fecha'}"
+          >
+            <v-list-item-title>Nueva fecha</v-list-item-title>
+            <v-list-item-icon>
+              <v-icon>mdi-plus</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
             
 
 

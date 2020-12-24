@@ -56,6 +56,12 @@ Route::post('/categorias', 'CategoriaController@storeCategorias');
 
 Route::post('/jugadores', 'TorneoController@storeJugadores');
 
+Route::get('/torneos','TorneoController@create');
+
+Route::get('/torneos/{id}/jugadores','TorneoController@getJugadores');
+
+Route::get('/torneos/{id}/categorias','TorneoController@getCategorias');
+
 Route::get('{path}', function () {
     return view('index');
 })->where('path', '(.*)');
