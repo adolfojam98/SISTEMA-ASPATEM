@@ -52,7 +52,7 @@
                     solo
                     label="Monto socios que juegan dos categorias"
                     prefix="$"
-                    v-model="montoSocioDosCategorias"
+                    v-model="montoSociosDosCategorias"
                 ></v-text-field>
 
                 </v-col>
@@ -136,10 +136,7 @@
                                 </template>
                                 <span>Anotar en la categoria superior</span>
                                 </v-tooltip>
-                                
                             </template>
-                            
-
 
                             <template v-slot:[`item.action`]="{ item }">
                                 <v-tooltip bottom>
@@ -156,6 +153,7 @@
                                 <span>Eliminar</span>
                                 </v-tooltip>
                             </template>
+
                             </v-data-table>
                         </template>
 
@@ -191,7 +189,7 @@ torneoSeleccionado : "",
 torneos : [],
 nombreFecha : "",
 montoSociosUnaCategoria : null,
-montoSocioDosCategorias : null,
+montoSociosDosCategorias : null,
 montoNoSociosUnaCategoria : null,
 montoNoSociosDosCategorias : null,
 listaJugadores : [],
@@ -227,6 +225,7 @@ montoRules: [
         sortable: false,
         filterable: false,
       },
+      { text: "Monto", value: "montoPagado"},
       {
         text: "Eliminar",
         value: "action",
@@ -286,6 +285,7 @@ methods: {
                 }
             }
         });
+        this.calcularMonto();
     },
 
     agregarEnLaCategoriaSuperior(item){
@@ -297,12 +297,14 @@ methods: {
                     
                     if(indice === -1){
                         categoria.jugadoresAnotados.push(item);
+                        this.calcularMonto();
                         this.message="Jugador anotado en la categoria inmediata superior a la suya";
                         this.snackbar = true;
                         }
                     
                     else{
                         categoria.jugadoresAnotados.splice(indice,1);
+                        this.calcularMonto();
                         this.message="El jugador ya no esta anotado en la categoria superior a la suya";
                         this.snackbar = true;
                     }
@@ -312,7 +314,7 @@ methods: {
             if(item.pivot.puntos >= categoria.puntos_minimos && item.pivot.puntos <= categoria.puntos_maximos){
                 entrarEnElSiguiente=true;
                 }
-
+            
         });
 
         if(entrarEnElSiguiente){
@@ -320,6 +322,36 @@ methods: {
             this.snackbar=true;
             }
     },
+
+    calcularMonto(){
+
+        this.listaJugadores.forEach(jugador => {
+        var anotadoEnCategorias = 0;
+        this.listaCategorias.forEach(categoria => {
+                if(categoria.jugadoresAnotados.includes(jugador)){
+                    anotadoEnCategorias++;
+                }
+        })
+
+        if(parseInt(this.montoSociosUnaCategoria) >= 0 && parseInt(this.montoSociosDosCategorias) >= 0 && parseInt(this.montoNoSociosUnaCategoria) >= 0 && parseInt(this.montoNoSociosDosCategorias) >= 0){
+            if(anotadoEnCategorias == 0){ jugador.montoPagado = 0; }
+            else if(anotadoEnCategorias == 1 && jugador.socio == 1){ jugador.montoPagado =  this.montoSociosUnaCategoria;}
+                else if(anotadoEnCategorias == 2 && jugador.socio == 1){ jugador.montoPagado =  this.montoSociosDosCategorias;}
+                    else if(anotadoEnCategorias == 1 && jugador.socio == 0){ jugador.montoPagado =  this.montoNoSociosUnaCategoria;}
+                        else if(anotadoEnCategorias == 2 && jugador.socio == 0){ jugador.montoPagado =  this.montoNoSociosDosCategorias;}
+        }
+        else{
+            this.message="Debe definir los montos para poder calcular la columna 'Montos'";
+            this.snackbar=true;
+        }
+        })
+    },
+
+    agregarPropiedadMonto(){
+        this.listaJugadores.forEach(jugador => {
+            Object.defineProperty(jugador,'montoPagado', {value: 0, writable:true, configurable:true, enumerable:true});
+        });
+    }
 
 
 
@@ -329,7 +361,29 @@ watch : {
     torneoSeleccionado : function(){
         this.traerJugadoresTorneo();
         this.traerCategorias();
+        this.agregarPropiedadMonto();
         },
+
+    listaCategorias : function(){
+        this.calcularMonto();
+        },
+
+    montoSociosUnaCategoria : function(){
+        this.calcularMonto();
+        },
+
+    montoSociosDosCategorias : function(){
+        this.calcularMonto();
+        },
+
+    montoNoSociosUnaCategoria : function(){
+        this.calcularMonto();
+        },
+
+    montoNoSociosDosCategorias : function(){
+        this.calcularMonto();
+        },
+
     },
 
 created() {
