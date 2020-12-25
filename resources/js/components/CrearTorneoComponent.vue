@@ -593,7 +593,22 @@ export default {
             if(this.arrayCategorias.length === 0){this.arrayCategorias.push(categoria);}
             else{
 
-            for(var i=0; i < this.arrayCategorias.length; i++){              
+            for(var i=0; i < this.arrayCategorias.length; i++){        
+              
+              
+              if(parseInt(this.arrayCategorias[i].puntosMinimo) == parseInt(this.puntosMinimos)){
+                this.message = "Ya existe una categoria con estos puntos minimos";
+                this.snackbar = true;
+                break;
+              }
+            //falta la que es menor e i ==0
+              if(parseInt(this.arrayCategorias[i].puntosMinimo) > parseInt(this.puntosMinimos) && i==0){
+                categoria.puntosMaximo = parseInt(this.arrayCategorias[i].puntosMinimo)-1;
+                this.arrayCategorias.splice(i, 0, categoria);
+                break;
+              }
+              //ver si quedo^^
+              else{
 
               if(parseInt(this.arrayCategorias[i].puntosMinimo) > parseInt(this.puntosMinimos)){
 
@@ -611,13 +626,7 @@ export default {
                 this.arrayCategorias.splice(i, 0, categoria);
                 break;
               }
-//falta la que es menor e i ==0
-              if(parseInt(this.arrayCategorias[i].puntosMinimo) < parseInt(this.puntosMinimos) && i==0){
-                categoria.puntosMaximo = parseInt(this.arrayCategorias[i].puntosMinimo)-1;
-                this.arrayCategorias.push(categoria);
-                break;
               }
-              //ver si quedo^^
 
               if(parseInt(this.arrayCategorias[i].puntosMinimo) < parseInt(this.puntosMinimos) && this.arrayCategorias.length===(i+1)){
                 this.arrayCategorias[i--].puntosMaximo = parseInt(this.puntosMinimos)-1;
