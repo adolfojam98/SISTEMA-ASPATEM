@@ -601,13 +601,13 @@ export default {
                 this.snackbar = true;
                 break;
               }
-            //falta la que es menor e i ==0
+            
               if(parseInt(this.arrayCategorias[i].puntosMinimo) > parseInt(this.puntosMinimos) && i==0){
                 categoria.puntosMaximo = parseInt(this.arrayCategorias[i].puntosMinimo)-1;
                 this.arrayCategorias.splice(i, 0, categoria);
                 break;
               }
-              //ver si quedo^^
+              
               else{
 
               if(parseInt(this.arrayCategorias[i].puntosMinimo) > parseInt(this.puntosMinimos)){
