@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Cuota;
 use App\Usuario;
 use App\Configuracion;
+use App\Torneo;
 use Illuminate\Http\Request;
 
 class CuotaController extends Controller

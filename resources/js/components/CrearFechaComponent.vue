@@ -117,8 +117,7 @@
                                     v-on="on"
                                     @click="[agregarEnSuCategoria(item)]"
                                     color="green"
-                                    >=</v-icon
-                                    >
+                                    >=</v-icon>
                                 </template>
                                 <span>Anotar en su categoria</span>
                                 </v-tooltip>
@@ -166,6 +165,61 @@
         </v-container>
       </v-card>
 
+      <v-container></v-container>
+
+            <v-card
+                v-if="listaCategorias.length > 0"
+                color="#546E7A"
+                dark
+                >
+                <v-toolbar 
+                color="#546E7A"
+                >
+                    <template>
+                        <v-tabs
+                        v-model="tab"
+                        align-with-title
+                        >
+                        <v-tabs-slider color="yellow"></v-tabs-slider>
+
+                            <v-tab
+                                v-for="item in listaCategorias"
+                                :key="item.id"
+                            >
+                                {{ item.nombre }}
+                            </v-tab>
+
+                        </v-tabs>
+                    </template>
+                </v-toolbar>
+
+                <v-tabs-items
+                v-model="tab"
+                >
+                    <v-tab-item
+                        v-for="item in listaCategorias"
+                        :key="item.id"
+                    >
+
+                        <v-card
+                        color="#90A4AE">
+
+                            <v-card
+                            v-for="jugadores in item.jugadoresAnotados"
+                            :key="jugadores.id"
+                            flat
+                            color="#90A4AE"
+                            class="rounded-0"
+                            >
+                                <v-card-text>{{jugadores}}</v-card-text>
+                            </v-card>
+
+                        </v-card>
+                    </v-tab-item>
+                </v-tabs-items>
+
+            </v-card>
+
 
     <v-snackbar v-model="snackbar" timeout="3000">
       <div v-text="message"></div>
@@ -196,6 +250,7 @@ listaJugadores : [],
 listaCategorias : [],
 message: "",
 snackbar : false,
+tab: null,
 
 
 
