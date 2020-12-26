@@ -108,8 +108,8 @@ class TorneoController extends Controller
         $jugadores = $request->jugadores;
 
         foreach ($jugadores as $jugador) {
-// return $jugador;
-            $usuario = Usuario::where('dni','=',$request->dni)->first();
+
+            $usuario = Usuario::where('dni','=',$jugador['dni'])->first();
 
             if(empty($usuario)){
                 
@@ -134,8 +134,27 @@ class TorneoController extends Controller
     }
 
     public function getJugadores(Request $request){
+       
         $torneo = Torneo::find($request->id);
         return $torneo->jugadores;
+        // return $torneo->jugadores;
+
+        
+        $torneo = Torneo::find($request->id);
+        $jugadores = $torneo->jugadores;
+
+        $listaJugadores=[];
+
+
+        foreach($jugadores as $jugador){
+            $UnJugador = Usuario::where('id',$jugador->id)->get();
+            array_push($listaJugadores, $UnJugador);
+        }
+
+        return $listaJugadores;
+
+
+
     }
 
     public function getCategorias(Request $request){

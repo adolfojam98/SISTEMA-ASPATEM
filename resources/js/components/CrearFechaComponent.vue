@@ -105,6 +105,7 @@
                             dark
                             :items-per-page="5"
                             >
+                            
 
                             
                             <template v-slot:[`item.actions`]="{ item }">
@@ -119,7 +120,7 @@
                                     color="green"
                                     >=</v-icon>
                                 </template>
-                                <span>Anotar en su categoria</span>
+                                <span>{{ calcularCategoria(item) }}</span>
                                 </v-tooltip>
 
                                 <v-tooltip bottom>
@@ -133,7 +134,7 @@
                                     >^</v-icon
                                     >
                                 </template>
-                                <span>Anotar en la categoria superior</span>
+                                <span>{{ calcularCategoriaSuperior(item) }}</span>
                                 </v-tooltip>
                             </template>
 
@@ -201,9 +202,6 @@
                         :key="item.id"
                     >
 
-                        <v-card
-                        color="#90A4AE">
-
                             <v-card
                             v-for="jugadores in item.jugadoresAnotados"
                             :key="jugadores.id"
@@ -214,7 +212,6 @@
                                 <v-card-text>{{jugadores}}</v-card-text>
                             </v-card>
 
-                        </v-card>
                     </v-tab-item>
                 </v-tabs-items>
 
@@ -296,12 +293,61 @@ montoRules: [
 
 
 methods: {
+    calcularCategoria : function(item){
+        var mensaje="";
+        this.listaCategorias.forEach(categoria => {
+            
+            if(item.pivot.puntos >= categoria.puntos_minimos && item.pivot.puntos <= categoria.puntos_maximos){
+
+                if(!categoria.jugadoresAnotados.includes(item)){
+                    mensaje="Agregar a la categoria: "+categoria.nombre
+                    }
+                else{
+                    mensaje="Quitar de la categoria: "+categoria.nombre
+                }
+               
+            }
+
+        });
+         return mensaje;
+    },
+
+    calcularCategoriaSuperior(item){
+        var entrarEnElSiguiente=false;
+        var mensaje="No hay una categoria superior";
+        this.listaCategorias.forEach(categoria => {
+
+            if(entrarEnElSiguiente){
+                    var indice = categoria.jugadoresAnotados.indexOf(item);
+                    
+                    if(indice === -1){
+                        mensaje="Agregar en la categoria superior: "+categoria.nombre;
+                        }
+                    
+                    else{
+                        mensaje="Quitar de la categoria superior: "+categoria.nombre;
+                    }
+                    entrarEnElSiguiente=false;
+                }
+
+            if(item.pivot.puntos >= categoria.puntos_minimos && item.pivot.puntos <= categoria.puntos_maximos){
+                entrarEnElSiguiente=true;
+                }
+            
+        });
+
+        return mensaje;
+    },
+
+
     
     traerJugadoresTorneo(){
         let me = this;
         axios.get(`/torneos/${me.torneoSeleccionado.id}/jugadores`)
         .then(
-            res => {this.listaJugadores = res.data;}
+            res => {
+                console.log(res.data)
+                this.listaJugadores = res.data;}
         )
     },
 
@@ -321,6 +367,8 @@ methods: {
     eliminarJugador(indice) {
       this.listaJugadores.splice(indice, 1);
     },
+
+    
 
     agregarEnSuCategoria(item){
         this.listaCategorias.forEach(categoria => {
@@ -379,7 +427,6 @@ methods: {
     },
 
     calcularMonto(){
-
         this.listaJugadores.forEach(jugador => {
         var anotadoEnCategorias = 0;
         this.listaCategorias.forEach(categoria => {
@@ -445,7 +492,10 @@ created() {
         axios.get("/torneos").then(res => {
             this.torneos = res.data;
         });
-    }
+    },
+    
+        
+    
 
 
 }

@@ -118,7 +118,7 @@ class UsuarioController extends Controller
         $usuario->telefono = $request->telefono;
         $usuario->socio = $request->socio;
         $usuario->dni = $request->dni;
-
+        
         $usuario->save();
 
         return $usuario;
