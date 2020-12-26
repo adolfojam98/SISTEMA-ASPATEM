@@ -62,6 +62,8 @@ Route::get('/torneos/{id}/jugadores','TorneoController@getJugadores');
 
 Route::get('/torneos/{id}/categorias','TorneoController@getCategorias');
 
+Route::get('/torneos/nombreOcupado/{nombre}','TorneoController@getNameExists');
+
 Route::get('{path}', function () {
     return view('index');
 })->where('path', '(.*)');

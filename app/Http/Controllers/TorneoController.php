@@ -161,4 +161,12 @@ class TorneoController extends Controller
         $torneo = Torneo::find($request->id);
         return $torneo->categorias;
     }
+
+    public function getNameExists(Request $request){
+        $torneo = Torneo::where('nombre',$request->nombre)->first();
+
+        if(empty($torneo)){return 0;}
+        else return true;
+        
+    }
 }

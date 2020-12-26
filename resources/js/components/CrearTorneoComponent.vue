@@ -669,6 +669,18 @@ export default {
     },
 
     generarTorneo() {
+      let me = this;
+      var nombreDeTorneoOcupado;
+        axios.get(`/torneos/nombreOcupado/${me.nombreTorneo}`)
+        .then(
+          res => {nombreDeTorneoOcupado = res.data;
+          
+        if(nombreDeTorneoOcupado==true){
+          this.message="El nombre del torneo ya esta en uso";
+          this.snackbar=true;
+        }
+        else{
+
       axios
         .post("/torneo", {
           nombreTorneo: this.nombreTorneo,
@@ -690,6 +702,13 @@ export default {
               
             });
         }).catch((error)=> console.log(error));
+
+        this.message="Torneo agregado";
+        this.snackbar=true;
+
+        }
+        });
+        
     },
 
     rulesCategorias() {
