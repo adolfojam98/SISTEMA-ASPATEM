@@ -161,6 +161,90 @@
                     </v-col>
                 </v-row>
 
+
+                <v-col cols="12" md="6">
+                <v-btn
+                block
+                  v-if="!nuevoJugador"
+                  dark
+                  color="#212121"
+                  @click="[(nuevoJugador = !nuevoJugador)]"
+                >
+                  <v-icon></v-icon>
+                  Agregar jugador a la lista
+                </v-btn>
+
+                <v-form v-if="nuevoJugador" v-model="valid" lazy-validation>
+                  <v-text-field
+                  dark
+                    color="#212121"
+                    v-model="apellidoJugador"
+                    :rules="aynRules"
+                    class="subheading font-weight-bold"
+                    label="Apellido del jugador"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                  dark
+                    color="#212121"
+                    v-model="nombreJugador"
+                    :rules="aynRules"
+                    class="subheading font-weight-bold"
+                    label="Nombre del jugador"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                  dark
+                    color="#212121"
+                    v-model="dniJugador"
+                    :rules="dniRules"
+                    class="subheading font-weight-bold"
+                    label="DNI del jugador"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                  dark
+                    color="#212121"
+                    v-model="puntosJugador"
+                    class="subheading font-weight-bold"
+                    label="Puntos del jugador"
+                    :rules="puntosRules"
+                    required
+                  ></v-text-field>
+
+                  <v-btn
+                    dark
+                    block
+                    class="rounded-pill"
+                    color="primary"
+                    v-model="nuevoJugador"
+                    :disabled="!valid"
+                    @click="
+                      [((nuevoJugador = !nuevoJugador), agregarJugador())]
+                    "
+                    >Agregar</v-btn
+                  >
+
+                  <v-btn
+                  block
+                    color="error"
+                    class="rounded-pill mt-3 mb-3"
+                    dark
+                    v-model="nuevoJugador"
+                    @click="
+                      [
+                        ((apellidoJugador = ''),
+                        (nombreJugador = ''),
+                        (dniJugador = null),
+                        (puntosJugador = null),
+                        (nuevoJugador = false)),
+                      ]
+                    "
+                    >Cancelar</v-btn
+                  >
+                </v-form>
+                </v-col>
+
             </v-card>
 
         </v-container>
@@ -170,12 +254,10 @@
 
             <v-card
                 v-if="listaCategorias.length > 0"
-                color="#546E7A"
+                
                 dark
                 >
-                <v-toolbar 
-                color="#546E7A"
-                >
+                <v-toolbar>
                     <template>
                         <v-tabs
                         v-model="tab"
@@ -201,15 +283,60 @@
                         v-for="item in listaCategorias"
                         :key="item.id"
                     >
+                    
 
-                            <v-card
-                            v-for="jugadores in item.jugadoresAnotados"
-                            :key="jugadores.id"
+                        <v-card
                             flat
-                            color="#90A4AE"
+                            color="#546E7A"
                             class="rounded-0"
                             >
-                                <v-card-text>{{jugadores}}</v-card-text>
+                                <v-container>
+                                    <v-form v-model="valid" lazy-validation>
+                                    
+                                
+                                    <v-col cols="12" md="4">
+                                        <v-text-field
+                                        label="Cantidad de Grupos"
+                                        v-model="item.cantidadGrupos"
+                                        :rules="cantidadGruposRules"
+                                        required
+                                        dark
+                                        class="mb-0"
+                                        ></v-text-field>
+                                    </v-col>
+                                
+
+                            
+                                    <v-switch
+                                    v-model="item.gruposConEliminatoria"
+                                    label="Fase de grupos con eliminatoria"
+                                    dark
+                                    class="ml-2 mt-0"
+                                    ></v-switch>
+
+                                    </v-form>
+                                
+                                        <v-btn
+                                        class="ml-2 mr-4"
+                                        dark
+                                        :disabled="!valid"
+                                        @click="[generarGrupos(item)]"
+                                        color="blue"
+                                        >Generar grupos</v-btn>
+                                        
+                                    </v-container>
+                                    
+                            
+
+                                <v-card
+                                v-for="jugadores in item.jugadoresAnotados"
+                                :key="jugadores.id"
+                                flat
+                                color="#90A4AE"
+                                class="rounded-0"
+                                >
+                                    <v-card-text>{{jugadores}}</v-card-text>
+                                </v-card>
                             </v-card>
 
                     </v-tab-item>
@@ -237,12 +364,18 @@
 export default {
 data: () => ({
 torneoSeleccionado : "",
+valid: false,
 torneos : [],
 nombreFecha : "",
 montoSociosUnaCategoria : null,
 montoSociosDosCategorias : null,
 montoNoSociosUnaCategoria : null,
 montoNoSociosDosCategorias : null,
+apellidoJugador: "",
+nombreJugador: "",
+dniJugador: null,
+puntosJugador: null,
+nuevoJugador: false,
 listaJugadores : [],
 listaCategorias : [],
 message: "",
@@ -262,6 +395,31 @@ nombreFechaRules: [
 montoRules: [
       (v) => !!v || "Monto requerido",
       (v) => /^(([0-9]*)([.][0-9]([0-9])*)*)+$/.test(v) || "Monto no valido ",
+    ],
+
+cantidadGruposRules: [
+      (v) => !!v || "Cantidad de grupos requerido",
+      (v) =>
+        /^([0-9]*)?[0-9]+$/.test(v) || "Deben ser solo numeros enteros",
+    ],
+
+aynRules: [
+      (v) => !!v || "Campo obligatorio",
+      (v) =>
+        /^([A-Za-z][A-Za-z]*([ \t\n\r\f]?[A-Za-z])*)+$/.test(v) || "Nombre invalido",
+      (v) => v.length <= 30 || "Demasiado largo",
+    ],
+
+dniRules: [
+      (v) => !!v || "Campo obligatorio",
+      (v) => /^([0-9]*)+$/.test(v) || "Solo numeros",
+      (v) =>
+        (!!v && v.length == 8) || "El DNI debe estar compuesto por 8 numeros",
+    ],
+puntosRules: [
+      (v) => !!v || "Puntos requeridos",
+      (v) =>
+        /^([0-9]*)?[0-9]+$/.test(v) || "Los puntos deben ser numeros enteros",
     ],
 
 
@@ -312,6 +470,36 @@ methods: {
          return mensaje;
     },
 
+    agregarJugador() {
+      var jugadorExiste = false;
+
+        this.listaJugadores.forEach(jugador => {
+            if(jugador.dni == parseInt(this.dniJugador)){jugadorExiste = true;}
+        });
+
+    if(!jugadorExiste){
+
+      var jugador = {
+        apellido: this.apellidoJugador,
+        nombre: this.nombreJugador,
+        dni: parseInt(this.dniJugador),
+        pivot: {puntos: parseInt(this.puntosJugador)},
+      };
+
+      this.listaJugadores.push(jugador);
+    
+    }else{
+        this.message = "Ya hay un jugador con el dni que intenta ingresar";
+        this.snackbar = true;
+    }
+
+      this.apellidoJugador = "";
+      this.nombreJugador = "";
+      this.dniJugador = null;
+      this.puntosJugador = null;
+
+    },
+
     calcularCategoriaSuperior(item){
         var entrarEnElSiguiente=false;
         var mensaje="No hay una categoria superior";
@@ -359,13 +547,16 @@ methods: {
 
             this.listaCategorias.forEach(categoria => {
                 Object.defineProperty(categoria,'jugadoresAnotados', {value: [], writable:true, configurable:true, enumerable:true});
+                Object.defineProperty(categoria,'gruposConEliminatoria', {value: false, writable:true, configurable:true, enumerable:true});
+                Object.defineProperty(categoria,'cantidadGrupos', {writable:true, configurable:true, enumerable:true});
                 });
             }
         )
     },
 
-    eliminarJugador(indice) {
-      this.listaJugadores.splice(indice, 1);
+    eliminarJugador(item) {
+        var indice = this.listaJugadores.indexOf(item);
+        this.listaJugadores.splice(indice, 1);
     },
 
     
@@ -453,6 +644,16 @@ methods: {
         this.listaJugadores.forEach(jugador => {
             Object.defineProperty(jugador,'montoPagado', {value: 0, writable:true, configurable:true, enumerable:true});
         });
+    },
+
+    generarGrupos(item){
+        if((item.jugadoresAnotados.length/item.cantidadGrupos)>=3){
+
+        }
+        else{
+            this.snackbar=true;
+            this.message="La cantidad de jugadores es insuficiente para la cantidad de grupos";
+        }
     }
 
 
@@ -493,8 +694,6 @@ created() {
             this.torneos = res.data;
         });
     },
-    
-        
     
 
 
