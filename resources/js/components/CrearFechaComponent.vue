@@ -290,7 +290,9 @@
                             color="#546E7A"
                             class="rounded-0"
                             >
-                                <v-container>
+                                <v-container
+                                v-if="!item.gruposGenerados"
+                                >
                                     <v-form v-model="valid" lazy-validation>
                                     
                                 
@@ -326,19 +328,89 @@
                                         
                                     </v-container>
                                     
-                            
+
+                                
 
                                 <v-card
-                                v-for="jugadores in item.jugadoresAnotados"
-                                :key="jugadores.id"
+                                v-for="grupo in item.listaGrupos"
+                                :key="grupo.nombre"
                                 flat
-                                color="#90A4AE"
+                                color="#546E7A"
                                 class="rounded-0"
                                 >
-                                    <v-card-text>{{jugadores}}</v-card-text>
+
+                                <div v-if="item.gruposGenerados">
+
+
+                                <v-btn
+                                    class="ml-6 mt-6"
+                                    dark
+                                    @click="deshacerGrupos(item)"
+                                    color="blue"
+                                    >Deshacer grupos</v-btn>
+                                    
+                                    
+                                <v-col>
+                                    <v-card
+                                    color="#90A4AE"
+                                    class="mt-6 mb-6 ml-12 mr-12"
+                                    >
+
+                                        <v-container 
+                                        v-for="partido in grupo.partidos"
+                                        :key="partido.id"
+                                        >
+                                            
+                                            <v-flex d-flex class="mb-0">
+                                                
+                                                <v-tooltip bottom>
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <h3 class="mt-2">{{partido.jugador1.apellido}}
+                                                            <v-icon
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                            >mdi-account-question</v-icon>
+                                                        </h3>
+                                                    </template>
+                                                    <span>{{partido.jugador1.nombre}} - {{partido.jugador1.dni}}</span>
+                                                </v-tooltip>
+                                                
+                                                <v-select
+                                                class="ml-4 mr-2"
+                                                :items="cantidadSets"
+                                                v-model="partido.setsJugador1"
+                                                solo
+                                                dense
+                                                ></v-select>
+                                            
+                                                <v-select
+                                                class="ml-2 mr-4"
+                                                :items="cantidadSets"
+                                                v-model="partido.setsJugador2"
+                                                dense
+                                                solo
+                                                ></v-select>
+
+                                                <v-tooltip bottom>
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <h3 class="mt-2">{{partido.jugador2.apellido}}
+                                                            <v-icon
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                            >mdi-account-question</v-icon>
+                                                        </h3>
+                                                    </template>
+                                                    <span>{{partido.jugador2.nombre}} - {{partido.jugador2.dni}}</span>
+                                                </v-tooltip>
+                                                
+                                            </v-flex>
+
+                                        </v-container>
+                                    </v-card>
+                                </v-col>
+                                </div>
                                 </v-card>
                             </v-card>
-
                     </v-tab-item>
                 </v-tabs-items>
 
@@ -359,8 +431,7 @@
 </template>
 
 
-<script>    //En la tabla poner para que cada jugador se pueda anotar en su categoria(1), en la suya y la superior (2) o en ninguna (3)
-            //En algun lugar que ingrese la cantidad de participantes por grupos y que categorias son con eliminatoria y cuales no (en la fase de grupos)
+<script>    
 export default {
 data: () => ({
 torneoSeleccionado : "",
@@ -381,6 +452,7 @@ listaCategorias : [],
 message: "",
 snackbar : false,
 tab: null,
+cantidadSets: [0,1,2,3,4,5,6,7],
 
 
 
@@ -549,6 +621,8 @@ methods: {
                 Object.defineProperty(categoria,'jugadoresAnotados', {value: [], writable:true, configurable:true, enumerable:true});
                 Object.defineProperty(categoria,'gruposConEliminatoria', {value: false, writable:true, configurable:true, enumerable:true});
                 Object.defineProperty(categoria,'cantidadGrupos', {writable:true, configurable:true, enumerable:true});
+                Object.defineProperty(categoria,'listaGrupos', {value: [], writable:true, configurable:true, enumerable:true});
+                Object.defineProperty(categoria,'gruposGenerados', {value: false, writable:true, configurable:true, enumerable:true});
                 });
             }
         )
@@ -646,17 +720,64 @@ methods: {
         });
     },
 
-    generarGrupos(item){
-        if((item.jugadoresAnotados.length/item.cantidadGrupos)>=3){
+    generarGrupos(categoria){
+        if((categoria.jugadoresAnotados.length/parseInt(categoria.cantidadGrupos))>=3){
+            var letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+            for(var i = 0; i < categoria.cantidadGrupos; i++){
+                var unGrupo = {
+                    nombre : letras[i],
+                    jugadoresDelGrupo : [],
+                    partidos : []
+                };
 
+                categoria.listaGrupos.push(unGrupo);
+            }
+            
+            categoria.jugadoresAnotados = categoria.jugadoresAnotados.sort((a, b) => b.pivot.puntos - a.pivot.puntos);
+            
+            categoria.listaGrupos.forEach(function(grupo, indiceGrupo, array1){
+                categoria.jugadoresAnotados.forEach(function(jugador, indiceJugador, array2){
+                    if(indiceJugador%parseInt(categoria.cantidadGrupos) == indiceGrupo){grupo.jugadoresDelGrupo.push(jugador);}
+                })
+            })
+
+            this.generarPartidosGrupos(categoria.listaGrupos);
+
+            this.snackbar=true;
+            this.message="Grupos generados con exito";
+            categoria.gruposGenerados = true;
         }
         else{
             this.snackbar=true;
             this.message="La cantidad de jugadores es insuficiente para la cantidad de grupos";
         }
-    }
+    },
 
+    generarPartidosGrupos(grupos){
+        var IDPartido = 0;
+        grupos.forEach(grupo => {
+            for(var i = 0; i < grupo.jugadoresDelGrupo.length; i++){
+                for( var j = 0; j < grupo.jugadoresDelGrupo.length; j++){
+                    if(j > i){
+                        var partido = {
+                            id : IDPartido,
+                            jugador1 : grupo.jugadoresDelGrupo[i],
+                            jugador2 : grupo.jugadoresDelGrupo[j],
+                            setsJugador1 : null,
+                            setsJugador2 : null,
+                        }
+                        IDPartido+=1;
+                        grupo.partidos.push(partido);
+                    }
+                }
+            }
+        });
+    },
 
+    deshacerGrupos(categoria){
+        categoria.gruposGenerados = false;
+        categoria.listaGrupos = [];
+    },
 
 },
 
