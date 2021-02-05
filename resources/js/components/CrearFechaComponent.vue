@@ -291,7 +291,7 @@
                             class="rounded-0"
                             >
                                 <v-container
-                                v-if="!item.gruposGenerados"
+                                v-if='(gruposGenerados(item))'
                                 >
                                     <v-form v-model="valid" lazy-validation>
                                     
@@ -329,7 +329,14 @@
                                     </v-container>
                                     
 
-                                
+                                <div v-else>
+
+                                    <v-btn
+                                    class="ml-6 mt-6"
+                                    dark
+                                    @click="deshacerGrupos(item)"
+                                    color="blue"
+                                    >Deshacer grupos</v-btn>
 
                                 <v-card
                                 v-for="grupo in item.listaGrupos"
@@ -338,16 +345,6 @@
                                 color="#546E7A"
                                 class="rounded-0"
                                 >
-
-                                <div v-if="item.gruposGenerados">
-
-
-                                <v-btn
-                                    class="ml-6 mt-6"
-                                    dark
-                                    @click="deshacerGrupos(item)"
-                                    color="blue"
-                                    >Deshacer grupos</v-btn>
                                     
                                     
                                 <v-col>
@@ -367,6 +364,7 @@
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <h3 class="mt-2">{{partido.jugador1.apellido}}
                                                             <v-icon
+                                                            class="mb-1"
                                                             v-bind="attrs"
                                                             v-on="on"
                                                             >mdi-account-question</v-icon>
@@ -395,6 +393,7 @@
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <h3 class="mt-2">{{partido.jugador2.apellido}}
                                                             <v-icon
+                                                            class="mb-1"
                                                             v-bind="attrs"
                                                             v-on="on"
                                                             >mdi-account-question</v-icon>
@@ -408,8 +407,23 @@
                                         </v-container>
                                     </v-card>
                                 </v-col>
-                                </div>
                                 </v-card>
+
+                            <center>
+                                <v-btn
+                                    class="center mb-6"
+                                    dark
+                                    @click="item.llavesGeneradas = true"
+                                    color="blue">
+                                    Generar llaves
+                                </v-btn>
+                            </center>
+
+
+                                <generar-llaves v-if="item.llavesGeneradas" :categoria="item"></generar-llaves>
+
+
+                                </div>
                             </v-card>
                     </v-tab-item>
                 </v-tabs-items>
@@ -622,7 +636,9 @@ methods: {
                 Object.defineProperty(categoria,'gruposConEliminatoria', {value: false, writable:true, configurable:true, enumerable:true});
                 Object.defineProperty(categoria,'cantidadGrupos', {writable:true, configurable:true, enumerable:true});
                 Object.defineProperty(categoria,'listaGrupos', {value: [], writable:true, configurable:true, enumerable:true});
-                Object.defineProperty(categoria,'gruposGenerados', {value: false, writable:true, configurable:true, enumerable:true});
+                //Object.defineProperty(categoria,'gruposGenerados', {value: false, writable:true, configurable:true, enumerable:true});
+                this.$set(categoria, 'gruposGenerados', false);
+                this.$set(categoria, 'llavesGeneradas', false);
                 });
             }
         )
@@ -715,12 +731,14 @@ methods: {
     },
 
     agregarPropiedadMonto(){
+        console.log('Ejecucion agregarPropiedadMonto');
         this.listaJugadores.forEach(jugador => {
             Object.defineProperty(jugador,'montoPagado', {value: 0, writable:true, configurable:true, enumerable:true});
         });
     },
 
     generarGrupos(categoria){
+        console.log('Ejecucionn generarGrupos')
         if((categoria.jugadoresAnotados.length/parseInt(categoria.cantidadGrupos))>=3){
             var letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
             for(var i = 0; i < categoria.cantidadGrupos; i++){
@@ -741,19 +759,22 @@ methods: {
                 })
             })
 
+            
             this.generarPartidosGrupos(categoria.listaGrupos);
-
-            this.snackbar=true;
-            this.message="Grupos generados con exito";
             categoria.gruposGenerados = true;
+
+            this.message="Grupos generados con exito";
+            this.snackbar=true;
+            
         }
         else{
-            this.snackbar=true;
             this.message="La cantidad de jugadores es insuficiente para la cantidad de grupos";
+            this.snackbar=true;
         }
     },
 
     generarPartidosGrupos(grupos){
+        console.log("generarPartidosGrupos");
         var IDPartido = 0;
         grupos.forEach(grupo => {
             for(var i = 0; i < grupo.jugadoresDelGrupo.length; i++){
@@ -774,12 +795,18 @@ methods: {
         });
     },
 
+    gruposGenerados(categoria){
+        return !categoria.gruposGenerados;
+    },
+
     deshacerGrupos(categoria){
+        console.log('Ejecucion deshacerGrupos')
         categoria.gruposGenerados = false;
         categoria.listaGrupos = [];
     },
 
 },
+
 
 watch : {
     torneoSeleccionado : function(){

@@ -118,7 +118,7 @@ export default {
                 
                 
             }else{
-                console.log('se mandaron mal los aegumentos')
+                console.log('se mandaron mal los argumentos')
             }
         }
     }
