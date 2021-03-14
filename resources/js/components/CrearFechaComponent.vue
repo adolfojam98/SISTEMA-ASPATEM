@@ -716,7 +716,8 @@ methods: {
                 }
         })
 
-        if(parseInt(this.montoSociosUnaCategoria) >= 0 && parseInt(this.montoSociosDosCategorias) >= 0 && parseInt(this.montoNoSociosUnaCategoria) >= 0 && parseInt(this.montoNoSociosDosCategorias) >= 0){
+        if(parseInt(this.montoSociosUnaCategoria) >= 0 && parseInt(this.montoSociosDosCategorias) >= 0 
+        && parseInt(this.montoNoSociosUnaCategoria) >= 0 && parseInt(this.montoNoSociosDosCategorias) >= 0){
             if(anotadoEnCategorias == 0){ jugador.montoPagado = 0; }
             else if(anotadoEnCategorias == 1 && jugador.socio == 1){ jugador.montoPagado =  this.montoSociosUnaCategoria;}
                 else if(anotadoEnCategorias == 2 && jugador.socio == 1){ jugador.montoPagado =  this.montoSociosDosCategorias;}
