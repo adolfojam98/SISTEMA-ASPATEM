@@ -1,6 +1,7 @@
 
 <?php
 
+use App\Categoria;
 use App\Torneo;
 use App\Usuario;
 use Illuminate\Database\Seeder;
@@ -38,10 +39,34 @@ function crearTorneoSeed($nombre)
     $torneo->mayor_categoria_perdedor = rand(3, 10);
     $torneo->menor_categoria_perdedor = rand(3, 10);
     $torneo->save();
-
+    
+    sumarCategoriasTorneo($torneo);
     sumarJugadoresTorneo($torneo);
+    
 }
     
+    function sumarCategoriasTorneo($torneo){
+
+       $maximo = rand(400,800);
+       $puntosMinimos = 0;
+       $nroCategoria = 1; 
+       while($puntosMinimos <=$maximo){
+           $categoria = new Categoria();
+            $categoria->nombre = "Categoría"  .$nroCategoria . " " .$torneo->nombre ;
+            $categoria->puntos_minimos = $puntosMinimos;
+            $categoria->puntos_maximos = $puntosMinimos + (rand(7,15)*10) - 1;
+            $puntosMinimos = $categoria->puntos_maximos + 1;
+           $categoria->torneo_id = $torneo->id;
+           $categoria->save(); 
+           $nroCategoria++;
+            
+
+       }
+        
+
+
+    }
+
     function sumarJugadoresTorneo($torneo)
     {
         $cantidadParticipantes = cantidadParticipantesTorneo();
