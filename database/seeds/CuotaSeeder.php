@@ -5,8 +5,10 @@ use App\Cuota;
 use Carbon\Carbon;
 use App\Usuario;
 
+
 class CuotaSeeder extends Seeder
 {
+   
     /**
      * Run the database seeds.
      *

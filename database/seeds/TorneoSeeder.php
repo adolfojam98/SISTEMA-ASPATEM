@@ -85,7 +85,7 @@ function crearTorneoSeed($nombre)
     function cantidadParticipantesTorneo()
     {
         $JugadoresBase = Usuario::count();
-        $cantidadParticipantes = rand(5, $JugadoresBase);
+        $cantidadParticipantes = rand(10, $JugadoresBase);
         $idJugadoresArray = array();
         for ($x=0;$x<$cantidadParticipantes;$x++) {
             $num_aleatorio = rand(1, $cantidadParticipantes);

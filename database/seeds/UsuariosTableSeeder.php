@@ -45,7 +45,17 @@ class UsuariosTableSeeder extends Seeder
         crearUsuarioSeed('Tomas', 'Chancalay');
         crearUsuarioSeed('Erik', 'Lamela');
      
+        crearUsuariosFalsos(100);
        
+    }
+}
+
+function crearUsuariosFalsos($cantidad){
+    $faker = Faker\Factory::create();
+
+    for ($i=0; $i < $cantidad; $i++) { 
+
+        crearUsuarioSeed($faker->firstName, $faker->lastName);
     }
 }
 function crearUsuarioSeed($nombre,$apellido){
