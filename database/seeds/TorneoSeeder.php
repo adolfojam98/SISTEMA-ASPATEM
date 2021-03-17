@@ -47,14 +47,14 @@ function crearTorneoSeed($nombre)
     
     function sumarCategoriasTorneo($torneo){
 
-       $maximo = rand(400,800);
+       $maximo = rand(300,500);
        $puntosMinimos = 0;
        $nroCategoria = 1; 
        while($puntosMinimos <=$maximo){
            $categoria = new Categoria();
             $categoria->nombre = "Categoría"  .$nroCategoria . " " .$torneo->nombre ;
             $categoria->puntos_minimos = $puntosMinimos;
-            $categoria->puntos_maximos = $puntosMinimos + (rand(7,15)*10) - 1;
+            $categoria->puntos_maximos = $puntosMinimos + (rand(5,15)*10)-1;
             $puntosMinimos = $categoria->puntos_maximos + 1;
            $categoria->torneo_id = $torneo->id;
            $categoria->save(); 
