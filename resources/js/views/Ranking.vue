@@ -1,6 +1,12 @@
 <template>
     <div>
-        <v-simple-table
+      {{count}}
+      <v-btn
+      @click="setterCount()">
+
+      </v-btn>
+      
+       <!--  <v-simple-table
       :dense="dense"
       :fixed-header="fixedHeader"
       :height="height"
@@ -41,15 +47,15 @@
       <v-col cols="6" md="3">
         <v-switch v-model="fixedHeader" label="Toggle fixed-header" class="mx-4"></v-switch>
       </v-col>
-    </v-row>
+    </v-row> -->
     </div>
 </template>
 
 
 <script>
+/* import indice from "../store/index"
 export default {
      data: () => ({
-      dense: false,
       fixedHeader: false,
       height: 300,
       desserts: [
@@ -95,5 +101,41 @@ export default {
         },
       ],
     }),
-}
+
+    created(){
+      this.$store.commit("setDense",dense);
+    },
+
+    computed: {
+      dense(){
+        return this.$store.state.ranking.dense;
+      }
+    }
+} */
+
+
+import store from '../store/index'
+
+export default {
+  data() { 
+    return {
+        
+      }
+    },
+
+  computed: {
+    count() {
+      return store.state.count;
+    }
+  },
+  methods: {
+    setterCount(){
+        store.commit("setCount");
+      }
+    }
+  }
+
+
 </script>
+
+

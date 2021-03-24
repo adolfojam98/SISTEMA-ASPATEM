@@ -1,25 +1,15 @@
 <template>
-    <v-col cols="12" md="6">
-        <v-row>
-            <v-col cols="12" md="4">
-                <div>
-                    <h1>{{categoria.nombre}}</h1>
-                    <h1>{{categoria.nombre}}</h1>
-                </div>
-            </v-col>
-            <div class="text-h2 mt-6">}</div>
-        </v-row>
-        <v-row>
-            <v-col cols="12" md="4">
-                <div>
-                    <h1>{{categoria.nombre}}</h1>
-                    <h1>{{categoria.nombre}}</h1>
-                </div>
-            </v-col>
-            <div class="text-h2 mt-6">}</div>
-        </v-row>
-    </v-col>
+    <div>
+       
+        <v-container  v-for="(jugador,indice) in categoria.jugadoresAnotados" :key="jugador.id">
+            <v-container v-if="indice%2==0">
+                <partidos :jugador1="jugador" :jugador2="categoria.jugadoresAnotados[indice+1]"></partidos>
+            </v-container>
+        </v-container>
+
+    </div>
 </template>
+
 
 
 <script>

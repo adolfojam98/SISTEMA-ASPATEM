@@ -8,6 +8,7 @@ require('./bootstrap');
 
 
 window.Vue = require('vue');
+import Vue from 'vue';
 import Vuetify from 'vuetify'
 Vue.use(Vuetify);
 import es from 'vuetify/es5/locale/es'
@@ -38,6 +39,7 @@ Vue.component('crear-torneo',require('./components/CrearTorneoComponent.vue').de
 Vue.component('importar-jugadores',require('./components/ImportarJugadoresComponent.vue').default);
 Vue.component('crear-fecha',require('./components/CrearFechaComponent.vue').default);
 Vue.component('generar-llaves',require('./components/GenerarLlavesComponent.vue').default);
+Vue.component('partidos',require('./components/partidosComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

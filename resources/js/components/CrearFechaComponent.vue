@@ -293,19 +293,20 @@
                                 <v-container
                                 v-if='(gruposGenerados(item))'
                                 >
+                                <v-row>
                                     <v-form v-model="valid" lazy-validation>
                                     
                                 
-                                    <v-col cols="12" md="4">
+                                    <v-col>
                                         <v-text-field
                                         label="Cantidad de Grupos"
                                         v-model="item.cantidadGrupos"
                                         :rules="cantidadGruposRules"
                                         required
                                         dark
-                                        class="mb-0"
+                                        class="mb-0 ml-2"
                                         ></v-text-field>
-                                    </v-col>
+                                    
                                 
 
                             
@@ -316,7 +317,7 @@
                                     class="ml-2 mt-0"
                                     ></v-switch>
 
-                                    </v-form>
+                                    
                                 
                                         <v-btn
                                         class="ml-2 mr-4"
@@ -325,7 +326,41 @@
                                         @click="[generarGrupos(item)]"
                                         color="blue"
                                         >Generar grupos</v-btn>
-                                        
+
+                                        </v-col>
+
+                                        </v-form>
+
+
+                                    <v-col>
+                                        <v-simple-table dark>
+                                            <template v-slot:default>
+                                            <thead>
+                                                <tr>
+                                                <th class="text-left">
+                                                    Apellido
+                                                </th>
+                                                <th class="text-left">
+                                                    Nombre
+                                                </th>
+                                                <th class="text-left">
+                                                    DNI
+                                                </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr
+                                                v-for="jugador in item.jugadoresAnotados" :key="jugador.id"
+                                                >
+                                                <td>{{ jugador.apellido }}</td>
+                                                <td>{{ jugador.nombre }}</td>
+                                                <td>{{ jugador.dni }}</td>
+                                                </tr>
+                                            </tbody>
+                                            </template>
+                                        </v-simple-table>
+                                    </v-col>
+                                        </v-row>
                                     </v-container>
                                     
 
