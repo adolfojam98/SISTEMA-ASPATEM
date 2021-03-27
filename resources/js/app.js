@@ -47,11 +47,12 @@ Vue.component('partidos',require('./components/partidosComponent.vue').default);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-
+import store from './store'
 import router from './routes'
 
 const app = new Vue({
     el: '#app',
+    store,
     router,
     vuetify: new Vuetify({
         lang: {
