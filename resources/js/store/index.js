@@ -17,9 +17,13 @@ export default new Vuex.Store({
     },
 
     mutations: {
-        setCount(state){
+        sumar(state){
             state.count++;
+        },
+        restar(state){
+            state.count--;
         }
+
     },
 
     actions: {

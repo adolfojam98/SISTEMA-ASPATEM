@@ -5,7 +5,8 @@
   
   </h1>
 
- <v-btn @click="setCount">+</v-btn> 
+ <v-btn @click="sumar">+</v-btn> 
+ <v-btn @click="restar">-</v-btn> 
   </div>
 </template>
 
@@ -18,7 +19,7 @@ export default {
   
   },
   methods: {
-    ...mapMutations(['setCount'])
+    ...mapMutations(['sumar','restar'])
   },
 }
 

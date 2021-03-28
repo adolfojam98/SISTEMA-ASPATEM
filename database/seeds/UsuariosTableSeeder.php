@@ -33,19 +33,19 @@ class UsuariosTableSeeder extends Seeder
         crearUsuarioSeed('Pablo', 'Beckam');
         crearUsuarioSeed('Lucas', 'Viatri');
         crearUsuarioSeed('Fort', 'Ricardo');
-        crearUsuarioSeed('Juan', 'Gerstner');
-        crearUsuarioSeed('Jose Maria', 'Listorti');
-        crearUsuarioSeed('Nahuel', 'Gonzales');
-        crearUsuarioSeed('Maximiliano', 'Diaz');
-        crearUsuarioSeed('Carlos', 'Tevez');
-        crearUsuarioSeed('Sebastian', 'Villa');
-        crearUsuarioSeed('Delfina', 'Pignattelo');
-        crearUsuarioSeed('Juan Domingo', 'Peron');
-        crearUsuarioSeed('Nahir', 'Galarza');
-        crearUsuarioSeed('Tomas', 'Chancalay');
-        crearUsuarioSeed('Erik', 'Lamela');
+        // crearUsuarioSeed('Juan', 'Gerstner');
+        // crearUsuarioSeed('Jose Maria', 'Listorti');
+        // crearUsuarioSeed('Nahuel', 'Gonzales');
+        // crearUsuarioSeed('Maximiliano', 'Diaz');
+        // crearUsuarioSeed('Carlos', 'Tevez');
+        // crearUsuarioSeed('Sebastian', 'Villa');
+        // crearUsuarioSeed('Delfina', 'Pignattelo');
+        // crearUsuarioSeed('Juan Domingo', 'Peron');
+        // crearUsuarioSeed('Nahir', 'Galarza');
+        // crearUsuarioSeed('Tomas', 'Chancalay');
+        // crearUsuarioSeed('Erik', 'Lamela');
      
-        crearUsuariosFalsos(100);
+        // crearUsuariosFalsos(100);
        
     }
 }
