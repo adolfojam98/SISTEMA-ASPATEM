@@ -1,11 +1,23 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import crearFecha from './crearFecha'
+import grupos from './grupos'
+import llaves from './llaves'
+import jugadores from './jugadores.js'
 
 Vue.use(Vuex)
 
 
 export default new Vuex.Store({
+    strict: true,
+
+    modules: {
+        crearFecha,
+        jugadores,
+        grupos,
+        llaves
+    },
 
     state: {
         count: 10
@@ -22,15 +34,10 @@ export default new Vuex.Store({
         },
         restar(state){
             state.count--;
-        }
-
+        },
     },
 
     actions: {
 
     },
-
-    modules: {
-
-    }
 })

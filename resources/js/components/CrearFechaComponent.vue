@@ -1,13 +1,12 @@
 <template>
   <div>
       <v-card
-      color="#546E7A"
+      color="indigo lighten-3"
       >
         <v-container>
             <v-select
-                v-model="torneoSeleccionado"
-                dark
-                background-color="#90A4AE"
+                :value="$store.state.crearFecha.torneoSeleccionado"
+                @input="setTorneoSeleccionado"
                 :items="torneos"
                 item-text="nombre"
                 return-object
@@ -17,17 +16,14 @@
             ></v-select>
 
             <v-card
-                color="#90A4AE"
                 elevation="4"
                 class="rounded-sm"
-                dark
                 >
                   <v-text-field
                   dense
-                  dark
                     filled
-                    color="#212121"
-                    v-model="nombreFecha"
+                    :value="$store.state.crearFecha.nombreFecha"
+                    @input="setNombreFecha"
                     class="subheading font-weight-bold"
                     label="Nombre de la fecha"
                     :rules="nombreFechaRules"
@@ -38,21 +34,23 @@
                 <v-col cols="12" md="6">
 
                 <v-text-field
+                    :value="$store.state.crearFecha.montoSociosUnaCategoria"
+                    @input="setMontoSociosUnaCategoria"
                     :rules="montoRules"
                     class="mr-2 ml-2"
                     solo
                     label="Monto socios que juegan una categoria"
                     prefix="$"
-                    v-model="montoSociosUnaCategoria"
                 ></v-text-field>
 
                 <v-text-field
+                    :value="$store.state.crearFecha.montoSociosDosCategorias"
+                    @input="setMontoSociosDosCategorias"
                     :rules="montoRules"
                     class="mr-2 ml-2"
                     solo
                     label="Monto socios que juegan dos categorias"
                     prefix="$"
-                    v-model="montoSociosDosCategorias"
                 ></v-text-field>
 
                 </v-col>
@@ -60,21 +58,23 @@
                 <v-col cols="12" md="6">
 
                 <v-text-field
+                    :value="$store.state.crearFecha.montoNoSociosUnaCategoria"
+                    @input="setMontoNoSociosUnaCategoria"
                     :rules="montoRules"
                     class="mr-2 ml-2"
                     solo
                     label="Monto no socios que juegan una categoria"
                     prefix="$"
-                    v-model="montoNoSociosUnaCategoria"
                 ></v-text-field>
 
                 <v-text-field
+                    :value="$store.state.crearFecha.montoNoSociosDosCategorias"
+                    @input="setMontoNoSociosDosCategorias"
                     :rules="montoRules"
                     class="mr-2 ml-2"
                     solo
                     label="Monto no socios que juegan dos categorias"
                     prefix="$"
-                    v-model="montoNoSociosDosCategorias"
                 ></v-text-field>
 
                 </v-col>
@@ -85,16 +85,11 @@
             <v-container></v-container>
 
             <v-card
-                color="#90A4AE"
                 elevation="4"
                 class="rounded-sm"
-                dark
                 >
-
-
                 <v-row>
                     <v-col>
-
                         <template>
                             <v-data-table
                             dense
@@ -102,11 +97,8 @@
                             :items="listaJugadores"
                             item-key="dni"
                             class="elevation-1 mr-2 ml-2"
-                            dark
                             :items-per-page="5"
                             >
-                            
-
                             
                             <template v-slot:[`item.actions`]="{ item }">
                                 
@@ -165,47 +157,43 @@
                 <v-col cols="12" md="6">
                 <v-btn
                 block
-                  v-if="!nuevoJugador"
-                  dark
-                  color="#212121"
-                  @click="[(nuevoJugador = !nuevoJugador)]"
+                  v-if="!$store.state.jugadores.nuevoJugador"
+                  @click="changeBooleanValueNuevoJugador"
                 >
                   <v-icon></v-icon>
                   Agregar jugador a la lista
                 </v-btn>
 
-                <v-form v-if="nuevoJugador" v-model="valid" lazy-validation>
+                <v-card>
+
+                <v-form v-if="$store.state.jugadores.nuevoJugador" v-model="valid" lazy-validation>
                   <v-text-field
-                  dark
-                    color="#212121"
-                    v-model="apellidoJugador"
+                    :value="$store.state.jugadores.apellidoJugador"
+                    @input="setApellidoJugador"
                     :rules="aynRules"
                     class="subheading font-weight-bold"
                     label="Apellido del jugador"
                     required
                   ></v-text-field>
                   <v-text-field
-                  dark
-                    color="#212121"
-                    v-model="nombreJugador"
+                  :value="$store.state.jugadores.nombreJugador"
+                    @input="setNombreJugador"
                     :rules="aynRules"
                     class="subheading font-weight-bold"
                     label="Nombre del jugador"
                     required
                   ></v-text-field>
                   <v-text-field
-                  dark
-                    color="#212121"
-                    v-model="dniJugador"
+                  :value="$store.state.jugadores.dniJugador"
+                    @input="setDniJugador"
                     :rules="dniRules"
                     class="subheading font-weight-bold"
                     label="DNI del jugador"
                     required
                   ></v-text-field>
                   <v-text-field
-                  dark
-                    color="#212121"
-                    v-model="puntosJugador"
+                  :value="$store.state.jugadores.puntosJugador"
+                    @input="setPuntosJugador"
                     class="subheading font-weight-bold"
                     label="Puntos del jugador"
                     :rules="puntosRules"
@@ -213,14 +201,13 @@
                   ></v-text-field>
 
                   <v-btn
-                    dark
                     block
                     class="rounded-pill"
                     color="primary"
                     v-model="nuevoJugador"
                     :disabled="!valid"
                     @click="
-                      [((nuevoJugador = !nuevoJugador), agregarJugador())]
+                      [((changeBooleanValueNuevoJugador), agregarJugador())]
                     "
                     >Agregar</v-btn
                   >
@@ -243,6 +230,7 @@
                     >Cancelar</v-btn
                   >
                 </v-form>
+                </v-card>
                 </v-col>
 
             </v-card>
@@ -480,10 +468,11 @@
 </template>
 
 
-<script>    
+<script>
+import { mapGetters, mapSetter, mapState, mapMutations, mapActions } from 'vuex';
 export default {
 data: () => ({
-torneoSeleccionado : "",
+//torneoSeleccionado : "",
 valid: false,
 torneos : [],
 nombreFecha : "",
@@ -570,8 +559,18 @@ puntosRules: [
 
 }),
 
+computed: {
+    store() {
+      return this.$store.state;
+    },
+},
 
 methods: {
+    ...mapMutations(['setTorneoSeleccionado','setNombreFecha','setMontoSociosUnaCategoria','setMontoSociosDosCategorias',
+    'setMontoNoSociosUnaCategoria','setMontoNoSociosDosCategorias', 'changeBooleanValueNuevoJugador', 'setApellidoJugador', 
+    'setNombreJugador', 'setDniJugador', 'setPuntosJugador']),
+
+
     calcularCategoria : function(item){
         var mensaje="";
         this.listaCategorias.forEach(categoria => {
@@ -776,7 +775,7 @@ methods: {
     generarGrupos(categoria){
         console.log('Ejecucionn generarGrupos')
         if((categoria.jugadoresAnotados.length/parseInt(categoria.cantidadGrupos))>=3){
-            var letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+            var letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
             for(var i = 0; i < categoria.cantidadGrupos; i++){
                 var unGrupo = {
                     nombre : letras[i],
