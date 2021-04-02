@@ -136,9 +136,15 @@ class TorneoController extends Controller
     public function getJugadores(Request $request){
        
         $torneo = Torneo::find($request->id);
-        return $torneo->jugadores;
-        // return $torneo->jugadores;
+        $jugadores = $torneo->jugadores;
 
+        foreach($jugadores as $jugador){
+            $jugador->montoPagado=0;
+        };
+        return $jugadores;
+        
+        // return $torneo->jugadores;
+        /*
         
         $torneo = Torneo::find($request->id);
         $jugadores = $torneo->jugadores;
@@ -152,7 +158,7 @@ class TorneoController extends Controller
         }
 
         return $listaJugadores;
-
+        */
 
 
     }

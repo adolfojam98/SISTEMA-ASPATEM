@@ -7,7 +7,7 @@
             <v-select
                 :value="$store.state.crearFecha.torneoSeleccionado"
                 @input="setTorneoSeleccionado"
-                :items="torneos"
+                :items="$store.state.crearFecha.torneos"
                 item-text="nombre"
                 return-object
                 filled
@@ -94,7 +94,7 @@
                             <v-data-table
                             dense
                             :headers="headers"
-                            :items="listaJugadores"
+                            :items="$store.state.crearFecha.listaJugadores"
                             item-key="dni"
                             class="elevation-1 mr-2 ml-2"
                             :items-per-page="5"
@@ -112,10 +112,10 @@
                                     color="green"
                                     >=</v-icon>
                                 </template>
-                                <span>{{ calcularCategoria(item) }}</span>
+                                <!-- <span>{{ calcularCategoria(item) }}</span> -->
                                 </v-tooltip>
 
-                                <v-tooltip bottom>
+                                <!-- <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-icon
                                     class="mt-1"
@@ -127,10 +127,10 @@
                                     >
                                 </template>
                                 <span>{{ calcularCategoriaSuperior(item) }}</span>
-                                </v-tooltip>
+                                </v-tooltip> -->
                             </template>
 
-                            <template v-slot:[`item.action`]="{ item }">
+                            <!-- <template v-slot:[`item.action`]="{ item }">
                                 <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-icon
@@ -144,7 +144,7 @@
                                 </template>
                                 <span>Eliminar</span>
                                 </v-tooltip>
-                            </template>
+                            </template> -->
 
                             </v-data-table>
                         </template>
@@ -204,10 +204,9 @@
                     block
                     class="rounded-pill"
                     color="primary"
-                    v-model="nuevoJugador"
                     :disabled="!valid"
                     @click="
-                      [((changeBooleanValueNuevoJugador), agregarJugador())]
+                      [(agregarJugador())]
                     "
                     >Agregar</v-btn
                   >
@@ -217,16 +216,7 @@
                     color="error"
                     class="rounded-pill mt-3 mb-3"
                     dark
-                    v-model="nuevoJugador"
-                    @click="
-                      [
-                        ((apellidoJugador = ''),
-                        (nombreJugador = ''),
-                        (dniJugador = null),
-                        (puntosJugador = null),
-                        (nuevoJugador = false)),
-                      ]
-                    "
+                    @click="limpiarNuevoJugador()"
                     >Cancelar</v-btn
                   >
                 </v-form>
@@ -241,7 +231,7 @@
       <v-container></v-container>
 
             <v-card
-                v-if="listaCategorias.length > 0"
+                v-if="$store.state.crearFecha.listaCategorias.length > 0"
                 
                 dark
                 >
@@ -254,7 +244,7 @@
                         <v-tabs-slider color="yellow"></v-tabs-slider>
 
                             <v-tab
-                                v-for="item in listaCategorias"
+                                v-for="item in $store.state.crearFecha.listaCategorias"
                                 :key="item.id"
                             >
                                 {{ item.nombre }}
@@ -268,7 +258,7 @@
                 v-model="tab"
                 >
                     <v-tab-item
-                        v-for="item in listaCategorias"
+                        v-for="item in $store.state.crearFecha.listaCategorias"
                         :key="item.id"
                     >
                     
@@ -474,23 +464,11 @@ export default {
 data: () => ({
 //torneoSeleccionado : "",
 valid: false,
-torneos : [],
-nombreFecha : "",
-montoSociosUnaCategoria : null,
-montoSociosDosCategorias : null,
-montoNoSociosUnaCategoria : null,
-montoNoSociosDosCategorias : null,
-apellidoJugador: "",
-nombreJugador: "",
-dniJugador: null,
-puntosJugador: null,
-nuevoJugador: false,
-listaJugadores : [],
-listaCategorias : [],
 message: "",
 snackbar : false,
 tab: null,
 cantidadSets: [0,1,2,3,4,5,6,7],
+jugadores: [],
 
 
 
@@ -561,14 +539,23 @@ puntosRules: [
 
 computed: {
     store() {
-      return this.$store.state;
+      return this.$store;
     },
+    ...mapState(['listaCategorias', 'listaJugadores']),
 },
 
 methods: {
     ...mapMutations(['setTorneoSeleccionado','setNombreFecha','setMontoSociosUnaCategoria','setMontoSociosDosCategorias',
     'setMontoNoSociosUnaCategoria','setMontoNoSociosDosCategorias', 'changeBooleanValueNuevoJugador', 'setApellidoJugador', 
-    'setNombreJugador', 'setDniJugador', 'setPuntosJugador']),
+    'setNombreJugador', 'setDniJugador', 'setPuntosJugador', 'setTorneos']),
+
+    limpiarNuevoJugador(){
+        this.$store.commit('changeBooleanValueNuevoJugador'),
+        this.$store.commit('setApellidoJugador',""),
+        this.$store.commit('setNombreJugador',""),
+        this.$store.commit('setDniJugador', null),
+        this.$store.commit('setPuntosJugador', null)
+    },
 
 
     calcularCategoria : function(item){
@@ -590,37 +577,40 @@ methods: {
          return mensaje;
     },
 
-    agregarJugador() {
-      var jugadorExiste = false;
+    agregarJugador() { //a estos jugadores hay que agregarles la relacion con el torneo y su id de usuario
+        this.$store.commit('changeBooleanValueNuevoJugador');
 
-        this.listaJugadores.forEach(jugador => {
-            if(jugador.dni == parseInt(this.dniJugador)){jugadorExiste = true;}
+        var jugadorExiste = false;
+
+        this.$store.getters.listaJugadores.forEach(jugador => {
+            if(jugador.dni == parseInt(this.$store.state.jugadores.dniJugador)){jugadorExiste = true;}
         });
 
     if(!jugadorExiste){
 
       var jugador = {
-        apellido: this.apellidoJugador,
-        nombre: this.nombreJugador,
-        dni: parseInt(this.dniJugador),
-        pivot: {puntos: parseInt(this.puntosJugador)},
+        apellido: this.$store.state.jugadores.apellidoJugador,
+        nombre: this.$store.state.jugadores.nombreJugador,
+        dni: parseInt(this.$store.state.jugadores.dniJugador),
+        pivot: {puntos: parseInt(this.$store.state.jugadores.puntosJugador)},
+        montoPagado: 0,
       };
 
-      this.listaJugadores.push(jugador);
+      this.$store.commit('pushJugador', jugador);
     
     }else{
         this.message = "Ya hay un jugador con el dni que intenta ingresar";
         this.snackbar = true;
     }
 
-      this.apellidoJugador = "";
-      this.nombreJugador = "";
-      this.dniJugador = null;
-      this.puntosJugador = null;
+        this.$store.commit('setApellidoJugador',"");
+        this.$store.commit('setNombreJugador',"");
+        this.$store.commit('setDniJugador', null);
+        this.$store.commit('setPuntosJugador', null);
 
     },
 
-    calcularCategoriaSuperior(item){
+    calcularCategoriaSuperior(item){//falta
         var entrarEnElSiguiente=false;
         var mensaje="No hay una categoria superior";
         this.listaCategorias.forEach(categoria => {
@@ -651,21 +641,21 @@ methods: {
     
     traerJugadoresTorneo(){
         let me = this;
-        axios.get(`/torneos/${me.torneoSeleccionado.id}/jugadores`)
+        axios.get(`/torneos/${me.$store.state.crearFecha.torneoSeleccionado.id}/jugadores`)
         .then(
             res => {
                 console.log(res.data)
-                this.listaJugadores = res.data;}
+                this.$store.commit('setListaJugadores', res.data);}
         )
     },
 
     traerCategorias(){
         let me = this;
-        axios.get(`/torneos/${me.torneoSeleccionado.id}/categorias`)
+        axios.get(`/torneos/${me.$store.state.crearFecha.torneoSeleccionado.id}/categorias`)
         .then(
-            res => {this.listaCategorias = res.data;
+            res => {//this.$store.commit('setListaCategorias', res.data);
 
-            this.listaCategorias.forEach(categoria => {
+            res.data.forEach(categoria => {
                 Object.defineProperty(categoria,'jugadoresAnotados', {value: [], writable:true, configurable:true, enumerable:true});
                 Object.defineProperty(categoria,'gruposConEliminatoria', {value: false, writable:true, configurable:true, enumerable:true});
                 Object.defineProperty(categoria,'cantidadGrupos', {writable:true, configurable:true, enumerable:true});
@@ -674,11 +664,13 @@ methods: {
                 this.$set(categoria, 'gruposGenerados', false);
                 this.$set(categoria, 'llavesGeneradas', false);
                 });
+
+                this.$store.commit('setListaCategorias', res.data);
             }
         )
     },
 
-    eliminarJugador(item) {
+    eliminarJugador(item) {//falta
         var indice = this.listaJugadores.indexOf(item);
         this.listaJugadores.splice(indice, 1);
     },
@@ -686,27 +678,32 @@ methods: {
     
 
     agregarEnSuCategoria(item){
-        this.listaCategorias.forEach(categoria => {
+        let categorias = this.$store.getters.listaCategorias;
+        let me = this;
+        categorias.forEach( function (categoria, indexCategoria) { 
             if(item.pivot.puntos >= categoria.puntos_minimos && item.pivot.puntos <= categoria.puntos_maximos){
                 var indice = categoria.jugadoresAnotados.indexOf(item);
-
                 if(indice === -1){
-                    categoria.jugadoresAnotados.push(item);
-                    this.message="Jugador anotado en su categoria";
-                    this.snackbar = true;
+                    //categoria.jugadoresAnotados.push(item);
+                    me.$store.commit('pushJugadorCategoria', {item, indexCategoria});
+                    me.message="Jugador anotado en su categoria";
+                    me.snackbar = true;
                     }
                 
                 else{
-                    categoria.jugadoresAnotados.splice(indice,1);
-                    this.message="El jugador ya no esta anotado en su categoria";
-                    this.snackbar = true;
+                    //categoria.jugadoresAnotados.splice(indice,1);
+                    me.$store.commit('spliceJugadorCategoria', {indice, indexCategoria});
+                    me.message="El jugador ya no esta anotado en su categoria";
+                    me.snackbar = true;
                 }
             }
         });
-        this.calcularMonto();
+
+        this.$store.dispatch('calcularMonto');
+
     },
 
-    agregarEnLaCategoriaSuperior(item){
+    agregarEnLaCategoriaSuperior(item){//falta
         var entrarEnElSiguiente=false;
         this.listaCategorias.forEach(categoria => {
 
@@ -741,38 +738,11 @@ methods: {
             }
     },
 
-    calcularMonto(){
-        this.listaJugadores.forEach(jugador => {
-        var anotadoEnCategorias = 0;
-        this.listaCategorias.forEach(categoria => {
-                if(categoria.jugadoresAnotados.includes(jugador)){
-                    anotadoEnCategorias++;
-                }
-        })
-
-        if(parseInt(this.montoSociosUnaCategoria) >= 0 && parseInt(this.montoSociosDosCategorias) >= 0 
-        && parseInt(this.montoNoSociosUnaCategoria) >= 0 && parseInt(this.montoNoSociosDosCategorias) >= 0){
-            if(anotadoEnCategorias == 0){ jugador.montoPagado = 0; }
-            else if(anotadoEnCategorias == 1 && jugador.socio == 1){ jugador.montoPagado =  this.montoSociosUnaCategoria;}
-                else if(anotadoEnCategorias == 2 && jugador.socio == 1){ jugador.montoPagado =  this.montoSociosDosCategorias;}
-                    else if(anotadoEnCategorias == 1 && jugador.socio == 0){ jugador.montoPagado =  this.montoNoSociosUnaCategoria;}
-                        else if(anotadoEnCategorias == 2 && jugador.socio == 0){ jugador.montoPagado =  this.montoNoSociosDosCategorias;}
-        }
-        else{
-            this.message="Debe definir los montos para poder calcular la columna 'Montos'";
-            this.snackbar=true;
-        }
-        })
+    calcularMonto(){//desuso pronto
+        
     },
 
-    agregarPropiedadMonto(){
-        console.log('Ejecucion agregarPropiedadMonto');
-        this.listaJugadores.forEach(jugador => {
-            Object.defineProperty(jugador,'montoPagado', {value: 0, writable:true, configurable:true, enumerable:true});
-        });
-    },
-
-    generarGrupos(categoria){
+    generarGrupos(categoria){//falta
         console.log('Ejecucionn generarGrupos')
         if((categoria.jugadoresAnotados.length/parseInt(categoria.cantidadGrupos))>=3){
             var letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -808,7 +778,7 @@ methods: {
         }
     },
 
-    generarPartidosGrupos(grupos){
+    generarPartidosGrupos(grupos){//falta
         console.log("generarPartidosGrupos");
         var IDPartido = 0;
         grupos.forEach(grupo => {
@@ -830,11 +800,11 @@ methods: {
         });
     },
 
-    gruposGenerados(categoria){
+    gruposGenerados(categoria){//falta
         return !categoria.gruposGenerados;
     },
 
-    deshacerGrupos(categoria){
+    deshacerGrupos(categoria){//falta
         console.log('Ejecucion deshacerGrupos')
         categoria.gruposGenerados = false;
         categoria.listaGrupos = [];
@@ -844,37 +814,36 @@ methods: {
 
 
 watch : {
-    torneoSeleccionado : function(){
+    '$store.state.crearFecha.torneoSeleccionado' : function(){
         this.traerJugadoresTorneo();
         this.traerCategorias();
-        this.agregarPropiedadMonto();
         },
 
-    listaCategorias : function(){
-        this.calcularMonto();
+    '$store.state.crearFecha.listaCategorias' : function(){
+        this.$store.dispatch('calcularMonto');
         },
 
-    montoSociosUnaCategoria : function(){
-        this.calcularMonto();
+    '$store.state.crearFecha.montoSociosUnaCategori' : function(){
+        this.$store.dispatch('calcularMonto');
         },
 
-    montoSociosDosCategorias : function(){
-        this.calcularMonto();
+    '$store.state.crearFecha.montoSociosDosCategorias' : function(){
+        this.$store.dispatch('calcularMonto');
         },
 
-    montoNoSociosUnaCategoria : function(){
-        this.calcularMonto();
+    '$store.state.crearFecha.montoNoSociosUnaCategoria' : function() {
+        this.$store.dispatch('calcularMonto')
         },
 
-    montoNoSociosDosCategorias : function(){
-        this.calcularMonto();
+    '$store.state.crearFecha.montoNoSociosDosCategorias' : function(){
+        this.$store.dispatch('calcularMonto');
         },
 
     },
 
 created() {
         axios.get("/torneos").then(res => {
-            this.torneos = res.data;
+            this.$store.commit('setTorneos', res.data);
         });
     },
     

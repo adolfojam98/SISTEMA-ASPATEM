@@ -6,6 +6,7 @@ export default{
         nombreJugador: "",
         dniJugador: null,
         puntosJugador: null,
+        montoPagado: 0,
         nuevoJugador: false,
     },
 
