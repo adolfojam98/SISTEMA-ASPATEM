@@ -1,8 +1,11 @@
 //fecha
 
+import { mapMutations, mapState } from "vuex";
+
 export default{
     modules: {
     },
+    namespaced: true,
 
     state: {
         torneoSeleccionado : null,
