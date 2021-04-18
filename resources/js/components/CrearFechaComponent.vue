@@ -822,28 +822,34 @@ methods: {
 
 
 watch : {
-    torneoSeleccionado : function(){
+    torneoSeleccionado(){
+        console.log(" watcher torneoSeleccionado")
         this.traerJugadoresTorneo();
         this.traerCategorias();
         },
 
-    listaCategorias : function(){
+    listaCategorias(){
+        console.log(" watcher listaCategorias")
         this.calcularMonto();
         },
 
-    montoSociosUnaCategoria : function(){
+    montoSociosUnaCategoria(){
+        console.log(" watcher montoSociosUnaCategoria")
         this.calcularMonto();
         },
 
-    montoSociosDosCategorias : function(){
+    montoSociosDosCategorias(){
+        console.log(" watcher montoSociosDosCategorias")
         this.calcularMonto();
         },
 
-    montoNoSociosUnaCategoria : function() {
+    montoNoSociosUnaCategoria() {
+        console.log(" watcher montoNoSociosUnaCategoria")
         this.calcularMonto()
         },
 
-    montoNoSociosDosCategorias : function(){
+    montoNoSociosDosCategorias(){
+        console.log(" watcher montoNoSociosDosCategorias")
         this.calcularMonto()
         },
 
