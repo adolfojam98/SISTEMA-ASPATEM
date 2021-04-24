@@ -62,7 +62,7 @@ function crearTorneoSeed($nombre)
             
 
        }
-       $nroCategoria++;
+      
        $categoria = new Categoria();
        $categoria->nombre = "Categoría"  .$nroCategoria . " " .$torneo->nombre ;
        $categoria->puntos_minimos = $puntosMinimos;

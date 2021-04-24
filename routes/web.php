@@ -51,7 +51,7 @@ Route::put('/pagarCuota','CuotaController@pagar');
 Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion');
 
 Route::post('/torneo', 'TorneoController@store');
-
+//TODO cambiar las rutas, debería ser /torneo/categorias pq sino no se entiende un choto cuando lo llamas
 Route::post('/categorias', 'CategoriaController@storeCategorias');
 
 Route::post('/jugadores', 'TorneoController@storeJugadores');

@@ -122,8 +122,14 @@ class TorneoController extends Controller
                 $nuevoUsuario->save();
                 $usuario = $nuevoUsuario;
             }
-
-            $usuario->torneos()->attach($request->id_torneo, ['puntos' => $jugador['puntos']]);
+            if (!empty($jugador['puntos'])) {
+                
+                $usuario->torneos()->attach($request->id_torneo, ['puntos' => $jugador['puntos']]);
+            }
+            
+            if(!empty($jugador['pivot']['puntos'])){
+                $usuario->torneos()->attach($request->id_torneo, ['puntos' => $jugador['pivot']['puntos']]);
+            }
 
         $usuario->save();
 

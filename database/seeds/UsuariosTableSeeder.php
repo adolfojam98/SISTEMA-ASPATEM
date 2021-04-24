@@ -45,7 +45,7 @@ class UsuariosTableSeeder extends Seeder
         // crearUsuarioSeed('Tomas', 'Chancalay');
         // crearUsuarioSeed('Erik', 'Lamela');
      
-        // crearUsuariosFalsos(100);
+       crearUsuariosFalsos(100);
        
     }
 }

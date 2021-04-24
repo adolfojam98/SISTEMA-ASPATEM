@@ -112,10 +112,10 @@
                                     color="green"
                                     >=</v-icon>
                                 </template>
-                                <!-- <span>{{ calcularCategoria(item) }}</span> -->
+                                <span>{{ calcularCategoria(item) }}</span>
                                 </v-tooltip>
 
-                                <!-- <v-tooltip bottom>
+                                <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-icon
                                     class="mt-1"
@@ -127,10 +127,10 @@
                                     >
                                 </template>
                                 <span>{{ calcularCategoriaSuperior(item) }}</span>
-                                </v-tooltip> -->
+                                </v-tooltip>
                             </template>
 
-                            <!-- <template v-slot:[`item.action`]="{ item }">
+                            <template v-slot:[`item.action`]="{ item }">
                                 <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-icon
@@ -144,7 +144,7 @@
                                 </template>
                                 <span>Eliminar</span>
                                 </v-tooltip>
-                            </template> -->
+                            </template>
 
                             </v-data-table>
                         </template>
@@ -154,7 +154,7 @@
                 </v-row>
 
 
-                <v-col cols="12" md="6">
+                <v-col cols="12">
                 <v-btn
                 block
                   v-if="!nuevoJugador"
@@ -582,8 +582,8 @@ methods: {
         });
          return mensaje;
     },
-
-    agregarJugador() { //a estos jugadores hay que agregarles la relacion con el torneo y su id de usuario
+//TODO: Agregar relacion de los jugadores que se agregan desd el boton agregar jugadores
+    agregarJugador() { 
         this.changeBooleanValueNuevoJugador()
         
 
@@ -595,15 +595,25 @@ methods: {
 
     if(!jugadorExiste){
 
-      var jugador = {
+      var jugador = []
+      jugador.push({
         apellido: this.apellidoJugador,
         nombre: this.nombreJugador,
         dni: parseInt(this.dniJugador),
         pivot: {puntos: parseInt(this.puntosJugador)},
         montoPagado: 0,
-      };
-//TODO:hacer esto y esto
-      this.pushJugador(jugador);
+      });
+      
+    axios.post('/jugadores',{
+        id_torneo : this.torneoSeleccionado.id,
+        jugadores : jugador
+    }).then(res =>{
+       console.log(res.data)
+    this.pushJugador(jugador.pop())
+    })
+
+        
+    
     
     }else{
         this.message = "Ya hay un jugador con el dni que intenta ingresar";
@@ -617,7 +627,7 @@ methods: {
 
     },
 
-    calcularCategoriaSuperior(item){//falta
+    calcularCategoriaSuperior(item){
         let entrarEnElSiguiente=false;
         let mensaje="No hay una categoria superior";
         this.listaCategorias.forEach(categoria => {
@@ -678,7 +688,7 @@ methods: {
         )
     },
 
-    eliminarJugador(item) {//falta
+    eliminarJugador(item) {
         var indice = this.listaJugadores.indexOf(item);
         this.listaJugadores.splice(indice, 1);
     },
@@ -711,7 +721,7 @@ methods: {
 
     },
 
-    agregarEnLaCategoriaSuperior(item){//falta
+    agregarEnLaCategoriaSuperior(item){
         var entrarEnElSiguiente=false;
         this.listaCategorias.forEach(categoria => {
 
@@ -786,7 +796,7 @@ methods: {
         }
     },
 
-    generarPartidosGrupos(grupos){//falta
+    generarPartidosGrupos(grupos){
         console.log("generarPartidosGrupos");
         var IDPartido = 0;
         grupos.forEach(grupo => {
