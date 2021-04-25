@@ -85,12 +85,14 @@ export default{
 
     actions: {
        calcularMonto( {commit, state}){
-
+          
         state.listaJugadores.forEach(function (jugador, indiceJugador) {
+            
             var anotadoEnCategorias = 0;
             var monto = 0;
 
             state.listaCategorias.forEach(categoria => {
+              
                     if(categoria.jugadoresAnotados.includes(jugador)){
                         anotadoEnCategorias++;
                     }

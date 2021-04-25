@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 export default {
     data() {
         return {
@@ -125,6 +125,7 @@ export default {
                     this.setListaJugadores(res.data);
                 });
         },
+        ...mapActions("crearFecha",['calcularMonto']),
         traerCategorias() {
             let me = this;
             axios
@@ -166,9 +167,7 @@ export default {
                     this.setListaCategorias(res.data);
                 });
         },
-        calcularMonto() {
-          //TODO  desuso pronto
-        },
+        
     },
     watch: {
         torneoSeleccionado() {

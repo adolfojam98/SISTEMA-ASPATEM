@@ -143,7 +143,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
     data() {
         return {
@@ -218,10 +218,9 @@ export default {
             "spliceJugadorCategoria",
             "pushJugador"
         ]),
+        ...mapActions("crearFecha",["calcularMonto"]),
         //TODO Hacer la logica de calcularMonto
-        calcularMonto() {
-            //desuso pronto
-        },
+       
         agregarEnSuCategoria(item) {
             let categorias = this.listaCategorias;
             let me = this;
