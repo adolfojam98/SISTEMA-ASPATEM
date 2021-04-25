@@ -4,225 +4,21 @@
       color="indigo lighten-3"
       >
         <v-container>
-            <v-select
-                :value="torneoSeleccionado"
-                @input="setTorneoSeleccionado"
-                :items="torneos"
-                item-text="nombre"
-                return-object
-                filled
-                label="Seleccione el torneo"
-                class="subheading font-weight-bold"
-            ></v-select>
+            <datos-fecha></datos-fecha>
+
+           
 
             <v-card
                 elevation="4"
                 class="rounded-sm"
                 >
-                  <v-text-field
-                  dense
-                    filled
-                    :value="nombreFecha"
-                    @input="setNombreFecha"
-                    class="subheading font-weight-bold"
-                    label="Nombre de la fecha"
-                    :rules="nombreFechaRules"
-                    required
-                  ></v-text-field>
-
-                <v-row>
-                <v-col cols="12" md="6">
-
-                <v-text-field
-                    :value="montoSociosUnaCategoria"
-                    @input="setMontoSociosUnaCategoria"
-                    :rules="montoRules"
-                    class="mr-2 ml-2"
-                    solo
-                    label="Monto socios que juegan una categoria"
-                    prefix="$"
-                ></v-text-field>
-
-                <v-text-field
-                    :value="montoSociosDosCategorias"
-                    @input="setMontoSociosDosCategorias"
-                    :rules="montoRules"
-                    class="mr-2 ml-2"
-                    solo
-                    label="Monto socios que juegan dos categorias"
-                    prefix="$"
-                ></v-text-field>
-
-                </v-col>
-
-                <v-col cols="12" md="6">
-
-                <v-text-field
-                    :value="montoNoSociosUnaCategoria"
-                    @input="setMontoNoSociosUnaCategoria"
-                    :rules="montoRules"
-                    class="mr-2 ml-2"
-                    solo
-                    label="Monto no socios que juegan una categoria"
-                    prefix="$"
-                ></v-text-field>
-
-                <v-text-field
-                    :value="montoNoSociosDosCategorias"
-                    @input="setMontoNoSociosDosCategorias"
-                    :rules="montoRules"
-                    class="mr-2 ml-2"
-                    solo
-                    label="Monto no socios que juegan dos categorias"
-                    prefix="$"
-                ></v-text-field>
-
-                </v-col>
-                </v-row>
-
-            </v-card>
-
-            <v-container></v-container>
-
-            <v-card
-                elevation="4"
-                class="rounded-sm"
-                >
-                <v-row>
-                    <v-col>
-                        <template>
-                            <v-data-table
-                            dense
-                            :headers="headers"
-                            :items="listaJugadores"
-                            item-key="dni"
-                            class="elevation-1 mr-2 ml-2"
-                            :items-per-page="5"
-                            >
-                            
-                            <template v-slot:[`item.actions`]="{ item }">
-                                
-                                <v-tooltip bottom>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon
-                                    class="ml-2 mr-4"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    @click="[agregarEnSuCategoria(item)]"
-                                    color="green"
-                                    >=</v-icon>
-                                </template>
-                                <span>{{ calcularCategoria(item) }}</span>
-                                </v-tooltip>
-
-                                <v-tooltip bottom>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon
-                                    class="mt-1"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    @click="[agregarEnLaCategoriaSuperior(item)]"
-                                    color="primary"
-                                    >^</v-icon
-                                    >
-                                </template>
-                                <span>{{ calcularCategoriaSuperior(item) }}</span>
-                                </v-tooltip>
-                            </template>
-
-                            <template v-slot:[`item.action`]="{ item }">
-                                <v-tooltip bottom>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon
-                                    class="ml-4"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    @click="eliminarJugador(item)"
-                                    color="error"
-                                    >mdi-delete</v-icon
-                                    >
-                                </template>
-                                <span>Eliminar</span>
-                                </v-tooltip>
-                            </template>
-
-                            </v-data-table>
-                        </template>
+                <jugadores-fecha></jugadores-fecha>
 
 
-                    </v-col>
-                </v-row>
+                
+                
 
-
-                <v-col cols="12">
-                <v-btn
-                block
-                  v-if="!nuevoJugador"
-                  @click="changeBooleanValueNuevoJugador"
-                >
-                  <v-icon></v-icon>
-                  Agregar jugador a la lista
-                </v-btn>
-
-                <v-card>
-
-                <v-form v-if="nuevoJugador" v-model="valid" lazy-validation>
-                  <v-text-field
-                    :value="apellidoJugador"
-                    @input="setApellidoJugador"
-                    :rules="aynRules"
-                    class="subheading font-weight-bold"
-                    label="Apellido del jugador"
-                    required
-                  ></v-text-field>
-                  <v-text-field
-                  :value="nombreJugador"
-                    @input="setNombreJugador"
-                    :rules="aynRules"
-                    class="subheading font-weight-bold"
-                    label="Nombre del jugador"
-                    required
-                  ></v-text-field>
-                  <v-text-field
-                  :value="dniJugador"
-                    @input="setDniJugador"
-                    :rules="dniRules"
-                    class="subheading font-weight-bold"
-                    label="DNI del jugador"
-                    required
-                  ></v-text-field>
-                  <v-text-field
-                  :value="puntosJugador"
-                    @input="setPuntosJugador"
-                    class="subheading font-weight-bold"
-                    label="Puntos del jugador"
-                    :rules="puntosRules"
-                    required
-                  ></v-text-field>
-
-                  <v-btn
-                    block
-                    class="rounded-pill"
-                    color="primary"
-                    :disabled="!valid"
-                    @click="
-                      [(agregarJugador())]
-                    "
-                    >Agregar</v-btn
-                  >
-
-                  <v-btn
-                  block
-                    color="error"
-                    class="rounded-pill mt-3 mb-3"
-                    dark
-                    @click="limpiarNuevoJugador()"
-                    >Cancelar</v-btn
-                  >
-                </v-form>
-                </v-card>
-                </v-col>
-
+               
             </v-card>
 
         </v-container>
@@ -469,9 +265,6 @@ snackbar : false,
 tab: null,
 cantidadSets: [0,1,2,3,4,5,6,7],
 jugadores: [],
-
-
-
 nombreFechaRules: [
       (v) => !!v || "Nombre requerido",
       (v) =>
@@ -479,18 +272,15 @@ nombreFechaRules: [
         "Nombre invalido",
       (v) => v.length <= 30 || "Demasiado largo",
     ],
-
 montoRules: [
       (v) => !!v || "Monto requerido",
       (v) => /^(([0-9]*)([.][0-9]([0-9])*)*)+$/.test(v) || "Monto no valido ",
     ],
-
 cantidadGruposRules: [
       (v) => !!v || "Cantidad de grupos requerido",
       (v) =>
         /^([0-9]*)?[0-9]+$/.test(v) || "Deben ser solo numeros enteros",
     ],
-
 aynRules: [
       (v) => !!v || "Campo obligatorio",
       (v) =>
@@ -498,56 +288,17 @@ aynRules: [
       (v) => v.length <= 30 || "Demasiado largo",
     ],
 
-dniRules: [
-      (v) => !!v || "Campo obligatorio",
-      (v) => /^([0-9]*)+$/.test(v) || "Solo numeros",
-      (v) =>
-        (!!v && v.length == 8) || "El DNI debe estar compuesto por 8 numeros",
-    ],
-puntosRules: [
-      (v) => !!v || "Puntos requeridos",
-      (v) =>
-        /^([0-9]*)?[0-9]+$/.test(v) || "Los puntos deben ser numeros enteros",
-    ],
-
-
-
-    headers: [
-      { text: "Apellido", value: "apellido" },
-      { text: "Nombre", value: "nombre" },
-      { text: "DNI", value: "dni" },
-      { text: "Puntos", value: "pivot.puntos" },
-      {
-        text: "Categorias",
-        value: "actions",
-        sortable: false,
-        filterable: false,
-      },
-      { text: "Monto", value: "montoPagado"},
-      {
-        text: "Eliminar",
-        value: "action",
-        sortable: false,
-        filterable: false,
-      },
-    ],
-
-
-
-
+   
 }),
-
 computed: {
     store() {
       return this.$store;
     },
     
     ...mapState('jugadores',['apellidoJugador','nombreJugador','dniJugador','puntosJugador','montoPagado','nuevoJugador']),
-
     ...mapState('crearFecha',['torneoSeleccionado','nombreFecha','listaJugadores','listaCategorias','montoSociosUnaCategoria',
                 'montoSociosDosCategorias','montoNoSociosUnaCategoria','montoNoSociosDosCategorias','torneos'])
 },
-
 methods: {
     ...mapMutations('jugadores',['setApellidoJugador', 'setNombreJugador', 'setDniJugador', 'setPuntosJugador',
         'changeBooleanValueNuevoJugador'
@@ -562,14 +313,11 @@ methods: {
         this.setDniJugador(null)
         this.setPuntosJugador(null)
     },
-
-
     calcularCategoria : function(item){
-        var mensaje="";
+        let mensaje="";
         this.listaCategorias.forEach(categoria => {
             
             if(item.pivot.puntos >= categoria.puntos_minimos && item.pivot.puntos <= categoria.puntos_maximos){
-
                 if(!categoria.jugadoresAnotados.includes(item)){
                     mensaje="Agregar a la categoria: "+categoria.nombre
                     }
@@ -578,7 +326,6 @@ methods: {
                 }
                
             }
-
         });
          return mensaje;
     },
@@ -586,15 +333,11 @@ methods: {
     agregarJugador() { 
         this.changeBooleanValueNuevoJugador()
         
-
         var jugadorExiste = false;
-
         this.listaJugadores.forEach(jugador => {
             if(jugador.dni == parseInt(this.dniJugador)){jugadorExiste = true;}
         });
-
     if(!jugadorExiste){
-
       var jugador = []
       jugador.push({
         apellido: this.apellidoJugador,
@@ -611,7 +354,6 @@ methods: {
        console.log(res.data)
     this.pushJugador(jugador.pop())
     })
-
         
     
     
@@ -619,19 +361,15 @@ methods: {
         this.message = "Ya hay un jugador con el dni que intenta ingresar";
         this.snackbar = true;
     }
-
         this.setApellidoJugador("")
         this.setNombreJugador("")
         this.setDniJugador(null)
         this.setPuntosJugador(null)
-
     },
-
     calcularCategoriaSuperior(item){
         let entrarEnElSiguiente=false;
         let mensaje="No hay una categoria superior";
         this.listaCategorias.forEach(categoria => {
-
             if(entrarEnElSiguiente){
                     var indice = categoria.jugadoresAnotados.indexOf(item);
                     
@@ -644,17 +382,13 @@ methods: {
                     }
                     entrarEnElSiguiente=false;
                 }
-
             if(item.pivot.puntos >= categoria.puntos_minimos && item.pivot.puntos <= categoria.puntos_maximos){
                 entrarEnElSiguiente=true;
                 }
             
         });
-
         return mensaje;
     },
-
-
     
     traerJugadoresTorneo(){
         let me = this;
@@ -666,13 +400,11 @@ methods: {
                 }
         )
     },
-
     traerCategorias(){
         let me = this;
         axios.get(`/torneos/${this.torneoSeleccionado.id}/categorias`)
         .then(
             res => {//this.$store.commit('setListaCategorias', res.data);
-
             res.data.forEach(categoria => {
                 Object.defineProperty(categoria,'jugadoresAnotados', {value: [], writable:true, configurable:true, enumerable:true});
                 Object.defineProperty(categoria,'gruposConEliminatoria', {value: false, writable:true, configurable:true, enumerable:true});
@@ -682,19 +414,15 @@ methods: {
                 this.$set(categoria, 'gruposGenerados', false);
                 this.$set(categoria, 'llavesGeneradas', false);
                 });
-
                 this.setListaCategorias(res.data);
             }
         )
     },
-
     eliminarJugador(item) {
         var indice = this.listaJugadores.indexOf(item);
         this.listaJugadores.splice(indice, 1);
     },
-
     
-
     agregarEnSuCategoria(item){
         let categorias = this.listaCategorias;
         let me = this;
@@ -716,15 +444,11 @@ methods: {
                 }
             }
         });
-
         this.calcularMonto()
-
     },
-
     agregarEnLaCategoriaSuperior(item){
         var entrarEnElSiguiente=false;
         this.listaCategorias.forEach(categoria => {
-
             if(entrarEnElSiguiente){
                     var indice = categoria.jugadoresAnotados.indexOf(item);
                     
@@ -743,23 +467,19 @@ methods: {
                     }
                     entrarEnElSiguiente=false;
                 }
-
             if(item.pivot.puntos >= categoria.puntos_minimos && item.pivot.puntos <= categoria.puntos_maximos){
                 entrarEnElSiguiente=true;
                 }
             
         });
-
         if(entrarEnElSiguiente){
             this.message="No hay una categoria superior"
             this.snackbar=true;
             }
     },
-
     calcularMonto(){//desuso pronto
         
     },
-
     generarGrupos(categoria){//falta
         console.log('Ejecucionn generarGrupos')
         if((categoria.jugadoresAnotados.length/parseInt(categoria.cantidadGrupos))>=3){
@@ -770,7 +490,6 @@ methods: {
                     jugadoresDelGrupo : [],
                     partidos : []
                 };
-
                 categoria.listaGrupos.push(unGrupo);
             }
             
@@ -781,11 +500,9 @@ methods: {
                     if(indiceJugador%parseInt(categoria.cantidadGrupos) == indiceGrupo){grupo.jugadoresDelGrupo.push(jugador);}
                 })
             })
-
             
             this.generarPartidosGrupos(categoria.listaGrupos);
             categoria.gruposGenerados = true;
-
             this.message="Grupos generados con exito";
             this.snackbar=true;
             
@@ -795,7 +512,6 @@ methods: {
             this.snackbar=true;
         }
     },
-
     generarPartidosGrupos(grupos){
         console.log("generarPartidosGrupos");
         var IDPartido = 0;
@@ -817,65 +533,50 @@ methods: {
             }
         });
     },
-
     gruposGenerados(categoria){//falta
         return !categoria.gruposGenerados;
     },
-
     deshacerGrupos(categoria){//falta
         console.log('Ejecucion deshacerGrupos')
         categoria.gruposGenerados = false;
         categoria.listaGrupos = [];
     },
-
 },
-
-
 watch : {
     torneoSeleccionado(){
         console.log(" watcher torneoSeleccionado")
         this.traerJugadoresTorneo();
         this.traerCategorias();
         },
-
     listaCategorias(){
         console.log(" watcher listaCategorias")
         this.calcularMonto();
         },
-
     montoSociosUnaCategoria(){
         console.log(" watcher montoSociosUnaCategoria")
         this.calcularMonto();
         },
-
     montoSociosDosCategorias(){
         console.log(" watcher montoSociosDosCategorias")
         this.calcularMonto();
         },
-
     montoNoSociosUnaCategoria() {
         console.log(" watcher montoNoSociosUnaCategoria")
         this.calcularMonto()
         },
-
     montoNoSociosDosCategorias(){
         console.log(" watcher montoNoSociosDosCategorias")
         this.calcularMonto()
         },
-
     },
-
 created() {
         axios.get("/torneos").then(res => {
             this.setTorneos(res.data)
         });
     },
     
-
-
 }
 </script>
 
 <style>
-
 </style>

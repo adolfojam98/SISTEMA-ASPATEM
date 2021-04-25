@@ -38,6 +38,8 @@ Vue.component('usuarios-pagos', require('./components/UsuariosPagosComponent.vue
 Vue.component('crear-torneo',require('./components/CrearTorneoComponent.vue').default);
 Vue.component('importar-jugadores',require('./components/ImportarJugadoresComponent.vue').default);
 Vue.component('crear-fecha',require('./components/CrearFechaComponent.vue').default);
+Vue.component('datos-fecha',require('./components/CrearFechaDatosInicialesComponent.vue').default);
+Vue.component('jugadores-fecha',require('./components/CrearFechaJugadoresComponent.vue').default);
 Vue.component('generar-llaves',require('./components/GenerarLlavesComponent.vue').default);
 Vue.component('partidos',require('./components/partidosComponent.vue').default);
 
