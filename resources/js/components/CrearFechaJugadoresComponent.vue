@@ -127,6 +127,18 @@
                 >Cancelar</v-btn
             >
         </v-form>
+
+
+
+         <v-snackbar v-model="snackbar" timeout="3000">
+      <div v-text="message"></div>
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Cerrar
+        </v-btn>
+      </template>
+    </v-snackbar>
     </div>
 </template>
 
@@ -135,26 +147,8 @@ import { mapMutations, mapState } from "vuex";
 export default {
     data() {
         return {
-            aynRules: [
-                v => !!v || "Campo obligatorio",
-                v =>
-                    /^([A-Za-z][A-Za-z]*([ \t\n\r\f]?[A-Za-z])*)+$/.test(v) ||
-                    "Nombre invalido",
-                v => v.length <= 30 || "Demasiado largo"
-            ],
-            dniRules: [
-                v => !!v || "Campo obligatorio",
-                v => /^([0-9]*)+$/.test(v) || "Solo numeros",
-                v =>
-                    (!!v && v.length == 8) ||
-                    "El DNI debe estar compuesto por 8 numeros"
-            ],
-            puntosRules: [
-                v => !!v || "Puntos requeridos",
-                v =>
-                    /^([0-9]*)?[0-9]+$/.test(v) ||
-                    "Los puntos deben ser numeros enteros"
-            ],
+            message: "",
+            snackbar: false,
             valid: false,
             headers: [
                 { text: "Apellido", value: "apellido" },
@@ -174,11 +168,35 @@ export default {
                     sortable: false,
                     filterable: false
                 }
+            ],
+            aynRules: [
+                v => !!v || "Campo obligatorio",
+                v =>
+                    /^([A-Za-z][A-Za-z]*([ \t\n\r\f]?[A-Za-z])*)+$/.test(v) ||
+                    "Nombre invalido",
+                v => v.length <= 30 || "Demasiado largo"
+            ],
+            dniRules: [
+                v => !!v || "Campo obligatorio",
+                v => /^([0-9]*)+$/.test(v) || "Solo numeros",
+                v =>
+                    (!!v && v.length == 8) ||
+                    "El DNI debe estar compuesto por 8 numeros"
+            ],
+            puntosRules: [
+                v => !!v || "Puntos requeridos",
+                v =>
+                    /^([0-9]*)?[0-9]+$/.test(v) ||
+                    "Los puntos deben ser numeros enteros"
             ]
         };
     },
     computed: {
-        ...mapState("crearFecha", ["listaJugadores", "listaCategorias"]),
+        ...mapState("crearFecha", [
+            "listaJugadores",
+            "listaCategorias",
+            "torneoSeleccionado"
+        ]),
         ...mapState("jugadores", [
             "nuevoJugador",
             "apellidoJugador",
@@ -195,7 +213,11 @@ export default {
             "setDniJugador",
             "setPuntosJugador"
         ]),
-        ...mapMutations("crearFecha", ["pushJugadorCategoria","spliceJugadorCategoria"]),
+        ...mapMutations("crearFecha", [
+            "pushJugadorCategoria",
+            "spliceJugadorCategoria",
+            "pushJugador"
+        ]),
         //TODO Hacer la logica de calcularMonto
         calcularMonto() {
             //desuso pronto
@@ -260,7 +282,12 @@ export default {
                     .then(res => {
                         console.log(res.data);
                         this.pushJugador(jugador.pop());
+                        this.message =
+                    "Jugador anotado exitosamente";
+                this.snackbar = true;
                     });
+
+            
             } else {
                 this.message =
                     "Ya hay un jugador con el dni que intenta ingresar";

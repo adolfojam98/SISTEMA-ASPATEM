@@ -112,8 +112,90 @@ export default {
             "setMontoSociosUnaCategoria",
             "setMontoSociosDosCategorias",
             "setMontoNoSociosUnaCategoria",
-            "setMontoNoSociosDosCategorias"
-        ])
+            "setMontoNoSociosDosCategorias",
+            "setListaCategorias",
+            "setListaJugadores"
+        ]),
+        traerJugadoresTorneo() {
+            let me = this;
+            axios
+                .get(`/torneos/${this.torneoSeleccionado.id}/jugadores`)
+                .then(res => {
+                    console.log(res.data);
+                    this.setListaJugadores(res.data);
+                });
+        },
+        traerCategorias() {
+            let me = this;
+            axios
+                .get(`/torneos/${this.torneoSeleccionado.id}/categorias`)
+                .then(res => {
+                    //this.$store.commit('setListaCategorias', res.data);
+                    res.data.forEach(categoria => {
+                        Object.defineProperty(categoria, "jugadoresAnotados", {
+                            value: [],
+                            writable: true,
+                            configurable: true,
+                            enumerable: true
+                        });
+                        Object.defineProperty(
+                            categoria,
+                            "gruposConEliminatoria",
+                            {
+                                value: false,
+                                writable: true,
+                                configurable: true,
+                                enumerable: true
+                            }
+                        );
+                        Object.defineProperty(categoria, "cantidadGrupos", {
+                            writable: true,
+                            configurable: true,
+                            enumerable: true
+                        });
+                        Object.defineProperty(categoria, "listaGrupos", {
+                            value: [],
+                            writable: true,
+                            configurable: true,
+                            enumerable: true
+                        });
+                        //Object.defineProperty(categoria,'gruposGenerados', {value: false, writable:true, configurable:true, enumerable:true});
+                        this.$set(categoria, "gruposGenerados", false);
+                        this.$set(categoria, "llavesGeneradas", false);
+                    });
+                    this.setListaCategorias(res.data);
+                });
+        },
+        calcularMonto() {
+          //TODO  desuso pronto
+        },
+    },
+    watch: {
+        torneoSeleccionado() {
+            console.log(" watcher torneoSeleccionado");
+            this.traerJugadoresTorneo();
+            this.traerCategorias();
+        },
+        listaCategorias() {
+            console.log(" watcher listaCategorias");
+            this.calcularMonto();
+        },
+        montoSociosUnaCategoria() {
+            console.log(" watcher montoSociosUnaCategoria");
+            this.calcularMonto();
+        },
+        montoSociosDosCategorias() {
+            console.log(" watcher montoSociosDosCategorias");
+            this.calcularMonto();
+        },
+        montoNoSociosUnaCategoria() {
+            console.log(" watcher montoNoSociosUnaCategoria");
+            this.calcularMonto();
+        },
+        montoNoSociosDosCategorias() {
+            console.log(" watcher montoNoSociosDosCategorias");
+            this.calcularMonto();
+        }
     }
 };
 </script>
