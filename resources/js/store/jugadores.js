@@ -1,4 +1,4 @@
-import { mapMutations, mapState } from "vuex";
+
 
 //jugadores de la nueva fecha y los que ya hayan jugado en el mismo torneo
 export default{

@@ -21,11 +21,16 @@ export default {
         ...mapState("crearFecha", ["listaCategorias"])
     },
     methods: {
-        ...mapMutations("crearFecha", ["setTorneos"])
+        ...mapMutations("crearFecha", ["setTorneos"]),
+
+        
     },
     created() {
         axios.get("/torneos").then(res => {
             this.setTorneos(res.data);
+
+
+            
         });
     }
 };

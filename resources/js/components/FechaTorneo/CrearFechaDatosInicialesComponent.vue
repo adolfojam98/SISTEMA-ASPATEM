@@ -30,9 +30,10 @@
                         @input="setMontoSociosUnaCategoria"
                         :rules="montoRules"
                         class="mr-2 ml-2"
-                        solo
+                       outlined
                         label="Monto socios que juegan una categoria"
                         prefix="$"
+                        
                     ></v-text-field>
 
                     <v-text-field
@@ -40,7 +41,7 @@
                         @input="setMontoSociosDosCategorias"
                         :rules="montoRules"
                         class="mr-2 ml-2"
-                        solo
+                        outlined
                         label="Monto socios que juegan dos categorias"
                         prefix="$"
                     ></v-text-field>
@@ -52,7 +53,7 @@
                         @input="setMontoNoSociosUnaCategoria"
                         :rules="montoRules"
                         class="mr-2 ml-2"
-                        solo
+                        outlined
                         label="Monto no socios que juegan una categoria"
                         prefix="$"
                     ></v-text-field>
@@ -62,7 +63,7 @@
                         @input="setMontoNoSociosDosCategorias"
                         :rules="montoRules"
                         class="mr-2 ml-2"
-                        solo
+                        outlined
                         label="Monto no socios que juegan dos categorias"
                         prefix="$"
                     ></v-text-field>

@@ -37,11 +37,11 @@ Vue.component('pago-cuota', require('./components/pagoCuotaComponent.vue').defau
 Vue.component('usuarios-pagos', require('./components/UsuariosPagosComponent.vue').default);
 Vue.component('crear-torneo',require('./components/CrearTorneoComponent.vue').default);
 Vue.component('importar-jugadores',require('./components/ImportarJugadoresComponent.vue').default);
-Vue.component('crear-fecha',require('./components/CrearFechaComponent.vue').default);
-Vue.component('datos-fecha',require('./components/CrearFechaDatosInicialesComponent.vue').default);
-Vue.component('jugadores-fecha',require('./components/CrearFechaJugadoresComponent.vue').default);
-Vue.component('grupos-fecha',require('./components/CrearFechaGruposComponent.vue').default);
-Vue.component('generar-llaves',require('./components/GenerarLlavesComponent.vue').default);
+Vue.component('crear-fecha',require('./components/FechaTorneo/CrearFechaComponent.vue').default);
+Vue.component('datos-fecha',require('./components/FechaTorneo/CrearFechaDatosInicialesComponent.vue').default);
+Vue.component('jugadores-fecha',require('./components/FechaTorneo/CrearFechaJugadoresComponent.vue').default);
+Vue.component('grupos-fecha',require('./components/FechaTorneo/CrearFechaGruposComponent.vue').default);
+Vue.component('generar-llaves',require('./components/FechaTorneo/GenerarLlavesComponent.vue').default);
 Vue.component('partidos',require('./components/partidosComponent.vue').default);
 
 /**

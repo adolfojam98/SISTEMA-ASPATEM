@@ -252,7 +252,7 @@ export default {
             return !categoria.gruposGenerados;
         },
         generarGrupos(categoria) {
-            //falta
+            //TODO falta
             console.log("Ejecucionn generarGrupos");
             if (
                 categoria.jugadoresAnotados.length /
