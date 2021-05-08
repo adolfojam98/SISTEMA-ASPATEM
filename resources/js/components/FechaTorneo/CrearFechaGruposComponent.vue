@@ -232,7 +232,7 @@ export default {
             tab: null,
             valid: false,
             snackbar: false,
-            message:'',
+            message: "",
             cantidadSets: [0, 1, 2, 3, 4, 5, 6, 7],
             cantidadGruposRules: [
                 v => !!v || "Cantidad de grupos requerido",
