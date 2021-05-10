@@ -14,7 +14,7 @@
 
         <v-tabs-items v-model="tab">
             <v-tab-item v-for="item in listaCategorias" :key="item.id">
-                <v-card flat color="#546E7A" class="rounded-0">
+                <v-card flat class="rounded-0">
                     <v-container v-if="gruposGenerados(item)">
                         <v-row>
                             <v-form v-model="valid" lazy-validation>
@@ -24,14 +24,12 @@
                                         v-model="item.cantidadGrupos"
                                         :rules="cantidadGruposRules"
                                         required
-                                        dark
                                         class="mb-0 ml-2"
                                     ></v-text-field>
 
                                     <v-switch
                                         v-model="item.gruposConEliminatoria"
                                         label="Fase de grupos con eliminatoria"
-                                        dark
                                         class="ml-2 mt-0"
                                     ></v-switch>
 
@@ -47,7 +45,7 @@
                             </v-form>
 
                             <v-col>
-                                <v-simple-table dark>
+                                <v-simple-table>
                                     <template v-slot:default>
                                         <thead>
                                             <tr>
@@ -79,31 +77,36 @@
                     </v-container>
 
                     <div v-else>
+                        <div v-if="!item.llavesGeneradas">
                         <v-btn
-                            class="ml-6 mt-6"
+                            class="ml-6 mt-6 mt-6"
                             dark
                             @click="deshacerGrupos(item)"
                             color="blue"
                             >Deshacer grupos</v-btn
                         >
 
+                        <v-row class="mt-6">
                         <v-card
                             v-for="grupo in item.listaGrupos"
                             :key="grupo.nombre"
                             flat
-                            color="#546E7A"
                             class="rounded-0"
                         >
-                            <v-col>
+                            <v-col cols="12">
                                 <v-card
-                                    color="#90A4AE"
                                     class="mt-6 mb-6 ml-12 mr-12"
                                 >
+                                <center><h1>{{grupo.nombre}}</h1></center>
+                                <v-divider></v-divider>
+
                                     <v-container
                                         v-for="partido in grupo.partidos"
                                         :key="partido.id"
                                     >
-                                        <v-flex d-flex class="mb-0">
+                                        <v-row>
+                                        <v-col>
+                                            <v-row>
                                             <v-tooltip bottom>
                                                 <template
                                                     v-slot:activator="{
@@ -111,7 +114,7 @@
                                                         attrs
                                                     }"
                                                 >
-                                                    <h3 class="mt-2">
+                                                    <h4 class="mt-2 ml-2">
                                                         {{
                                                             partido.jugador1
                                                                 .apellido
@@ -122,7 +125,7 @@
                                                             v-on="on"
                                                             >mdi-account-question</v-icon
                                                         >
-                                                    </h3>
+                                                    </h4>
                                                 </template>
                                                 <span
                                                     >{{
@@ -136,40 +139,47 @@
                                             </v-tooltip>
 
                                             <v-select
-                                                class="ml-4 mr-2"
-                                                :items="cantidadSets"
-                                                v-model="partido.setsJugador1"
-                                                solo
-                                                dense
-                                            ></v-select>
-
-                                            <v-select
-                                                class="ml-2 mr-4"
-                                                :items="cantidadSets"
-                                                v-model="partido.setsJugador2"
-                                                dense
-                                                solo
-                                            ></v-select>
-
-                                            <v-tooltip bottom>
+                                                    class="ml-4 mr-2"
+                                                    :items="cantidadSets"
+                                                    v-model="partido.setsJugador1"
+                                                    align="rigth"
+                                                    solo
+                                                    dense
+                                                    style="width:40px"
+                                                ></v-select>
+                                                
+                                                <v-select
+                                                    class="ml-2 mr-2"
+                                                    align="left"
+                                                    :items="cantidadSets"
+                                                    v-model="partido.setsJugador2"
+                                                    dense
+                                                    solo
+                                                    style="width:40px"
+                                                ></v-select>
+                                                
+                                            
+                                        
+                                            <v-tooltip bottom right>
                                                 <template
                                                     v-slot:activator="{
                                                         on,
                                                         attrs
                                                     }"
                                                 >
-                                                    <h3 class="mt-2">
+                                                    <h4 class="mt-2 ml-2">
                                                         {{
                                                             partido.jugador2
                                                                 .apellido
                                                         }}
                                                         <v-icon
-                                                            class="mb-1"
+                                                            
+                                                            class="mb-1 mr-2"
                                                             v-bind="attrs"
                                                             v-on="on"
                                                             >mdi-account-question</v-icon
                                                         >
-                                                    </h3>
+                                                    </h4>
                                                 </template>
                                                 <span
                                                     >{{
@@ -181,12 +191,17 @@
                                                     }}</span
                                                 >
                                             </v-tooltip>
-                                        </v-flex>
+                                            </v-row>
+                                        </v-col>
+                                        </v-row>
                                     </v-container>
                                 </v-card>
                             </v-col>
                         </v-card>
+                        </v-row>
+                        </div>
 
+                        <div v-if="!item.llavesGeneradas">
                         <center>
                             <v-btn
                                 class="center mb-6"
@@ -197,6 +212,17 @@
                                 Generar llaves
                             </v-btn>
                         </center>
+                        </div>
+
+                        <div v-else>
+                            <v-btn
+                            class="ml-6 mt-6 mt-6"
+                            dark
+                            @click="deshacerLlaves(item)"
+                            color="blue"
+                            >Deshacer llaves</v-btn
+                        >
+                        </div>
 
                         <generar-llaves
                             v-if="item.llavesGeneradas"
@@ -248,11 +274,9 @@ export default {
     },
     methods: {
         gruposGenerados(categoria) {
-            //TODO falta
             return !categoria.gruposGenerados;
         },
         generarGrupos(categoria) {
-            //TODO falta
             console.log("Ejecucionn generarGrupos");
             if (
                 categoria.jugadoresAnotados.length /
@@ -330,12 +354,18 @@ export default {
                 this.snackbar = true;
             }
         },
+
+
         deshacerGrupos(categoria) {
-            //falta
             console.log("Ejecucion deshacerGrupos");
             categoria.gruposGenerados = false;
             categoria.listaGrupos = [];
         },
+        deshacerLlaves(categoria){
+            categoria.partidosLlaves = [];
+            categoria.llavesGeneradas = false;
+        },
+
         generarPartidosGrupos(grupos) {
             console.log("generarPartidosGrupos");
             var IDPartido = 0;

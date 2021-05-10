@@ -71,6 +71,8 @@ export default{
         setMontoPagadoJugador(state, {indiceJugador, monto}){
             state.listaJugadores[indiceJugador].montoPagado = monto;
         },
+
+        
     },
 
     getters: {

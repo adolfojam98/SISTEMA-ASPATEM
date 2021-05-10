@@ -161,6 +161,12 @@ export default {
                             configurable: true,
                             enumerable: true
                         });
+                        Object.defineProperty(categoria, "partidosLlaves", {
+                            value: [],
+                            writable: true,
+                            configurable: true,
+                            enumerable: true
+                        });
                         //Object.defineProperty(categoria,'gruposGenerados', {value: false, writable:true, configurable:true, enumerable:true});
                         this.$set(categoria, "gruposGenerados", false);
                         this.$set(categoria, "llavesGeneradas", false);

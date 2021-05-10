@@ -219,7 +219,6 @@ export default {
             "pushJugador"
         ]),
         ...mapActions("crearFecha",["calcularMonto"]),
-        //TODO Hacer la logica de calcularMonto
        
         agregarEnSuCategoria(item) {
             let categorias = this.listaCategorias;
@@ -231,13 +230,13 @@ export default {
                 ) {
                     var indice = categoria.jugadoresAnotados.indexOf(item);
                     if (indice === -1) {
-                        //categoria.jugadoresAnotados.push(item);
-                        me.pushJugadorCategoria({ item, indexCategoria });
+                        categoria.jugadoresAnotados.push(item);
+                        //me.pushJugadorCategoria({ item, indexCategoria });
                         me.message = "Jugador anotado en su categoria";
                         me.snackbar = true;
                     } else {
-                        //categoria.jugadoresAnotados.splice(indice,1);
-                        me.spliceJugadorCategoria({ indice, indexCategoria });
+                        categoria.jugadoresAnotados.splice(indice,1);
+                        //me.spliceJugadorCategoria({ indice, indexCategoria });
                         me.message =
                             "El jugador ya no esta anotado en su categoria";
                         me.snackbar = true;

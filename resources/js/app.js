@@ -42,7 +42,7 @@ Vue.component('datos-fecha',require('./components/FechaTorneo/CrearFechaDatosIni
 Vue.component('jugadores-fecha',require('./components/FechaTorneo/CrearFechaJugadoresComponent.vue').default);
 Vue.component('grupos-fecha',require('./components/FechaTorneo/CrearFechaGruposComponent.vue').default);
 Vue.component('generar-llaves',require('./components/FechaTorneo/GenerarLlavesComponent.vue').default);
-Vue.component('partidos',require('./components/partidosComponent.vue').default);
+Vue.component('mostrar-partidos',require('./components/FechaTorneo/MostrarPartidosComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
