@@ -664,8 +664,8 @@ export default {
       this.puntosJugador = null;
     },
 
-    eliminarJugador(indice) {
-      this.listaJugadores.splice(indice, 1);
+    eliminarJugador(jugador) {
+      this.listaJugadores.splice((this.listaJugadores.indexOf(jugador)), 1);
     },
 
     generarTorneo() {
