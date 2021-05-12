@@ -72,6 +72,10 @@
                       class="subheading font-weight-bold"
                       label="Puntos Minimos de la Categoria"
                       required
+                      v-on:keyup.enter="[
+                          ((nuevaCategoria = !nuevaCategoria),
+                          agregarCategoria()),
+                        ]"
                     ></v-text-field>
 
                     <v-btn
@@ -237,6 +241,7 @@
                     label="Puntos del jugador"
                     :rules="puntosRules"
                     required
+                    v-on:keyup.enter="[((nuevoJugador = !nuevoJugador), agregarJugador())]"
                   ></v-text-field>
 
                   <v-btn

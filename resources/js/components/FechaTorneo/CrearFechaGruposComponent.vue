@@ -324,25 +324,30 @@ export default {
                     (a, b) => b.pivot.puntos - a.pivot.puntos
                 );
 
-                categoria.listaGrupos.forEach(function(
-                    grupo,
-                    indiceGrupo,
-                    array1
-                ) {
-                    categoria.jugadoresAnotados.forEach(function(
-                        jugador,
-                        indiceJugador,
-                        array2
-                    ) {
-                        if (
-                            indiceJugador %
-                                parseInt(categoria.cantidadGrupos) ==
-                            indiceGrupo
-                        ) {
-                            grupo.jugadoresDelGrupo.push(jugador);
-                        }
+                console.log(categoria.jugadoresAnotados);
+
+
+                var indiceMaxGrupos = (categoria.listaGrupos.length - 1);
+                var indiceGrupo = 0;
+                var alReves = false;
+
+                categoria.jugadoresAnotados.forEach(function(jugador, indiceJugador) {
+
+                            console.log(alReves);
+
+                            categoria.listaGrupos[indiceGrupo].jugadoresDelGrupo.push(jugador);
+                            console.log(indiceGrupo);
+
+                        if(alReves){
+                            indiceGrupo--;
+                            if(indiceGrupo < 0) {indiceGrupo++; alReves = false;}
+                            }
+                        else{
+                            indiceGrupo++;
+                            if(indiceGrupo > indiceMaxGrupos) {indiceGrupo--; alReves = true;} ;
+                            }
                     });
-                });
+
 
                 this.generarPartidosGrupos(categoria.listaGrupos);
                 categoria.gruposGenerados = true;
