@@ -38,7 +38,7 @@ class TorneoController extends Controller
      */
     public function store(Request $request)
     {
-        
+  
         $gestionPuntos = $request->gestionPuntos;
         
         $torneo = new Torneo();
