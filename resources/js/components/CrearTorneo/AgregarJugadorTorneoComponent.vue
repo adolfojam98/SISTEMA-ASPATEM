@@ -1,6 +1,7 @@
 <template>
     <div>
         <v-card elevation="4" class="rounded-b-xl">
+            <v-card-title>Agregar nuevo Jugador</v-card-title>
             <v-form v-model="valid" lazy-validation>
                 <v-text-field
                     
@@ -41,8 +42,9 @@
                 <v-btn
                     dark
                     block
-                    class="rounded-pill"
+                    class="rounded-pill mb-2"
                     color="primary"
+                
                     
                     :disabled="!valid"
                     @click="

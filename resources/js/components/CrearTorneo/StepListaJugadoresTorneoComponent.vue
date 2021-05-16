@@ -4,10 +4,10 @@
             <v-row>
                 <v-col cols="8" md="4">
                     <v-container>
+                <agregar-jugador-torneo-component></agregar-jugador-torneo-component>
                         <importar-jugadores
                             @nuevosJugadores="nuevosJugadores = $event"
                         ></importar-jugadores>
-                <agregar-jugador-torneo-component></agregar-jugador-torneo-component>
                        
                     </v-container>
                 </v-col>

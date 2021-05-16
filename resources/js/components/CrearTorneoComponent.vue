@@ -17,7 +17,7 @@
             </v-stepper-content>
 
             <v-stepper-step :complete="e6 > 3" editable step="3">
-                Importar lista de jugadores
+                Lista de Jugadores
             </v-stepper-step>
 
             <v-stepper-content step="3">
