@@ -51,6 +51,7 @@ Vue.component('jugadores-fecha',                    require('./components/FechaT
 Vue.component('grupos-fecha',                       require('./components/FechaTorneo/CrearFechaGruposComponent.vue').default);
 Vue.component('generar-llaves',                     require('./components/FechaTorneo/GenerarLlavesComponent.vue').default);
 Vue.component('mostrar-partidos',                   require('./components/FechaTorneo/MostrarPartidosComponent.vue').default);
+Vue.component('un-partido',                         require('./components/FechaTorneo/MostrarUnPartidoComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <mostrar-partidos :partidos = "categoria.partidosLlaves"></mostrar-partidos>
+        <mostrar-partidos :partidos = "categoria.partidosLlaves" :jugadores = "categoria.jugadoresAnotados" ></mostrar-partidos>
     </div>
 </template>
 
@@ -25,14 +25,24 @@ export default {
             this.categoria.listaGrupos.forEach(grupo =>{
                 cantidadJugadores = cantidadJugadores + grupo.jugadoresDelGrupo.length;
             });
-            
+
+            //TODO calcular jugadores extras (es igual a la cantidad de partidos de ajuste)
+            var cantidadJugadoresExtras = 0;
+            if(cantidadJugadores > 2 && cantidadJugadores <4){cantidadJugadoresExtras = 1; cantidadJugadores = cantidadJugadores-cantidadJugadoresExtras;}
+            else if(cantidadJugadores > 4 && cantidadJugadores < 8){cantidadJugadoresExtras = cantidadJugadores - 4; cantidadJugadores = cantidadJugadores-cantidadJugadoresExtras;}
+            else if(cantidadJugadores > 8 && cantidadJugadores < 16){cantidadJugadoresExtras = cantidadJugadores - 8; cantidadJugadores = cantidadJugadores-cantidadJugadoresExtras;}
+            else if(cantidadJugadores > 16 && cantidadJugadores < 32){cantidadJugadoresExtras = cantidadJugadores - 16; cantidadJugadores = cantidadJugadores-cantidadJugadoresExtras;}
+            else if(cantidadJugadores > 32 && cantidadJugadores < 64){cantidadJugadoresExtras = cantidadJugadores - 32; cantidadJugadores = cantidadJugadores-cantidadJugadoresExtras;}
+            else if(cantidadJugadores > 64 && cantidadJugadores < 126){cantidadJugadoresExtras = cantidadJugadores - 64; cantidadJugadores = cantidadJugadores-cantidadJugadoresExtras;}
+
             if(cantidadJugadores == 2 | cantidadJugadores == 4 | cantidadJugadores == 8 | cantidadJugadores == 16 | cantidadJugadores == 32 | cantidadJugadores == 64){
-                this.llavesPerfectas(cantidadJugadores);
+                this.llavesPerfectas(cantidadJugadores, cantidadJugadoresExtras);
+                
             }
         },
 
 
-        llavesPerfectas(cantidadJugadores){
+        llavesPerfectas(cantidadJugadores, cantidadJugadoresExtras){
             var cantidadPartidos = (cantidadJugadores - 2);
 
             var unPartido = {
@@ -48,10 +58,10 @@ export default {
 
                 this.colaIDs.push(unPartido.id);
 
-                this.generarDosPartidos(cantidadPartidos);
+                this.generarDosPartidos(cantidadPartidos, cantidadJugadoresExtras);
         },
 
-        generarDosPartidos(cantidadPartidos){
+        generarDosPartidos(cantidadPartidos, cantidadJugadoresExtras){
 
             while(cantidadPartidos != 0){
                 cantidadPartidos = cantidadPartidos - 2;
@@ -84,6 +94,7 @@ export default {
             }
 
             this.calcularFases();
+            this.generarPartidosDeAjuste(cantidadJugadoresExtras);
         },
 
         calcularFases(){
@@ -97,6 +108,33 @@ export default {
                 else if(partido.id < 127) partido.fase = '64vo de final';
             });
         },
+
+        generarPartidosDeAjuste(cantidadJugadoresExtras){
+            if(cantidadJugadoresExtras > 0 && this.categoria.gruposConEliminatoria == false){
+            //TODO calcular id mayor
+            var mayorID = 0;
+
+            this.categoria.partidosLlaves.forEach(partido =>{
+                if(partido.id > mayorID) mayorID = partido.id;
+            });
+
+            while(cantidadJugadoresExtras != 0){
+                mayorID++;
+
+                this.categoria.partidosLlaves.push({
+                    id : mayorID,
+                    jugador1 : null,
+                    jugador2 : null,
+                    set1 : null,
+                    set2 : null,
+                    fase : 'ajuste',
+                    sigPartidoID : null,
+                });
+
+                cantidadJugadoresExtras--;
+            }
+            }
+        }
 
     },
 
