@@ -115,7 +115,7 @@
                     <v-row><v-col cols="12" md="8">
                     <v-select
                     single-line
-                    lass="ml-2 mb-0"
+                    class="ml-2 mb-0"
                     @input="[calcularSiguienteJugador()]"
                     v-model="partido.jugador1"
                     :items="jugadores"
