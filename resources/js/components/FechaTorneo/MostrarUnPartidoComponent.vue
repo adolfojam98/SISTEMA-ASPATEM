@@ -6,8 +6,9 @@
               <v-divider></v-divider>
 
                 <div v-if="esNodoHoja(partido.id)">
-                    <v-row><v-col >
+                    <v-row><v-col cols="12" md="8">
                     <v-select
+                    single-line
                     class="ml-2 mb-0"
                     @input="[calcularSiguienteJugador()]"
                     v-model="partido.jugador1"
@@ -20,6 +21,7 @@
 
                     <v-col  cols="12" md="4">
                     <v-select
+                    single-line
                     class="mr-2 mb-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
@@ -29,8 +31,9 @@
                     ></v-select>
                     </v-col></v-row>
 
-                    <v-row><v-col >
+                    <v-row><v-col cols="12" md="8">
                     <v-select
+                    single-line
                     class="ml-2 mt-0"
                     @input="[calcularSiguienteJugador()]"
                     v-model="partido.jugador2"
@@ -43,6 +46,7 @@
 
                     <v-col  cols="12" md="4">
                     <v-select
+                    single-line
                     class="mr-2 mt-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
@@ -54,8 +58,9 @@
                 </div>
 
                 <div v-if="esMedioNodoHoja(partido.id)">
-                <v-row><v-col >
+                <v-row><v-col cols="12" md="8">
                     <v-select
+                    single-line
                     class="ml-2 mb-0"
                     @input="[calcularSiguienteJugador()]"
                     v-model="partido.jugador1"
@@ -68,6 +73,7 @@
 
                     <v-col  cols="12" md="4">
                     <v-select
+                    single-line
                     class="mr-2 mb-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
@@ -77,8 +83,9 @@
                     ></v-select>
                     </v-col></v-row>
 
-                    <v-row><v-col >
+                    <v-row><v-col cols="12" md="8">
                     <v-select
+                    single-line
                     class="ml-2 mt-0"
                     @input="[calcularSiguienteJugador()]"
                     v-model="partido.jugador2"
@@ -92,6 +99,7 @@
 
                     <v-col  cols="12" md="4">
                     <v-select
+                    single-line
                     class="mr-2 mt-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
@@ -104,8 +112,9 @@
                 </div>
 
                 <div v-if="!esNodoHoja(partido.id) && !esMedioNodoHoja(partido.id)">
-                    <v-row><v-col >
+                    <v-row><v-col cols="12" md="8">
                     <v-select
+                    single-line
                     lass="ml-2 mb-0"
                     @input="[calcularSiguienteJugador()]"
                     v-model="partido.jugador1"
@@ -119,6 +128,7 @@
 
                     <v-col  cols="12" md="4">
                     <v-select
+                    single-line
                     class="mr-2 mb-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
@@ -128,8 +138,9 @@
                     ></v-select>
                     </v-col></v-row>
 
-                    <v-row><v-col >
+                    <v-row><v-col cols="12" md="8">
                     <v-select
+                    single-line
                     class="ml-2 mt-0"
                     @input="[calcularSiguienteJugador()]"
                     v-model="partido.jugador2"
@@ -143,6 +154,7 @@
 
                     <v-col  cols="12" md="4">
                     <v-select
+                    single-line
                     class="mr-2 mt-0"
                     @input="[calcularSiguienteJugador()]"
                     dense

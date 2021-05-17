@@ -14,6 +14,7 @@
 
                     <v-row><v-col cols="12" md="8">
                     <v-select
+                    single-line
                     @input="[calcularSiguienteJugador()]"
                     v-model="partido.jugador1"
                     :items="jugadores"
@@ -25,6 +26,7 @@
 
                     <v-col>
                     <v-select
+                    single-line
                     @input="[calcularSiguienteJugador()]"
                     dense
                     v-model="partido.set1"
@@ -35,6 +37,7 @@
 
                     <v-row><v-col cols="12" md="8">
                     <v-select
+                    single-line
                     @input="[calcularSiguienteJugador()]"
                     v-model="partido.jugador2"
                     :items="jugadores"
@@ -46,6 +49,7 @@
 
                     <v-col>
                     <v-select
+                    single-line
                     @input="[calcularSiguienteJugador()]"
                     dense
                     v-model="partido.set2"
@@ -57,6 +61,7 @@
                 <v-row><v-col cols="12" md="8">
                 <center><h4 class="mt-3">Sig. partido:</h4></center></v-col><v-col>
                 <v-select
+                single-line
                 @input="[calcularNodosHojas(),calcularSiguienteJugador()]"
                 :items="posiblesSigsPartidos"
                 v-model="partido.sigPartidoID"
