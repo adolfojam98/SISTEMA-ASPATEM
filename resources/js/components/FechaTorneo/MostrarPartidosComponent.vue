@@ -3,7 +3,7 @@
     <v-container>
         <v-row>
 
-            <v-col v-if="cantidadPartidos != 1 && cantidadPartidos != 3 && cantidadPartidos != 7 && cantidadPartidos != 15 && cantidadPartidos != 31 && cantidadPartidos != 6">
+            <v-col v-if="cantidadPartidos != 1 && cantidadPartidos != 3 && cantidadPartidos != 7 && cantidadPartidos != 15 && cantidadPartidos != 31 && cantidadPartidos != 63">
       <h1>Partidos de ajuste</h1>
       <v-row v-for="partido in partidos" :key="partido.id">
         <v-col v-if="partido.fase == 'ajuste'">
@@ -62,9 +62,10 @@
                 <center><h4 class="mt-3">Sig. partido:</h4></center></v-col><v-col>
                 <v-select
                 single-line
-                @input="[calcularNodosHojas(),calcularSiguienteJugador()]"
+                @input="[calcularNodosHojas(),calcularSiguienteJugador(),limpiarSiguientePartido(partido)]"
                 :items="posiblesSigsPartidos"
                 v-model="partido.sigPartidoID"
+                :rules="[ maximoDosPartidosApuntando ]"
                 dense
                 ></v-select>
                 </v-col></v-row>
@@ -250,6 +251,19 @@ export default {
                     else if(sigPartido.jugador2 == null){sigPartido.jugador2 = ganador;}
                 }
             });
+        },
+
+        maximoDosPartidosApuntando(sigID){
+          var cant = 0;
+          this.partidos.forEach(partido => {
+            if(partido.sigPartidoID == sigID)cant++;
+          });
+          if(cant > 2) {return false;}
+          else {return true;}
+        },
+
+        limpiarSiguientePartido(partido){
+          if(!this.maximoDosPartidosApuntando(partido.sigPartidoID)){setTimeout(function() {(partido.sigPartidoID = null)},1500);}
         },
     },
 
