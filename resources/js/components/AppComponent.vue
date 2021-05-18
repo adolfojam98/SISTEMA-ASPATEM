@@ -77,7 +77,7 @@
           >
             <v-list-item-title>Nuevo torneo</v-list-item-title>
             <v-list-item-icon>
-              <v-icon>mdi-plus</v-icon>
+              <v-icon>mdi-trophy</v-icon>
             </v-list-item-icon>
           </v-list-item>
 

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Usuario;
+use App\Torneo;
 
 class UsuariosTableSeeder extends Seeder
 {
@@ -44,8 +45,10 @@ class UsuariosTableSeeder extends Seeder
         // crearUsuarioSeed('Nahir', 'Galarza');
         // crearUsuarioSeed('Tomas', 'Chancalay');
         // crearUsuarioSeed('Erik', 'Lamela');
-     
-       crearUsuariosFalsos(100);
+
+
+
+crearUsuariosFalsos(100);
        
     }
 }
@@ -73,3 +76,5 @@ function crearUsuarioSeed($nombre,$apellido){
 
 
 }
+
+
