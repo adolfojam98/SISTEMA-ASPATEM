@@ -135,7 +135,7 @@
     <v-main>
     <v-container fluid>
       <router-view :key="$route.fullPath"></router-view>
-   
+     <snackbar></snackbar>
    </v-container>
     </v-main>
     <v-footer
@@ -144,14 +144,17 @@
     >
       <span class="white--text">&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
+   
   </v-app>
 </template>
 
 <script>
+
   export default {
     props: {
       source: String,
     },
+        
     data: () => ({
       drawer: null,
     }),

@@ -52,6 +52,7 @@ Vue.component('grupos-fecha',                       require('./components/FechaT
 Vue.component('generar-llaves',                     require('./components/FechaTorneo/GenerarLlavesComponent.vue').default);
 Vue.component('mostrar-partidos',                   require('./components/FechaTorneo/MostrarPartidosComponent.vue').default);
 Vue.component('un-partido',                         require('./components/FechaTorneo/MostrarUnPartidoComponent.vue').default);
+Vue.component('snackbar',                           require('./components/SnackBarComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

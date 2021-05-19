@@ -7,19 +7,22 @@
 
  <v-btn @click="sumar">+</v-btn> 
  <v-btn @click="restar">-</v-btn> 
+ <v-btn @click="callSnackBar(['Se llama','blue'])">-</v-btn> 
   </div>
 </template>
 
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 export default {
   computed: {
     ...mapState(['count'])
   
   },
   methods: {
-    ...mapMutations(['sumar','restar'])
+    ...mapMutations(['sumar','restar']),
+    ...mapActions(['callSnackBar']),
+    
   },
 }
 
