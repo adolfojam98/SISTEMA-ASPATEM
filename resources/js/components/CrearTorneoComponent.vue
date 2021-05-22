@@ -4,7 +4,7 @@
             <v-stepper-step :complete="e6 > 1" editable step="1">
                 Nombre del torneo
             </v-stepper-step>
-            <v-stepper-content  step="1">
+            <v-stepper-content step="1">
                 <step-nombre-torneo></step-nombre-torneo>
             </v-stepper-content>
 
@@ -38,21 +38,6 @@
                 </v-btn>
             </v-stepper-content>
         </v-stepper>
-
-        <v-snackbar v-model="snackbar" timeout="3000">
-            <div v-text="message"></div>
-
-            <template v-slot:action="{ attrs }">
-                <v-btn
-                    color="blue"
-                    text
-                    v-bind="attrs"
-                    @click="snackbar = false"
-                >
-                    Cerrar
-                </v-btn>
-            </template>
-        </v-snackbar>
     </div>
 </template>
 
@@ -60,7 +45,7 @@
 podria ser sino una nueva fecha de un torneo anterior entonces aqui aplicamos una relacion-->
 
 <script>
-import { mapMutations, mapState } from "vuex";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import StepCategoriasTorneoComponent from "./CrearTorneo/StepCategoriasTorneoComponent.vue";
 import StepListaJugadoresTorneoComponent from "./CrearTorneo/StepListaJugadoresTorneoComponent.vue";
 import StepNombreTorneoComponent from "./CrearTorneo/StepNombreTorneoComponent.vue";
@@ -71,9 +56,7 @@ export default {
         StepListaJugadoresTorneoComponent
     },
     data: () => ({
-        valid: true,
-        snackbar: false,
-        message: ""
+        valid: true
     }),
     computed: {
         store() {
@@ -85,51 +68,55 @@ export default {
             "gestionPuntos",
             "listaJugadores",
             "arrayCategorias"
-        ])
+        ]),
+        ...mapGetters("CrearTorneo", ["existeNombreTorneo"])
     },
 
     methods: {
-        ...mapMutations("CrearTorneo", ["setStep"]),
+        ...mapMutations("CrearTorneo", ["setStep","getTorneos"]),
+        ...mapActions(["callSnackbar"]),
 
-        generarTorneo() {
+        
+        async generarTorneo() {
             let me = this;
-            const nombreTorneo = this.nombreTorneo;
-            const gestionPuntos = this.gestionPuntos;
-            var nombreDeTorneoOcupado;
-            axios.get(`/torneos/nombreOcupado/${nombreTorneo}`).then(res => {
-                nombreDeTorneoOcupado = res.data;
+            
 
-                if (nombreDeTorneoOcupado == true) {
-                    this.message = "El nombre del torneo ya esta en uso";
-                    this.snackbar = true;
-                } else {
-                    axios
-                        .post("/torneo", {
-                            nombreTorneo: this.nombreTorneo,
-                            gestionPuntos: this.gestionPuntos
-                        })
-                        .then(res => {
-                            axios.post("/jugadores", {
-                                id_torneo: res.data,
-                                jugadores: this.listaJugadores
-                            });
-
-                            axios
-                                .post("/categorias", {
-                                    id_torneo: res.data,
-                                    categorias: this.arrayCategorias
-                                })
-                                .then(res => {
-                                    console.log(res.data);
-                                });
-                        });
-
-                    this.message = "Torneo agregado";
-                    this.snackbar = true;
+            if (this.existeNombreTorneo(this.nombreTorneo)) {
+                
+                this.callSnackbar([
+                    "El nombre del torneo ya esta en uso",
+                    "error"
+                ]);
+            } else {
+                try {
+                    const nuevoTorneo = await axios.post("/torneo", {
+                        nombreTorneo: this.nombreTorneo,
+                        gestionPuntos: this.gestionPuntos
+                    });
+                    const jugadores = await axios.post("/jugadores", {
+                        id_torneo: nuevoTorneo.data,
+                        jugadores: this.listaJugadores
+                    });
+                    const categorias = await axios.post("/categorias", {
+                        id_torneo: res.data,
+                        categorias: this.arrayCategorias
+                    });
+                    this.callSnackbar([
+                        "Torneo agregado satisfactoriamente",
+                        "success"
+                    ]);
+                } catch (e) {
+                    this.callSnackbar([
+                        "No se ha podido generar el torneo,verifique los datos ingresados. " + e,
+                        "error"
+                    ]);
                 }
-            });
+            }
         }
-    }
+    },
+    created() {
+        this.getTorneos()
+    },
 };
 </script>
 

@@ -30,37 +30,20 @@
             </v-form>
         </v-card>
 
-        <v-snackbar v-model="snackbar" timeout="3000">
-            <div
-            v-text="message">
-            </div>
-
-            <template v-slot:action="{ attrs }">
-                <v-btn
-                    color="blue"
-                    text
-                    v-bind="attrs"
-                    @click="snackbar = false"
-                >
-                    Cerrar
-                </v-btn>
-            </template>
-        </v-snackbar>
-
 
     </div>
 </template>
 
 
 <script>
+import { mapActions } from 'vuex';
   export default {
 
       props : ["usuarioID"],
 
     data() { 
     return {
-        snackbar:false,
-        message:"",
+        
         valid: false,
         mes:null,
         anio:new Date().getFullYear(),
@@ -84,22 +67,35 @@
     },
 
     methods:{
+        ...mapActions(['callSnackbar']),
 
-       generarCuota(){
-           axios.post('/generarCuota',{
+      async generarCuota(){//TODO revisar el pago de cuotas
+           try{
+ const nuevaCuota = await axios.post('/generarCuota',{
                mes : this.mes,
                anio : this.anio,
                usuario_id : this.usuarioID,
-           })
-           .then((res)=>{
-               console.log(res.data.message);
-               this.message=res.data.message;
-               this.snackbar=true;
+           });
+    this.callSnackbar([nuevaCuota.data.message ,'primary'])
+
+           }catch(e){
+               this.callSnackbar(['Error al generar cuota' + e,'error'])
+           }
+               
+          
+
+
+        //    .then((res)=>{
+        //        this.callSanckbar([res.data.message,'success'])
+        //        console.log(res.data.message);
+               
+            
                this.$emit("recargarCuotas", true)
-           })
-           .catch(error =>{
-               console.log(error)
-           })
+        //    })
+        //    .catch(error =>{
+            //    console.log('error' + error)
+               //this.callSanckbar(['Error al generar la cuota','error'])
+        //    })
 
            
        }

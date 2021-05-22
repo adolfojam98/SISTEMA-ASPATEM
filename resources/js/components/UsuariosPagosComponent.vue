@@ -124,24 +124,12 @@
            <pago-cuota :cuota = 'cuotaActual' :usuario = 'usuarioSeleccionado' @recargarCuotas = 'recargarCuotas = $event'></pago-cuota>
         </v-dialog>
 
-  <v-snackbar v-model="snackbar" timeout="3000">
-            Cuota pagada
-
-        <template v-slot:action="{ attrs }">
-                <v-btn
-                    color="blue"
-                    text
-                    v-bind="attrs"
-                    @click="snackbar = false"
-                >
-                    Cerrar
-                </v-btn>
-            </template>
-        </v-snackbar>
+ 
     </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default {
     data() {
         return {
@@ -154,12 +142,12 @@ export default {
             CrearCuotaModal: false,
             busco: false,
             recargarCuotas :false,
-            snackbar: false,
-
+           
             
         };
     },
     methods: {
+        ...mapActions(['callSnackbar']),
         nombreCompleto: item => item.apellido + " " + item.nombre,
         buscarCuotasUsuario() {
             if (this.usuarioSeleccionado != "") {
@@ -174,7 +162,7 @@ export default {
                             cuota.fechaPago = this.darFormatoFecha(cuota.fechaPago)
                         })
                         this.busco = true;
-                    });
+                    }).catch(e => this.callSnackbar('error al buscar las cuotas') )
             }
         },
         darFormatoFecha(fecha) {
@@ -193,7 +181,7 @@ export default {
                 
                 this.buscarCuotasUsuario();
                 this.pagoCuota = false;
-                this.snackbar = false;
+            
                 this.recargarCuotas = false;
             }
             

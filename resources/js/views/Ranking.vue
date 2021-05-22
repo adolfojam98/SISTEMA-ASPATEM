@@ -7,7 +7,7 @@
 
  <v-btn @click="sumar">+</v-btn> 
  <v-btn @click="restar">-</v-btn> 
- <v-btn @click="callSnackBar(['Se llama','blue'])">-</v-btn> 
+ <v-btn @click="callSnackbar(['Se llama','blue'])">-</v-btn> 
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     ...mapMutations(['sumar','restar']),
-    ...mapActions(['callSnackBar']),
+    ...mapActions(['callSnackbar']),
     
   },
 }

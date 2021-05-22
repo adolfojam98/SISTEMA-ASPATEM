@@ -117,6 +117,8 @@ export default {
             "setListaCategorias",
             "setListaJugadores"
         ]),
+        ...mapActions(['callSnackbar']),
+        ...mapActions("crearFecha",['calcularMonto']),
         traerJugadoresTorneo() {
             let me = this;
             axios
@@ -124,9 +126,9 @@ export default {
                 .then(res => {
                     console.log(res.data);
                     this.setListaJugadores(res.data);
-                });
+                }).catch(e => this.callSnackbar('No se pudieron traer jugadores. '+ error,'error'));
         },
-        ...mapActions("crearFecha",['calcularMonto']),
+        
         traerCategorias() {
             let me = this;
             axios
@@ -172,7 +174,7 @@ export default {
                         this.$set(categoria, "llavesGeneradas", false);
                     });
                     this.setListaCategorias(res.data);
-                });
+                }).catch(e => this.callSnackbar(['Error al traer categorias', 'error']))
         },
         
     },

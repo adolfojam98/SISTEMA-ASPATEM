@@ -82,7 +82,9 @@ export default{
 
         listaCategorias(state){
             return state.listaCategorias;
-        }
+        },
+            
+
     },
 
     actions: {

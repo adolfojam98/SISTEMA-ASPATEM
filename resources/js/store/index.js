@@ -29,7 +29,8 @@ export default new Vuex.Store({
     getters: {
         getCount(state) {
             return state.count;
-        }
+        },
+        
     },
 
     mutations: {
@@ -45,10 +46,10 @@ export default new Vuex.Store({
     },
 
     actions: {
-    callSnackBar(action,[nombre,color]) {
-            // if(color == null){
-            //    color = 'success'
-            // }
+    callSnackbar(action,[nombre,color]) {
+           if(color == null){
+             color = 'black'
+            }
             action.commit("setMessage", nombre);
             action.commit("setSnackBar", true);
             action.commit("setSnackBarColor", color);

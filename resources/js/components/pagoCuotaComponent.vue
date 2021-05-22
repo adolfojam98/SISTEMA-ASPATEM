@@ -125,24 +125,12 @@
             </div>
         </v-card>
         
-  <v-snackbar v-model="snackbar" timeout="3000">
-            Cuota pagada
-
-        <template v-slot:action="{ attrs }">
-                <v-btn
-                    color="blue"
-                    text
-                    v-bind="attrs"
-                    @click="snackbar = false"
-                >
-                    Cerrar
-                </v-btn>
-            </template>
-        </v-snackbar>
+ 
     </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default {
     props: ["cuota", "usuario"],
     data() {
@@ -160,7 +148,7 @@ export default {
             ],
             editarMonto: true,
             observacion : null,
-            snackbar : false,
+            
         };
     },
     watch: {
@@ -176,6 +164,7 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['callSnackbar']),
         pagarCuota() {
             axios
                 .put("/pagarCuota", {
@@ -186,14 +175,15 @@ export default {
                 })
                 .then(res => {
                     this.importePersonalizado = null;
-                    
+                    this.callSnackbar(['Cuota Pagada','success'])
                     this.$emit("recargarCuotas", true);
                     
                 })
                 .catch(error => {
                     console.log(error);
+                    this.callSnackbar(['No se pudo realizar el pago. Intente nuevamente', 'error'])
                 });
-                  this.snackbar = true;
+                  
 
         },
 

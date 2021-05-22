@@ -130,15 +130,7 @@
 
 
 
-         <v-snackbar v-model="snackbar" timeout="3000">
-      <div v-text="message"></div>
-
-      <template v-slot:action="{ attrs }">
-        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
-          Cerrar
-        </v-btn>
-      </template>
-    </v-snackbar>
+         
     </div>
 </template>
 
@@ -147,8 +139,7 @@ import { mapActions, mapMutations, mapState } from "vuex";
 export default {
     data() {
         return {
-            message: "",
-            snackbar: false,
+            
             valid: false,
             headers: [
                 { text: "Apellido", value: "apellido" },
@@ -206,6 +197,7 @@ export default {
         ])
     },
     methods: {
+       ...mapActions(['callSnackbar']),
         ...mapMutations("jugadores", [
             "changeBooleanValueNuevoJugador",
             "setApellidoJugador",
@@ -218,6 +210,7 @@ export default {
             "spliceJugadorCategoria",
             "pushJugador"
         ]),
+        
         ...mapActions("crearFecha",["calcularMonto"]),
        
         agregarEnSuCategoria(item) {
@@ -232,14 +225,13 @@ export default {
                     if (indice === -1) {
                         categoria.jugadoresAnotados.push(item);
                         //me.pushJugadorCategoria({ item, indexCategoria });
-                        me.message = "Jugador anotado en su categoria";
-                        me.snackbar = true;
+                        me.callSnackbar(['Jugador anotado en su categoria','info'])
                     } else {
                         categoria.jugadoresAnotados.splice(indice,1);
                         //me.spliceJugadorCategoria({ indice, indexCategoria });
-                        me.message =
-                            "El jugador ya no esta anotado en su categoria";
-                        me.snackbar = true;
+                    
+                            me.callSnackbar(['El Jugador ys no esta anotado en su categoria','info'])
+        
                     }
                 }
             });
@@ -280,16 +272,14 @@ export default {
                     .then(res => {
                         console.log(res.data);
                         this.pushJugador(jugador.pop());
-                        this.message =
-                    "Jugador anotado exitosamente";
-                this.snackbar = true;
+                       this.callSnackbar(['Jugador anotado  exitosamente','success'])
                     });
 
             
             } else {
-                this.message =
-                    "Ya hay un jugador con el dni que intenta ingresar";
-                this.snackbar = true;
+                
+                   this.callSnackbar(["Ya hay un jugador con el dni que intenta ingresar",'warning']) ;
+                
             }
             this.setApellidoJugador("");
             this.setNombreJugador("");
@@ -338,15 +328,16 @@ export default {
                     if (indice === -1) {
                         categoria.jugadoresAnotados.push(item);
                         this.calcularMonto();
-                        this.message =
+                       this.callSnackbar(["Jugador anotado en la categoria inmediata superior a la suya",'info'])
+                       
+                    
                             "Jugador anotado en la categoria inmediata superior a la suya";
-                        this.snackbar = true;
+                       
                     } else {
                         categoria.jugadoresAnotados.splice(indice, 1);
                         this.calcularMonto();
-                        this.message =
-                            "El jugador ya no esta anotado en la categoria superior a la suya";
-                        this.snackbar = true;
+this.callSnackbar(["El jugador ya no esta anotado en la categoria superior a la suya",'info'])                        
+                        
                     }
                     entrarEnElSiguiente = false;
                 }
@@ -358,8 +349,8 @@ export default {
                 }
             });
             if (entrarEnElSiguiente) {
-                this.message = "No hay una categoria superior";
-                this.snackbar = true;
+                this.callSnackbar(["No hay una categoria superior",'warning'])
+                
             }
         },
         calcularCategoriaSuperior(item) {

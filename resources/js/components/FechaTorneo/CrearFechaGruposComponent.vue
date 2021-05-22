@@ -233,32 +233,17 @@
             </v-tab-item>
         </v-tabs-items>
 
-        <v-snackbar v-model="snackbar" timeout="3000">
-            <div v-text="message"></div>
-
-            <template v-slot:action="{ attrs }">
-                <v-btn
-                    color="blue"
-                    text
-                    v-bind="attrs"
-                    @click="snackbar = false"
-                >
-                    Cerrar
-                </v-btn>
-            </template>
-        </v-snackbar>
+        
     </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
     data() {
         return {
             tab: null,
             valid: false,
-            snackbar: false,
-            message: "",
             cantidadSets: [0, 1, 2, 3, 4, 5, 6, 7],
             cantidadGruposRules: [
                 v => !!v || "Cantidad de grupos requerido",
@@ -273,6 +258,7 @@ export default {
         ...mapState("crearFecha", ["listaCategorias"])
     },
     methods: {
+        ...mapActions(['callSnackbar']),
         gruposGenerados(categoria) {
             return !categoria.gruposGenerados;
         },
@@ -283,7 +269,7 @@ export default {
                     parseInt(categoria.cantidadGrupos) >=
                 3
             ) {
-                var letras = [
+                const letras = [
                     "A",
                     "B",
                     "C",
@@ -311,8 +297,8 @@ export default {
                     "Y",
                     "Z"
                 ];
-                for (var i = 0; i < categoria.cantidadGrupos; i++) {
-                    var unGrupo = {
+                for (let i = 0; i < categoria.cantidadGrupos; i++) {
+                    const unGrupo = {
                         nombre: letras[i],
                         jugadoresDelGrupo: [],
                         partidos: []
@@ -327,9 +313,9 @@ export default {
                 console.log(categoria.jugadoresAnotados);
 
 
-                var indiceMaxGrupos = (categoria.listaGrupos.length - 1);
-                var indiceGrupo = 0;
-                var alReves = false;
+                const indiceMaxGrupos = (categoria.listaGrupos.length - 1);
+                let indiceGrupo = 0;
+                let alReves = false;
 
                 categoria.jugadoresAnotados.forEach(function(jugador, indiceJugador) {
 
@@ -337,7 +323,6 @@ export default {
 
                             categoria.listaGrupos[indiceGrupo].jugadoresDelGrupo.push(jugador);
                             console.log(indiceGrupo);
-
                         if(alReves){
                             indiceGrupo--;
                             if(indiceGrupo < 0) {indiceGrupo++; alReves = false;}
@@ -351,12 +336,9 @@ export default {
 
                 this.generarPartidosGrupos(categoria.listaGrupos);
                 categoria.gruposGenerados = true;
-                this.message = "Grupos generados con exito";
-                this.snackbar = true;
+                this.callSnackbar(['Grupos generados con exito', 'error'])
             } else {
-                this.message =
-                    "La cantidad de jugadores es insuficiente para la cantidad de grupos";
-                this.snackbar = true;
+                this.callSnackbar(['La cantidad de jugadores es insuficiente para la cantidad de grupos','warning'])
             }
         },
 

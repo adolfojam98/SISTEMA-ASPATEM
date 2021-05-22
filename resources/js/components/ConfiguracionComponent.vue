@@ -39,20 +39,7 @@
 
 </v-container>
         </v-card>
-        <v-snackbar v-model="snackbar" timeout="3000">
-            Configuracion guardada correctamente.
-
-            <template v-slot:action="{ attrs }">
-                <v-btn
-                    color="blue"
-                    text
-                    v-bind="attrs"
-                    @click="snackbar = false"
-                >
-                    Cerrar
-                </v-btn>
-            </template>
-        </v-snackbar>
+        
     </div>
 </template>
 
@@ -61,10 +48,11 @@
 
 
 <script>
+import { mapActions } from 'vuex';
 export default {
     data: () => ({
         valid: false,
-        snackbar: false,
+        
         automatizar: true,
         montoCuota:0,
         montoCuotaDescuento:0,
@@ -81,6 +69,7 @@ export default {
 
 
     methods: {
+        ...mapActions(['callSnackbar']),
         cargarConfiguracion(){
             axios.get('/configuraciones')
             .then((res) => {
@@ -97,8 +86,10 @@ export default {
             })
             .then(
                 this.cargarConfiguracion(),
-                this.snackbar=true
-            );
+                this.callSnackbar(['Configuraciones guardadas','primary'])
+            ).catch(e =>{
+                this.callSnackbar('No se pudo guardar las configuraciones. ' + e,'error')
+            })
         },
 
         automatizarBajasDeSocios(){

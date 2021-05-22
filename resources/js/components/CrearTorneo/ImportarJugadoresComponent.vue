@@ -17,22 +17,7 @@
                 Importar jugadores
             </label>
         </div>
-<v-snackbar v-model="snackbar" timeout="3000">
-            <div
-            v-text="message">
-            </div>
-
-            <template v-slot:action="{ attrs }">
-                <v-btn
-                    color="error"
-                    text
-                    v-bind="attrs"
-                    @click="snackbar = false"
-                >
-                    Cerrar
-                </v-btn>
-            </template>
-        </v-snackbar>
+       
         <div>
             <!-- <v-simple-table
     
@@ -52,7 +37,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 import XLSX from "xlsx";
 export default {
     data() {
@@ -60,12 +45,13 @@ export default {
             excelData: [],
             prueba: [],
             json: [],
-            snackbar: false,
-            message: ''
+           
         };
     },
     methods: {
         ...mapMutations("CrearTorneo", ["pushJugadorTorneo"]),
+        ...mapActions(['callSnackbar']),
+    
         async excelExport(e) {
             if (e.target.files.length > 0) {
                 try {
@@ -92,42 +78,41 @@ export default {
         },
 
         armarJson(data) {
-            try{
-let cabecera = data.shift();
-            console.log(cabecera[0].toLowerCase() == "apellido");
-            console.log(cabecera[1].toLowerCase() == "nombre");
-            console.log(cabecera[2].toLowerCase() == "dni");
-            console.log(cabecera[3].toLowerCase() == "puntos");
+            try {
+                let cabecera = data.shift();
 
-            if (
-                cabecera[0].toLowerCase() == "apellido" &&
-                cabecera[1].toLowerCase() == "nombre" &&
-                cabecera[2].toLowerCase() == "dni" &&
-                cabecera[3].toLowerCase() == "puntos"
-            ) {
-                let json = [];
-                data.forEach(participante => {
-                    let participanteJson = {
-                        apellido: participante[0],
-                        nombre: participante[1],
-                        dni: participante[2],
-                        puntos: participante[3]
-                    };
-                    json.push(participanteJson);
-                });
-                console.log("Emitiendo");
-                json.forEach(e => {
-                    this.pushJugadorTorneo(e);
-                });
-            } else {
-                this.message = 'Excel subido no cumple con las especificaciones';
-                this.snackbar = true;
+                if (
+                    cabecera[0].toLowerCase() == "apellido" &&
+                    cabecera[1].toLowerCase() == "nombre" &&
+                    cabecera[2].toLowerCase() == "dni" &&
+                    cabecera[3].toLowerCase() == "puntos"
+                ) {
+                    let json = [];
+                    data.forEach(participante => {
+                        let participanteJson = {
+                            apellido: participante[0],
+                            nombre: participante[1],
+                            dni: participante[2],
+                            puntos: participante[3]
+                        };
+                        json.push(participanteJson);
+                    });
+                    console.log("Emitiendo");
+                    json.forEach(e => {
+                        this.pushJugadorTorneo(e);
+                    });
+                    this.callSnackbar(['Jugadores agregados correctamente','success'])
+                } else {
+                    this.callSnackbar(["Excel subido no cumple con las especificaciones",'error'])
+                      
+                }
+            } catch (error) {
+                this.callSnackbar(['Error al leer Archivo. ' + error, 'error'])
             }
-            }catch(error){
-                this.message = 'Error al leer Excel: ' + error ;
-                this.snackbar = true;
-            }
-            
+
+            this.excelData = [];
+            this.prueba = [];
+            this.json = [];
         }
     }
 };

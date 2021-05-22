@@ -175,7 +175,7 @@ export default {
         ]
     }),
     methods: {
-        ...mapActions(["callSnackBar"]),
+        ...mapActions(["callSnackbar"]),
         cargarUsuario() {
             if (this.valid) {
                 axios
@@ -188,7 +188,7 @@ export default {
                         dni: this.dni
                     })
                     .then(response => {
-                        this.callSnackBar([response.data.message, "success"]);
+                        this.callSnackbar([response.data.message, "success"]);
                         this.id_usuario = response.data.id;
 
                         if (this.es_socio && this.id_usuario != null) {
@@ -196,7 +196,7 @@ export default {
                         }
                     })
                     .catch(error => {
-                        this.callSnackBar([
+                        this.callSnackbar([
                             "Error al guardar socio." + error,
                             "error"
                         ]);
@@ -216,7 +216,7 @@ export default {
                     this.pagarCuota();
                 })
                 .catch(function(error) {
-                    this.callSnackBar(["Error al guardar cuota", "error"]);
+                    this.callSnackbar(["Error al guardar cuota", "error"]);
                 });
 
             this.$refs.form.reset();

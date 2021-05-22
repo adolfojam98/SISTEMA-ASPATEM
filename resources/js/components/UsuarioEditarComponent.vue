@@ -27,23 +27,6 @@
 
 
 
-     <v-snackbar
-      v-model="snackbar"
-      timeout="3000"
-    >
-      Usuario modificado corectamente
-
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          color="blue"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Cerrar
-        </v-btn>
-      </template>
-    </v-snackbar>
 
 
 </div>
@@ -60,6 +43,7 @@
 
 
 <script>
+import { mapActions } from 'vuex';
 export default {
 
   props : ["usuario"],
@@ -95,11 +79,12 @@ export default {
             v => !!v || "E-mail requerido",
             v => /.+@.+[.].+/.test(v) || "E-mail no valido"
         ],
-    snackbar : false
+   
     }
   },
 
   methods: {
+    ...mapActions(['callSnackbar']),
     
  
     updateUsuario(){
@@ -114,7 +99,7 @@ export default {
           'dni':this.usuario.dni,
         })
         .then(response => {
-           this.snackbar = true;
+           this.callSnackbar(['Usuario modificado corectamente'])
            this.$emit("reFiltrar");
           })
         .catch(function (error) {
