@@ -19,6 +19,11 @@ class Usuario extends Model
     {
         return $this->belongsToMany(Torneo::class)->withPivot('puntos');
     }
+    public function partidos()
+    {
+        return $this->belongsToMany(Partido::class)->withPivot('sets');
+    }
+    
 
    public function cuotas(){
        return $this->hasMany(Cuota::class)->orderByDesc('id');

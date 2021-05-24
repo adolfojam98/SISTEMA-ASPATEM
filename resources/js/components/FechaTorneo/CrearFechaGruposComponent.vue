@@ -336,7 +336,7 @@ export default {
 
                 this.generarPartidosGrupos(categoria.listaGrupos);
                 categoria.gruposGenerados = true;
-                this.callSnackbar(['Grupos generados con exito', 'error'])
+                this.callSnackbar(['Grupos generados con exito', 'success'])
             } else {
                 this.callSnackbar(['La cantidad de jugadores es insuficiente para la cantidad de grupos','warning'])
             }

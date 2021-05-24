@@ -18,21 +18,25 @@ class CreatePartidosTable extends Migration
             $table->timestamps();
             $table->BigInteger('fecha_id')->unsigned();
             $table->BigInteger('categoria_id')->unsigned();
-            $table->BigInteger('jugador1_id')->unsigned();
-            $table->BigInteger('jugador2_id')->unsigned();
-            $table->integer('jugador1_sets');
-            $table->integer('jugador2_sets');
-
-            $table->foreign('jugador1_id')->references('id')->on('usuarios')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            $table->BigInteger('partido_fase_id')->unsigned();
+            $table->BigInteger('grupo_id')->unsigned()->nullable();
+            $table->BigInteger('sig_partido_id')->unsigned()->nullable();
+            
 
 
-            $table->foreign('jugador2_id')->references('id')->on('usuarios')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-                
             $table->foreign('categoria_id')->references('id')->on('categorias')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('grupo_id')->references('id')->on('grupos')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('partido_fase_id')->references('id')->on('partido_fase')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('fecha_id')->references('id')->on('fechas')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

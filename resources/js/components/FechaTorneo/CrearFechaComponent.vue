@@ -18,7 +18,10 @@
 import { mapState, mapMutations } from "vuex";
 export default {
     computed: {
-        ...mapState("crearFecha", ["listaCategorias"])
+        ...mapState("crearFecha", ["listaCategorias"]),
+        store() {
+            return this.$store.state;
+        },
     },
     methods: {
         ...mapMutations("crearFecha", ["setTorneos"]),
