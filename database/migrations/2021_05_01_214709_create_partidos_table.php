@@ -40,8 +40,12 @@ class CreatePartidosTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
+        Schema::table('partidos', function (Blueprint $table) {
+            $table->foreign('sig_partido_id')->references('id')->on('partidos')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
     }
-
     /**
      * Reverse the migrations.
      *
