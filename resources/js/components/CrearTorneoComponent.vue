@@ -1,14 +1,14 @@
 <template>
     <div>
         <v-stepper :value="e6" vertical>
-            <v-stepper-step :complete="e6 > 1" editable step="1">
+            <v-stepper-step :complete="e6 > 1" editable step="1" @click="setStep(1)">
                 Nombre del torneo
             </v-stepper-step>
-            <v-stepper-content step="1">
+            <v-stepper-content step="1" >
                 <step-nombre-torneo></step-nombre-torneo>
             </v-stepper-content>
 
-            <v-stepper-step :complete="e6 > 2" editable step="2">
+            <v-stepper-step :complete="e6 > 2" editable step="2" @click="setStep(2)">
                 Categorías
             </v-stepper-step>
 
@@ -16,7 +16,7 @@
                 <step-categorias-torneo-component></step-categorias-torneo-component>
             </v-stepper-content>
 
-            <v-stepper-step :complete="e6 > 3" editable step="3">
+            <v-stepper-step :complete="e6 > 3" editable step="3" @click="setStep(3)">
                 Lista de Jugadores
             </v-stepper-step>
 
