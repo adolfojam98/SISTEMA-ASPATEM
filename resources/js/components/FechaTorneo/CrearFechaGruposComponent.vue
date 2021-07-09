@@ -19,6 +19,7 @@
                         <v-row>
                             <v-form v-model="valid" lazy-validation>
                                 <v-col>
+                                  
                                     <v-text-field
                                         label="Cantidad de Grupos"
                                         v-model="item.cantidadGrupos"
@@ -26,7 +27,7 @@
                                         required
                                         class="mb-0 ml-2"
                                     ></v-text-field>
-
+  <body-2 class = "text--secondary d-flex justify-end">Jugadores anotados: {{item.jugadoresAnotados.length}}</body-2 >
                                     <v-switch
                                         v-model="item.gruposConEliminatoria"
                                         label="Fase de grupos con eliminatoria"
