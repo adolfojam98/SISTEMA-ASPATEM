@@ -194,7 +194,7 @@ export default {
             "nombreJugador",
             "dniJugador",
             "puntosJugador"
-        ])
+        ]),
     },
     methods: {
        ...mapActions(['callSnackbar']),
@@ -217,22 +217,26 @@ export default {
             let categorias = this.listaCategorias;
             let me = this;
             categorias.forEach(function(categoria, indexCategoria) {
+
                 if (
                     item.pivot.puntos >= categoria.puntos_minimos &&
                     item.pivot.puntos <= categoria.puntos_maximos
                 ) {
-                    var indice = categoria.jugadoresAnotados.indexOf(item);
-                    if (indice === -1) {
-                        categoria.jugadoresAnotados.push(item);
-                        //me.pushJugadorCategoria({ item, indexCategoria });
-                        me.callSnackbar(['Jugador anotado en su categoria','info'])
-                    } else {
-                        categoria.jugadoresAnotados.splice(indice,1);
-                        //me.spliceJugadorCategoria({ indice, indexCategoria });
-                    
-                            me.callSnackbar(['El Jugador ys no esta anotado en su categoria','info'])
-        
-                    }
+                    if(!categoria.gruposGenerados){
+
+                        var indice = categoria.jugadoresAnotados.indexOf(item);
+                        if (indice === -1) {
+                            categoria.jugadoresAnotados.push(item);
+                            //me.pushJugadorCategoria({ item, indexCategoria });
+                            me.callSnackbar(['Jugador anotado en su categoria','info'])
+                        } else {
+                            categoria.jugadoresAnotados.splice(indice,1);
+                            //me.spliceJugadorCategoria({ indice, indexCategoria });
+                        
+                                me.callSnackbar(['El Jugador ya no esta anotado en su categoria','info'])
+            
+                        }
+                    }else me.callSnackbar(['Los grupos de esta categoria ya han sido generados','warning'])
                 }
             });
             this.calcularMonto();
@@ -323,34 +327,35 @@ export default {
             var entrarEnElSiguiente = false;
             this.listaCategorias.forEach(categoria => {
                 if (entrarEnElSiguiente) {
-                    var indice = categoria.jugadoresAnotados.indexOf(item);
+                    if(!categoria.gruposGenerados){
+                        var indice = categoria.jugadoresAnotados.indexOf(item);
 
-                    if (indice === -1) {
-                        categoria.jugadoresAnotados.push(item);
-                        this.calcularMonto();
-                       this.callSnackbar(["Jugador anotado en la categoria inmediata superior a la suya",'info'])
-                       
-                    
-                            "Jugador anotado en la categoria inmediata superior a la suya";
-                       
-                    } else {
-                        categoria.jugadoresAnotados.splice(indice, 1);
-                        this.calcularMonto();
-this.callSnackbar(["El jugador ya no esta anotado en la categoria superior a la suya",'info'])                        
+                        if (indice === -1) {
+                            categoria.jugadoresAnotados.push(item);
+                            this.calcularMonto();
+                            this.callSnackbar(["Jugador anotado en la categoria inmediata superior a la suya",'info'])
                         
-                    }
-                    entrarEnElSiguiente = false;
+                        
+                                "Jugador anotado en la categoria inmediata superior a la suya";
+                        
+                        } else {
+                            categoria.jugadoresAnotados.splice(indice, 1);
+                            this.calcularMonto();
+                            this.callSnackbar(["El jugador ya no esta anotado en la categoria superior a la suya",'info'])
+                            
+                        }
+                        entrarEnElSiguiente = false;
+                    }else this.callSnackbar(['Los grupos de esta categoria ya han sido generados','warning'])
                 }
                 if (
                     item.pivot.puntos >= categoria.puntos_minimos &&
                     item.pivot.puntos <= categoria.puntos_maximos
                 ) {
                     entrarEnElSiguiente = true;
-                }
+                }else entrarEnElSiguiente = false;
             });
             if (entrarEnElSiguiente) {
                 this.callSnackbar(["No hay una categoria superior",'warning'])
-                
             }
         },
         calcularCategoriaSuperior(item) {
@@ -383,7 +388,7 @@ this.callSnackbar(["El jugador ya no esta anotado en la categoria superior a la 
         eliminarJugador(item) {
             var indice = this.listaJugadores.indexOf(item);
             this.listaJugadores.splice(indice, 1);
-        }
+        },
     }
 };
 </script>
