@@ -46,20 +46,13 @@
                             </v-tooltip>
                         </template>
 
-                        <template v-slot:[`item.action`]="{ item }">
-                            <v-tooltip bottom>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon
-                                        class="ml-4"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                        @click="eliminarJugador(item)"
-                                        color="error"
-                                        >mdi-delete</v-icon
-                                    >
-                                </template>
-                                <span>Eliminar</span>
-                            </v-tooltip>
+                        <template v-slot:[`item.pivot.puntos`]="{ item }">
+                            <input type="number"
+                            id="soloNumeros"
+                            class="soloNumeros"
+                            style="width:80px;"
+                            v-model.number=item.pivot.puntos
+                            >
                         </template>
                     </v-data-table>
                 </template>
@@ -127,10 +120,6 @@
                 >Cancelar</v-btn
             >
         </v-form>
-
-
-
-         
     </div>
 </template>
 
@@ -145,20 +134,14 @@ export default {
                 { text: "Apellido", value: "apellido" },
                 { text: "Nombre", value: "nombre" },
                 { text: "DNI", value: "dni" },
-                { text: "Puntos", value: "pivot.puntos" },
+                { text: "Puntos", value: "pivot.puntos"},
                 {
                     text: "Categorias",
                     value: "actions",
                     sortable: false,
                     filterable: false
                 },
-                { text: "Monto", value: "montoPagado" },
-                {
-                    text: "Eliminar",
-                    value: "action",
-                    sortable: false,
-                    filterable: false
-                }
+                { text: "Monto", value: "montoPagado" }
             ],
             aynRules: [
                 v => !!v || "Campo obligatorio",
