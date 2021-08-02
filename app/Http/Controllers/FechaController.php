@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Fecha;
+use App\Partido;
+use App\Grupo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FechaController extends Controller
 {
@@ -82,4 +85,93 @@ class FechaController extends Controller
     {
         //
     }
+
+
+    public function guardarFecha(Request $request)
+    {
+
+        $fecha = crearNuevaFecha($request);
+
+
+        $categorias = $request->categorias;
+
+        foreach ($categorias as $categoria) {
+
+            guardarCategoriaFecha($categoria, $fecha->id);
+            dd();
+        }
+        return;
+    }
+}
+function crearNuevaFecha(Request $request)
+{
+
+    $fecha                                  = new Fecha();
+    $fecha->nombre                          = $request->nombreFecha;
+    $fecha->monto_socios_una_categoria      = $request->montos['montoSociosUnaCategoria'];
+    $fecha->monto_socios_dos_categorias     = $request->montos['montoSociosDosCategorias'];
+    $fecha->monto_no_socios_una_categoria   = $request->montos['montoNoSociosUnaCategoria'];
+    $fecha->monto_no_socios_dos_categorias  = $request->montos['montoNoSociosDosCategorias'];
+    $fecha->torneo_id                       = $request->categorias[0]['torneo_id'];
+    $fecha->save();
+    return $fecha;
+}
+
+function guardarCategoriaFecha($categoria, $fecha_id)
+{
+
+    foreach ($categoria['listaGrupos'] as $grupo) {
+
+        $nuevoGrupo         =  new Grupo();
+        $nuevoGrupo->nombre = $grupo['nombre'];
+        $nuevoGrupo->save();
+        $faseGrupo          = DB::table('partido_fase')->where('nombre', 'grupos')->get()->first();
+
+        foreach ($grupo['partidos'] as $partido) {
+
+
+            $nuevoPartido                   = new Partido();
+            $nuevoPartido->categoria_id     = $categoria['id'];
+            $nuevoPartido->partido_fase_id  = $faseGrupo->id;
+            $nuevoPartido->grupo_id         = $nuevoGrupo->id;
+            $nuevoPartido->fecha_id         = $fecha_id;
+            $nuevoPartido->save();
+
+            $nuevoPartido->jugadores()->sync(
+                [
+                    $partido['jugador1']['id']  =>  ['sets' => $partido['setsJugador1']],
+                    $partido['jugador2']['id']  =>  ['sets' => $partido['setsJugador2']]
+                ]
+            );
+        }
+
+        guardarPartidosLlaves($categoria['partidosLlaves'], $fecha_id, $categoria['id'], null);
+    }
+}
+function guardarPartidosLlaves($partidos, $fecha_id, $categoria_id, $sigPartido)
+{
+    $partido = array_shift($partidos);
+
+    $nuevoPartido = new Partido();
+    $nuevoPartido->partido_fase_id = DB::table('partido_fase')->where('nombre', $partido['fase'])->first()->id;
+
+    $nuevoPartido->categoria_id = $categoria_id;
+    $nuevoPartido->fecha_id = $fecha_id;
+    $nuevoPartido->sig_partido_id = $sigPartido;
+    $nuevoPartido->save();
+
+    $nuevoPartido->jugadores()->sync(
+        [
+            $partido['jugador1']['id']  =>  ['sets' => $partido['set1']],
+            $partido['jugador2']['id']  =>  ['sets' => $partido['set2']]
+        ]
+    );
+    $sigPartido = $nuevoPartido->id;
+
+    foreach ($partidos as $partidoo) {
+        if ($partido['id'] == $partidoo['sigPartidoID']) {
+            guardarPartidosLlaves($partidos, $fecha_id, $categoria_id, $sigPartido);
+        }
+    }
+    return;
 }

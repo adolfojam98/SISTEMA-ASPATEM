@@ -134,7 +134,7 @@
       </v-row>
       </v-col>
 
-
+  
         <v-col v-if="cantidadPartidos >= 3">
       <h1>Semifinal</h1>
       <v-row v-for="partido in partidos" :key="partido.id">
@@ -149,6 +149,7 @@
       <v-col v-if="cantidadPartidos >= 1">
       <h1>Final</h1>
       <v-row v-for="partido in partidos" :key="partido.id">
+        
         <v-col v-if="partido.fase == 'final'"> 
 
             <un-partido :partido=partido :jugadores="jugadores" :partidos="partidos" :cantidadPartidos="cantidadPartidos" :nodosHojasID="nodosHojasID" :nodosMediasHojasID="nodosMediasHojasID" :posiblesSigsPartidos="posiblesSigsPartidos"></un-partido>

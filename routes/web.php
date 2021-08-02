@@ -64,6 +64,8 @@ Route::get('/torneos/{id}/categorias','TorneoController@getCategorias');
 
 Route::get('/torneos/nombreOcupado/{nombre}','TorneoController@getNameExists');
 
+Route::post('/torneo/fecha/guardar','FechaController@guardarFecha');
+
 Route::get('{path}', function () {
     return view('index');
 })->where('path', '(.*)');
