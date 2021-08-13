@@ -32,6 +32,9 @@ export default {
         ...mapMutations("crearFecha", ["setTorneos"]),
         ...mapActions(["callSnackbar"]),
         async guardarFechaComponent() {
+
+            this.verificarCargaDeCategorias(this.store.crearFecha.listaCategorias);
+
             try {
                 await axios.post("/torneo/fecha/guardar", {
                     categorias: this.store.crearFecha.listaCategorias,
@@ -50,6 +53,12 @@ export default {
             } catch (e) {
                 this.callSnackbar(["No se ha podido guardar. " + e, "error"]);
             }
+        },
+        verificarCargaDeCategorias(categorias) {
+            
+            categorias.forEach(categoria => {
+                console.log(categoria)
+            });
         },
 
         guardarLocalStorage() {

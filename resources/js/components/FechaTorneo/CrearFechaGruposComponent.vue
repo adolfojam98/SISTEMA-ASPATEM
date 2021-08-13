@@ -207,7 +207,7 @@
                             <v-btn
                                 class="center mb-6"
                                 dark
-                                @click="item.llavesGeneradas = true"
+                                @click= validarPartidos(item)
                                 color="blue"
                             >
                                 Generar llaves
@@ -259,6 +259,28 @@ export default {
         ...mapState("crearFecha", ["listaCategorias"])
     },
     methods: {
+        ...mapActions(['callSnackbar']),
+        validarPartidos(item){
+            const grupos = item.listaGrupos;
+
+            grupos.forEach((grupo) =>{
+
+                console.log(grupo)
+                grupo.partidos.forEach((partido) => {
+                    if(partido.setsJugador1 == partido.setsJugador2){
+                         this.callSnackbar(['Existe al menos un partido con empate','warning'])
+                         return 
+                    }
+                    if(partido.setsJugador1 == null || partido.setsJugador2 == null){
+                    this.callSnackbar(['Existe al menos un partido sin resultado','warning'])
+                         return 
+
+                    }
+                });
+            })
+
+           item.listaGrupos.llavesGeneradas = true;
+        },
         ...mapActions(['callSnackbar']),
         gruposGenerados(categoria) {
             return !categoria.gruposGenerados;
