@@ -276,6 +276,8 @@ export default {
                          return 
 
                     }
+                    item.llavesGeneradas = true;
+
                 });
             })
 
