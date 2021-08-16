@@ -1,80 +1,148 @@
 <template>
-    <div>
-        <v-card>
-            <v-container>
-                <datos-fecha></datos-fecha>
-                <v-card elevation="4" class="rounded-sm">
-                    <jugadores-fecha></jugadores-fecha>
-                </v-card>
-            </v-container>
+  <div>
+    <v-card>
+      <v-container>
+        <datos-fecha></datos-fecha>
+        <v-card elevation="4" class="rounded-sm">
+          <jugadores-fecha></jugadores-fecha>
         </v-card>
-        <v-card v-if="listaCategorias.length > 0" dark>
-            <grupos-fecha></grupos-fecha>
-        </v-card>
-        <v-btn @click="guardarFechaComponent()">Guardar</v-btn>
+      </v-container>
+    </v-card>
+    <v-card v-if="listaCategorias.length > 0" dark>
+      <grupos-fecha></grupos-fecha>
+    </v-card>
+    <v-btn @click="guardarFechaComponent()">Guardar</v-btn>
 
-        <v-btn @click="guardarLocalStorage()">SAVE STORAGE</v-btn>
-        <v-btn @click="cargarLocalStorage()">CARGAR STORAGE</v-btn>
-    </div>
+    <v-btn @click="guardarLocalStorage()">SAVE STORAGE</v-btn>
+    <v-btn @click="cargarLocalStorage()">CARGAR STORAGE</v-btn>
+
+    <v-alert
+      v-for="(validacion, index) in validaciones"
+      :key="index"
+      dense
+      outlined
+      type="error"
+    >
+      {{ validacion.mensaje }}
+    </v-alert>
+  </div>
 </template>
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
 export default {
-    computed: {
-        ...mapState("crearFecha", ["listaCategorias"]),
+  data() {
+    return {
+      validaciones: [],
+    };
+  },
+  computed: {
+    ...mapState("crearFecha", ["listaCategorias"]),
 
-        store() {
-            return this.$store.state;
-        }
+    store() {
+      return this.$store.state;
     },
-    methods: {
-        ...mapMutations("crearFecha", ["setTorneos"]),
-        ...mapActions(["callSnackbar"]),
-        async guardarFechaComponent() {
+  },
+  methods: {
+    ...mapMutations("crearFecha", ["setTorneos"]),
+    ...mapActions(["callSnackbar"]),
 
-            this.verificarCargaDeCategorias(this.store.crearFecha.listaCategorias);
+    
+    async guardarFechaComponent() {
+      this.validaciones = [];
 
-            try {
-                await axios.post("/torneo/fecha/guardar", {
-                    categorias: this.store.crearFecha.listaCategorias,
-                    montos: {
-                        montoSociosUnaCategoria: this.store.crearFecha
-                            .montoSociosUnaCategoria,
-                        montoSociosDosCategorias: this.store.crearFecha
-                            .montoSociosDosCategorias,
-                        montoNoSociosUnaCategoria: this.store.crearFecha
-                            .montoNoSociosUnaCategoria,
-                        montoNoSociosDosCategorias: this.store.crearFecha
-                            .montoNoSociosDosCategorias
-                    },
-                    nombreFecha: this.store.crearFecha.nombreFecha
-                });
-            } catch (e) {
-                this.callSnackbar(["No se ha podido guardar. " + e, "error"]);
-            }
-        },
-        verificarCargaDeCategorias(categorias) {
-            
-            categorias.forEach(categoria => {
-                console.log(categoria)
-            });
-        },
-
-        guardarLocalStorage() {
-            localStorage.crearFecha = JSON.stringify(this.store.crearFecha) ;
-        },
-        cargarLocalStorage() {
-            this.store.crearFecha = JSON.parse(localStorage.crearFecha) ;
-            console.log(this.store.crearFecha);
+      if (this.verificarDatosCargados()) {
+        try {
+          await axios.post("/torneo/fecha/guardar", {
+            categorias: this.store.crearFecha.listaCategorias,
+            montos: {
+              montoSociosUnaCategoria:
+                this.store.crearFecha.montoSociosUnaCategoria,
+              montoSociosDosCategorias:
+                this.store.crearFecha.montoSociosDosCategorias,
+              montoNoSociosUnaCategoria:
+                this.store.crearFecha.montoNoSociosUnaCategoria,
+              montoNoSociosDosCategorias:
+                this.store.crearFecha.montoNoSociosDosCategorias,
+            },
+            nombreFecha: this.store.crearFecha.nombreFecha,
+          });
+        } catch (e) {
+          this.callSnackbar(["No se ha podido guardar. " + e, "error"]);
         }
+      }
+    },
+    verificarDatosCargados() {
+      let valido = true;
+      if (
+        !this.verificarCargaDeCategorias(this.store.crearFecha.listaCategorias)
+      ) {
+        valido = false;
+      }
+      if (!this.verificarDatosBasicos(this.store.crearFecha)) {
+        valido = false;
+      }
+
+      return valido;
     },
 
-    created() {
-        axios.get("/torneos").then(res => {
-            this.setTorneos(res.data);
+    verificarCargaDeCategorias(categorias) {
+      let valido = true;
+      categorias.forEach((categoria) => {
+        if (!categoria.gruposGenerados) {
+          valido = false;
+          this.validaciones.push({
+            mensaje:
+              "No se han generado los grupos para la categoria " +
+              categoria.nombre,
+          });
+        }
+        if (!categoria.llavesGeneradas) {
+          this.validaciones.push({
+            mensaje:
+              "No se han generado las llaves para la categoría" +
+              categoria.nombre,
+          });
+        }
+      });
+    },
+
+    verificarDatosBasicos(crearFecha) {
+      let valido = true;
+
+      if (crearFecha.nombreFecha == "") {
+        valido = false;
+        this.validaciones.push({ mensaje: "No se especifico nombre de fecha" });
+      }
+      if (
+        crearFecha.montoSociosUnaCategoria == null ||
+        crearFecha.montoSociosDosCategorias == null ||
+        crearFecha.montoNoSociosUnaCategoria == null ||
+        crearFecha.montoNoSociosDosCategorias == null
+      ) {
+        valido = false;
+        this.validaciones.push({
+          mensaje: "AL menos un monto no fue especificado",
         });
-    }
+      }
+
+      return valido;
+    },
+
+    guardarLocalStorage() {
+      localStorage.crearFecha = JSON.stringify(this.store.crearFecha);
+    },
+    cargarLocalStorage() {
+      this.store.crearFecha = JSON.parse(localStorage.crearFecha);
+      console.log(this.store.crearFecha);
+    },
+  },
+
+  created() {
+    axios.get("/torneos").then((res) => {
+      this.setTorneos(res.data);
+    });
+  },
 };
 </script>
 
