@@ -231,6 +231,7 @@ export default {
             this.nodosMediasHojasID.forEach(nodo => {
                 me.posiblesSigsPartidos.push(nodo);
             })
+            if(me.posiblesSigsPartidos.length === 0) {me.posiblesSigsPartidos.push(0)}
         },
 
         calcularSiguienteJugador(){

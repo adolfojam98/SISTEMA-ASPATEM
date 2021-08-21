@@ -80,7 +80,113 @@
                 >Deshacer grupos</v-btn
               >
 
-              <v-row class="mt-6">
+              <div class="container">
+                <v-row class="fill-height" align="center" justify="center">
+                  <v-card
+                    elevation="12"
+                    width="46%"
+                    flat
+                    class="lista-grupos rounded-0 mt-2 ml-2"
+                    v-for="grupo in item.listaGrupos"
+                    :key="grupo.nombre"
+                  >
+                    <v-card>
+                      <center>
+                        <h4 class="title">{{ grupo.nombre }}</h4>
+                        <hr />
+                      </center>
+
+                      <ol class="mt-2">
+                        <v-container
+                          class="lista-jugadores d-flex flex-column flex-nowrap"
+                          v-for="partido in grupo.partidos"
+                          :key="partido.id"
+                        >
+                          <v-row>
+                            <v-col cols="12" md="4">
+                              <v-row class="mt-2 ml-2">
+                                  <v-tooltip bottom>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-icon
+                                      class="mb-4"
+                                      v-if="partido.jugador1.dni"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      >mdi-account-question</v-icon
+                                    >
+                                  </template>
+                                  <span v-if="partido.jugador1.dni">
+                                    {{ partido.jugador1.nombre }}
+                                    {{ partido.jugador1.dni }}</span
+                                  >
+                                </v-tooltip>
+
+                                <p class="ml-1">
+                                  {{ partido.jugador1.apellido }}
+                                </p>
+
+                              </v-row>
+                            </v-col>
+
+                            <v-col md="2">
+                              <v-text-field
+                                hide-details
+                                v-model="partido.setsJugador1"
+                                solo
+                                dense
+                                style="width: 100px"
+                                type="number"
+                                label="Sets"
+                              >
+                              </v-text-field>
+                            </v-col>
+
+                            <v-col md="2">
+                              <v-text-field
+                                hide-details
+                                v-model="partido.setsJugador2"
+                                solo
+                                dense
+                                style="width: 100px"
+                                type="number"
+                                label="Sets"
+                              >
+                              </v-text-field>
+                            </v-col>
+
+                            <v-col>
+                              <v-row class="mt-2">
+                                <p class="align-right mr-1">
+                                  {{ partido.jugador2.apellido }}
+                                </p>
+
+                                <v-tooltip bottom>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-icon
+                                      class="mb-4 mr-2"
+                                      align="right"
+                                      v-if="partido.jugador2.dni"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      >mdi-account-question</v-icon
+                                    >
+                                  </template>
+                                  <span v-if="partido.jugador2.dni">
+                                    {{ partido.jugador2.nombre }}
+                                    {{ partido.jugador2.dni }}</span
+                                  >
+                                </v-tooltip>
+                              </v-row>
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </ol>
+                    </v-card>
+                  </v-card>
+                </v-row>
+              </div>
+
+              <!-- <v-row class="mt-6">
                 <v-card
                   v-for="grupo in item.listaGrupos"
                   :key="grupo.nombre"
@@ -165,13 +271,13 @@
                     </v-card>
                   </v-col>
                 </v-card>
-              </v-row>
+              </v-row> -->
             </div>
 
             <div v-if="!item.llavesGeneradas">
               <center>
                 <v-btn
-                  class="center mb-6"
+                  class="center mb-6 mt-4"
                   dark
                   @click="item.llavesGeneradas = true"
                   color="blue"
@@ -190,10 +296,7 @@
                 >Deshacer llaves</v-btn
               >
 
-              <resultados-grupos
-              v-if="item.llavesGeneradas"
-              :categoria="item"
-              >
+              <resultados-grupos v-if="item.llavesGeneradas" :categoria="item">
               </resultados-grupos>
             </div>
 
@@ -207,6 +310,24 @@
     </v-tabs-items>
   </div>
 </template>
+
+<style scoped>
+ol {
+  margin: 0px;
+  padding: 0px;
+}
+ul {
+  margin: 0px;
+  padding: 0px;
+}
+.align-right {
+    display: block;
+    text-decoration: none;
+    text-align:right;
+    width: 65%;
+}
+
+</style>
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";

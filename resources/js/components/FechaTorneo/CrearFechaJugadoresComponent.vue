@@ -45,7 +45,7 @@
                                 }}</span>
                             </v-tooltip>
                         </template>
-
+                        
                         <template v-slot:[`item.pivot.puntos`]="{ item }">
                             <input type="number"
                             id="soloNumeros"
