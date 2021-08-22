@@ -15,7 +15,7 @@
                     <v-row><v-col cols="12" md="8">
                     <v-select
                     single-line
-                    @input="[calcularSiguienteJugador()]"
+                    @input="[calcularSiguienteJugador(),limpiarSiguientePartido(partido)]"
                     v-model="partido.jugador1"
                     :items="jugadores"
                     :item-text="nombreCompleto"
@@ -27,7 +27,7 @@
                     <v-col>
                     <v-select
                     single-line
-                    @input="[calcularSiguienteJugador()]"
+                    @input="[calcularSiguienteJugador(),limpiarSiguientePartido(partido)]"
                     dense
                     v-model="partido.set1"
                     :items=[0,1,2,3,4,5,6,7]
@@ -38,7 +38,7 @@
                     <v-row><v-col cols="12" md="8">
                     <v-select
                     single-line
-                    @input="[calcularSiguienteJugador()]"
+                    @input="[calcularSiguienteJugador(),limpiarSiguientePartido(partido)]"
                     v-model="partido.jugador2"
                     :items="jugadores"
                     :item-text="nombreCompleto"
@@ -50,7 +50,7 @@
                     <v-col>
                     <v-select
                     single-line
-                    @input="[calcularSiguienteJugador()]"
+                    @input="[calcularSiguienteJugador(),limpiarSiguientePartido(partido)]"
                     dense
                     v-model="partido.set2"
                     :items=[1,2,3,4,5,6,7]
@@ -231,6 +231,7 @@ export default {
             this.nodosMediasHojasID.forEach(nodo => {
                 me.posiblesSigsPartidos.push(nodo);
             })
+            if(me.posiblesSigsPartidos.length === 0) {me.posiblesSigsPartidos.push(0)}
         },
 
         calcularSiguienteJugador(){
@@ -264,6 +265,19 @@ export default {
 
         limpiarSiguientePartido(partido){
           if(!this.maximoDosPartidosApuntando(partido.sigPartidoID)){setTimeout(function() {(partido.sigPartidoID = null)},1500);}
+          else {
+            this.partidos.forEach(unPartido => {
+              if(unPartido.id == partido.sigPartidoID){
+                unPartido.jugador1 = null;
+                unPartido.jugador2 = null;
+                unPartido.set1 = null;
+                unPartido.set2 = null;
+                partido = this.partidos.find(element => element.id == partido.sigPartidoID);
+                if(partido.sigPartidoID!=null){this.limpiarSiguientePartido(partido);}
+              }
+            });
+            this.calcularSiguienteJugador();
+          }
         },
     },
 
