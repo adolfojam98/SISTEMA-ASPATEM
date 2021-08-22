@@ -45,14 +45,21 @@
                                 }}</span>
                             </v-tooltip>
                         </template>
-                        
-                        <template v-slot:[`item.pivot.puntos`]="{ item }">
-                            <input type="number"
-                            id="soloNumeros"
-                            class="soloNumeros"
-                            style="width:80px;"
-                            v-model.number=item.pivot.puntos
-                            >
+
+                        <template v-slot:[`item.action`]="{ item }">
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-icon
+                                        class="ml-4"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        @click="eliminarJugador(item)"
+                                        color="error"
+                                        >mdi-delete</v-icon
+                                    >
+                                </template>
+                                <span>Eliminar</span>
+                            </v-tooltip>
                         </template>
                     </v-data-table>
                 </template>
@@ -120,6 +127,10 @@
                 >Cancelar</v-btn
             >
         </v-form>
+
+
+
+         
     </div>
 </template>
 
@@ -134,14 +145,20 @@ export default {
                 { text: "Apellido", value: "apellido" },
                 { text: "Nombre", value: "nombre" },
                 { text: "DNI", value: "dni" },
-                { text: "Puntos", value: "pivot.puntos"},
+                { text: "Puntos", value: "pivot.puntos" },
                 {
                     text: "Categorias",
                     value: "actions",
                     sortable: false,
                     filterable: false
                 },
-                { text: "Monto", value: "montoPagado" }
+                { text: "Monto", value: "montoPagado" },
+                {
+                    text: "Eliminar",
+                    value: "action",
+                    sortable: false,
+                    filterable: false
+                }
             ],
             aynRules: [
                 v => !!v || "Campo obligatorio",
@@ -177,7 +194,7 @@ export default {
             "nombreJugador",
             "dniJugador",
             "puntosJugador"
-        ]),
+        ])
     },
     methods: {
        ...mapActions(['callSnackbar']),
@@ -200,26 +217,22 @@ export default {
             let categorias = this.listaCategorias;
             let me = this;
             categorias.forEach(function(categoria, indexCategoria) {
-
                 if (
                     item.pivot.puntos >= categoria.puntos_minimos &&
                     item.pivot.puntos <= categoria.puntos_maximos
                 ) {
-                    if(!categoria.gruposGenerados){
-
-                        var indice = categoria.jugadoresAnotados.indexOf(item);
-                        if (indice === -1) {
-                            categoria.jugadoresAnotados.push(item);
-                            //me.pushJugadorCategoria({ item, indexCategoria });
-                            me.callSnackbar(['Jugador anotado en su categoria','info'])
-                        } else {
-                            categoria.jugadoresAnotados.splice(indice,1);
-                            //me.spliceJugadorCategoria({ indice, indexCategoria });
-                        
-                                me.callSnackbar(['El Jugador ya no esta anotado en su categoria','info'])
-            
-                        }
-                    }else me.callSnackbar(['Los grupos de esta categoria ya han sido generados','warning'])
+                    var indice = categoria.jugadoresAnotados.indexOf(item);
+                    if (indice === -1) {
+                        categoria.jugadoresAnotados.push(item);
+                        //me.pushJugadorCategoria({ item, indexCategoria });
+                        me.callSnackbar(['Jugador anotado en su categoria','info'])
+                    } else {
+                        categoria.jugadoresAnotados.splice(indice,1);
+                        //me.spliceJugadorCategoria({ indice, indexCategoria });
+                    
+                            me.callSnackbar(['El Jugador ys no esta anotado en su categoria','info'])
+        
+                    }
                 }
             });
             this.calcularMonto();
@@ -310,35 +323,34 @@ export default {
             var entrarEnElSiguiente = false;
             this.listaCategorias.forEach(categoria => {
                 if (entrarEnElSiguiente) {
-                    if(!categoria.gruposGenerados){
-                        var indice = categoria.jugadoresAnotados.indexOf(item);
+                    var indice = categoria.jugadoresAnotados.indexOf(item);
 
-                        if (indice === -1) {
-                            categoria.jugadoresAnotados.push(item);
-                            this.calcularMonto();
-                            this.callSnackbar(["Jugador anotado en la categoria inmediata superior a la suya",'info'])
+                    if (indice === -1) {
+                        categoria.jugadoresAnotados.push(item);
+                        this.calcularMonto();
+                       this.callSnackbar(["Jugador anotado en la categoria inmediata superior a la suya",'info'])
+                       
+                    
+                            "Jugador anotado en la categoria inmediata superior a la suya";
+                       
+                    } else {
+                        categoria.jugadoresAnotados.splice(indice, 1);
+                        this.calcularMonto();
+this.callSnackbar(["El jugador ya no esta anotado en la categoria superior a la suya",'info'])                        
                         
-                        
-                                "Jugador anotado en la categoria inmediata superior a la suya";
-                        
-                        } else {
-                            categoria.jugadoresAnotados.splice(indice, 1);
-                            this.calcularMonto();
-                            this.callSnackbar(["El jugador ya no esta anotado en la categoria superior a la suya",'info'])
-                            
-                        }
-                        entrarEnElSiguiente = false;
-                    }else this.callSnackbar(['Los grupos de esta categoria ya han sido generados','warning'])
+                    }
+                    entrarEnElSiguiente = false;
                 }
                 if (
                     item.pivot.puntos >= categoria.puntos_minimos &&
                     item.pivot.puntos <= categoria.puntos_maximos
                 ) {
                     entrarEnElSiguiente = true;
-                }else entrarEnElSiguiente = false;
+                }
             });
             if (entrarEnElSiguiente) {
                 this.callSnackbar(["No hay una categoria superior",'warning'])
+                
             }
         },
         calcularCategoriaSuperior(item) {
@@ -371,7 +383,7 @@ export default {
         eliminarJugador(item) {
             var indice = this.listaJugadores.indexOf(item);
             this.listaJugadores.splice(indice, 1);
-        },
+        }
     }
 };
 </script>
