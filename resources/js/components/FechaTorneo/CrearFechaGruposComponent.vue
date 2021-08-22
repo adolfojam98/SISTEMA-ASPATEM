@@ -26,7 +26,7 @@
                     required
                     class="mb-0 ml-2"
                   ></v-text-field>
-
+                    <p class = "text--secondary d-flex justify-end">Jugadores anotados: {{item.jugadoresAnotados.length}}</p >
                   <v-switch
                     v-model="item.gruposConEliminatoria"
                     label="Fase de grupos con eliminatoria"
@@ -270,6 +270,36 @@
                       </v-container>
                     </v-card>
                   </v-col>
+                        </div>
+
+                        <div v-if="!item.llavesGeneradas">
+                        <center>
+                            <v-btn
+                                class="center mb-6"
+                                dark
+                                @click= validarPartidos(item)
+                                color="blue"
+                            >
+                                Generar llaves
+                            </v-btn>
+                        </center>
+                        </div>
+
+                        <div v-else>
+                            <v-btn
+                            class="ml-6 mt-6 mt-6"
+                            dark
+                            @click="deshacerLlaves(item)"
+                            color="blue"
+                            >Deshacer llaves</v-btn
+                        >
+                        </div>
+
+                        <generar-llaves
+                            v-if="item.llavesGeneradas"
+                            :categoria="item"
+                        ></generar-llaves>
+                    </div>
                 </v-card>
               </v-row> -->
             </div>
@@ -349,6 +379,29 @@ export default {
   },
   methods: {
     ...mapActions(["callSnackbar"]),
+    validarPartidos(item){
+            const grupos = item.listaGrupos;
+
+            grupos.forEach((grupo) =>{
+
+                console.log(grupo)
+                grupo.partidos.forEach((partido) => {
+                    if(partido.setsJugador1 == partido.setsJugador2){
+                         this.callSnackbar(['Existe al menos un partido con empate','warning'])
+                         return 
+                    }
+                    if(partido.setsJugador1 == null || partido.setsJugador2 == null){
+                    this.callSnackbar(['Existe al menos un partido sin resultado','warning'])
+                         return 
+
+                    }
+                    item.llavesGeneradas = true;
+
+                });
+            })
+
+           item.listaGrupos.llavesGeneradas = true;
+        },
     gruposGenerados(categoria) {
       return !categoria.gruposGenerados;
     },
