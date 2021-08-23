@@ -66,6 +66,8 @@ Route::get('/torneos/nombreOcupado/{nombre}','TorneoController@getNameExists');
 
 Route::post('/torneo/fecha/guardar','FechaController@guardarFecha');
 
+Route::post('/torneo/{torneo_id}/usuario/{usuario_id}','TorneoController@editPuntos');
+
 Route::get('{path}', function () {
     return view('index');
 })->where('path', '(.*)');
