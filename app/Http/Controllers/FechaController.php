@@ -107,14 +107,15 @@ class FechaController extends Controller
 
 function crearRelacionFechaJugador($fecha, $categorias, $jugadores) {
     $torneo = Torneo::where('id',$fecha->torneo_id)->first();
-
     foreach($jugadores as $jugador){
         $puntos = 0;
+        $jugo = false;
         foreach($categorias as $categoria){
             foreach($categoria['listaGrupos'] as $grupo){
                 if(is_array($grupo)){
                     foreach($grupo['partidos'] as $partido) {
                         if($partido['jugador1']['id'] === $jugador['id']){//es igual al jugador1
+                            $jugo = true;
                             if($partido['setsJugador1'] > $partido['setsJugador2']){ //jugador1 gano
 
                                 if(($categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'])
@@ -161,6 +162,7 @@ function crearRelacionFechaJugador($fecha, $categorias, $jugadores) {
                         }
 
                         else if($partido['jugador2']['id'] === $jugador['id']) { //es igual al jugador2
+                            $jugo = true;
                             if($partido['setsJugador2'] > $partido['setsJugador1']){ //jugador2 gano
 
                                 if(($categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'])
@@ -213,8 +215,8 @@ function crearRelacionFechaJugador($fecha, $categorias, $jugadores) {
             foreach($categoria['partidosLlaves'] as $partido){//ahora con los partidos de las llaves
                 if(is_array($partido)){
                     if($partido['jugador1']['id'] === $jugador['id']){//es igual al jugador1
+                        $jugo = true;
                         if($partido['set1'] > $partido['set2']){ //jugador1 gano
-
                             if(($categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'])
                             || ($categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'])) { //misma categoria
                                 if($partido['jugador1']['pivot']['puntos'] >= $partido['jugador2']['pivot']['puntos']) { //ganador misma categoria mayor nivel
@@ -259,7 +261,7 @@ function crearRelacionFechaJugador($fecha, $categorias, $jugadores) {
                     }
 
                     else if($partido['jugador2']['id'] === $jugador['id']) { //es igual al jugador2
-                        
+                        $jugo = true;
                         if($partido['set2'] > $partido['set1']){ //jugador2 gano
 
                             if(($categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'])
@@ -308,9 +310,12 @@ function crearRelacionFechaJugador($fecha, $categorias, $jugadores) {
                 }
             }
         }
-        if($jugador['nombre']=='Federico')dd($jugador,$puntos); 
-        //hasta aca ya se calculan los puntos bien por lo visto, queda guardarlos
-        //tambien hay que guardar los que pago un jugador en una fecha
+        if($jugo) {
+            if(($jugador['pivot']['puntos'] + $puntos) < 0) {
+                $puntos -= $jugador['pivot']['puntos'];
+            }
+            $fecha->jugadores()->attach($jugador['id'], ['puntos' => $puntos, 'monto_pagado' => $jugador['montoPagado']]);
+        }
     }
 }
 

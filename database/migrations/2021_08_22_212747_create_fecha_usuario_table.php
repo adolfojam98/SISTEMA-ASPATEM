@@ -19,6 +19,7 @@ class CreateFechaUsuarioTable extends Migration
                 $table->timestamps();
     
                 $table->integer('puntos');
+                $table->integer('monto_pagado');
     
                 $table->BigInteger('usuario_id')->unsigned();
                 $table->BigInteger('fecha_id')->unsigned();
@@ -27,7 +28,7 @@ class CreateFechaUsuarioTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
     
-            $table->foreign('fecha_id')->references('id')->on('fechas')
+                $table->foreign('fecha_id')->references('id')->on('fechas')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
                 

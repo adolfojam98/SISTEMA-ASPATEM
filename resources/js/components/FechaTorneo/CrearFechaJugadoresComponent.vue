@@ -201,11 +201,10 @@ export default {
 
     ...mapActions("crearFecha", ["calcularMonto"]),
 
-    setPuntos(jugador,){
-        console.log(jugador,jugador.pivot.puntos)
+    setPuntos(jugador){
         axios
           .post(`/torneo/${jugador.pivot.torneo_id}/usuario/${jugador.pivot.usuario_id}`, {
-            puntos: jugador.pivot.puntos,
+            puntos: jugador.pivot.puntos
           })
     },
 

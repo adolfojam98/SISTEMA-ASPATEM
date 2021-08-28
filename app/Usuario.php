@@ -23,13 +23,12 @@ class Usuario extends Model
     {
         return $this->belongsToMany(Partido::class)->withPivot('sets');
     }
-    public function fecha()
+    public function fechas()
     {
-        return $this->belongsToMany(Fecha::class)->withPivot('puntos');
+        return $this->belongsToMany(Fecha::class)->withPivot('puntos','monto_pagado');
     }
 
    public function cuotas(){
        return $this->hasMany(Cuota::class)->orderByDesc('id');
    }
 }
-

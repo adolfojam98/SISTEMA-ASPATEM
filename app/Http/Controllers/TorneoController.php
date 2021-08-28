@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Torneo;
 use App\Usuario;
 use DB;
+use App\Fecha;
 
 use Illuminate\Http\Request;
 
@@ -144,30 +145,22 @@ class TorneoController extends Controller
        
         $torneo = Torneo::find($request->id);
         $jugadores = $torneo->jugadores;
+        $fechas = Fecha::where('torneo_id',$torneo->id)->get();
 
         foreach($jugadores as $jugador){
-            $jugador->montoPagado=0;
+            $jugador->montoPagado = 0;
+            
+            foreach ($fechas as $key => $fecha) {
+                $fecha_usuario = DB::table('fecha_usuario')
+                ->where('usuario_id',$jugador->id)
+                ->where('fecha_id',$fecha->id)->first();
+
+                if($fecha_usuario){
+                    $jugador->pivot->puntos += $fecha_usuario->puntos;
+                }
+            }
         };
         return $jugadores;
-        
-        // return $torneo->jugadores;
-        /*
-        
-        $torneo = Torneo::find($request->id);
-        $jugadores = $torneo->jugadores;
-
-        $listaJugadores=[];
-
-
-        foreach($jugadores as $jugador){
-            $UnJugador = Usuario::where('id',$jugador->id)->get();
-            array_push($listaJugadores, $UnJugador);
-        }
-
-        return $listaJugadores;
-        */
-
-
     }
 
     public function getCategorias(Request $request){
@@ -184,18 +177,32 @@ class TorneoController extends Controller
     }
 
     public function editPuntos(Request $request, $torneo_id, $usuario_id){
+        $puntos = 0;
 
-        if($request && $torneo_id && $usuario_id) {
-            $usuario = DB::table('torneo_usuario')
-            ->where('torneo_id',$torneo_id)
+        $fechas = Fecha::where('torneo_id',$torneo_id)->get();
+        foreach ($fechas as $key => $fecha) {
+            $fecha_usuario = DB::table('fecha_usuario')
             ->where('usuario_id',$usuario_id)
-            ->update(['puntos' => $request->puntos]);
+            ->where('fecha_id',$fecha->id)->first();
+
+            if($fecha_usuario){
+                $puntos += $fecha_usuario->puntos;
+            }
+        }
+        
+        $torneo_usuario = DB::table('torneo_usuario')
+        ->where('torneo_id',$torneo_id)
+        ->where('usuario_id',$usuario_id);
+        
+        $puntos += $torneo_usuario->first()->puntos;
+
+        $torneo_usuario->update(['puntos' => $torneo_usuario->first()->puntos += ($request->puntos - $puntos)]);
 
             //TODO En caso de que se haya jugado una fecha anterior:
             //TODO esto esta mal, aca hay que calcular cuantos puntos tiene en la ULTIMA FECHA - cuantos puntos le estoy seteando AHORA
             //TODO y esa diferencia se suma directamente sobre los PUNTOS BASE de ESTE TORNEO
             //TODO no lo arreglo ahora porque se supone que en la vista tiene que mostrar estos datos, asi que para no calcular dos veces, hay que devolver
             //TODO este dato ya calculado
-        }
+        
     }
 }
