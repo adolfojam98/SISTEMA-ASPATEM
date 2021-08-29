@@ -46,6 +46,12 @@
                           style="width: 80px"
                           label="Sets"
                           v-model="partido.set1"
+                          v-on:change="
+                            [
+                              calcularSiguienteJugador(),
+                              limpiarSiguientePartido(partido),
+                            ]
+                          "
                         /> </v-col
                     ></v-row>
 
@@ -77,6 +83,12 @@
                           style="width: 80px"
                           v-model="partido.set2"
                           label="Sets"
+                          v-on:change="
+                            [
+                              calcularSiguienteJugador(),
+                              limpiarSiguientePartido(partido),
+                            ]
+                          "
                         /> </v-col
                     ></v-row>
 
