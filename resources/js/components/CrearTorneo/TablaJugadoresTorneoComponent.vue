@@ -7,7 +7,6 @@
                             :items="listaJugadores"
                             item-key="dni"
                             class="elevation-1 mr-2"
-                            dark
                             :items-per-page="5"
                         >
                             <template v-slot:[`item.actions`]="{ item }">

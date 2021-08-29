@@ -82,7 +82,7 @@
         :value="apellidoJugador"
         @input="setApellidoJugador"
         :rules="aynRules"
-        class="subheading font-weight-bold"
+        class="subheading font-weight-bold ml-2 mr-2"
         label="Apellido del jugador"
         required
       ></v-text-field>
@@ -90,7 +90,7 @@
         :value="nombreJugador"
         @input="setNombreJugador"
         :rules="aynRules"
-        class="subheading font-weight-bold"
+        class="subheading font-weight-bold ml-2 mr-2"
         label="Nombre del jugador"
         required
       ></v-text-field>
@@ -98,14 +98,14 @@
         :value="dniJugador"
         @input="setDniJugador"
         :rules="dniRules"
-        class="subheading font-weight-bold"
+        class="subheading font-weight-bold ml-2 mr-2"
         label="DNI del jugador"
         required
       ></v-text-field>
       <v-text-field
         :value="puntosJugador"
         @input="setPuntosJugador"
-        class="subheading font-weight-bold"
+        class="subheading font-weight-bold ml-2 mr-2"
         label="Puntos del jugador"
         :rules="puntosRules"
         required
