@@ -41,6 +41,7 @@
                           single-line
                           type="number"
                           min="0"
+                          max="7"
                           oninput="validity.valid||(value='');"
                           class="soloNumeros pa-0 ma-0"
                           style="width: 80px"
@@ -78,6 +79,7 @@
                           single-line
                           type="number"
                           min="0"
+                          max="7"
                           oninput="validity.valid||(value='');"
                           class="soloNumeros pa-0 ma-0"
                           style="width: 80px"

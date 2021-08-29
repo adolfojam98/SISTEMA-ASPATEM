@@ -132,6 +132,7 @@
                             <v-col md="2">
                               <v-text-field
                                 min="0"
+                                max="7"
                                 oninput="validity.valid||(value='');"
                                 hide-details
                                 v-model="partido.setsJugador1"
@@ -146,6 +147,7 @@
                             <v-col md="2">
                               <v-text-field
                                 min="0"
+                                max="7"
                                 oninput="validity.valid||(value='');"
                                 hide-details
                                 v-model="partido.setsJugador2"
