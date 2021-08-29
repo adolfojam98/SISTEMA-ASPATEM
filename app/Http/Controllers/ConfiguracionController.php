@@ -117,6 +117,31 @@ class ConfiguracionController extends Controller
         }
     }
 
+    public function downloadBackup(Request $request){
+        
+        
+        $file = database_path('database.sqlite');
+        return response()->download($file);
+    }
+
+    public function uploadBackup(Request $request){
+        dd($request['backup']);
+        if($request->hasFile("backup")){
+            $file=$request->file("backup");
+            
+            $nombre = "database.sqlite";
+
+            $ruta = database_path('database.sqlite');
+            dd($ruta);
+            if($file->guessExtension()=="sqlite"){
+                copy($file, $ruta);
+            }
+
+        }
+    }
+
+   
+
 
 
 }
