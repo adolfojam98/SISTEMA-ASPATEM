@@ -19,16 +19,18 @@
                     ></v-select>
                     </v-col>
 
-                    <v-col  cols="12" md="4">
-                    <v-select
+                    <v-col  cols="12" md="4" class="mt-0">
+                    <v-text-field
+                    min="0"
+                    oninput="validity.valid||(value='');"
                     single-line
                     class="mr-2 mb-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
                     v-model="partido.set1"
-                    :items=[0,1,2,3,4,5,6,7]
                     type="number"
-                    ></v-select>
+                    label="Sets"
+                    />
                     </v-col></v-row>
 
                     <v-row><v-col cols="12" md="8">
@@ -44,16 +46,18 @@
                     ></v-select>
                     </v-col>
 
-                    <v-col  cols="12" md="4">
-                    <v-select
+                    <v-col  cols="12" md="4" class="mt-0">
+                    <v-text-field
+                    min="0"
+                    oninput="validity.valid||(value='');"
                     single-line
                     class="mr-2 mt-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
                     v-model="partido.set2"
-                    :items=[0,1,2,3,4,5,6,7]
                     type="number"
-                    ></v-select>
+                    label="Sets"
+                    />
                     </v-col></v-row>
                 </div>
 
@@ -71,16 +75,18 @@
                     ></v-select>
                     </v-col>
 
-                    <v-col  cols="12" md="4">
-                    <v-select
+                    <v-col  cols="12" md="4" class="mt-0">
+                    <v-text-field
+                    min="0"
+                    oninput="validity.valid||(value='');"
                     single-line
                     class="mr-2 mb-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
                     v-model="partido.set1"
-                    :items=[0,1,2,3,4,5,6,7]
                     type="number"
-                    ></v-select>
+                    label="Sets"
+                    />
                     </v-col></v-row>
 
                     <v-row><v-col cols="12" md="8">
@@ -97,16 +103,18 @@
                     ></v-select>
                     </v-col>
 
-                    <v-col  cols="12" md="4">
-                    <v-select
+                    <v-col  cols="12" md="4" class="mt-0">
+                    <v-text-field
+                    min="0"
+                    oninput="validity.valid||(value='');"
                     single-line
-                    class="mr-2 mt-0"
+                    class="mr-2 mb-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
                     v-model="partido.set2"
-                    :items=[0,1,2,3,4,5,6,7]
                     type="number"
-                    ></v-select>
+                    label="Sets"
+                    />
                     </v-col></v-row>
                 <div v-if="partido.jugador2 == null"> - </div>
                 </div>
@@ -126,16 +134,18 @@
                     ></v-select>
                     </v-col>
 
-                    <v-col  cols="12" md="4">
-                    <v-select
+                    <v-col  cols="12" md="4" class="mt-0">
+                    <v-text-field
+                    min="0"
+                    oninput="validity.valid||(value='');"
                     single-line
-                    class="mr-2 mb-0"
+                    class="mr-2 mb-0 mt-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
                     v-model="partido.set1"
-                    :items=[0,1,2,3,4,5,6,7]
                     type="number"
-                    ></v-select>
+                    label="Sets"
+                    />
                     </v-col></v-row>
 
                     <v-row><v-col cols="12" md="8">
@@ -152,16 +162,18 @@
                     ></v-select>
                     </v-col>
 
-                    <v-col  cols="12" md="4">
-                    <v-select
+                    <v-col  cols="12" md="4" class="mt-0">
+                    <v-text-field
+                    min="0"
+                    oninput="validity.valid||(value='');"
                     single-line
-                    class="mr-2 mt-0"
+                    class="mr-2 mb-0 mt-0"
                     @input="[calcularSiguienteJugador()]"
                     dense
                     v-model="partido.set2"
-                    :items=[0,1,2,3,4,5,6,7]
                     type="number"
-                    ></v-select>
+                    label="Sets"
+                    />
                     </v-col></v-row>
                 </div>
           </v-card>

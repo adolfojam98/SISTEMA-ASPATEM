@@ -37,7 +37,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("crearFecha", ["listaCategorias"]),
+    ...mapState("crearFecha", ["listaCategorias","listaJugadores"]),
 
     store() {
       return this.$store.state;
@@ -51,7 +51,7 @@ export default {
     async guardarFechaComponent() {
       this.validaciones = [];
 
-      if (this.verificarDatosCargados()) {
+      //if (this.verificarDatosCargados()) {
         try {
           await axios.post("/torneo/fecha/guardar", {
             categorias: this.store.crearFecha.listaCategorias,
@@ -66,11 +66,12 @@ export default {
                 this.store.crearFecha.montoNoSociosDosCategorias,
             },
             nombreFecha: this.store.crearFecha.nombreFecha,
+            jugadores: this.store.crearFecha.listaJugadores,
           });
         } catch (e) {
           this.callSnackbar(["No se ha podido guardar. " + e, "error"]);
         }
-      }
+      //}
     },
     verificarDatosCargados() {
       let valido = true;
@@ -122,7 +123,7 @@ export default {
       ) {
         valido = false;
         this.validaciones.push({
-          mensaje: "AL menos un monto no fue especificado",
+          mensaje: "Al menos un monto no fue especificado",
         });
       }
 

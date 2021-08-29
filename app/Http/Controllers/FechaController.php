@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Fecha;
 use App\Partido;
 use App\Grupo;
+use App\Torneo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -90,19 +91,234 @@ class FechaController extends Controller
     public function guardarFecha(Request $request)
     {
 
+
         $fecha = crearNuevaFecha($request);
-
-
         $categorias = $request->categorias;
+
+        crearRelacionFechaJugador($fecha, $categorias, $request->jugadores);
 
         foreach ($categorias as $categoria) {
 
             guardarCategoriaFecha($categoria, $fecha->id);
-            dd();
         }
         return;
     }
 }
+
+function crearRelacionFechaJugador($fecha, $categorias, $jugadores) {
+    $torneo = Torneo::where('id',$fecha->torneo_id)->first();
+    foreach($jugadores as $jugador){
+        $puntos = 0;
+        $jugo = false;
+        foreach($categorias as $categoria){
+            foreach($categoria['listaGrupos'] as $grupo){
+                if(is_array($grupo)){
+                    foreach($grupo['partidos'] as $partido) {
+                        if($partido['jugador1']['id'] === $jugador['id']){//es igual al jugador1
+                            $jugo = true;
+                            if($partido['setsJugador1'] > $partido['setsJugador2']){ //jugador1 gano
+
+                                if(($categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'])
+                                || ($categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'])) { //misma categoria
+                                    if($partido['jugador1']['pivot']['puntos'] >= $partido['jugador2']['pivot']['puntos']) { //ganador misma categoria mayor nivel
+                                        $puntos += $torneo->misma_categoria_mayor_nivel_ganador;
+                                    }
+                                    else { //ganador misma categoria menor nivel
+                                        $puntos += $torneo->misma_categoria_menor_nivel_ganador;
+                                    }
+                                }
+
+                                if($categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos']) { //jugador1 menor categoria
+                                    $puntos += $torneo->menor_categoria_ganador;
+                                }
+
+                                if($categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos']) { //jugador1 mayor categoria
+                                    $puntos += $torneo->mayor_categoria_ganador;
+                                }
+
+                            }
+
+                            else { //jugador1 perdio
+
+                                if(($categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'])
+                                || ($categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'])) { //misma categoria
+                                    if($partido['jugador1']['pivot']['puntos'] >= $partido['jugador2']['pivot']['puntos']) { //perdio misma categoria mayor nivel
+                                        $puntos -= $torneo->misma_categoria_mayor_nivel_perdedor;
+                                    }
+                                    else { //perdio misma categoria menor nivel
+                                        $puntos -= $torneo->misma_categoria_menor_nivel_perdedor;
+                                    }
+                                }
+
+                                if($categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos']) { //jugador1 menor categoria
+                                    $puntos -= $torneo->menor_categoria_perdedor;
+                                }
+
+                                if($categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos']) { //jugador1 mayor categoria
+                                    $puntos -= $torneo->mayor_categoria_perdedor;
+                                }
+
+                            }
+                        }
+
+                        else if($partido['jugador2']['id'] === $jugador['id']) { //es igual al jugador2
+                            $jugo = true;
+                            if($partido['setsJugador2'] > $partido['setsJugador1']){ //jugador2 gano
+
+                                if(($categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'])
+                                || ($categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'])) { //misma categoria
+                                    if($partido['jugador2']['pivot']['puntos'] >= $partido['jugador1']['pivot']['puntos']) { //ganador misma categoria mayor nivel
+                                        $puntos += $torneo->misma_categoria_mayor_nivel_ganador;
+                                    }
+                                    else { //ganador misma categoria menor nivel
+                                        $puntos += $torneo->misma_categoria_menor_nivel_ganador;
+                                    }
+                                }
+
+                                if($categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos']) { //jugador2 menor categoria
+                                    $puntos += $torneo->menor_categoria_ganador;
+                                }
+
+                                if($categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos']) { //jugador2 mayor categoria
+                                    $puntos += $torneo->mayor_categoria_ganador;
+                                }
+
+                            }
+
+                            else { //jugador2 perdio
+
+                                if(($categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'])
+                                || ($categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'])) { //misma categoria
+                                    if($partido['jugador2']['pivot']['puntos'] >= $partido['jugador1']['pivot']['puntos']) { //perdio misma categoria mayor nivel
+                                        $puntos -= $torneo->misma_categoria_mayor_nivel_perdedor;
+                                    }
+                                    else { //perdio misma categoria menor nivel
+                                        $puntos -= $torneo->misma_categoria_menor_nivel_perdedor;
+                                    }
+                                }
+
+                                if($categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos']) { //jugador2 menor categoria
+                                    $puntos -= $torneo->menor_categoria_perdedor;
+                                }
+
+                                if($categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos']) { //jugador2 mayor categoria
+                                    $puntos -= $torneo->mayor_categoria_perdedor;
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            foreach($categoria['partidosLlaves'] as $partido){//ahora con los partidos de las llaves
+                if(is_array($partido)){
+                    if($partido['jugador1']['id'] === $jugador['id']){//es igual al jugador1
+                        $jugo = true;
+                        if($partido['set1'] > $partido['set2']){ //jugador1 gano
+                            if(($categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'])
+                            || ($categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'])) { //misma categoria
+                                if($partido['jugador1']['pivot']['puntos'] >= $partido['jugador2']['pivot']['puntos']) { //ganador misma categoria mayor nivel
+                                    $puntos += $torneo->misma_categoria_mayor_nivel_ganador;
+                                }
+                                else { //ganador misma categoria menor nivel
+                                    $puntos += $torneo->misma_categoria_menor_nivel_ganador;
+                                }
+                            }
+
+                            if($categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos']) { //jugador1 menor categoria
+                                $puntos += $torneo->menor_categoria_ganador;
+                            }
+
+                            if($categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos']) { //jugador1 mayor categoria
+                                $puntos += $torneo->mayor_categoria_ganador;
+                            }
+
+                        }
+
+                        else { //jugador1 perdio
+
+                            if(($categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'])
+                            || ($categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'])) { //misma categoria
+                                if($partido['jugador1']['pivot']['puntos'] >= $partido['jugador2']['pivot']['puntos']) { //perdio misma categoria mayor nivel
+                                    $puntos -= $torneo->misma_categoria_mayor_nivel_perdedor;
+                                }
+                                else { //perdio misma categoria menor nivel
+                                    $puntos -= $torneo->misma_categoria_menor_nivel_perdedor;
+                                }
+                            }
+
+                            if($categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos']) { //jugador1 menor categoria
+                                $puntos -= $torneo->menor_categoria_perdedor;
+                            }
+
+                            if($categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos']) { //jugador1 mayor categoria
+                                $puntos -= $torneo->mayor_categoria_perdedor;
+                            }
+
+                        }
+                    }
+
+                    else if($partido['jugador2']['id'] === $jugador['id']) { //es igual al jugador2
+                        $jugo = true;
+                        if($partido['set2'] > $partido['set1']){ //jugador2 gano
+
+                            if(($categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'])
+                            || ($categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'])) { //misma categoria
+                                if($partido['jugador2']['pivot']['puntos'] >= $partido['jugador1']['pivot']['puntos']) { //ganador misma categoria mayor nivel
+                                    $puntos += $torneo->misma_categoria_mayor_nivel_ganador;
+                                }
+                                else { //ganador misma categoria menor nivel
+                                    $puntos += $torneo->misma_categoria_menor_nivel_ganador;
+                                }
+                            }
+
+                            if($categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos']) { //jugador2 menor categoria
+                                $puntos += $torneo->menor_categoria_ganador;
+                            }
+
+                            if($categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos']) { //jugador2 mayor categoria
+                                $puntos += $torneo->mayor_categoria_ganador;
+                            }
+
+                        }
+
+                        else { //jugador2 perdio
+
+                            if(($categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos'])
+                            || ($categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos'])) { //misma categoria
+                                if($partido['jugador2']['pivot']['puntos'] >= $partido['jugador1']['pivot']['puntos']) { //perdio misma categoria mayor nivel
+                                    $puntos -= $torneo->misma_categoria_mayor_nivel_perdedor;
+                                }
+                                else { //perdio misma categoria menor nivel
+                                    $puntos -= $torneo->misma_categoria_menor_nivel_perdedor;
+                                }
+                            }
+
+                            if($categoria['puntos_minimos'] > $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] <= $partido['jugador1']['pivot']['puntos']) { //jugador2 menor categoria
+                                $puntos -= $torneo->menor_categoria_perdedor;
+                            }
+
+                            if($categoria['puntos_minimos'] <= $partido['jugador2']['pivot']['puntos'] && $categoria['puntos_minimos'] > $partido['jugador1']['pivot']['puntos']) { //jugador2 mayor categoria
+                                $puntos -= $torneo->mayor_categoria_perdedor;
+                            }
+
+                        }
+
+                    }
+                }
+            }
+        }
+        if($jugo) {
+            if(($jugador['pivot']['puntos'] + $puntos) < 0) {
+                $puntos -= $jugador['pivot']['puntos'];
+            }
+            $fecha->jugadores()->attach($jugador['id'], ['puntos' => $puntos, 'monto_pagado' => $jugador['montoPagado']]);
+        }
+    }
+}
+
 function crearNuevaFecha(Request $request)
 {
 
@@ -115,6 +331,8 @@ function crearNuevaFecha(Request $request)
     $fecha->torneo_id                       = $request->categorias[0]['torneo_id'];
     $fecha->save();
     return $fecha;
+
+
 }
 
 function guardarCategoriaFecha($categoria, $fecha_id)

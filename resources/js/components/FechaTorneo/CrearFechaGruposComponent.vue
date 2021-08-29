@@ -26,7 +26,9 @@
                     required
                     class="mb-0 ml-2"
                   ></v-text-field>
-                    <p class = "text--secondary d-flex justify-end">Jugadores anotados: {{item.jugadoresAnotados.length}}</p >
+                  <p class="text--secondary d-flex justify-end">
+                    Jugadores anotados: {{ item.jugadoresAnotados.length }}
+                  </p>
                   <v-switch
                     v-model="item.gruposConEliminatoria"
                     label="Fase de grupos con eliminatoria"
@@ -105,7 +107,7 @@
                           <v-row>
                             <v-col cols="12" md="4">
                               <v-row class="mt-2 ml-2">
-                                  <v-tooltip bottom>
+                                <v-tooltip bottom>
                                   <template v-slot:activator="{ on, attrs }">
                                     <v-icon
                                       class="mb-4"
@@ -124,12 +126,13 @@
                                 <p class="ml-1">
                                   {{ partido.jugador1.apellido }}
                                 </p>
-
                               </v-row>
                             </v-col>
 
                             <v-col md="2">
                               <v-text-field
+                                min="0"
+                                oninput="validity.valid||(value='');"
                                 hide-details
                                 v-model="partido.setsJugador1"
                                 solo
@@ -137,12 +140,13 @@
                                 style="width: 100px"
                                 type="number"
                                 label="Sets"
-                              >
-                              </v-text-field>
+                              />
                             </v-col>
 
                             <v-col md="2">
                               <v-text-field
+                                min="0"
+                                oninput="validity.valid||(value='');"
                                 hide-details
                                 v-model="partido.setsJugador2"
                                 solo
@@ -150,8 +154,7 @@
                                 style="width: 100px"
                                 type="number"
                                 label="Sets"
-                              >
-                              </v-text-field>
+                              />
                             </v-col>
 
                             <v-col>
@@ -351,12 +354,11 @@ ul {
   padding: 0px;
 }
 .align-right {
-    display: block;
-    text-decoration: none;
-    text-align:right;
-    width: 65%;
+  display: block;
+  text-decoration: none;
+  text-align: right;
+  width: 65%;
 }
-
 </style>
 
 <script>
@@ -379,29 +381,32 @@ export default {
   },
   methods: {
     ...mapActions(["callSnackbar"]),
-    validarPartidos(item){
-            const grupos = item.listaGrupos;
+    validarPartidos(item) {
+      const grupos = item.listaGrupos;
 
-            grupos.forEach((grupo) =>{
+      grupos.forEach((grupo) => {
+        console.log(grupo);
+        grupo.partidos.forEach((partido) => {
+          if (partido.setsJugador1 == partido.setsJugador2) {
+            this.callSnackbar([
+              "Existe al menos un partido con empate",
+              "warning",
+            ]);
+            return;
+          }
+          if (partido.setsJugador1 == null || partido.setsJugador2 == null) {
+            this.callSnackbar([
+              "Existe al menos un partido sin resultado",
+              "warning",
+            ]);
+            return;
+          }
+          item.llavesGeneradas = true;
+        });
+      });
 
-                console.log(grupo)
-                grupo.partidos.forEach((partido) => {
-                    if(partido.setsJugador1 == partido.setsJugador2){
-                         this.callSnackbar(['Existe al menos un partido con empate','warning'])
-                         return 
-                    }
-                    if(partido.setsJugador1 == null || partido.setsJugador2 == null){
-                    this.callSnackbar(['Existe al menos un partido sin resultado','warning'])
-                         return 
-
-                    }
-                    item.llavesGeneradas = true;
-
-                });
-            })
-
-           item.listaGrupos.llavesGeneradas = true;
-        },
+      item.listaGrupos.llavesGeneradas = true;
+    },
     gruposGenerados(categoria) {
       return !categoria.gruposGenerados;
     },
