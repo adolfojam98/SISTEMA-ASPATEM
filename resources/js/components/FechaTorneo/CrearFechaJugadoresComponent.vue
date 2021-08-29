@@ -54,6 +54,8 @@
 
               <template v-slot:[`item.pivot.puntos`]="{ item }">
                 <input
+                  min="0"
+                  oninput="validity.valid||(value='');"
                   type="number"
                   class="soloNumeros"
                   style="width: 80px"
@@ -201,11 +203,13 @@ export default {
 
     ...mapActions("crearFecha", ["calcularMonto"]),
 
-    setPuntos(jugador){
-        axios
-          .post(`/torneo/${jugador.pivot.torneo_id}/usuario/${jugador.pivot.usuario_id}`, {
-            puntos: jugador.pivot.puntos
-          })
+    setPuntos(jugador) {
+      axios.post(
+        `/torneo/${jugador.pivot.torneo_id}/usuario/${jugador.pivot.usuario_id}`,
+        {
+          puntos: jugador.pivot.puntos,
+        }
+      );
     },
 
     agregarEnSuCategoria(item) {
