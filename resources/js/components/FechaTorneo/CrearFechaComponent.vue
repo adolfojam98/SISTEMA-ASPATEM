@@ -15,6 +15,9 @@
 
     <v-btn @click="guardarLocalStorage()">SAVE STORAGE</v-btn>
     <v-btn @click="cargarLocalStorage()">CARGAR STORAGE</v-btn>
+    <v-btn @click="backupBase()">BackupBase</v-btn>
+   
+
 
     <v-alert
       v-for="(validacion, index) in validaciones"
@@ -47,7 +50,6 @@ export default {
     ...mapMutations("crearFecha", ["setTorneos"]),
     ...mapActions(["callSnackbar"]),
 
-    
     async guardarFechaComponent() {
       this.validaciones = [];
 
@@ -99,13 +101,39 @@ export default {
           });
         }
         if (!categoria.llavesGeneradas) {
+          valido = false;
           this.validaciones.push({
             mensaje:
               "No se han generado las llaves para la categoría" +
               categoria.nombre,
           });
+        } else {
+          if (!this.verificarPartidosLlavesCategorias(categoria)) {
+            valido = false;
+            this.validaciones.push({
+              mensaje:
+                "Al menos un partido de las llaves de la categoria" +
+                categoria.nombre +
+                " no ha sido completado",
+            });
+          }
         }
       });
+
+      return valido;
+    },
+    verificarPartidosLlavesCategorias(categoria) {
+      let valido = true;
+      categoria.partidosLlaves.forEach((partido) => {
+        partido.jugador1 == null ||
+        partido.jugador2 == null ||
+        partido.set1 == null ||
+        partido.set2 == null
+          ? (valido = false)
+          : true;
+      });
+
+      return valido;
     },
 
     verificarDatosBasicos(crearFecha) {
@@ -137,6 +165,9 @@ export default {
       this.store.crearFecha = JSON.parse(localStorage.crearFecha);
       console.log(this.store.crearFecha);
     },
+    backupBase(){
+      axios.get('/base/descargar').then(res => res.download());
+    }
   },
 
   created() {
