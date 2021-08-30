@@ -72,6 +72,10 @@ Route::get('/base/descargar','ConfiguracionController@downloadBackup');
 
 Route::post('/base/cargar','ConfiguracionController@uploadBackup');
 
+Route::post('/torneo/puntos','TorneoController@updatePuntos');
+
+Route::get('/torneo/{id}/fechas','TorneoController@getFechas');
+
 Route::get('{path}', function () {
     return view('index');
 })->where('path', '(.*)');

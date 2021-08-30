@@ -54,6 +54,8 @@ Vue.component('mostrar-partidos',                   require('./components/FechaT
 Vue.component('un-partido',                         require('./components/FechaTorneo/MostrarUnPartidoComponent.vue').default);
 Vue.component('snackbar',                           require('./components/SnackBarComponent.vue').default);
 Vue.component('resultados-grupos',                  require('./components/FechaTorneo/CrearFechaResultadosGrupos.vue').default);
+Vue.component('gestion-torneos',                    require('./components/GestionarTorneos/GestionarTorneosComponent').default);
+Vue.component('torneo-fecha',                       require('./components/GestionarTorneos/ResumenTorneoFechaComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

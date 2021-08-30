@@ -6,6 +6,7 @@ use App\Torneo;
 use App\Usuario;
 use DB;
 use App\Fecha;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 
@@ -204,5 +205,36 @@ class TorneoController extends Controller
             //TODO no lo arreglo ahora porque se supone que en la vista tiene que mostrar estos datos, asi que para no calcular dos veces, hay que devolver
             //TODO este dato ya calculado
         
+    }
+
+    public function updatePuntos(Request $request){
+        $torneo = Torneo::whereId($request->torneo['id'])->first();
+        
+        $torneo->misma_categoria_mayor_nivel_ganador = intval($request->torneo['misma_categoria_mayor_nivel_ganador']);
+        $torneo->misma_categoria_mayor_nivel_perdedor = intval($request->torneo['misma_categoria_mayor_nivel_perdedor']);
+        $torneo->misma_categoria_menor_nivel_ganador = intval($request->torneo['misma_categoria_menor_nivel_ganador']);
+        $torneo->misma_categoria_menor_nivel_perdedor = intval($request->torneo['misma_categoria_menor_nivel_perdedor']);
+
+        $torneo->mayor_categoria_ganador = intval($request->torneo['mayor_categoria_ganador']);
+        $torneo->mayor_categoria_perdedor = intval($request->torneo['mayor_categoria_perdedor']);
+        $torneo->menor_categoria_ganador = intval($request->torneo['menor_categoria_ganador']);
+        $torneo->menor_categoria_perdedor = intval($request->torneo['menor_categoria_perdedor']);
+
+        $torneo->save();
+    }
+
+    public function getFechas(Request $request){
+        $fechas = Fecha::where('torneo_id',$request->id)->get();
+        foreach ($fechas as $key => $fecha) {
+            $jugadores = $fecha->jugadores();
+            $fecha->participantes = $jugadores->count();
+            $fecha->date = date('Y-m-d h:i:s', strtotime($fecha->created_at));
+            $fecha->ingresos = 0;
+
+            foreach ($jugadores->get() as $key => $jugador) {
+                $fecha->ingresos += $jugador->pivot->monto_pagado;
+            }
+        }
+        return $fechas;
     }
 }

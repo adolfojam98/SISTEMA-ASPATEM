@@ -53,7 +53,7 @@ export default {
     async guardarFechaComponent() {
       this.validaciones = [];
 
-      if (this.verificarDatosCargados()) {
+      //if (this.verificarDatosCargados()) {
         try {
           await axios.post("/torneo/fecha/guardar", {
             categorias: this.store.crearFecha.listaCategorias,
@@ -73,7 +73,7 @@ export default {
         } catch (e) {
           this.callSnackbar(["No se ha podido guardar. " + e, "error"]);
         }
-      }
+      //}
     },
     verificarDatosCargados() {
       let valido = true;
