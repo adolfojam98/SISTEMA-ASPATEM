@@ -1,14 +1,20 @@
 <template>
   <v-container>
     <v-card>
-        <v-btn class="primary mt-2 ml-2" @click="$router.go(-1)">back</v-btn>
+      <v-btn class="primary mt-2 ml-2" @click="$router.go(-1)">Volver</v-btn>
       <v-card-title class="justify-center">
-          <center>
+        <center>
           <p>
-              <b>{{fechaId}}</b>
+            <b>{{ fecha_nombre }}</b>
           </p>
         </center>
       </v-card-title>
+      <hr>
+      <v-data-table :headers="headers" :items="ranking" :search="search">
+        <template v-slot:[`item.puntos`]="{ item }">
+          <p class="mt-4">{{ item.puntos }} ({{ item.puntos_ganados }})</p>
+        </template>
+      </v-data-table>
     </v-card>
   </v-container>
 </template>
@@ -19,12 +25,34 @@ export default {
 
   data() {
     return {
+      ranking: [],
+      fecha_nombre: null,
       fechaId: this.$route.params.id,
+      search: "",
+      headers: [
+        { text: "Nombre", value: "nombre" },
+        { text: "Apellido", value: "apellido" },
+        { text: "Dni", value: "dni" },
+        { text: "Puntos", value: "puntos" },
+        { text: "Categoria", value: "categoria" },
+      ],
     };
   },
 
+  methods: {
+    getFecha() {
+      axios.get(`/torneo/fecha/${this.fechaId}`).then((res) => {
+        this.fecha_nombre = res.data.fecha_nombre;
+        this.ranking = res.data.ranking;
+      });
+    },
+    calcularPuntos() {
+      console.log(puntos, puntos_ganados);
+    },
+  },
+
   created() {
-    //console.log(this.$route);
+    this.getFecha();
   },
 };
 </script>

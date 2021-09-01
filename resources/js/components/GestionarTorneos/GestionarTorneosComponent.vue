@@ -208,12 +208,17 @@
         single-line
         hide-details
       ></v-text-field>
-      <v-data-table :headers="headers" :items="fechas" :search="search" @click:row="goToViewResumenFecha">
-          <template v-slot:[`item.ingresos`]="{ item }">
-                <p class="mt-4">
-                    ${{item.ingresos}}
-                <p/>
-              </template>
+      <v-data-table
+        :headers="headers"
+        :items="fechas"
+        :search="search"
+        @click:row="goToViewResumenFecha"
+      >
+        <template v-slot:[`item.ingresos`]="{ item }">
+          <p class="mt-4">${{ item.ingresos }}</p>
+
+          <p />
+        </template>
       </v-data-table>
     </v-card>
   </v-card>
@@ -239,7 +244,11 @@ export default {
   },
 
   computed: {
-    ...mapState("gestionarTorneos", ["torneos", "torneoSeleccionado", "fechas"]),
+    ...mapState("gestionarTorneos", [
+      "torneos",
+      "torneoSeleccionado",
+      "fechas",
+    ]),
   },
   methods: {
     ...mapMutations("gestionarTorneos", [
@@ -260,9 +269,9 @@ export default {
       });
     },
 
-    goToViewResumenFecha(fecha){
-        this.$router.push({ path: `/resumen/torneo/fecha/${fecha.id}` });
-    }
+    goToViewResumenFecha(fecha) {
+      this.$router.push({ path: `/resumen/torneo/fecha/${fecha.id}` });
+    },
   },
 
   created() {

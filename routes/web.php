@@ -76,6 +76,8 @@ Route::post('/torneo/puntos','TorneoController@updatePuntos');
 
 Route::get('/torneo/{id}/fechas','TorneoController@getFechas');
 
+Route::get('/torneo/fecha/{id}','FechaController@getFecha');
+
 Route::get('{path}', function () {
     return view('index');
 })->where('path', '(.*)');
