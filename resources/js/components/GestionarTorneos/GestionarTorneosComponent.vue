@@ -213,6 +213,7 @@
         :items="fechas"
         :search="search"
         @click:row="goToViewResumenFecha"
+        class="row-pointer"
       >
         <template v-slot:[`item.ingresos`]="{ item }">
           <p class="mt-4">${{ item.ingresos }}</p>
@@ -223,6 +224,11 @@
     </v-card>
   </v-card>
 </template>
+<style lang="css" scoped>
+.row-pointer >>> tbody tr :hover {
+  cursor: pointer;
+}
+</style>
 
 <script>
 import { mapMutations, mapState } from "vuex";
