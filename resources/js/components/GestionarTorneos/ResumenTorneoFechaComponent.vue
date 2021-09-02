@@ -16,6 +16,9 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-btn @click="getFechaExcel()">
+        Exportar Fecha
+    </v-btn>
   </v-container>
 </template>
 
@@ -46,9 +49,13 @@ export default {
         this.ranking = res.data.ranking;
       });
     },
-    calcularPuntos() {
-      console.log(puntos, puntos_ganados);
-    },
+    getFechaExcel() {
+        axios.get('/export-fecha',{
+            params: {
+                ranking: this.ranking
+            }
+        })
+    }
   },
 
   created() {

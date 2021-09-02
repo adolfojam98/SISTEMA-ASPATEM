@@ -9,6 +9,7 @@ use App\Torneo;
 use App\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FechaController extends Controller
 {
@@ -134,7 +135,7 @@ class FechaController extends Controller
                 "apellido" => $torneo_usuario->apellido,
                 "puntos" => $torneo_usuario->puntos,
                 "puntos_ganados" => calcularPuntosGanados($torneo_usuario->usuario_id, $fecha->id),
-                "categoria" => calcularCategoria($categorias, $torneo_usuario->puntos + calcularPuntosGanados($torneo_usuario->usuario_id, $fecha->id))
+                "categoria" => calcularCategoria($categorias, $torneo_usuario->puntos)
                 ];
                 
                 array_push($ranking_hasta_esta_fecha,$jugador);

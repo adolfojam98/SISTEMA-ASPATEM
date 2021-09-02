@@ -78,6 +78,8 @@ Route::get('/torneo/{id}/fechas','TorneoController@getFechas');
 
 Route::get('/torneo/fecha/{id}','FechaController@getFecha');
 
+Route::get('/export-fecha', 'ExcelController@getFechaExcel');
+
 Route::get('{path}', function () {
     return view('index');
 })->where('path', '(.*)');
