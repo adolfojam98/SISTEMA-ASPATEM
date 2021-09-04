@@ -9,16 +9,14 @@
           </p>
         </center>
       </v-card-title>
-      <hr>
+      <hr />
       <v-data-table :headers="headers" :items="ranking" :search="search">
         <template v-slot:[`item.puntos`]="{ item }">
           <p class="mt-4">{{ item.puntos }} ({{ item.puntos_ganados }})</p>
         </template>
       </v-data-table>
     </v-card>
-    <v-btn @click="getFechaExcel()">
-        Exportar Fecha
-    </v-btn>
+    <v-btn class="mt-2 mb-2 primary" @click="getFechaExcel()"> Exportar Fecha </v-btn>
   </v-container>
 </template>
 
@@ -50,11 +48,7 @@ export default {
       });
     },
     getFechaExcel() {
-        axios.get('/export-fecha',{
-            params: {
-                ranking: this.ranking
-            }
-        })
+        window.open(`/export-fecha/${this.fechaId}`,"_self");
     }
   },
 

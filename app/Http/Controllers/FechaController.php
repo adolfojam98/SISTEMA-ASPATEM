@@ -92,8 +92,6 @@ class FechaController extends Controller
 
     public function guardarFecha(Request $request)
     {
-
-
         $fecha = crearNuevaFecha($request);
         $categorias = $request->categorias;
 

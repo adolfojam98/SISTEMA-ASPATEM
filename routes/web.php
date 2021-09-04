@@ -78,7 +78,7 @@ Route::get('/torneo/{id}/fechas','TorneoController@getFechas');
 
 Route::get('/torneo/fecha/{id}','FechaController@getFecha');
 
-Route::get('/export-fecha', 'ExcelController@getFechaExcel');
+Route::get('/export-fecha/{id}', 'ExcelController@getFechaRankingExcel');
 
 Route::get('{path}', function () {
     return view('index');
