@@ -72,14 +72,12 @@ class ConfiguracionController extends Controller
     {
         $configuracion = Configuracion::first();
 
-        if($configuracion!=null){
+        if ($configuracion != null) {
             $configuracion->montoCuota = $request->montoCuota;
             $configuracion->montoCuotaDescuento = $request->montoCuotaDescuento;
             $configuracion->save();
             return $configuracion;
-        }
-
-        else {
+        } else {
             $configuracion = new Configuracion();
             $configuracion->montoCuota = $request->montoCuota;
             $configuracion->montoCuotaDescuento = $request->montoCuotaDescuento;
@@ -88,7 +86,6 @@ class ConfiguracionController extends Controller
                 'message' => 'Creada y guardada'
             ]);
         }
-
     }
 
     /**
@@ -106,42 +103,35 @@ class ConfiguracionController extends Controller
     {
         $configuracion = Configuracion::first();
 
-        if($configuracion!=NULL){
+        if ($configuracion != NULL) {
             $configuracion->automatizarBajasSocios = $request->automatizarBajasSocios;
             $configuracion->save();
-        }
-        else{
+        } else {
             $configuracion = new Configuracion();
             $configuracion->automatizarBajasSocios = $request->automatizarBajasSocios;
             $configuracion->save();
         }
     }
 
-    public function downloadBackup(Request $request){
-        
-        
+    public function downloadBackup(Request $request)
+    {
+        setlocale(LC_TIME, "es_ES");
+        $nombre = strftime("%Y%m%d") . "database.sqlite";
+
+
         $file = database_path('database.sqlite');
-        return response()->download($file);
+        return response()->download($file, $nombre);
     }
 
-    public function uploadBackup(Request $request){
-        dd($request['backup']);
-        if($request->hasFile("backup")){
-            $file=$request->file("backup");
-            
-            $nombre = "database.sqlite";
+    public function uploadBackup(Request $request)
+    {
+
+        if ($request->hasFile("file")) {
+            $file = $request->file("file");
 
             $ruta = database_path('database.sqlite');
-            dd($ruta);
-            if($file->guessExtension()=="sqlite"){
-                copy($file, $ruta);
-            }
 
+            copy($file, $ruta);
         }
     }
-
-   
-
-
-
 }
