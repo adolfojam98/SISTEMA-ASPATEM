@@ -116,7 +116,7 @@ export default {
     ...mapActions(["callSnackbar"]),
     ...mapActions("crearFecha", ["calcularMonto"]),
     traerJugadoresTorneo() {
-      if (localStorage.crearFecha == null) {
+      
         let me = this;
         axios
           .get(`/torneos/${this.torneoSeleccionado.id}/jugadores`)
@@ -130,11 +130,11 @@ export default {
               "error"
             )
           );
-      }
+      
     },
 
     traerCategorias() {
-      if (localStorage.crearFecha == null) {
+     
         console.log("Entro en buscar categoiras");
         let me = this;
         axios
@@ -180,9 +180,7 @@ export default {
           .catch((e) =>
             this.callSnackbar(["Error al traer categorias", "error"])
           );
-      } else {
-        console.log("No entro en la categoria");
-      }
+    
     },
   },
   watch: {
