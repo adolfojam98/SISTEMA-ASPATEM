@@ -41,11 +41,18 @@
                           single-line
                           type="number"
                           min="0"
+                          max="7"
                           oninput="validity.valid||(value='');"
                           class="soloNumeros pa-0 ma-0"
                           style="width: 80px"
                           label="Sets"
                           v-model="partido.set1"
+                          v-on:change="
+                            [
+                              calcularSiguienteJugador(),
+                              limpiarSiguientePartido(partido),
+                            ]
+                          "
                         /> </v-col
                     ></v-row>
 
@@ -72,11 +79,18 @@
                           single-line
                           type="number"
                           min="0"
+                          max="7"
                           oninput="validity.valid||(value='');"
                           class="soloNumeros pa-0 ma-0"
                           style="width: 80px"
                           v-model="partido.set2"
                           label="Sets"
+                          v-on:change="
+                            [
+                              calcularSiguienteJugador(),
+                              limpiarSiguientePartido(partido),
+                            ]
+                          "
                         /> </v-col
                     ></v-row>
 

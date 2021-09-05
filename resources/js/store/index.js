@@ -6,6 +6,7 @@ import grupos from "./grupos";
 import llaves from "./llaves";
 import jugadores from "./jugadores.js";
 import CrearTorneo from "./CrearTorneo.js";
+import gestionarTorneos from "./gestionarTorneos.js";
 
 Vue.use(Vuex);
 
@@ -17,7 +18,8 @@ export default new Vuex.Store({
         jugadores,
         grupos,
         llaves,
-        CrearTorneo
+        CrearTorneo,
+        gestionarTorneos,
     },
 
     state: {

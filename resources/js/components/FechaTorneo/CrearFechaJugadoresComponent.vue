@@ -8,7 +8,7 @@
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Search"
+                label="Buscar"
                 single-line
                 hide-details
               ></v-text-field>
@@ -55,6 +55,7 @@
               <template v-slot:[`item.pivot.puntos`]="{ item }">
                 <input
                   min="0"
+                  max="7"
                   oninput="validity.valid||(value='');"
                   type="number"
                   class="soloNumeros"

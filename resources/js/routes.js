@@ -54,6 +54,12 @@ export default new Router({
 			name: 'gestion-torneos',
 			component: require('./views/TorneoGestion').default
 		},
+
+        {
+            path: '/resumen/torneo/fecha/:id',
+            name: 'resumen-torneo-fecha',
+            component: require('../js/components/GestionarTorneos/ResumenTorneoFechaComponent').default
+        },
 		
 		{
             path: '/*',

@@ -6,8 +6,10 @@ use App\Fecha;
 use App\Partido;
 use App\Grupo;
 use App\Torneo;
+use App\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FechaController extends Controller
 {
@@ -90,8 +92,6 @@ class FechaController extends Controller
 
     public function guardarFecha(Request $request)
     {
-
-
         $fecha = crearNuevaFecha($request);
         $categorias = $request->categorias;
 
@@ -102,6 +102,73 @@ class FechaController extends Controller
             guardarCategoriaFecha($categoria, $fecha->id);
         }
         return;
+    }
+
+    public function getFecha(Request $request){
+        $fecha = Fecha::whereId($request->id)->first();
+        $ranking_hasta_esta_fecha = [];
+
+        $torneo_usuarios = Torneo::where('torneos.id',$fecha->torneo_id)
+            ->join('torneo_usuario','torneo_usuario.torneo_id','=','torneos.id')
+            ->join('usuarios','usuarios.id','=','torneo_usuario.usuario_id')
+            ->get();
+
+            $categorias = Categoria::where('torneo_id',$fecha->torneo_id)->get();
+           
+            foreach ($torneo_usuarios as $key => $torneo_usuario) {
+                $fechas_usuarios = Fecha::where('fechas.id',$fecha->torneo_id)
+                ->where('fechas.created_at','=<',$fecha->created_at) //TODO voy a traer todas las fechas anteriores y esta
+                ->where('fecha_usuario.usuario_id',$torneo_usuario->usuario_id)
+                ->join('fecha_usuario','fecha_usuario.fecha_id','=','fechas.id')
+                ->get();
+
+                foreach ($fechas_usuarios as $key => $fecha_usuario) {
+                    $torneo_usuario->puntos += $fecha_usuario->puntos;
+                }
+
+                $jugador = [
+                "usuario_id" => $torneo_usuario->usuario_id,
+                "dni" => $torneo_usuario->dni,
+                "nombre" => $torneo_usuario->nombre,
+                "apellido" => $torneo_usuario->apellido,
+                "puntos" => $torneo_usuario->puntos,
+                "puntos_ganados" => calcularPuntosGanados($torneo_usuario->usuario_id, $fecha->id),
+                "categoria" => calcularCategoria($categorias, $torneo_usuario->puntos)
+                ];
+                
+                array_push($ranking_hasta_esta_fecha,$jugador);
+                
+            }
+
+            $data = [
+                "ranking" => $ranking_hasta_esta_fecha,
+                "fecha_nombre" => $fecha->nombre,
+                "categorias" => $categorias
+            ];
+        
+        return $data;
+    }
+}
+
+function calcularCategoria($categorias, $puntos){
+    foreach ($categorias as $key => $categoria) {
+        if ($puntos >= $categoria->puntos_minimos && $puntos <= $categoria->puntos_maximos) 
+        {
+            return $categoria->nombre;
+        }
+    }
+}
+
+
+function calcularPuntosGanados($usuario_id, $fecha_id) {
+    $fecha_usuario = DB::table('fecha_usuario')
+    ->where('usuario_id',$usuario_id)
+    ->where('fecha_id',$fecha_id)->first();
+
+    if(!empty($fecha_usuario)){
+        return $fecha_usuario->puntos;
+    } else {
+        return 0;
     }
 }
 
