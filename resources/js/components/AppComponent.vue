@@ -94,13 +94,13 @@
 
         </v-list-group>
 
-        <v-list-item link :to="{name:'ranking'}">
+        <v-list-item link :to="{name:'ingresos'}">
           <v-list-item-action>
             <v-icon>mdi-account</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>
-              ranking
+              Ingresos
               </v-list-item-title>
           </v-list-item-content>
         </v-list-item>

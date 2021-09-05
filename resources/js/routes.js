@@ -27,9 +27,9 @@ export default new Router({
 			component: require('./views/TorneoCrear').default
 		},
 		{
-			path: '/ranking',
-			name: 'ranking',
-			component: require('./views/Ranking').default
+			path: '/ingresos',
+			name: 'ingresos',
+			component: require('./views/Ingresos').default
 		},
 		
 		{
