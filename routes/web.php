@@ -80,6 +80,8 @@ Route::get('/torneo/fecha/{id}','FechaController@getFecha');
 
 Route::get('/export-fecha/{id}', 'ExcelController@getFechaRankingExcel');
 
+Route::post('/ingreso/setMonto', 'IngresosExternosController@store');
+
 Route::get('{path}', function () {
     return view('index');
 })->where('path', '(.*)');
