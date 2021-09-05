@@ -27,7 +27,7 @@ export default new Router({
 			component: require('./views/TorneoCrear').default
 		},
 		{
-			path: '/ingresos',
+			path: '/ver/ingresos',
 			name: 'ingresos',
 			component: require('./views/Ingresos').default
 		},

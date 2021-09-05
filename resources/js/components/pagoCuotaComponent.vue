@@ -148,7 +148,6 @@ export default {
             ],
             editarMonto: true,
             observacion : null,
-            
         };
     },
     watch: {

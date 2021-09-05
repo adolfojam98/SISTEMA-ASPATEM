@@ -3,6 +3,7 @@
 namespace App;
 use App\Categoria;
 use App\Usuario;
+use App\Fecha;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,4 +19,10 @@ class Torneo extends Model
         return $this->belongsToMany(Usuario::class)->withPivot('puntos');
     }
     
+    public function calcularIngresos(){
+        $monto = Fecha::where('torneo_id',$this->id)
+            ->join('fecha_usuario','fecha_usuario.fecha_id','=','fechas.id')
+            ->sum('monto_pagado');
+        return $monto;
+    }
 }
