@@ -30,7 +30,7 @@ class FechaController extends Controller
      */
     public function create()
     {
-        //
+        return Fecha::all();
     }
 
     /**
