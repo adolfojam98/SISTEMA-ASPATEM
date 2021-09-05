@@ -122,7 +122,7 @@ export default {
 
   data() {
     return {
-      fechaInicio: new Date('2021-01-01').toISOString().substr(0, 10),
+      fechaInicio: new Date("2021-01-01").toISOString().substr(0, 10),
       fechaFin: new Date().toISOString().substr(0, 10),
       formatoFecha: this.darFormatoFecha(
         new Date().toISOString().substr(0, 10)
@@ -179,7 +179,7 @@ export default {
   },
 
   mounted() {
-        console.log(this.fechaFin)
-    },
+    console.log(this.fechaFin);
+  },
 };
 </script>
