@@ -11,8 +11,11 @@
     <v-card v-if="listaCategorias.length > 0" dark>
       <grupos-fecha></grupos-fecha>
     </v-card>
-    <v-btn @click="guardarFechaComponent()">Guardar Fecha</v-btn>
+    <v-btn @click="guardarFechaComponent()">Guardar</v-btn>
 
+    <v-btn @click="guardarLocalStorage()">SAVE STORAGE</v-btn>
+    <v-btn @click="cargarLocalStorage()">CARGAR STORAGE</v-btn>
+    <v-btn @click="backupBase()">BackupBase</v-btn>
    
 
 
@@ -37,14 +40,14 @@ export default {
     };
   },
   computed: {
-    ...mapState("crearFecha", ["listaCategorias","listaJugadores","cargandoStorage"]),
+    ...mapState("crearFecha", ["listaCategorias","listaJugadores"]),
 
     store() {
       return this.$store.state;
     },
   },
   methods: {
-    ...mapMutations("crearFecha", ["setTorneos","setCargandoStorage"]),
+    ...mapMutations("crearFecha", ["setTorneos"]),
     ...mapActions(["callSnackbar"]),
 
     async guardarFechaComponent() {
@@ -159,22 +162,18 @@ export default {
       localStorage.crearFecha = JSON.stringify(this.store.crearFecha);
     },
     cargarLocalStorage() {
-      if(localStorage.crearFecha){
-
-        this.setCargandoStorage(true)
-        const crearFecha = JSON.parse(localStorage.crearFecha);
-        this.store.crearFecha.torneoSeleccionado = crearFecha.torneoSeleccionado 
+      const crearFecha = JSON.parse(localStorage.crearFecha);
+      this.store.crearFecha.torneoSeleccionado = crearFecha.torneoSeleccionado 
+    
+      this.store.crearFecha.nombreFecha = crearFecha.nombreFecha 
+      this.store.crearFecha.listaJugadores = crearFecha.listaJugadores
+      this.store.crearFecha.montoSociosUnaCategoria = crearFecha.montoSociosUnaCategoria
+      this.store.crearFecha.montoSociosDosCategorias = crearFecha.montoSociosDosCategorias
+      this.store.crearFecha.montoNoSociosUnaCategoria = crearFecha.montoNoSociosUnaCategoria
+      this.store.crearFecha.montoNoSociosDosCategorias = crearFecha.montoNoSociosDosCategorias
       
-        this.store.crearFecha.nombreFecha = crearFecha.nombreFecha 
-        this.store.crearFecha.listaJugadores = crearFecha.listaJugadores
-        this.store.crearFecha.montoSociosUnaCategoria = crearFecha.montoSociosUnaCategoria
-        this.store.crearFecha.montoSociosDosCategorias = crearFecha.montoSociosDosCategorias
-        this.store.crearFecha.montoNoSociosUnaCategoria = crearFecha.montoNoSociosUnaCategoria
-        this.store.crearFecha.montoNoSociosDosCategorias = crearFecha.montoNoSociosDosCategorias
-        
-        this.store.crearFecha.listaCategorias = crearFecha.listaCategorias
-        this.setCargandoStorage(false)
-      }
+      this.store.crearFecha.listaCategorias = crearFecha.listaCategorias
+      
 
 
       
@@ -190,10 +189,7 @@ export default {
     axios.get("/torneos").then((res) => {
       this.setTorneos(res.data);
     });
-    this.cargarLocalStorage()
-    setInterval(() => this.guardarLocalStorage(), 2000);
   },
-
 };
 </script>
 
