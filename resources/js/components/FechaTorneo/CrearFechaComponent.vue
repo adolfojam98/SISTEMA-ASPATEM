@@ -162,7 +162,22 @@ export default {
       localStorage.crearFecha = JSON.stringify(this.store.crearFecha);
     },
     cargarLocalStorage() {
-      this.store.crearFecha = JSON.parse(localStorage.crearFecha);
+      const crearFecha = JSON.parse(localStorage.crearFecha);
+      this.store.crearFecha.torneoSeleccionado = crearFecha.torneoSeleccionado 
+    
+      this.store.crearFecha.nombreFecha = crearFecha.nombreFecha 
+      this.store.crearFecha.listaJugadores = crearFecha.listaJugadores
+      this.store.crearFecha.montoSociosUnaCategoria = crearFecha.montoSociosUnaCategoria
+      this.store.crearFecha.montoSociosDosCategorias = crearFecha.montoSociosDosCategorias
+      this.store.crearFecha.montoNoSociosUnaCategoria = crearFecha.montoNoSociosUnaCategoria
+      this.store.crearFecha.montoNoSociosDosCategorias = crearFecha.montoNoSociosDosCategorias
+      
+      this.store.crearFecha.listaCategorias = crearFecha.listaCategorias
+      
+
+
+      
+
       console.log(this.store.crearFecha);
     },
     backupBase(){
@@ -179,3 +194,6 @@ export default {
 </script>
 
 <style></style>
+
+
+

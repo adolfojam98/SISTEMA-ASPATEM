@@ -42,14 +42,27 @@
           </v-layout>
         </v-form>
       </v-container>
-      <v-btn href="/base/descargar">DESCARGAR</v-btn>
-      <v-file-input
-      @change= "obtenerArchivo"
-    accept='.sqlite'
-    label="File input"
-   
-  ></v-file-input>
-  <v-btn @click= 'guardarBD()'></v-btn>
+      
+      <v-row>
+        <v-col cols = "10">
+          <v-file-input
+            label="Seleccione un archivo para realizar backup de base"
+            accept=".sqlite"
+            @change="archivoElegido"
+          ></v-file-input>
+        </v-col>
+        <v-col>
+          <v-btn
+            @click="guardarBD()"
+            :disabled="archivoDB == null"
+            color="primary"
+            >guardar</v-btn
+          >
+        </v-col>
+      </v-row>
+      <v-col>
+        <v-btn class = "primary" href="/base/descargar">DESCARGAR backup base</v-btn>
+      </v-col>
     </v-card>
   </div>
 </template>
@@ -67,7 +80,7 @@ export default {
     automatizar: true,
     montoCuota: 0,
     montoCuotaDescuento: 0,
-    archivoDB : null,
+    archivoDB: null,
 
     montoRules: [
       (v) => !!v || "Monto requerido",
@@ -84,17 +97,19 @@ export default {
         this.automatizar = res.data.automatizarBajasSocios;
       });
     },
-    obtenerArchivo(e){
-        this.archivoDB = e.target.files[0];
-        console.log(this.archivoDB);
+    archivoElegido(e) {
+      this.archivoDB = e;
     },
-    guardarBD(){
-        console.log(this.archivoDB)
-        axios.post('/base/cargar',{
-            'backup' : this.archivoDB
-        })
-    },
+    guardarBD() {
+      console.log(this.archivoDB);
+      let formData = new FormData();
 
+      formData.append("file", this.archivoDB);
+      console.log(formData);
+      axios.post(`/base/cargar`, formData, {
+        headers: { "content-type": "multipart/form-data" },
+      });
+    },
 
     guardarConfiguracion() {
       axios
