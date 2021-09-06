@@ -67,6 +67,7 @@ export default {
             nombreFecha: this.store.crearFecha.nombreFecha,
             jugadores: this.store.crearFecha.listaJugadores,
           });
+          localStorage.crearFecha = null;
         } catch (e) {
           this.callSnackbar(["No se ha podido guardar. " + e, "error"]);
         }

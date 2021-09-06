@@ -100,15 +100,23 @@ export default {
     archivoElegido(e) {
       this.archivoDB = e;
     },
-    guardarBD() {
-      console.log(this.archivoDB);
+   async guardarBD() {
+     
       let formData = new FormData();
 
       formData.append("file", this.archivoDB);
       console.log(formData);
-      axios.post(`/base/cargar`, formData, {
+     try{
+await axios.post(`/base/cargar`, formData, {
         headers: { "content-type": "multipart/form-data" },
       });
+
+             this.callSnackbar(["Backup realizado correctamente ","success"])
+
+     }catch(e){
+       this.callSnackbar(["Error al guardar base: " + e,"error"])
+     }
+     
     },
 
     guardarConfiguracion() {
