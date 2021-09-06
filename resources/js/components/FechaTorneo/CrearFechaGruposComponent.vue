@@ -314,7 +314,7 @@
                 <v-btn
                   class="center mb-6 mt-4"
                   dark
-                  @click="item.llavesGeneradas = true"
+                  @click="validarPartidos(item)"
                   color="blue"
                 >
                   Generar llaves
@@ -385,6 +385,7 @@ export default {
     ...mapActions(["callSnackbar"]),
     validarPartidos(item) {
       const grupos = item.listaGrupos;
+      let valid = true;
 
       grupos.forEach((grupo) => {
         console.log(grupo);
@@ -394,20 +395,18 @@ export default {
               "Existe al menos un partido con empate",
               "warning",
             ]);
-            return;
+            valid = false;
           }
-          if (partido.setsJugador1 == null || partido.setsJugador2 == null) {
+          if (partido.setsJugador1 == null || partido.setsJugador1 == '' || partido.setsJugador2 == null || partido.setsJugador2 == '') {
             this.callSnackbar([
               "Existe al menos un partido sin resultado",
               "warning",
             ]);
-            return;
+            valid = false;
           }
-          item.llavesGeneradas = true;
         });
       });
-
-      item.listaGrupos.llavesGeneradas = true;
+      item.llavesGeneradas = valid;
     },
     gruposGenerados(categoria) {
       return !categoria.gruposGenerados;
