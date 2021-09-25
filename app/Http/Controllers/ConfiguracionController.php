@@ -134,4 +134,14 @@ class ConfiguracionController extends Controller
             copy($file, $ruta);
         }
     }
+
+    public function modificarMail(Request $request){
+        config(['MAIL_USERNAME' => 'prueba']);
+
+        return "Llego";
+    }
+
+    public function traerMail(Request $request){
+        return config('MAIL_USERNAME');
+    }
 }
