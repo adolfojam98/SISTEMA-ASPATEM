@@ -7,6 +7,7 @@ import llaves from "./llaves";
 import jugadores from "./jugadores.js";
 import CrearTorneo from "./CrearTorneo.js";
 import gestionarTorneos from "./gestionarTorneos.js";
+import avisos from "./avisos.js"
 
 Vue.use(Vuex);
 
@@ -20,6 +21,7 @@ export default new Vuex.Store({
         llaves,
         CrearTorneo,
         gestionarTorneos,
+        avisos
     },
 
     state: {

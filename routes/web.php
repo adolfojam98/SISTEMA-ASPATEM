@@ -91,7 +91,7 @@ Route::get('/fechas','FechaController@create');
 
 Route::get('/ingresos/{fecha_inicio?}/{fecha_fin?}/{tipo?}/{torneo_id?}/{fecha_id?}','IngresosExternosController@create');
 
-Route::get('send-email','MailController@sendEmail');
+Route::post('/send-email','MailController@sendEmail');
 
 Route::get('{path}', function () {
     return view('index');

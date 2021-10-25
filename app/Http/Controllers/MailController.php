@@ -14,25 +14,27 @@ use Illuminate\Http\Request;
 class MailController extends Controller
 {
     public function sendEmail(Request $request){
+        $params = $request->all();
 
         $users = Usuario::whereNotNull('mail')->get();
         $count_errors = 0;
         $exceptions = array();
 
         $data = [
-            'titulo' => $request->titulo ? $request->titulo : 'SYS-ASPATEM - AVISO',
-            'mensaje' => $request->mensaje ? $request->mensaje : ''
+            'asunto' => $params['asunto'],
+            'titulo' => $params['titulo'],
+            'subtitulo' => $params['subtitulo'] ?  $params['subtitulo'] : '',
+            'mensaje' => $params['mensaje']
         ];
 
-        $asunto = $request->asunto ? $request->asunto : 'Nuevo Aviso';
 
         foreach ($users as $key => $user) {
             $to = array($user->mail);
 
             if(AppHelper::instance()->validateEmail($to)) {
-                Mail::send('emails.testEmail',$data, function($msj) use ($to, $asunto){
+                Mail::send('emails.testEmail',$data, function($msj) use ($to, $data){
                     $msj->from(env('MAIL_USERNAME'), 'ASPATEM');
-                    $msj->subject($asunto);
+                    $msj->subject($data['asunto']);
                     $msj->to($to);
                 });
             }

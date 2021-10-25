@@ -163,7 +163,7 @@ export default {
 
         dni: "",
         dniRules: [
-            v => !!v || "Importe requerido",
+            v => !!v || "DNI requerido",
             v => v >= 10000000 || "El DNI debe tener 8 caracteres",
             v => v < 100000000 || "El DNI debe tener 8 caracteres"
         ],
@@ -206,20 +206,22 @@ export default {
         },
 
         generarCuota() {
-            axios
-                .post("/cuota", {
-                    id_usuario: this.id_usuario,
-                    importe: this.importe
-                })
-                .then(response => {
-                    this.id_cuota = response.data.id;
-                    this.pagarCuota();
-                })
-                .catch(function(error) {
-                    this.callSnackbar(["Error al guardar cuota", "error"]);
-                });
+            if(this.importe && this.importe != '' && this.importe > 0) {
+                axios
+                    .post("/cuota", {
+                        id_usuario: this.id_usuario,
+                        importe: this.importe
+                    })
+                    .then(response => {
+                        this.id_cuota = response.data.id;
+                        this.pagarCuota();
+                    })
+                    .catch(function(error) {
+                        this.callSnackbar(["Error al guardar cuota", "error"]);
+                    });
 
-            this.$refs.form.reset();
+                this.$refs.form.reset();
+            }
         },
 
         pagarCuota() {

@@ -69,7 +69,7 @@
             margin-bottom: 10px;
         }
         img {
-            width: 5%;
+            width: 35px;
             margin-top: 10px;
             background-color: white;
         }
@@ -107,11 +107,13 @@
         <div class="card">
             <div class="card-header">Aspatem</div>
             <div class="card-content">
-                <h3 class="title">"Titulo"</h3>
+                <h3 class="title">{{$titulo}}</h3>
                 <hr>
-                <h4 class="subtitulo">"Subtitulo": </h4>
+                @if(isset($subtitulo) && !empty($subtitulo))
+                    <h4 class="subtitulo">{{$subtitulo}}</h4>
+                @endif
                 <p class="text-sangria">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut perferendis amet commodi praesentium fuga, consequuntur eos ducimus minus magnam adipisci ullam vitae? Est itaque, veritatis, magnam cumque similique voluptatibus sunt dolor ut at aliquid quisquam iste veniam officiis pariatur fugiat? Facilis omnis nesciunt nisi ipsam minima eligendi, aspernatur asperiores amet quaerat dicta, sequi, repellat sint a! Tempore iusto laudantium libero consequuntur fuga inventore eligendi, id impedit, odio natus itaque animi blanditiis. Asperiores consectetur fuga temporibus, nisi, aliquam sequi voluptas esse aperiam odio quis quia consequatur totam sit quae voluptate perferendis odit? Rerum tempore sunt eaque eum doloribus recusandae temporibus repellat?
+                    {{$mensaje}}
                 </p>
             </div>
         </div>
