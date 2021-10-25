@@ -45,7 +45,9 @@ Route::get('/configuraciones','ConfiguracionController@show');
 Route::put('/configuraciones','ConfiguracionController@update');
 
 Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion');
+
 Route::post('/configuraciones/cambiarEmail','ConfiguracionController@modificarMail');
+
 Route::post('/configuraciones/traerEmail','ConfiguracionController@traerMail');
 
 Route::post('/generarCuota','CuotaController@generarCuota');
