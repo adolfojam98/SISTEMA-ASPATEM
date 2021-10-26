@@ -3,15 +3,14 @@
         <v-card class="mb-12" min-height="360px">
             <v-row>
                 <v-col cols="8" md="4">
-                    <v-container>
+                    <v-container mb-0>
                         <v-form v-model="valid" lazy-validation>
                             <v-card elevation="4" class="rounded-sm"> </v-card>
 
                             <v-spacer></v-spacer>
 
-                            <v-card elevation="8">
                                 <agregar-categoria-component></agregar-categoria-component>
-                            </v-card>
+
                         </v-form>
                     </v-container>
                 </v-col>

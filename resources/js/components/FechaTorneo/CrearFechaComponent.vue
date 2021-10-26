@@ -169,9 +169,6 @@ export default {
         this.setCargandoStorage(false)
       }
 
-
-      
-
       console.log(this.store.crearFecha);
     },
     backupBase(){
@@ -183,9 +180,13 @@ export default {
     axios.get("/torneos").then((res) => {
       this.setTorneos(res.data);
     });
-    this.cargarLocalStorage()
+    //this.cargarLocalStorage()
     setInterval(() => this.guardarLocalStorage(), 2000);
   },
+
+  beforeMount() {
+      this.cargarLocalStorage()
+  }
 
 };
 </script>

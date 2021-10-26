@@ -2,7 +2,7 @@
   <div>
     <v-card elevation="4" class="rounded-b-xl">
       <v-card-title>Agregar nuevo Jugador</v-card-title>
-      <v-form v-model="valid" lazy-validation ref="form">
+      <v-form v-model="valid" ref="form">
         <v-text-field
           class="ml-2 mr-2"
           v-model="apellidoJugador"
@@ -34,7 +34,6 @@
         ></v-text-field>
 
         <v-btn
-          dark
           block
           class="rounded-pill mb-2"
           color="primary"
@@ -81,22 +80,28 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["callSnackbar"]),
     ...mapMutations("CrearTorneo", ["pushJugadorTorneo"]),
     agregarJugador() {
-      let jugador = {
-        apellido: this.apellidoJugador,
-        nombre: this.nombreJugador,
-        dni: this.dniJugador,
-        puntos: this.puntosJugador,
-      };
-      console.log(jugador);
-      this.pushJugadorTorneo(jugador);
+    if(this.apellidoJugador && this.nombreJugador && this.dniJugador && this.puntosJugador) {
+        let jugador = {
+            apellido: this.apellidoJugador,
+            nombre: this.nombreJugador,
+            dni: this.dniJugador,
+            puntos: this.puntosJugador,
+        };
+        console.log(jugador);
+        this.pushJugadorTorneo(jugador);
 
-      this.apellidoJugador = "";
-      this.nombreJugador = "";
-      this.dniJugador = null;
-      this.puntosJugador = null;
+        this.apellidoJugador = "";
+        this.nombreJugador = "";
+        this.dniJugador = null;
+        this.puntosJugador = null;
+        } else {
+            this.callSnackbar(["Debe completar todos los campos para poder agregar un jugador"]);
+        }
     },
+
     resetValidate() {
       this.$refs.form.resetValidation();
     },

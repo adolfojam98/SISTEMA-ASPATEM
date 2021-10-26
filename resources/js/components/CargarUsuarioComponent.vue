@@ -29,6 +29,7 @@
                             v-model="dni"
                             :rules="dniRules"
                             label="DNI"
+                            type="number"
                             required
                         ></v-text-field>
 
@@ -36,14 +37,12 @@
                             v-model="email"
                             :rules="emailRules"
                             label="E-mail"
-                            required
                         ></v-text-field>
 
                         <v-text-field
                             v-model="telefono"
                             label="Telefono"
-                            :rules="telefonoRules"
-                            required
+                            type="number"
                         ></v-text-field>
 
                         <v-text-field
@@ -51,7 +50,7 @@
                             label="Importe del corriente mes"
                             :rules="importeRules"
                             prefix="$"
-                            required
+                            type="number"
                         ></v-text-field>
 
                         <v-btn
@@ -61,7 +60,7 @@
                             color="primary"
                             :disabled="!valid"
                             @click.prevent="cargarUsuario"
-                            >Dar de alta y pagar</v-btn
+                            >Dar de alta</v-btn
                         >
                     </v-container>
                 </v-form>
@@ -96,6 +95,7 @@
                             v-model="dni"
                             :rules="dniRules"
                             label="DNI"
+                            type="number"
                             required
                         ></v-text-field>
 
@@ -108,7 +108,7 @@
                         <v-text-field
                             v-model="telefono"
                             label="Telefono"
-                            :rules="telefonoRules"
+                            type="number"
                         ></v-text-field>
 
                         <v-btn
@@ -157,7 +157,7 @@ export default {
 
         importe: "",
         importeRules: [
-            v => !!v || "Importe requerido",
+            //v => !!v || "Importe requerido",
             v => v >= 0 || "Importe no valido"
         ],
 
@@ -170,8 +170,8 @@ export default {
 
         email: "",
         emailRules: [
-            v => !!v || "E-mail requerido",
-            v => /.+@.+[.].+/.test(v) || "E-mail no valido"
+            //v => !!v || "E-mail requerido",
+            //v => /.+@.+[.].+/.test(v) || "E-mail no valido"
         ]
     }),
     methods: {
@@ -206,7 +206,9 @@ export default {
         },
 
         generarCuota() {
-            if(this.importe && this.importe != '' && this.importe > 0) {
+            if(!this.importe || this.importe == '' || this.importe < 0) {
+                this.importe = 0;
+            }
                 axios
                     .post("/cuota", {
                         id_usuario: this.id_usuario,
@@ -221,7 +223,6 @@ export default {
                     });
 
                 this.$refs.form.reset();
-            }
         },
 
         pagarCuota() {

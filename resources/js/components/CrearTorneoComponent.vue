@@ -98,7 +98,7 @@ export default {
                         jugadores: this.listaJugadores
                     });
                     const categorias = await axios.post("/categorias", {
-                        id_torneo: res.data,
+                        id_torneo: nuevoTorneo.data,
                         categorias: this.arrayCategorias
                     });
                     this.callSnackbar([

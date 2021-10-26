@@ -1,6 +1,7 @@
 <template>
     <div>
-        <v-card-title>Nueva categoria</v-card-title>
+        <v-card elevation="4" class="rounded-b-xl mb-0">
+        <v-card-title elevation="4" class="rounded-b-xl mb-0">Nueva categoria</v-card-title>
 
         <v-divider></v-divider>
         <v-form v-model="valid" ref="form">
@@ -21,19 +22,19 @@
                 v-on:keyup.enter="[agregarCategoria(),resetValidate()]"
             ></v-text-field>
             </v-card-text>
-            <v-card-actions>
+            
 
                 <v-btn
                     block
-                    class="rounded-pill"
+                    class="rounded-pill mb-0"
                     color="primary"
                     @click="[agregarCategoria(), resetValidate()]"
                     :disabled="!valid"
                     >Agregar</v-btn
                 >
-            </v-card-actions>
+            
         
-            <v-card-actions>
+            <!-- <v-card-actions>
                 
                 <v-btn
                     block
@@ -44,9 +45,10 @@
                     "
                     >Cancelar</v-btn
                 >
-            </v-card-actions>
+            </v-card-actions> -->
 
         </v-form>
+        </v-card>
     </div>
 </template>
 

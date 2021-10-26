@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-container :fluid="true">
-            <v-simple-table dark>
+            <v-simple-table >
                 <template v-slot:default>
                     <thead>
                         <tr>
