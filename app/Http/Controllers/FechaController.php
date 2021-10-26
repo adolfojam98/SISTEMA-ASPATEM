@@ -438,6 +438,8 @@ function guardarPartidosLlaves($partidos, $fecha_id, $categoria_id, $sigPartido)
     $partido = array_shift($partidos);
 
     $nuevoPartido = new Partido();
+    //dd(DB::table('partido_fase')->get());
+    //if($partido['fase']!= 'final') dd($partido['fase']);
     $nuevoPartido->partido_fase_id = DB::table('partido_fase')->where('nombre', $partido['fase'])->first()->id;
 
     $nuevoPartido->categoria_id = $categoria_id;
