@@ -218,11 +218,13 @@ export default {
       let me = this;
       categorias.forEach(function (categoria, indexCategoria) {
         if (
-          item.pivot.puntos >= categoria.puntos_minimos &&
-          item.pivot.puntos <= categoria.puntos_maximos
+          parseInt(item.pivot.puntos) >= parseInt(categoria.puntos_minimos) &&
+          parseInt(item.pivot.puntos) <= parseInt(categoria.puntos_maximos)
         ) {
           if (!categoria.gruposGenerados) {
-            var indice = categoria.jugadoresAnotados.indexOf(item);
+            var indice = me.getIndexjugadorAnotado(categoria,item);
+            //var indice = categoria.jugadoresAnotados.indexOf(item);
+            console.log(indice)
             if (indice === -1) {
               categoria.jugadoresAnotados.push(item);
               //me.pushJugadorCategoria({ item, indexCategoria });
@@ -294,14 +296,18 @@ export default {
       this.setPuntosJugador(null);
     },
 
-    calcularCategoria: function (item) {
+    calcularCategoria(item) {
       var mensaje = "";
+      var me = this;
       this.listaCategorias.forEach((categoria) => {
+
         if (
-          item.pivot.puntos >= categoria.puntos_minimos &&
-          item.pivot.puntos <= categoria.puntos_maximos
+          parseInt(item.pivot.puntos) >= parseInt(categoria.puntos_minimos) &&
+          parseInt(item.pivot.puntos) <= parseInt(categoria.puntos_maximos)
         ) {
-          if (!categoria.jugadoresAnotados.includes(item)) {
+          var indice = me.getIndexjugadorAnotado(categoria,item);
+          //if (!categoria.jugadoresAnotados.includes(item)) {
+          if (indice == -1) {
             mensaje = "Agregar a la categoria: " + categoria.nombre;
           } else {
             mensaje = "Quitar de la categoria: " + categoria.nombre;
@@ -313,10 +319,12 @@ export default {
 
     agregarEnLaCategoriaSuperior(item) {
       var entrarEnElSiguiente = false;
+      let me = this;
       this.listaCategorias.forEach((categoria) => {
         if (entrarEnElSiguiente) {
           if (!categoria.gruposGenerados) {
-            var indice = categoria.jugadoresAnotados.indexOf(item);
+            var indice = me.getIndexjugadorAnotado(categoria,item);
+            //var indice = categoria.jugadoresAnotados.indexOf(item);
 
             if (indice === -1) {
               categoria.jugadoresAnotados.push(item);
@@ -343,8 +351,8 @@ export default {
             ]);
         }
         if (
-          item.pivot.puntos >= categoria.puntos_minimos &&
-          item.pivot.puntos <= categoria.puntos_maximos
+          parseInt(item.pivot.puntos) >= parseInt(categoria.puntos_minimos) &&
+          parseInt(item.pivot.puntos) <= parseInt(categoria.puntos_maximos)
         ) {
           entrarEnElSiguiente = true;
         } else entrarEnElSiguiente = false;
@@ -358,7 +366,8 @@ export default {
       let mensaje = "No hay una categoria superior";
       this.listaCategorias.forEach((categoria) => {
         if (entrarEnElSiguiente) {
-          var indice = categoria.jugadoresAnotados.indexOf(item);
+          var indice = this.getIndexjugadorAnotado(categoria,item);
+            //var indice = categoria.jugadoresAnotados.indexOf(item);
 
           if (indice === -1) {
             mensaje = "Agregar en la categoria superior: " + categoria.nombre;
@@ -368,8 +377,8 @@ export default {
           entrarEnElSiguiente = false;
         }
         if (
-          item.pivot.puntos >= categoria.puntos_minimos &&
-          item.pivot.puntos <= categoria.puntos_maximos
+          parseInt(item.pivot.puntos) >= parseInt(categoria.puntos_minimos) &&
+          parseInt(item.pivot.puntos) <= parseInt(categoria.puntos_maximos)
         ) {
           entrarEnElSiguiente = true;
         }
@@ -380,6 +389,15 @@ export default {
       var indice = this.listaJugadores.indexOf(item);
       this.listaJugadores.splice(indice, 1);
     },
+    getIndexjugadorAnotado(categoria,jugador) {
+        let indice = -1
+        categoria.jugadoresAnotados.forEach(function (elemento, index) {
+            if(elemento.id === jugador.id) {
+                indice = index;
+            }
+        });
+        return indice;
+    }
   },
 };
 </script>

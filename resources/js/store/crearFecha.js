@@ -184,9 +184,15 @@ export default {
 
                 state.listaCategorias.forEach(categoria => {
 
-                    if (categoria.jugadoresAnotados.includes(jugador)) {
-                        anotadoEnCategorias++;
-                    }
+                    categoria.jugadoresAnotados.forEach(jugadorAnotado => {
+                        if(jugadorAnotado.id === jugador.id) {
+                            anotadoEnCategorias++;
+                        }
+                    });
+
+                    // if (categoria.jugadoresAnotados.includes(jugador)) {
+                    //     anotadoEnCategorias++;
+                    // }
                 })
 
                 if (parseInt(state.montoSociosUnaCategoria) >= 0 && parseInt(state.montoSociosDosCategorias) >= 0
