@@ -60,6 +60,12 @@ export default new Router({
             name: 'resumen-torneo-fecha',
             component: require('../js/components/GestionarTorneos/ResumenTorneoFechaComponent').default
         },
+
+        {
+            path: '/avisos',
+            name: 'avisos',
+            component: require('../js/views/Avisos').default
+        },
 		
 		{
             path: '/*',

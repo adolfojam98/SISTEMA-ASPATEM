@@ -44,11 +44,16 @@ Route::get('/configuraciones','ConfiguracionController@show');
 
 Route::put('/configuraciones','ConfiguracionController@update');
 
+Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion');
+
+Route::post('/configuraciones/cambiarEmail','ConfiguracionController@modificarMail');
+
+Route::post('/configuraciones/traerEmail','ConfiguracionController@traerMail');
+
 Route::post('/generarCuota','CuotaController@generarCuota');
 
 Route::put('/pagarCuota','CuotaController@pagar');
 
-Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion');
 
 Route::post('/torneo', 'TorneoController@store');
 //TODO cambiar las rutas, debería ser /torneo/categorias pq sino no se entiende un choto cuando lo llamas
@@ -85,6 +90,8 @@ Route::post('/ingreso/setMonto', 'IngresosExternosController@store');
 Route::get('/fechas','FechaController@create');
 
 Route::get('/ingresos/{fecha_inicio?}/{fecha_fin?}/{tipo?}/{torneo_id?}/{fecha_id?}','IngresosExternosController@create');
+
+Route::post('/send-email','MailController@sendEmail');
 
 Route::get('{path}', function () {
     return view('index');

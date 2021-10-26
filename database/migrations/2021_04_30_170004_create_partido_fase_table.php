@@ -39,7 +39,7 @@ class CreatePartidoFaseTable extends Migration
             'nombre' => 'cuartos'
         ]);
         DB::table('partido_fase')->insert([
-            'nombre' => 'semis'
+            'nombre' => 'semifinal'
         ]);
         DB::table('partido_fase')->insert([
             'nombre' => 'final'

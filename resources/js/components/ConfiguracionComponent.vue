@@ -64,6 +64,9 @@
         <v-btn class = "primary" href="/base/descargar">DESCARGAR backup base</v-btn>
       </v-col>
     </v-card>
+
+    <v-btn @click="cambiarConfiguracion()">Cambiar configuracion</v-btn>
+    <v-btn @click="traerConfiguracion()">Trear configuracion</v-btn>
   </div>
 </template>
 
@@ -89,6 +92,13 @@ export default {
   }),
 
   methods: {
+    cambiarConfiguracion(){
+          axios.post("/configuraciones/cambiarEmail").then((res) => console.log(res))
+    },
+    traerConfiguracion(){
+          axios.post("/configuraciones/traerEmail").then((res) => console.log(res))
+
+    },
     ...mapActions(["callSnackbar"]),
     cargarConfiguracion() {
       axios.get("/configuraciones").then((res) => {

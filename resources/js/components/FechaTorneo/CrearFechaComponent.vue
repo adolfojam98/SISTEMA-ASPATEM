@@ -90,22 +90,14 @@ export default {
     verificarCargaDeCategorias(categorias) {
       let valido = true;
       categorias.forEach((categoria) => {
-        if (!categoria.gruposGenerados) {
+        if (categoria.gruposGenerados && !categoria.llavesGeneradas) {
           valido = false;
           this.validaciones.push({
             mensaje:
-              "No se han generado los grupos para la categoria " +
-              categoria.nombre,
+              "Se han generado los grupos para" + categoria.nombre + "per no se han generado las llaves"
           });
         }
-        if (!categoria.llavesGeneradas) {
-          valido = false;
-          this.validaciones.push({
-            mensaje:
-              "No se han generado las llaves para la categoría" +
-              categoria.nombre,
-          });
-        } else {
+        else {
           if (!this.verificarPartidosLlavesCategorias(categoria)) {
             valido = false;
             this.validaciones.push({
@@ -177,9 +169,6 @@ export default {
         this.setCargandoStorage(false)
       }
 
-
-      
-
       console.log(this.store.crearFecha);
     },
     backupBase(){
@@ -191,9 +180,13 @@ export default {
     axios.get("/torneos").then((res) => {
       this.setTorneos(res.data);
     });
-    this.cargarLocalStorage()
+    //this.cargarLocalStorage()
     setInterval(() => this.guardarLocalStorage(), 2000);
   },
+
+  beforeMount() {
+      this.cargarLocalStorage()
+  }
 
 };
 </script>

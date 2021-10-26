@@ -310,22 +310,7 @@ export default {
       });
       return mensaje;
     },
-    calcularCategoria: function (item) {
-      let mensaje = "";
-      this.listaCategorias.forEach((categoria) => {
-        if (
-          item.pivot.puntos >= categoria.puntos_minimos &&
-          item.pivot.puntos <= categoria.puntos_maximos
-        ) {
-          if (!categoria.jugadoresAnotados.includes(item)) {
-            mensaje = "Agregar a la categoria: " + categoria.nombre;
-          } else {
-            mensaje = "Quitar de la categoria: " + categoria.nombre;
-          }
-        }
-      });
-      return mensaje;
-    },
+
     agregarEnLaCategoriaSuperior(item) {
       var entrarEnElSiguiente = false;
       this.listaCategorias.forEach((categoria) => {
