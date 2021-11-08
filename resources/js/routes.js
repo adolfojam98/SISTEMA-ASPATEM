@@ -66,6 +66,12 @@ export default new Router({
             name: 'avisos',
             component: require('../js/views/Avisos').default
         },
+
+        {
+            path: '/historial-jugador',
+            name: 'historial-jugador',
+            component: require('../js/views/HistorialJugador').default
+        },
 		
 		{
             path: '/*',

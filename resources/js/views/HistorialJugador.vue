@@ -1,0 +1,3 @@
+<template>
+    <historial-jugador/>
+</template>

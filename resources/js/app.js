@@ -57,7 +57,8 @@ Vue.component('resultados-grupos',                  require('./components/FechaT
 Vue.component('gestion-torneos',                    require('./components/GestionarTorneos/GestionarTorneosComponent').default);
 Vue.component('torneo-fecha',                       require('./components/GestionarTorneos/ResumenTorneoFechaComponent').default);
 Vue.component('gestion-ingresos',                   require('./components/Ingresos/GestionIngresosComponent').default);
-Vue.component('avisos',                              require('./components/Avisos/AvisosComponent').default);
+Vue.component('avisos',                             require('./components/Avisos/AvisosComponent').default);
+Vue.component('historial-jugador',                  require('./components/HistorialJugador/HistorialJugador').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
