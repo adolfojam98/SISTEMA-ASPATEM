@@ -10,7 +10,7 @@
         filled
         label="Seleccione un torneo"
         class="subheading font-weight-bold"
-        v-on:change="getFechas()"
+        v-on:change="getFechas(), getInfoGraficasCategorias()"
       ></v-select>
 
       <center>
@@ -222,6 +222,9 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <grafico-donut v-if="renderComponent && infoGraficas.data && infoGraficas.labels.length > 0 && infoGraficas.series.length > 0" v-bind:info="infoGraficas" />
+        
   </v-card>
 </template>
 <style lang="css" scoped>
@@ -246,6 +249,7 @@ export default {
         { text: "Ingresos", value: "ingresos" },
         { text: "Cerrada", value: "date" },
       ],
+      renderComponent: true,
     };
   },
 
@@ -254,6 +258,7 @@ export default {
       "torneos",
       "torneoSeleccionado",
       "fechas",
+      "infoGraficas"
     ]),
   },
   methods: {
@@ -261,6 +266,7 @@ export default {
       "setTorneos",
       "setTorneoSeleccionado",
       "setFechas",
+      "setInfoGraficas"
     ]),
 
     guardarPuntosTorneo() {
@@ -278,6 +284,37 @@ export default {
     goToViewResumenFecha(fecha) {
       this.$router.push({ path: `/resumen/torneo/fecha/${fecha.id}` });
     },
+
+    forceRerender() {
+        this.renderComponent = false;
+
+        this.$nextTick(() => {
+          this.renderComponent = true;
+        });
+    },
+
+    async getInfoGraficasCategorias() {
+        await axios.get(`/torneo/${this.torneoSeleccionado.id}/getInfoGraficasCategorias`).then((res) => {
+            this.setInfoGraficas({data: res.data})
+        });
+        this.formateCategories()
+    },
+
+    formateCategories() {
+        if(this.infoGraficas.data) {
+            let infoGraficas = {
+                title: "Cantidad de jugadores por categorias",
+                labels: [],
+                series: []
+            }
+            this.infoGraficas.data.forEach(category => {
+                infoGraficas.labels.push(category.nombre)
+                infoGraficas.series.push(category.total_jugadores)
+            });
+            this.setInfoGraficas(infoGraficas)
+            this.forceRerender()
+        }
+    }
   },
 
   created() {

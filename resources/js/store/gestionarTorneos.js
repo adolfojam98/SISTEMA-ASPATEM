@@ -9,6 +9,11 @@ export default{
         torneos: [],
         fechas: [],
         torneoSeleccionado: null,
+        infoGraficas: {
+            data: null,
+            labels: [],
+            series: []
+        },
     },
 
     mutations: {
@@ -21,5 +26,8 @@ export default{
         setFechas(state,data){
             state.fechas = data
         },
+        setInfoGraficas(state,data){
+            state.infoGraficas = {...state.infoGraficas, ...data}
+        }
     }
 }

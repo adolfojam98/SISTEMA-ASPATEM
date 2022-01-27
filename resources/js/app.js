@@ -59,6 +59,7 @@ Vue.component('torneo-fecha',                       require('./components/Gestio
 Vue.component('gestion-ingresos',                   require('./components/Ingresos/GestionIngresosComponent').default);
 Vue.component('avisos',                             require('./components/Avisos/AvisosComponent').default);
 Vue.component('historial-jugador',                  require('./components/HistorialJugador/HistorialJugador').default);
+Vue.component('grafico-donut',                     require('./components/GestionarTorneos/GraficoDonut').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

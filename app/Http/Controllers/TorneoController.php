@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Torneo;
 use App\Usuario;
+use App\Categoria;
 use DB;
 use App\Fecha;
 use Carbon\Carbon;
@@ -236,5 +237,24 @@ class TorneoController extends Controller
             }
         }
         return $fechas;
+    }
+
+    public function getInfoGraficasCategorias($id)
+    {
+        $categorias = Categoria::where('torneo_id',$id)->get();
+
+        $jugadores = DB::table('torneo_usuario')->where('torneo_id',$id)->get();
+
+        foreach ($categorias as $key => $categoria) {
+            $total_jugadores = 0;
+            foreach ($jugadores as $key => $jugador) {
+                if($jugador->puntos >= $categoria->puntos_minimos && $jugador->puntos >= $categoria->puntos_maximos) {
+                    $total_jugadores++;
+                }
+            }
+            $categoria->total_jugadores = $total_jugadores;
+        }
+
+        return $categorias;
     }
 }
