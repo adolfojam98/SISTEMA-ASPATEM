@@ -83,6 +83,8 @@ Route::post('/torneo/puntos','TorneoController@updatePuntos');
 
 Route::get('/torneo/{id}/fechas','TorneoController@getFechas');
 
+Route::get('/torneo/{id}/getInfoGraficasCategorias','TorneoController@getInfoGraficasCategorias');
+
 Route::get('/torneo/fecha/{id}','FechaController@getFecha');
 
 Route::get('/export-fecha/{id}', 'ExcelController@getFechaRankingExcel');
