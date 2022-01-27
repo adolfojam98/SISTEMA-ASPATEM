@@ -34,6 +34,8 @@ Route::get('/usuario/{id}/relaciones','UsuarioController@showRelacionesExitentes
 
 Route::get('/usuario/{id}/cuotas', 'UsuarioController@obtenerCuotasUsuario');
 
+Route::get('/usuario/{id}/history', 'UsuarioController@getHistory');
+
 Route::post('/cuota','CuotaController@store');
 
 Route::put('/cuota','CuotaController@update');

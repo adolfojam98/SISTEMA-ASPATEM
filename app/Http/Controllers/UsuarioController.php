@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Relacion;
 use App\Usuario;
 use App\Cuota;
+use App\Torneo;
+use App\Fecha;
+use DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -175,6 +178,47 @@ public function showRelacionesExitentes(Request $request){
     return response()->json($relaciones);
 }
 
-   
-}
+public function getHistory($id) 
+    {
+        $torneos_usuario = DB::table('torneo_usuario')->where('usuario_id', $id)->get();
+        $torneos = [];
 
+        foreach ($torneos_usuario as $key => $torneo_usuario) {
+            $torneo = Torneo::whereId($torneo_usuario->torneo_id)->first();
+            $jugador_puntos = $torneo_usuario->puntos;
+            $fechas_data = [];
+            
+            $fechas = Fecha::where('torneo_id', $torneo->id)
+                ->orderByDesc('created_at')->get();
+                
+            foreach ($fechas as $key => $fecha) {
+                $fecha_usuario = DB::table('fecha_usuario')->where('fecha_id',$fecha->id)->where('usuario_id', $id)->first();
+                
+                if($fecha_usuario) {
+                    $jugador_puntos += $fecha_usuario->puntos;
+                    $jugador_puntos = $jugador_puntos < 0 ? 0 : $jugador_puntos;
+                }
+                
+                
+                $fecha_data = (object)[
+                    'nombre' => $fecha->nombre,
+                    'puntos_totales' => $jugador_puntos,
+                    'nuevos_puntos' => $fecha_usuario ? $fecha_usuario->puntos : '-',
+                    'monto_pagado' => $fecha_usuario ? $fecha_usuario->monto_pagado : '-',
+                    'created_at' => $fecha->created_at
+                ];
+                array_push($fechas_data, $fecha_data);
+            }
+
+            $torneo_data = (object)[
+                'id' => $torneo->id,
+                'nombre' => $torneo->nombre,
+                'fechas' => $fechas_data,
+                'puntos_base' => $torneo_usuario->puntos
+            ];
+            array_push($torneos, $torneo_data);
+        }
+
+        return $torneos;
+    }
+}

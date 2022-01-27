@@ -46,14 +46,22 @@
           <v-list-item link :to="{ name: 'gestion-torneos' }">
             <v-list-item-title>Gestion torneos</v-list-item-title>
             <v-list-item-icon>
-              <v-icon>mdi-chart-histogram</v-icon>
+              <v-icon>mdi-trophy</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+
+          <v-list-item link :to="{ name: 'historial-jugador' }">
+            <v-list-item-title>Historial por jugador</v-list-item-title>
+            <v-list-item-icon>
+              <v-icon>mdi-content-paste</v-icon>
             </v-list-item-icon>
           </v-list-item>
 
           <v-list-item link :to="{ name: 'crear-torneos' }">
             <v-list-item-title>Nuevo torneo</v-list-item-title>
             <v-list-item-icon>
-              <v-icon>mdi-trophy</v-icon>
+              <v-icon small>mdi-trophy</v-icon>
+              <v-icon small>mdi-plus</v-icon>
             </v-list-item-icon>
           </v-list-item>
 
@@ -73,7 +81,7 @@
             <v-list-item-title> Ingresos </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        
+
         <v-list-item link :to="{ name: 'avisos' }">
           <v-list-item-action>
             <v-icon>mdi-email-send-outline</v-icon>

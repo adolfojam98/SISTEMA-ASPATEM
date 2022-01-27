@@ -16,7 +16,7 @@ class Torneo extends Model
     }
 
     public function jugadores(){
-        return $this->belongsToMany(Usuario::class)->withPivot('puntos');
+        return $this->belongsToMany(Usuario::class)->withPivot('puntos')->withTimestamps();
     }
     
     public function calcularIngresos(){

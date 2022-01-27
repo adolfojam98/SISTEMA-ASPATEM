@@ -17,7 +17,7 @@ class Usuario extends Model
 
     public function torneos()
     {
-        return $this->belongsToMany(Torneo::class)->withPivot('puntos');
+        return $this->belongsToMany(Torneo::class)->withPivot('puntos')->withTimestamps();
     }
     public function partidos()
     {
