@@ -117,7 +117,16 @@
           </v-list-item-content>
         </v-list-item>
 
-
+<v-list-item @click="salir()">
+          <v-list-item-action>
+            <v-icon>mdi-close-box</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              Salir
+              </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
   
         
       </v-list>
@@ -158,5 +167,13 @@
     data: () => ({
       drawer: null,
     }),
+    methods: {
+     async salir(){
+       await axios.post('/logout');
+      window.location.href = '/login'
+       
+      }
+    },
+    
   }
 </script>
