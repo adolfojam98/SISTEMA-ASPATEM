@@ -11,6 +11,7 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 */
+Route::get('/session/status','Auth\SessionController@status');
 
 Route::post('/usuario','UsuarioController@store')->middleware('auth');
 

@@ -8,6 +8,11 @@ export default new Router({
 	routes: [
 		{
 			path: '/',
+			name: 'base',
+			component: require('./views/Home').default
+		},
+        {
+			path: '/home',
 			name: 'home',
 			component: require('./views/Home').default
 		},
