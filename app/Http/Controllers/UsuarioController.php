@@ -7,6 +7,7 @@ use App\Usuario;
 use App\Cuota;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class UsuarioController extends Controller
 {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-form @submit.prevent="ingresar()">
-      <v-text-field v-model="email" label="usuario" append-icon="mdi-account"></v-text-field>
+      <v-text-field v-model="email" label="Usuario" append-icon="mdi-account"></v-text-field>
      <v-text-field
             v-model="password"
             :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -45,7 +45,7 @@ export default {
           email: this.email,
           password: this.password,
         });
-        this.$router.go('/home')
+        this.$router.go('/')
       } catch (e) {
         console.log(e)
         this.callSnackbar(["Credenciales incorrectas", "error"]);
