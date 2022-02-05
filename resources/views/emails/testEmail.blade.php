@@ -112,9 +112,7 @@
                 @if(isset($subtitulo) && !empty($subtitulo))
                     <h4 class="subtitulo">{{$subtitulo}}</h4>
                 @endif
-                <p class="text-sangria">
-                    {{$mensaje}}
-                </p>
+                {!! $mensaje !!}
             </div>
         </div>
     </div>

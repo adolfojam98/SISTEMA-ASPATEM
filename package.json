@@ -26,8 +26,10 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "@tiptap/extension-text-align": "^2.0.0-beta.29",
         "apexcharts": "^3.33.0",
         "moment": "^2.29.1",
+        "tiptap-vuetify": "^2.24.0",
         "vue-apexcharts": "^1.6.2",
         "vuetify": "^2.4.8",
         "vuex": "^3.6.2",

@@ -10,8 +10,21 @@ require('./bootstrap');
 window.Vue = require('vue');
 import Vue from 'vue';
 import Vuetify from 'vuetify'
+const vuetify = new Vuetify()
 Vue.use(Vuetify);
 import es from 'vuetify/es5/locale/es'
+
+//para usar el wysiwyg de vuetify
+import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
+import 'tiptap-vuetify/dist/main.css'
+import 'vuetify/dist/vuetify.min.css'
+Vue.use(TiptapVuetifyPlugin, {
+    // the next line is important! You need to provide the Vuetify Object to this place.
+    vuetify, // same as "vuetify: vuetify"
+    // optional, default to 'md' (default vuetify icons before v2.0.0)
+    iconsGroup: 'mdi'
+})
+//end
 
 /**
  * The following block of code may be used to automatically register your
