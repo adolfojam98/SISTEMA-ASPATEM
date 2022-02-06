@@ -140,6 +140,14 @@ class TorneoController extends Controller
             
         }
 
+        $torneo_usuario = DB::table('torneo_usuario')
+            ->where('torneo_id', $request->id_torneo)
+            ->where('usuario_id', $usuario->id)->first();
+
+        $usuario->pivot = $torneo_usuario;
+        $usuario->montoPagado = 0;
+       
+        return $usuario;
 
     }
 

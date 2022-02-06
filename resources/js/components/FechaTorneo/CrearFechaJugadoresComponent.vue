@@ -281,7 +281,7 @@ export default {
           })
           .then((res) => {
             console.log(res.data);
-            this.pushJugador(jugador.pop());
+            this.pushJugador(res.data);
             this.callSnackbar(["Jugador anotado  exitosamente", "success"]);
           });
       } else {

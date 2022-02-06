@@ -203,7 +203,7 @@
         class="ma-2"
         v-model="search"
         append-icon="mdi-magnify"
-        label="Buscar"
+        label="Buscar fecha"
         :items="torneos"
         single-line
         hide-details
