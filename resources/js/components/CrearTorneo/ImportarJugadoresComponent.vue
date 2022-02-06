@@ -4,6 +4,7 @@
             <input
                 id="file-excel"
                 type="file"
+                ref="input"
                 @change="excelExport"
                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 style="display: none;"
@@ -51,6 +52,10 @@ export default {
     methods: {
         ...mapMutations("CrearTorneo", ["pushJugadorTorneo"]),
         ...mapActions(['callSnackbar']),
+
+        focusInput() {
+            this.$refs.input.focus()
+        },
     
         async excelExport(e) {
             if (e.target.files.length > 0) {
@@ -75,6 +80,8 @@ export default {
             } else {
                 toast("No files found", { type: "error" });
             }
+            this.$refs.input.value = '';
+            this.$refs.input.files = null;
         },
 
         armarJson(data) {
@@ -114,6 +121,10 @@ export default {
             this.prueba = [];
             this.json = [];
         }
+    },
+
+    mounted() {
+        this.focusInput()
     }
 };
 </script>
