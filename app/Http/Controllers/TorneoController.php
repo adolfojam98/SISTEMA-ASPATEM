@@ -248,7 +248,7 @@ class TorneoController extends Controller
         foreach ($categorias as $key => $categoria) {
             $total_jugadores = 0;
             foreach ($jugadores as $key => $jugador) {
-                if($jugador->puntos >= $categoria->puntos_minimos && $jugador->puntos >= $categoria->puntos_maximos) {
+                if($jugador->puntos >= $categoria->puntos_minimos && $jugador->puntos <= $categoria->puntos_maximos) {
                     $total_jugadores++;
                 }
             }
