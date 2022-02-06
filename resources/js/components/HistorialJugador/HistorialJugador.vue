@@ -50,7 +50,7 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <center v-else><h1 class="mt-5">Aún no haz jugado ninguna fecha: Puntos actuales {{torneo.puntos_base}}</h1></center>
+            <center v-else><h1 class="mt-5">Aún no has jugado ninguna fecha: Puntos actuales {{torneo.puntos_base}}</h1></center>
           </v-container>
         </v-card>
       </v-tab-item>

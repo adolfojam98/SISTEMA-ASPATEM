@@ -12,7 +12,7 @@
       <hr />
       <v-data-table :headers="headers" :items="ranking" :search="search">
         <template v-slot:[`item.puntos`]="{ item }">
-          <p class="mt-4">{{ item.puntos }} ({{ item.puntos_ganados }})</p>
+          <p class="mt-4">{{ item.puntos + item.puntos_ganados }} ({{ item.puntos_ganados && item.puntos_ganados > 0 ? '+'+item.puntos_ganados : item.puntos_ganados }})</p>
         </template>
       </v-data-table>
     </v-card>

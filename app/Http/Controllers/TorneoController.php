@@ -111,7 +111,7 @@ class TorneoController extends Controller
 
         $jugadores = $request->jugadores;
 
-        foreach ($jugadores as $jugador) {
+        foreach ($jugadores as $key => $jugador) {
 
             $usuario = Usuario::where('dni','=',$jugador['dni'])->first();
 
@@ -126,20 +126,28 @@ class TorneoController extends Controller
                 $nuevoUsuario->save();
                 $usuario = $nuevoUsuario;
             }
-            if (!empty($jugador['puntos'])) {
-                
+            if (array_key_exists('puntos', $jugador) && $jugador['puntos'] != null) {
                 $usuario->torneos()->attach($request->id_torneo, ['puntos' => $jugador['puntos']]);
             }
             
-            if(!empty($jugador['pivot']['puntos'])){
+            if(array_key_exists('pivot', $jugador) && $jugador['pivot']['puntos'] != null){
                 $usuario->torneos()->attach($request->id_torneo, ['puntos' => $jugador['pivot']['puntos']]);
             }
 
         $usuario->save();
 
-            
-        }
+        $torneo_usuario = DB::table('torneo_usuario')
+            ->where('torneo_id', $request->id_torneo)
+            ->where('usuario_id', $usuario->id)->first();
 
+        $usuario->pivot = $torneo_usuario;
+        $usuario->montoPagado = 0;
+
+        $jugadores[$key] = $usuario;
+            
+        }        
+       
+        return $jugadores;
 
     }
 
