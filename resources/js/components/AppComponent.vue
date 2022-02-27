@@ -96,7 +96,7 @@
             <v-icon>mdi-wrench</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title> Configuracion </v-list-item-title>
+            <v-list-item-title> Ajustes </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -127,6 +127,27 @@ export default {
 
   data: () => ({
     drawer: null,
+    showModalLogin: false,
   }),
+
+  created() {
+    //this.getSessionStatus();
+    setInterval(() => {
+      //this.getSessionStatus();
+    }, 5000);
+  },
+
+  methods: {
+    async salir() {
+      await axios.post("/logout");
+      this.showModalLogin = true
+    },
+
+    async getSessionStatus() {
+      let res = await axios.get("/session/status")
+      this.showModalLogin = res.data ? false : true
+      console.log('llama')
+    },
+  },
 };
 </script>
