@@ -90,7 +90,7 @@
               <v-icon>mdi-wrench</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title> Configuracion </v-list-item-title>
+              <v-list-item-title> Ajustes </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 

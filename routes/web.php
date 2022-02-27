@@ -89,6 +89,8 @@ Route::get('/ingresos/{fecha_inicio?}/{fecha_fin?}/{tipo?}/{torneo_id?}/{fecha_i
 
 Auth::routes();
 
+Route::put('/contrasena', 'ChangePasswordController@store');
+
 Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
 
 

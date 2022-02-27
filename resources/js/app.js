@@ -59,6 +59,7 @@
  Vue.component('torneo-fecha',                       require('./components/GestionarTorneos/ResumenTorneoFechaComponent').default);
  Vue.component('gestion-ingresos',                   require('./components/Ingresos/GestionIngresosComponent').default);
  Vue.component('modal-login',                        require('./components/Modals/ModalLoginComponent').default);
+ Vue.component('modal-cambio-contrasena',                  require('./components/Modals/ModalCambiarContrasenaComponent').default);
  
  /**
   * Next, we will create a fresh Vue application instance and attach it to
