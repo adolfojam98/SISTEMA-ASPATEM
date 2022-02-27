@@ -10,7 +10,6 @@ use App\Fecha;
 use DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
 class UsuarioController extends Controller
 {
