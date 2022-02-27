@@ -34,9 +34,9 @@ Route::get('/usuario/{id}/relaciones','UsuarioController@showRelacionesExitentes
 
 Route::get('/usuario/{id}/cuotas', 'UsuarioController@obtenerCuotasUsuario');
 
-Route::get('/usuario/{id}/history', 'UsuarioController@getHistory');
+Route::get('/usuario/{id}/history', 'UsuarioController@getHistory')->middleware('auth');
 
-Route::post('/cuota','CuotaController@store');
+Route::post('/cuota','CuotaController@store')->middleware('auth');
 
 Route::put('/cuota','CuotaController@update');
 
@@ -46,16 +46,17 @@ Route::get('/configuraciones','ConfiguracionController@show');
 
 Route::put('/configuraciones','ConfiguracionController@update');
 
-Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion');
+Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion')->middleware('auth');
 
-Route::post('/configuraciones/cambiarEmail','ConfiguracionController@modificarMail');
+Route::post('/configuraciones/cambiarEmail','ConfiguracionController@modificarMail')->middleware('auth');
 
-Route::post('/configuraciones/traerEmail','ConfiguracionController@traerMail');
+Route::post('/configuraciones/traerEmail','ConfiguracionController@traerMail')->middleware('auth');
 
-Route::post('/generarCuota','CuotaController@generarCuota');
+Route::post('/generarCuota','CuotaController@generarCuota')->middleware('auth');
 
 Route::put('/pagarCuota','CuotaController@pagar');
 
+Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion')->middleware('auth');
 
 Route::post('/torneo', 'TorneoController@store');
 //TODO cambiar las rutas, debería ser /torneo/categorias pq sino no se entiende un choto cuando lo llamas
@@ -83,9 +84,9 @@ Route::post('/torneo/puntos','TorneoController@updatePuntos');
 
 Route::get('/torneo/{id}/fechas','TorneoController@getFechas');
 
-Route::get('/torneo/{id}/getInfoGraficasCategorias','TorneoController@getInfoGraficasCategorias');
+Route::get('/torneo/{id}/getInfoGraficasCategorias','TorneoController@getInfoGraficasCategorias')->middleware('auth');
 
-Route::get('/torneo/fecha/{id}','FechaController@getFecha');
+Route::get('/torneo/fecha/{id}','FechaController@getFecha')->middleware('auth');
 
 Route::get('/export-fecha/{id}', 'ExcelController@getFechaRankingExcel');
 

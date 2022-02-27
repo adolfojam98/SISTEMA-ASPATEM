@@ -73,6 +73,8 @@ Vue.component('gestion-ingresos',                   require('./components/Ingres
 Vue.component('avisos',                             require('./components/Avisos/AvisosComponent').default);
 Vue.component('historial-jugador',                  require('./components/HistorialJugador/HistorialJugador').default);
 Vue.component('grafico-donut',                     require('./components/GestionarTorneos/GraficoDonut').default);
+Vue.component('modal-login',                        require('./components/Modals/ModalLoginComponent').default);
+Vue.component('modal-cambio-contrasena',                  require('./components/Modals/ModalCambiarContrasenaComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
