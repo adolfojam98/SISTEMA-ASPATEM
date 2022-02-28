@@ -4,7 +4,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+ require('./bootstrap');
 
 
 window.Vue = require('vue');
@@ -72,7 +72,10 @@ Vue.component('torneo-fecha',                       require('./components/Gestio
 Vue.component('gestion-ingresos',                   require('./components/Ingresos/GestionIngresosComponent').default);
 Vue.component('avisos',                             require('./components/Avisos/AvisosComponent').default);
 Vue.component('historial-jugador',                  require('./components/HistorialJugador/HistorialJugador').default);
-Vue.component('grafico-donut',                     require('./components/GestionarTorneos/GraficoDonut').default);
+Vue.component('grafico-donut',                      require('./components/GestionarTorneos/GraficoDonut').default);
+Vue.component('login',                              require('./components/LoginComponent').default);
+Vue.component('modal-login',                        require('./components/Modals/ModalLoginComponent').default);
+Vue.component('modal-cambio-contrasena',            require('./components/Modals/ModalCambiarContrasenaComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
