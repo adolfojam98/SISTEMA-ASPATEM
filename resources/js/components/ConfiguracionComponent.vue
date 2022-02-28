@@ -44,7 +44,7 @@
       </v-form>
       <v-divider></v-divider>
       <h4>Base de datos</h4>
-      <v-container>
+      <v-container class="ml-0 mt-2">
         <v-row>
           <v-col cols="10">
             <v-file-input
@@ -88,9 +88,6 @@
         @cerrado="cerrarModal"
       ></modal-cambio-contrasena>
     </v-card>
-
-    <v-btn @click="cambiarConfiguracion()">Cambiar configuracion</v-btn>
-    <v-btn @click="traerConfiguracion()">Trear configuracion</v-btn>
   </div>
 </template>
 
@@ -116,13 +113,6 @@ export default {
   }),
 
   methods: {
-    cambiarConfiguracion(){
-          axios.post("/configuraciones/cambiarEmail").then((res) => console.log(res))
-    },
-    traerConfiguracion(){
-          axios.post("/configuraciones/traerEmail").then((res) => console.log(res))
-
-    },
     ...mapActions(["callSnackbar"]),
     cargarConfiguracion() {
       axios.get("/configuraciones").then((res) => {
