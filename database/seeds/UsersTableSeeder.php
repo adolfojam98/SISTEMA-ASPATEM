@@ -11,11 +11,12 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        if(config('admin.admin_name')) {
+        if(true) {
             User::firstOrCreate(
-                ['email' => config('admin.admin_email')], [
-                    'name' => config('admin.admin_name'),
-                    'password' => bcrypt(config('admin.admin_password')),
+                ['email' => 'systemaaspatem@gmail.com'], 
+                [
+                    'name' => 'Admin',
+                    'password' => bcrypt('sysaspatem22')
                 ]
             );
         }
