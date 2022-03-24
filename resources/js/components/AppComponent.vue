@@ -165,6 +165,7 @@ export default {
   data: () => ({
     drawer: null,
     showModalLogin: false,
+    loggingOut: false
   }),
 
   created() {
@@ -177,15 +178,18 @@ export default {
   methods: {
     async salir() {
       this.showModalLogin = false
+      this.loggingOut = true
+
       window.location.replace('/login');
       await axios.post("/logout");
+
       this.showModalLogin = false
+      this.loggingOut = false
     },
 
     async getSessionStatus() {
       let res = await axios.get("/session/status")
-      console.log(window.location.href)
-      this.showModalLogin = res.data || window.location.href.includes('/login') ? false : true
+      this.showModalLogin = (res.data || window.location.href.includes('/login') || this.loggingOut) ? false : true
     },
   },
 };
