@@ -176,14 +176,16 @@ export default {
 
   methods: {
     async salir() {
+      this.showModalLogin = false
+      window.location.replace('/login');
       await axios.post("/logout");
-      this.showModalLogin = true
+      this.showModalLogin = false
     },
 
     async getSessionStatus() {
       let res = await axios.get("/session/status")
-      this.showModalLogin = res.data ? false : true
-      console.log('llama')
+      console.log(window.location.href)
+      this.showModalLogin = res.data || window.location.href.includes('/login') ? false : true
     },
   },
 };
