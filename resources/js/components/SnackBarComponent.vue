@@ -1,5 +1,5 @@
 <template>
- <v-snackbar :value="snackbar" :color="colorSnackBar" top multi-line>
+ <v-snackbar :value="snackbar" :color="colorSnackBar">
             <div
             v-text="message">
             </div>
@@ -10,7 +10,6 @@
                     text
                     v-bind="attrs"
                     @click="setSnackBar(false)"
-                    
                 >
                     Cerrar
                 </v-btn>
