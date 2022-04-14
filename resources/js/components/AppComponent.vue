@@ -164,33 +164,6 @@ export default {
 
   data: () => ({
     drawer: null,
-    showModalLogin: false,
-    loggingOut: false
   }),
-
-  created() {
-    //this.getSessionStatus();
-    setInterval(() => {
-      //this.getSessionStatus();
-    }, 5000);
-  },
-
-  methods: {
-    async salir() {
-      this.showModalLogin = false
-      this.loggingOut = true
-
-      window.location.replace('/login');
-      await axios.post("/logout");
-
-      this.showModalLogin = false
-      this.loggingOut = false
-    },
-
-    async getSessionStatus() {
-      let res = await axios.get("/session/status")
-      this.showModalLogin = (res.data || window.location.href.includes('/login') || this.loggingOut) ? false : true
-    },
-  },
 };
 </script>

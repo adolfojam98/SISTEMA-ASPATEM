@@ -21,6 +21,8 @@ class UsuarioController extends Controller
      */
     public function index()
     {
+        
+        
     }
 
     /**
@@ -30,8 +32,9 @@ class UsuarioController extends Controller
      */
     public function create()
     {
-
+         
         return Usuario::all();
+       
     }
 
     /**
@@ -41,40 +44,36 @@ class UsuarioController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-
     {
-        $request->validate([
-            'nombre' => ['required',],
-            'apellido' => ['required'],
-            'dni' => ['required']
-        
+        $usuarios = Usuario::where('dni','=',$request->dni)->first();
+
+        if(empty($usuarios)){
+
+        $usuario = new Usuario();
+        $usuario->nombre = $request->nombre;
+        $usuario->apellido = $request->apellido;
+        $usuario->mail = $request->mail;
+        $usuario->telefono = $request->telefono;
+        $usuario->dni = $request->dni;
+        if($request->socio){
+
+            $usuario->socio = 1;
+        }else{
+            $usuario->socio = 0;
+
+        }
+
+        $usuario->save();
+
+        return response()->json([
+            'message' => 'Nuevo usuario creado',
+            'id' => $usuario->id
         ]);
-        
-        $usuarios = Usuario::where('dni', '=', $request->dni)->first();
 
-        if (empty($usuarios)) {
+        }
 
-            $usuario = new Usuario();
-            $usuario->nombre = $request->nombre;
-            $usuario->apellido = $request->apellido;
-            $usuario->mail = $request->mail;
-            $usuario->telefono = $request->telefono;
-            $usuario->dni = $request->dni;
-            if ($request->socio) {
-
-                $usuario->socio = 1;
-            } else {
-                $usuario->socio = 0;
-            }
-
-            $usuario->save();
-
-            return response()->json([
-                'message' => 'Nuevo usuario creado',
-                'id' => $usuario->id
-            ]);
-        } else {
-            return response()->json([
+        else {
+                return response()->json([
                 'message' => 'Ya existe un usuario con este DNI',
             ]);
         }
@@ -123,7 +122,7 @@ class UsuarioController extends Controller
         $usuario->telefono = $request->telefono;
         $usuario->socio = $request->socio;
         $usuario->dni = $request->dni;
-
+        
         $usuario->save();
 
         return $usuario;
@@ -142,45 +141,45 @@ class UsuarioController extends Controller
         $usuario->delete();
 
         //Esta función obtendra el id de la tarea que hayamos seleccionado y la borrará de nuestra BD
-
+   
     }
 
     public function show_dif_id(Request $request)
     {
-
-        $usuario = Usuario::where('id', '!=', $request->id)
-            ->get();
+        
+        $usuario = Usuario::where('id','!=',$request->id)
+        ->get();
         return response()->json($usuario);
         //Esta función devolverá todos los usuarios que no tengan la id del usuario que se paso por parametro
     }
 
 
-    public function obtenerCuotasUsuario(Request $request)
-    {
-
+    public function obtenerCuotasUsuario(Request $request){
+       
         $cuotas = Usuario::find($request->id)->cuotas;
-        $cuotas->each(function ($cuota) {
-            $cuota->mes = Carbon::create(null, $cuota->mes)->locale('es')->monthName;
+        $cuotas->each(function($cuota){
+            $cuota->mes = Carbon::create(null,$cuota->mes)->locale('es')->monthName;
             $cuota->fechaPagoNombre = Carbon::create($cuota->fechaPago)->locale('es')->isoFormat('LLL');
         });
         return $cuotas;
     }
 
-    public function showRelacionesExitentes(Request $request)
-    {
-        $usuario = Usuario::with('relaciones.usuarios')->find($request->id);
+public function showRelacionesExitentes(Request $request){
+    $usuario = Usuario::with('relaciones.usuarios')->find($request->id);
+  
+    $relaciones = $usuario->relaciones;
 
-        $relaciones = $usuario->relaciones;
-
-        foreach ($relaciones as $relacion) {
-
-            $relacion->usuario = $relacion->usuarios->firstWhere('id', '!=', $request->id);
-        }
-
-        return response()->json($relaciones);
+    foreach($relaciones as $relacion){
+      
+        $relacion->usuario = $relacion->usuarios->firstWhere('id', '!=', $request->id);
+       
+        
     }
+    
+    return response()->json($relaciones);
+}
 
-    public function getHistory($id)
+public function getHistory($id) 
     {
         $torneos_usuario = DB::table('torneo_usuario')->where('usuario_id', $id)->get();
         $torneos = [];
@@ -189,19 +188,19 @@ class UsuarioController extends Controller
             $torneo = Torneo::whereId($torneo_usuario->torneo_id)->first();
             $jugador_puntos = $torneo_usuario->puntos;
             $fechas_data = [];
-
+            
             $fechas = Fecha::where('torneo_id', $torneo->id)
                 ->orderByDesc('created_at')->get();
-
+                
             foreach ($fechas as $key => $fecha) {
-                $fecha_usuario = DB::table('fecha_usuario')->where('fecha_id', $fecha->id)->where('usuario_id', $id)->first();
-
-                if ($fecha_usuario) {
+                $fecha_usuario = DB::table('fecha_usuario')->where('fecha_id',$fecha->id)->where('usuario_id', $id)->first();
+                
+                if($fecha_usuario) {
                     $jugador_puntos += $fecha_usuario->puntos;
                     $jugador_puntos = $jugador_puntos < 0 ? 0 : $jugador_puntos;
                 }
-
-
+                
+                
                 $fecha_data = (object)[
                     'nombre' => $fecha->nombre,
                     'puntos_totales' => $jugador_puntos,
