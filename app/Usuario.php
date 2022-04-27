@@ -5,9 +5,11 @@ use App\Relacion;
 use App\Cuota;
 use App\Torneo;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Usuario extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ['nombre','apellido','mail','puntos','telefono','socio','dni'];
 
     public function relaciones()

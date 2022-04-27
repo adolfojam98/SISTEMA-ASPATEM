@@ -63,7 +63,7 @@ export default {
     ...mapActions(["callSnackbar"]),
     async ingresar() {
       try {
-        var resp = await axios.post("login", {
+        var resp = await axios.post("/login", {
           email: this.email,
           password: this.password,
         });

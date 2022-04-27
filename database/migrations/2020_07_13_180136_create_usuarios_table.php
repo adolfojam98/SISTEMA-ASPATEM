@@ -22,6 +22,7 @@ class CreateUsuariosTable extends Migration
             $table->boolean('socio');
             $table->integer('dni');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
