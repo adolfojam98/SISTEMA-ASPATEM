@@ -133,6 +133,7 @@ class CuotaController extends Controller
     public function generarCuota(Request $request)
     {
 
+
         //antes de generar la cuota hace un control de quienes son socios para que aplique el descuento solo si es debido
         $configuracion = Configuracion::first();
 

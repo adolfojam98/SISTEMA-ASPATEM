@@ -15,14 +15,9 @@ class CreateCuotasTable extends Migration
     {
         Schema::create('cuotas', function (Blueprint $table) {
             $table->id();
-            $table->integer('mes');
-            $table->integer('anio');
-            $table->string('observacion')->nullable();
-            $table->boolean('descuento')->default(false);
-            $table->decimal('importe',8,2)->nullable();
-            $table->dateTimeTz('fechaPago')->nullable();
+            $table->dateTimeTz('periodo')->nullable();
+            
             $table->BigInteger('usuario_id')->unsigned();
-
             $table->foreign('usuario_id')->references('id')->on('usuarios')
             ->onDelete('cascade')
             ->onUpdate('cascade');
