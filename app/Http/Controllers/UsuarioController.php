@@ -44,7 +44,7 @@ class UsuarioController extends Controller
 
     {
         $request->validate([
-            'nombre' => ['required',],
+            'nombre' => ['required'],
             'apellido' => ['required'],
             'dni' => ['required']
         

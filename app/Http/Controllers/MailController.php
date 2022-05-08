@@ -33,7 +33,7 @@ class MailController extends Controller
 
             if(AppHelper::instance()->validateEmail($to)) {
                 Mail::send('emails.testEmail',$data, function($msj) use ($to, $data){
-                    $msj->from(env('MAIL_USERNAME'), 'ASPATEM');
+                    $msj->from('systemaaspatem@gmail.com', 'ASPATEM');
                     $msj->subject($data['asunto']);
                     $msj->to($to);
                 });

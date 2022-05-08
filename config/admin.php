@@ -10,7 +10,7 @@ return [
     |
     */
 
-    'admin_name' => 'Adminn',
-    'admin_email' => 'systemaaspatem@gmail.comm',
-    'admin_password' => 'sysaspatem222'
+    'admin_name' => 'Admin',
+    'admin_email' => 'systemaaspatem@gmail.com',
+    'admin_password' => 'sysaspatem22'
     ];
