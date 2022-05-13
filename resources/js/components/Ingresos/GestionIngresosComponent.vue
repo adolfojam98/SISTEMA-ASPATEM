@@ -260,7 +260,7 @@ export default {
     setNuevoIngreso() {
       if (this.monto !== 0 && this.descripcion !== "") {
         axios
-          .post("/ingreso/setMonto", {
+          .post("/ingresos/setMonto", {
             monto: this.monto,
             descripcion: this.descripcion,
           })

@@ -23,8 +23,8 @@ class CreateCuotaDetallesTable extends Migration
             ->onDelete('cascade')
             ->onUpdate('cascade');
 
-            $table->BigInteger('tipo_detalle_id')->unsigned();
-            $table->foreign('tipo_detalle_id')->references('id')->on('tipo_detalles')
+            $table->BigInteger('cuota_detalle_tipo_id')->unsigned();
+            $table->foreign('cuota_detalle_tipo_id')->references('id')->on('cuota_detalle_tipos')
             ->onDelete('cascade')
             ->onUpdate('cascade');
         });

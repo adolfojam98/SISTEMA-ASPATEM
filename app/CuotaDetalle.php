@@ -11,6 +11,6 @@ class CuotaDetalle extends Model
     }
 
     public function tipo(){
-        return $this->belongsTo(TipoDetalle::class);
+        return $this->belongsTo(CuotaDetalleTipo::class);
     }
 }

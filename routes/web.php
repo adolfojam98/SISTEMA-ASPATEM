@@ -1,7 +1,4 @@
 <?php
-
-
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,100 +8,97 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 */
-Route::get('/session/status','Auth\SessionController@status');
 
-Route::post('/usuario','UsuarioController@store')->middleware('auth');
 
-Route::get('/usuario','UsuarioController@create')->middleware('auth');
+Route::group(['prefix' => '/session', 'as' => 'session.'], function () {
+    Route::get('/status','Auth\SessionController@status')->name('status');
+});
 
-Route::get('/usuario/{id}/relacionables','UsuarioController@show_dif_id')->middleware('auth');
+Route::group(['prefix' => '/usuario', 'as' => 'usuario.', 'middleware' => ['auth'] ], function () {
+    Route::post('/','UsuarioController@store')->name('store');
+    Route::get('/','UsuarioController@create')->name('create');
+    Route::put('/','UsuarioController@update')->name('update');
 
-Route::delete('/usuario/{id}','UsuarioController@destroy')->middleware('auth');
+    Route::get('/{id}/relacionables','UsuarioController@show_dif_id')->name('show_dif_id');
+    Route::delete('/{id}','UsuarioController@destroy')->name('destroy');
+    Route::get('/{id}/cuotas', 'UsuarioController@obtenerCuotasUsuario')->name('obtenerCuotasUsuario'); 
+    Route::get('/{id}/history', 'UsuarioController@getHistory')->name('getHistory');
+    Route::get('/{id}/relaciones','UsuarioController@showRelacionesExitentes')->name('showRelacionesExitentes');
 
-// Route::get('/usuario/buscar','UsuarioController@show')->middleware('auth');
 
-Route::put('/usuario','UsuarioController@update')->middleware('auth');
+    Route::group(['prefix' => '/relacion', 'as' => 'relacion.'], function () {
+        Route::post('/','RelacionController@store')->name('store');
+        Route::delete('/{id}','RelacionController@destroy')->name('destroy');
+        Route::get('/existe','RelacionController@existe')->name('existe');
+    });
+    
+});
 
-Route::post('/usuario/relacion','RelacionController@store')->middleware('auth');
+Route::group(['prefix' => '/cuota', 'as' => 'cuota.', 'middleware' => ['auth'] ], function () {
+    Route::post('/','CuotaController@store')->name('store');
+    Route::put('/','CuotaController@update')->name('update');
+});
+//relacionado con cuotas -- SUELTOS
+Route::post('/cuotas', 'CuotaController@generarCuotasFaltantes')->middleware('auth')->name('generarCuotasFaltantes');
+Route::post('/generarCuota','CuotaController@generarCuota')->middleware('auth')->name('generarCuota');
+Route::put('/pagarCuota','CuotaController@pagar')->middleware('auth')->name('pagar');
+//relacionado con cuotas -- SUELTOS
 
-Route::delete('/usuario/relacion/{id}','RelacionController@destroy')->middleware('auth');
+Route::group(['prefix' => '/configuraciones', 'as' => 'configuraciones.', 'middleware' => ['auth'] ], function () {
+    Route::get('/','ConfiguracionController@show')->name('show');
+    Route::put('/','ConfiguracionController@update')->name('update');
 
-Route::get('/usuario/relacion/existe','RelacionController@existe')->middleware('auth');
+    Route::put('/automatizacion','ConfiguracionController@modificarAutomatizacion')->name('modificarAutomatizacion');
+    Route::post('/cambiarEmail','ConfiguracionController@modificarMail')->name('modificarMail');
+    Route::post('/traerEmail','ConfiguracionController@traerMail')->name('traerMail');
+});
 
-Route::get('/usuario/{id}/relaciones','UsuarioController@showRelacionesExitentes')->middleware('auth');
+Route::group(['prefix' => '/torneo', 'as' => 'torneo.', 'middleware' => ['auth'] ], function () {
+    Route::post('/', 'TorneoController@store')->name('store');
 
-Route::get('/usuario/{id}/cuotas', 'UsuarioController@obtenerCuotasUsuario')->middleware('auth');
+    Route::post('/fecha/guardar','FechaController@guardarFecha')->name('guardarFecha');
+    Route::post('/puntos','TorneoController@updatePuntos')->name('updatePuntos');
+    Route::post('/{torneo_id}/usuario/{usuario_id}','TorneoController@editPuntos')->name('editPuntos');
+    Route::get('/{id}/fechas','TorneoController@getFechas')->name('getFechas');
+    Route::get('/{id}/getInfoGraficasCategorias','TorneoController@getInfoGraficasCategorias')->name('getInfoGraficasCategorias');
+    Route::get('/fecha/{id}','FechaController@getFecha')->name('getFecha');
+});
 
-Route::get('/usuario/{id}/history', 'UsuarioController@getHistory')->middleware('auth');
+Route::group(['prefix' => '/torneos', 'as' => 'torneos.', 'middleware' => ['auth'] ], function () {
+    Route::get('/','TorneoController@create')->name('create');
 
-Route::post('/cuota','CuotaController@store')->middleware('auth');
+    Route::get('/{id}/jugadores','TorneoController@getJugadores')->name('getJugadores');
+    Route::get('/{id}/categorias','TorneoController@getCategorias')->name('getCategorias');
+    Route::get('/nombreOcupado/{nombre}','TorneoController@getNameExists')->name('getNameExists');
+});
 
-Route::put('/cuota','CuotaController@update')->middleware('auth');
+Route::group(['prefix' => '/base', 'as' => 'base.', 'middleware' => ['auth'] ], function () {
+    Route::get('/descargar','ConfiguracionController@downloadBackup')->name('downloadBackup');
+    Route::post('/cargar','ConfiguracionController@uploadBackup')->name('uploadBackup');
+});
 
-Route::post('/cuotas', 'CuotaController@generarCuotasFaltantes')->middleware('auth');
+Route::group(['prefix' => '/ingresos', 'as' => 'ingresos.', 'middleware' => ['auth'] ], function () {
+    Route::post('/setMonto', 'IngresosExternosController@store')->name('store');
+    Route::get('/{fecha_inicio?}/{fecha_fin?}/{tipo?}/{torneo_id?}/{fecha_id?}','IngresosExternosController@create')->name('create');
+});
 
-Route::get('/configuraciones','ConfiguracionController@show')->middleware('auth');
-
-Route::put('/configuraciones','ConfiguracionController@update')->middleware('auth');
-
-Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion')->middleware('auth');
-
-Route::post('/configuraciones/cambiarEmail','ConfiguracionController@modificarMail')->middleware('auth');
-
-Route::post('/configuraciones/traerEmail','ConfiguracionController@traerMail')->middleware('auth');
-
-Route::post('/generarCuota','CuotaController@generarCuota')->middleware('auth');
-
-Route::put('/pagarCuota','CuotaController@pagar')->middleware('auth');
-
-Route::put('/configuraciones/automatizacion','ConfiguracionController@modificarAutomatizacion')->middleware('auth');
-
-Route::post('/torneo', 'TorneoController@store')->middleware('auth');
-//TODO cambiar las rutas, debería ser /torneo/categorias pq sino no se entiende un choto cuando lo llamas
-Route::post('/categorias', 'CategoriaController@storeCategorias')->middleware('auth');
-
-Route::post('/jugadores', 'TorneoController@storeJugadores')->middleware('auth');
-
-Route::get('/torneos','TorneoController@create')->middleware('auth');
-
-Route::get('/torneos/{id}/jugadores','TorneoController@getJugadores')->middleware('auth');
-
-Route::get('/torneos/{id}/categorias','TorneoController@getCategorias')->middleware('auth');
-
-Route::get('/torneos/nombreOcupado/{nombre}','TorneoController@getNameExists')->middleware('auth');
-
-Route::post('/torneo/fecha/guardar','FechaController@guardarFecha')->middleware('auth');
-
-Route::post('/torneo/{torneo_id}/usuario/{usuario_id}','TorneoController@editPuntos')->middleware('auth');
-
-Route::get('/base/descargar','ConfiguracionController@downloadBackup')->middleware('auth');
-
-Route::post('/base/cargar','ConfiguracionController@uploadBackup')->middleware('auth');
-
-Route::post('/torneo/puntos','TorneoController@updatePuntos')->middleware('auth');
-
-Route::get('/torneo/{id}/fechas','TorneoController@getFechas')->middleware('auth');
-
-Route::get('/torneo/{id}/getInfoGraficasCategorias','TorneoController@getInfoGraficasCategorias')->middleware('auth');
-
-Route::get('/torneo/fecha/{id}','FechaController@getFecha')->middleware('auth');
-
+//relacionado con torneo -- SUELTOS
+Route::get('/fechas','FechaController@create')->middleware('auth');
 Route::get('/export-fecha/{id}', 'ExcelController@getFechaRankingExcel')->middleware('auth');
 
-Route::post('/ingreso/setMonto', 'IngresosExternosController@store')->middleware('auth');
+Route::post('/categorias', 'CategoriaController@storeCategorias')->middleware('auth');
+Route::post('/jugadores', 'TorneoController@storeJugadores')->middleware('auth');
+//relacionado con torneo -- SUELTOS
 
-Route::get('/fechas','FechaController@create')->middleware('auth');
-
-Route::get('/ingresos/{fecha_inicio?}/{fecha_fin?}/{tipo?}/{torneo_id?}/{fecha_id?}','IngresosExternosController@create')->middleware('auth');
-
-Auth::routes();
-
-Route::put('/contrasena', 'ChangePasswordController@store');
-
+//relacionado con otros (email y home(????)) -- SUELTOS
 Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
-
-
 Route::post('/send-email','MailController@sendEmail');
+//relacionado con otros (email y home(????)) -- SUELTOS
+
+//relacionado con auth -- SUELTOS
+Route::put('/contrasena', 'ChangePasswordController@store');
+Auth::routes();
+//relacionado con auth -- SUELTOS
 
 Route::get('{path}', function () {
     return view('index');
