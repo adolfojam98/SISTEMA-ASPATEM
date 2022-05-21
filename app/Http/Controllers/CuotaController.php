@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use App\Cuota;
 use App\Usuario;
 use App\Configuracion;
+use App\CuotaDetalle;
+use App\CuotaDetalleTipo;
 use App\Torneo;
 use Illuminate\Http\Request;
 
@@ -68,13 +70,13 @@ class CuotaController extends Controller
 
         $usuarios = Usuario::leftJoin('cuotas', 'usuario_id','usuarios.id')
             ->where('socio',1)
-            ->where(function($query) use ($fecha){
-                $query->whereNull('cuotas.id');
-                $query->orWhereRaw('usuario_id not in (select usuario_id from cuotas where periodo = ? )', [$fecha]);
-            })
-            ->get();
+            // ->where(function($query) use ($fecha){
+            //     $query->whereNull('cuotas.id');
+            //     $query->orWhereRaw('usuario_id not in (select usuario_id from cuotas where periodo = ? )', [$fecha]);
+            // })
+            ->get('usuarios.id');
 
-        $monto_corriente = Configuracion::first()->get('montoCuota');
+
         $monto_corriente = 123;
 
         if(!$monto_corriente) {
@@ -83,13 +85,22 @@ class CuotaController extends Controller
                 'message' => "Primero debe configurar el monto de la cuota"
             ]);
         }
-        
+        //TODO ver si hacemos un factory para crear estos datos automaticos
+        $montoDetalleBase = CuotaDetalleTipo::where('nombre', 'base')->first();
         foreach ($usuarios as $usuario) {
             if($usuario->id) {
                 $newCuota = new Cuota();
                 $newCuota->periodo = $fecha;
                 $newCuota->usuario_id = $usuario->id;
                 $newCuota->save();
+                $cuotaDetalle = new CuotaDetalle();
+                $cuotaDetalle->cuota_id = $newCuota->id;
+                $cuotaDetalle->monto = $monto_corriente;
+                //TODO poner el tipo de cuota
+                $cuotaDetalle->cuota_detalle_tipo_id = $montoDetalleBase->id;
+
+                $cuotaDetalle->save();
+
             } else
                 dd($usuario);
         }
