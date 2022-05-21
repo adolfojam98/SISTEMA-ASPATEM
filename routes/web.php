@@ -33,10 +33,11 @@ Route::group(['prefix' => '/usuario', 'as' => 'usuario.', 'middleware' => ['auth
     });
     
 });
-
+Route::post('/generarCuotasMasivas','CuotaController@generarCuotasMasivas')->name('generarCuotasMasivas');
 Route::group(['prefix' => '/cuota', 'as' => 'cuota.', 'middleware' => ['auth'] ], function () {
     Route::post('/','CuotaController@store')->name('store');
     Route::put('/','CuotaController@update')->name('update');
+    
 });
 //relacionado con cuotas -- SUELTOS
 Route::post('/cuotas', 'CuotaController@generarCuotasFaltantes')->middleware('auth')->name('generarCuotasFaltantes');

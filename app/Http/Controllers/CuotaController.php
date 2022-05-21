@@ -57,6 +57,49 @@ class CuotaController extends Controller
         ]);
     }
 
+    public function generarCuotasMasivas(Request $request)
+    {       
+        $request->validate([
+            'fecha' => 'required|date'
+        ]);
+
+        $fecha = $request->get('fecha');
+        $fecha = date("Y-m-d H:i:s", strtotime($fecha));
+
+        $usuarios = leftJoin('cuotas', 'usuario_id','usuarios.id')
+            ->where('socio',1)
+            ->where(function($query) use ($fecha){
+                $query->whereNull('cuotas.id');
+                $query->orWhereRaw('usuario_id not in (select usuario_id from cuotas where periodo = ? )', [$fecha]);
+            })
+            ->get();
+
+        $monto_corriente = Configuracion::first()->get('montoCuota');
+        $monto_corriente = 123;
+
+        if(!$monto_corriente) {
+            return response()->json([
+                'success' => false,
+                'message' => "Primero debe configurar el monto de la cuota"
+            ]);
+        }
+        
+        foreach ($usuarios as $usuario) {
+            if($usuario->id) {
+                $newCuota = new Cuota();
+                $newCuota->periodo = $fecha;
+                $newCuota->usuario_id = $usuario->id;
+                $newCuota->save();
+            } else
+                dd($usuario);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => "Cuotas generadas exitosamente!"
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *
