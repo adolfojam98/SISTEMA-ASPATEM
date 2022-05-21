@@ -66,7 +66,7 @@ class CuotaController extends Controller
         $fecha = $request->get('fecha');
         $fecha = date("Y-m-d H:i:s", strtotime($fecha));
 
-        $usuarios = leftJoin('cuotas', 'usuario_id','usuarios.id')
+        $usuarios = Usuario::leftJoin('cuotas', 'usuario_id','usuarios.id')
             ->where('socio',1)
             ->where(function($query) use ($fecha){
                 $query->whereNull('cuotas.id');
@@ -98,6 +98,7 @@ class CuotaController extends Controller
             'success' => true,
             'message' => "Cuotas generadas exitosamente!"
         ]);
+                
     }
 
     /**
