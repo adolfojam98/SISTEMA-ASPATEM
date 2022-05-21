@@ -11,8 +11,11 @@ use App\CuotaDetalle;
 use App\CuotaDetalleTipo;
 use App\Torneo;
 use Illuminate\Http\Request;
+use App\Http\Resources\Cuota as CuotaResource;
 
-class CuotaController extends Controller
+//TODO hacer resource, services?, y funciones: get by id, pagar, 
+
+class CuotaController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -60,56 +63,73 @@ class CuotaController extends Controller
     }
 
     public function generarCuotasMasivas(Request $request)
-    {       
-        $request->validate([
-            'fecha' => 'required|date'
-        ]);
-
-        $fecha = $request->get('fecha');
-        $fecha = date("Y-m-d H:i:s", strtotime($fecha));
-
-        $usuarios = Usuario::leftJoin('cuotas', 'usuario_id','usuarios.id')
-            ->where('socio',1)
-            // ->where(function($query) use ($fecha){
-            //     $query->whereNull('cuotas.id');
-            //     $query->orWhereRaw('usuario_id not in (select usuario_id from cuotas where periodo = ? )', [$fecha]);
-            // })
-            ->get('usuarios.id');
-
-
-        $monto_corriente = 123;
-
-        if(!$monto_corriente) {
-            return response()->json([
-                'success' => false,
-                'message' => "Primero debe configurar el monto de la cuota"
+    {
+        try 
+        {
+            $request->validate([
+                'fecha' => 'required|date'
             ]);
-        }
-        //TODO ver si hacemos un factory para crear estos datos automaticos
-        $montoDetalleBase = CuotaDetalleTipo::where('nombre', 'base')->first();
-        foreach ($usuarios as $usuario) {
-            if($usuario->id) {
+
+            $fecha = $request->get('fecha');
+            $fecha = date("Y-m-d H:i:s", strtotime($fecha));
+
+            $usuarios = Usuario::leftJoin('cuotas', 'usuario_id','usuarios.id')
+                ->where('socio',1)
+                ->where(function($query) use ($fecha){
+                    $query->whereNull('cuotas.id');
+                    $query->orWhereRaw('usuario_id not in (select usuario_id from cuotas where periodo = ? )', [$fecha]);
+                })
+                ->get('usuarios.id');
+
+
+            $montoDetalleBase = CuotaDetalleTipo::where('nombre', 'precio base')->first();
+
+            if(!$montoDetalleBase) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Primero debe configurar el monto de la cuota"
+                ]);
+            }
+            //TODO ver si hacemos un factory para crear estos datos automaticos
+            
+            foreach ($usuarios as $usuario) {
+                
                 $newCuota = new Cuota();
                 $newCuota->periodo = $fecha;
                 $newCuota->usuario_id = $usuario->id;
                 $newCuota->save();
+                
                 $cuotaDetalle = new CuotaDetalle();
                 $cuotaDetalle->cuota_id = $newCuota->id;
-                $cuotaDetalle->monto = $monto_corriente;
+                $cuotaDetalle->monto = $montoDetalleBase->valor;
                 //TODO poner el tipo de cuota
                 $cuotaDetalle->cuota_detalle_tipo_id = $montoDetalleBase->id;
 
                 $cuotaDetalle->save();
+            }
 
-            } else
-                dd($usuario);
+            return $this->sendOk();
+
         }
-        
-        return response()->json([
-            'success' => true,
-            'message' => "Cuotas generadas exitosamente!"
-        ]);
+
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
                 
+    }
+
+    public function getCuotaById(Request $request, $id) {
+        try
+        {
+            $cuota = Cuota::whereId($id)->first();
+
+            return $this->sendResponse(new CuotaResource($cuota), 'Cuota encontrada con exito.');
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
     }
 
     /**

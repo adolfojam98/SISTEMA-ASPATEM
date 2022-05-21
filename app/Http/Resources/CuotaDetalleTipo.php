@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Cuota extends JsonResource
+class CuotaDetalleTipo extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +16,9 @@ class Cuota extends JsonResource
     {            
         return [
             'id' => $this->id,
-            'usuario_id' => $this->usuario_id,
-            'periodo' => $this->periodo,
-            'cuota_detalle' => $this->detalles(),
+            'nombre' => $this->nombre,
+            'porcentaje' => $this->porcentaje,
+            'valor' => $this->valor
         ];
     }
 }

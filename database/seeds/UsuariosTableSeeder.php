@@ -70,10 +70,9 @@ function crearUsuarioSeed($nombre,$apellido){
     $usuario->apellido = $apellido;
     $usuario->mail = strtolower($nombre) . '_' . strtolower($apellido) . '@' . $proveedorElegido . '.com'; 
     $usuario->telefono = rand(3434000000,3434999999);
-   $usuario->dni = rand(30000000,45000000);
+    $usuario->dni = rand(30000000,45000000);
     $usuario->socio = rand(0,1);
     $usuario->save();
-
 
 }
 

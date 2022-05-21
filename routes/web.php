@@ -34,6 +34,7 @@ Route::group(['prefix' => '/usuario', 'as' => 'usuario.', 'middleware' => ['auth
     
 });
 Route::post('/generarCuotasMasivas','CuotaController@generarCuotasMasivas')->name('generarCuotasMasivas');
+Route::get('/getCuotaById/{id}','CuotaController@getCuotaById')->name('getCuotaById');
 Route::group(['prefix' => '/cuota', 'as' => 'cuota.', 'middleware' => ['auth'] ], function () {
     Route::post('/','CuotaController@store')->name('store');
     Route::put('/','CuotaController@update')->name('update');

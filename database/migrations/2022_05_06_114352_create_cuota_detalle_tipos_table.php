@@ -17,7 +17,7 @@ class CreateCuotaDetalleTiposTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('nombre');
-            $table->decimal('porcentaje', 3, 2);
+            $table->decimal('porcentaje', 5, 2);
             $table->decimal('valor',9,2);
         });
     }
