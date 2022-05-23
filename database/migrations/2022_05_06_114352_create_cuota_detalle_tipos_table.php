@@ -16,9 +16,10 @@ class CreateCuotaDetalleTiposTable extends Migration
         Schema::create('cuota_detalle_tipos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('nombre');
-            $table->decimal('porcentaje', 5, 2);
-            $table->decimal('valor',9,2);
+            $table->string('nombre')->unique();
+            $table->string('codigo')->unique()->nullable();
+            $table->decimal('porcentaje', 5, 2)->nullable();
+            $table->decimal('valor',9,2)->nullable();
         });
     }
 

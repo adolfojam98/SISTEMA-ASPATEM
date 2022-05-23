@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 
-use App\Cuota;
+
 use App\Usuario;
 use App\Configuracion;
+
+use App\Cuota;
 use App\CuotaDetalle;
 use App\CuotaDetalleTipo;
+use App\Http\Services\CuotaService;
+
 use App\Torneo;
 use Illuminate\Http\Request;
 use App\Http\Resources\Cuota as CuotaResource;
@@ -82,30 +86,27 @@ class CuotaController extends ApiController
                 ->get('usuarios.id');
 
 
-            $montoDetalleBase = CuotaDetalleTipo::where('nombre', 'precio base')->first();
+            $cuotaDetalleTipoPrecioBase = CuotaDetalleTipo::where('nombre', 'precio base')->first();
 
-            if(!$montoDetalleBase) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Primero debe configurar el monto de la cuota"
-                ]);
+            if(!$cuotaDetalleTipoPrecioBase) {
+                return $this->sendError("No existe un detalle de cuota 'precio base'");
             }
             //TODO ver si hacemos un factory para crear estos datos automaticos
             
+            $service = new CuotaService();
+            
             foreach ($usuarios as $usuario) {
-                
-                $newCuota = new Cuota();
-                $newCuota->periodo = $fecha;
-                $newCuota->usuario_id = $usuario->id;
-                $newCuota->save();
-                
-                $cuotaDetalle = new CuotaDetalle();
-                $cuotaDetalle->cuota_id = $newCuota->id;
-                $cuotaDetalle->monto = $montoDetalleBase->valor;
-                //TODO poner el tipo de cuota
-                $cuotaDetalle->cuota_detalle_tipo_id = $montoDetalleBase->id;
+                $cuota = $service->createCuota($usuario->id, $fecha);
 
-                $cuotaDetalle->save();
+                if ($service->hasErrors()) {
+                    return $this->sendServiceError($service->getLastError());
+                }
+
+                $service->createCuotaDetalle($cuota->id, $cuotaDetalleTipoPrecioBase->id, $cuotaDetalleTipoPrecioBase->valor);
+                
+                if ($service->hasErrors()) {
+                    return $this->sendServiceError($service->getLastError());
+                }
             }
 
             return $this->sendOk();
@@ -120,6 +121,20 @@ class CuotaController extends ApiController
     }
 
     public function getCuotaById(Request $request, $id) {
+        try
+        {
+            $cuota = Cuota::whereId($id)->first();
+
+            return $this->sendResponse(new CuotaResource($cuota), 'Cuota encontrada con exito.');
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
+    }
+
+    public function pagarCuotaById(Request $request, $id, $monto = null, $descripcion  = null) { 
+        //TODO si viene monto y descripcion relacionamos con cuota_detalle_tipo de Otros sin valor ni porcentaje, en cuota_detalle ponemos la descripcion y el monto necesario para que +- lo que se desea que valga
         try
         {
             $cuota = Cuota::whereId($id)->first();

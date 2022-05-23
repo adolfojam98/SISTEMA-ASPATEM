@@ -17,7 +17,7 @@ class CreatePagosTable extends Migration
             $table->id();
             $table->timestamps();
             $table->dateTimeTz('fecha_pago')->nullable();
-            $table->decimal('monto_total', 5, 2); 
+            $table->decimal('monto_total', 8, 2); 
             
             $table->BigInteger('cuota_id')->unsigned();
             $table->foreign('cuota_id')->references('id')->on('cuotas')

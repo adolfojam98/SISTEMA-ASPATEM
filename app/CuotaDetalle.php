@@ -13,7 +13,6 @@ class CuotaDetalle extends Model
     }
 
     public function tipo(){
-        return CuotaDetalleTipoResource::collection(CuotaDetalleTipo::whereId($this->cuota_detalle_tipo_id)->get());
-        return $this->belongsTo(CuotaDetalleTipo::class)->get();
+        return CuotaDetalleTipoResource::collection($this->belongsTo(CuotaDetalleTipo::class, 'cuota_detalle_tipo_id')->get());
     }
 }

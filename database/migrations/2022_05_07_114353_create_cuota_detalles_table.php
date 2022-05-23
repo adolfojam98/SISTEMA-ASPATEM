@@ -18,6 +18,7 @@ class CreateCuotaDetallesTable extends Migration
             $table->timestamps();
 
             $table->decimal('monto', 8, 2); 
+            $table->string('descripcion')->nullable();
             $table->BigInteger('cuota_id')->unsigned();
             $table->foreign('cuota_id')->references('id')->on('cuotas')
             ->onDelete('cascade')
