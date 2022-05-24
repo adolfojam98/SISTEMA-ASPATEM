@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\CuotaDetalleTipo as CuotaDetalleTipoResource;
+
 class CuotaDetalle extends JsonResource
 {
     /**
@@ -18,7 +20,8 @@ class CuotaDetalle extends JsonResource
             'id' => $this->id,
             //'cuota_id' => $this->cuota_id,
             'monto' => $this->monto,
-            'cuota_detalle_tipo' => $this->tipo()
+            'descripcion' => $this->descripcion,
+            'cuota_detalle_tipo' => CuotaDetalleTipoResource::collection($this->tipo()->get())
         ];
     }
 }

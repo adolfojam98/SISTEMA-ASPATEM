@@ -9,10 +9,10 @@ use App\Http\Resources\CuotaDetalleTipo as CuotaDetalleTipoResource;
 class CuotaDetalle extends Model
 {
     public function cuota(){
-        return $this->belongsTo(Cuota::class)>get();
+        return $this->belongsTo(Cuota::class);
     }
 
     public function tipo(){
-        return CuotaDetalleTipoResource::collection($this->belongsTo(CuotaDetalleTipo::class, 'cuota_detalle_tipo_id')->get());
+        return $this->belongsTo(CuotaDetalleTipo::class, 'cuota_detalle_tipo_id');
     }
 }

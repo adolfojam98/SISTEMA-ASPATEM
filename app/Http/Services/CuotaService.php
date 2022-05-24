@@ -40,18 +40,20 @@ class CuotaService extends BaseService
         return false;
     }
 
-    public function createCuotaDetalle($cuota_id, $cuota_detalle_tipo_id, $monto)
+    public function createCuotaDetalle($cuota_id, $cuota_detalle_tipo_id, $monto, $descripcion = null)
     {
         // siempre LIMPIAR errores al iniciar un proceso de servicio
         $this->clearErrors();
 
-        if(!$cuota_id || !$cuota_detalle_tipo_id || !$monto) {
+        if(!$cuota_id || !$cuota_detalle_tipo_id || $monto == null) {
             $this->setError("CUOTA0001");
+            return false;
         } else {
             $cuotaDetalle = new CuotaDetalle();
             $cuotaDetalle->cuota_id = $cuota_id;
             $cuotaDetalle->cuota_detalle_tipo_id = $cuota_detalle_tipo_id;
             $cuotaDetalle->monto = $monto;
+            $cuotaDetalle->descripcion = $descripcion;
             $cuotaDetalle->save();
             
             return $cuotaDetalle;

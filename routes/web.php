@@ -25,7 +25,6 @@ Route::group(['prefix' => '/usuario', 'as' => 'usuario.', 'middleware' => ['auth
     Route::get('/{id}/history', 'UsuarioController@getHistory')->name('getHistory');
     Route::get('/{id}/relaciones','UsuarioController@showRelacionesExitentes')->name('showRelacionesExitentes');
 
-
     Route::group(['prefix' => '/relacion', 'as' => 'relacion.'], function () {
         Route::post('/','RelacionController@store')->name('store');
         Route::delete('/{id}','RelacionController@destroy')->name('destroy');
@@ -33,12 +32,17 @@ Route::group(['prefix' => '/usuario', 'as' => 'usuario.', 'middleware' => ['auth
     });
     
 });
-Route::post('/generarCuotasMasivas','CuotaController@generarCuotasMasivas')->name('generarCuotasMasivas');
-Route::get('/getCuotaById/{id}','CuotaController@getCuotaById')->name('getCuotaById');
-Route::group(['prefix' => '/cuota', 'as' => 'cuota.', 'middleware' => ['auth'] ], function () {
+
+Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middleware' => ['auth']*/ ], function () {
+    Route::post('/store/{cuota_id}','PagoController@store')->name('store');   
+});
+
+Route::group(['prefix' => '/cuota', 'as' => 'cuota.', /*'middleware' => ['auth']*/ ], function () {
     Route::post('/','CuotaController@store')->name('store');
     Route::put('/','CuotaController@update')->name('update');
-    
+    Route::post('/generarCuotasMasivas','CuotaController@generarCuotasMasivas')->name('generarCuotasMasivas');
+    Route::get('/getCuotaById/{id}','CuotaController@getCuotaById')->name('getCuotaById');
+    Route::post('/getCuotas','CuotaController@getCuotas')->name('getCuotas');
 });
 //relacionado con cuotas -- SUELTOS
 Route::post('/cuotas', 'CuotaController@generarCuotasFaltantes')->middleware('auth')->name('generarCuotasFaltantes');

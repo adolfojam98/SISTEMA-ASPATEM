@@ -4,9 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-use App\Http\Resources\CuotaDetalle as CuotaDetalleResource;
+use App\Http\Resources\Cuota as CuotaResource;
 
-class Cuota extends JsonResource
+class Pago extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,10 +18,9 @@ class Cuota extends JsonResource
     {
         return [
             'id' => $this->id,
-            'usuario_id' => $this->usuario_id,
-            'periodo' => $this->periodo,
-            'monto_total' => $this->montoTotal(),
-            'cuota_detalle' => CuotaDetalleResource::collection($this->detalles()->get()),
+            'fecha_pago' => $this->fecha_pago,
+            'monto_total' => $this->monto_total,
+            'cuota' => new CuotaResource($this->cuota()->first())
         ];
     }
 }

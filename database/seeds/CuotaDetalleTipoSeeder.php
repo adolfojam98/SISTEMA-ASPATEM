@@ -16,7 +16,8 @@ class CuotaDetalleTipoSeeder extends Seeder
     {
         $service = new CuotaService();
 
-        $service->createCuotaDetalleTipo('precio base', null, rand(500*10, 7500*10) / 10);
+        $service->createCuotaDetalleTipo('Precio Base', null, rand(500*10, 7500*10) / 10);
+        $service->createCuotaDetalleTipo('Otros', null, null);
 
         // $cuotaDetalleTipo = new CuotaDetalleTipo();
         // $cuotaDetalleTipo->nombre = 'precio base';

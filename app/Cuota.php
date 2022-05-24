@@ -10,10 +10,21 @@ use App\Http\Resources\CuotaDetalle as CuotaDetalleResource;
 class Cuota extends Model
 {
     public function usuario(){
-        return $this->belongsTo(Usuario::class)->get();
+        return $this->belongsTo(Usuario::class);
     }
 
     public function detalles(){
-        return CuotaDetalleResource::collection($this->hasMany(CuotaDetalle::class, 'cuota_id', 'id')->get());
+        return $this->hasMany(CuotaDetalle::class, 'cuota_id', 'id');
+    }
+
+    public function montoTotal(){
+        $montoTotal = 0;
+        $detalles = $this->detalles()->get();
+
+        foreach ($detalles as $key => $detalle) {
+            $montoTotal += $detalle->monto;
+        }
+
+        return $montoTotal;
     }
 }

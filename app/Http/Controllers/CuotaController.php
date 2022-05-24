@@ -11,11 +11,14 @@ use App\Configuracion;
 use App\Cuota;
 use App\CuotaDetalle;
 use App\CuotaDetalleTipo;
+use App\Pago;
 use App\Http\Services\CuotaService;
+use App\Http\Services\PagoService;
 
 use App\Torneo;
 use Illuminate\Http\Request;
 use App\Http\Resources\Cuota as CuotaResource;
+use App\Http\Resources\Pago as PagoResource;
 
 //TODO hacer resource, services?, y funciones: get by id, pagar, 
 
@@ -66,6 +69,8 @@ class CuotaController extends ApiController
         ]);
     }
 
+    //NUEVO>>>>>>>>>>>>>>>>>>
+
     public function generarCuotasMasivas(Request $request)
     {
         try 
@@ -86,10 +91,10 @@ class CuotaController extends ApiController
                 ->get('usuarios.id');
 
 
-            $cuotaDetalleTipoPrecioBase = CuotaDetalleTipo::where('nombre', 'precio base')->first();
+            $cuotaDetalleTipoPrecioBase = CuotaDetalleTipo::where('codigo', 'precio_base')->first();
 
             if(!$cuotaDetalleTipoPrecioBase) {
-                return $this->sendError("No existe un detalle de cuota 'precio base'");
+                return $this->sendError("No existe un detalle de cuota 'Precio Base'");
             }
             //TODO ver si hacemos un factory para crear estos datos automaticos
             
@@ -133,19 +138,38 @@ class CuotaController extends ApiController
         }
     }
 
-    public function pagarCuotaById(Request $request, $id, $monto = null, $descripcion  = null) { 
-        //TODO si viene monto y descripcion relacionamos con cuota_detalle_tipo de Otros sin valor ni porcentaje, en cuota_detalle ponemos la descripcion y el monto necesario para que +- lo que se desea que valga
+    public function getCuotas(Request $request) { //lo hice post porque me dio paja ver como pasarlo por postman sino
         try
         {
-            $cuota = Cuota::whereId($id)->first();
+            $request->validate([
+                'usuario_id' => 'string|numeric|nullable',
+                'pagas' => 'bool|nullable'
+            ]);
+            $usuario_id = $request->get('usuario_id');
+            $pagas = $request->get('pagas');
 
-            return $this->sendResponse(new CuotaResource($cuota), 'Cuota encontrada con exito.');
+            if($usuario_id)
+                $query = Cuota::where('usuario_id', $usuario_id);
+            else
+                $query = Cuota::where('usuario_id', '!=', NULL);
+
+            if(isset($pagas) && $pagas == true) 
+                $query = $query->join('pagos', 'pagos.cuota_id', 'cuotas.id');
+            else if(isset($pagas) && $pagas == false) {
+                $query = $query->whereRaw('id not in (select cuota_id from pagos)');
+            }
+
+            $cuotas = $query->get();
+
+            return $this->sendResponse(CuotaResource::collection($cuotas), 'Cuotas listadas con exito.');
         }
         catch(Exception $e)
         {
             return $this->sendError($e->errorInfo[2]);
         }
     }
+
+    //<<<<<<<<<<<<<<<<<<<<NUEVO
 
     /**
      * Display the specified resource.
