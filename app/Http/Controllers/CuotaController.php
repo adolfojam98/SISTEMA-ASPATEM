@@ -145,8 +145,8 @@ class CuotaController extends ApiController
                 'usuario_id' => 'string|numeric|nullable',
                 'pagas' => 'bool|nullable'
             ]);
-            $usuario_id = $request->get('usuario_id');
-            $pagas = $request->get('pagas');
+            $usuario_id = $request->input('usuario_id');
+            $pagas = (int)$request->input('pagas');
 
             if($usuario_id)
                 $query = Cuota::where('usuario_id', $usuario_id);
