@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Relacion;
+use App\Pago;
 use App\Usuario;
 use App\Cuota;
 use App\Torneo;
@@ -11,8 +11,9 @@ use DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\Cuota as CuotaResource;
 
-class UsuarioController extends Controller
+class UsuarioController extends ApiController 
 {
     /**
      * Display a listing of the resource.
@@ -47,9 +48,9 @@ class UsuarioController extends Controller
             'nombre' => ['required'],
             'apellido' => ['required'],
             'dni' => ['required']
-        
+
         ]);
-        
+
         $usuarios = Usuario::where('dni', '=', $request->dni)->first();
 
         if (empty($usuarios)) {
@@ -222,5 +223,29 @@ class UsuarioController extends Controller
         }
 
         return $torneos;
+    }
+
+    public function getCuotas(Request $request,$id)
+    { //lo hice post porque me dio paja ver como pasarlo por postman sino
+        try {
+            $request->validate([
+                'id' => 'string|numeric|nullable',
+                'pagas' => 'bool|nullable'
+            ]);
+            $pagas = (int)$request->input('pagas');
+
+                // $query = Cuota::where('id', $id);
+        
+
+                // $query = $query->Leftjoin('pagos', 'pagos.cuota_id', 'cuotas.id');
+         
+            $cuotas =  Cuota::with('pago')->where('usuario_id', $id)->get();
+
+            // $cuotas = $query->get();
+
+            return $this->sendResponse(CuotaResource::collection($cuotas), 'Cuotas listadas con exito.');
+        } catch (Exception $e) {
+            return $this->sendError($e->errorInfo[2]);
+        }
     }
 }

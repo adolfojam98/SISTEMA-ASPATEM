@@ -76,7 +76,7 @@ Vue.component('grafico-donut',                      require('./components/Gestio
 Vue.component('login',                              require('./components/LoginComponent').default);
 Vue.component('modal-login',                        require('./components/Modals/ModalLoginComponent').default);
 Vue.component('modal-cambio-contrasena',            require('./components/Modals/ModalCambiarContrasenaComponent').default);
-
+Vue.component('generar-cuotas-masivas',             require('./components/Pagos/GenerarCuotasMasivasComponent').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
