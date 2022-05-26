@@ -5,8 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Usuario;
 use App\CuotaDetalle;
-use App\Pago;
-use App\Http\Resources\CuotaDetalle as CuotaDetalleResource;
+
 
 class Cuota extends Model
 {

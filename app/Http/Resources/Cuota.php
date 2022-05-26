@@ -22,6 +22,7 @@ class Cuota extends JsonResource
             'periodo' => $this->periodo,
             'monto_total' => $this->montoTotal(),
             'cuota_detalle' => CuotaDetalleResource::collection($this->detalles()->get()),
+            'pago' => $this->pago,
         ];
     }
 }
