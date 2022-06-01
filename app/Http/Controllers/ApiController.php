@@ -10,7 +10,7 @@ class ApiController extends Controller
     {
     	$response = [
             'success' => true,
-            'data'    => $data,
+            'body'    => $data,
             'message' => $message,
         ];
 

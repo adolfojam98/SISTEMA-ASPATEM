@@ -16,7 +16,7 @@
           </v-btn>
         </v-col>
         <v-col>
-          <v-btn @click="(generarCuotasMasivas = true)" large color="primary">
+          <v-btn @click="generarCuotasMasivas = true" large color="primary">
             Generar cuotas masivamente
           </v-btn>
         </v-col>
@@ -113,8 +113,10 @@
         @recargarCuotas="recargarCuotas = $event"
       ></pago-cuota>
     </v-dialog>
-    <v-dialog v-model="generarCuotasMasivas" max-width="400px" >
-      <generar-cuotas-masivas @cerrarDialog = "generarCuotasMasivas = !generarCuotasMasivas"></generar-cuotas-masivas>
+    <v-dialog v-model="generarCuotasMasivas" max-width="400px">
+      <generar-cuotas-masivas
+        @cerrarDialog="generarCuotasMasivas = !generarCuotasMasivas"
+      ></generar-cuotas-masivas>
     </v-dialog>
   </div>
 </template>
@@ -145,17 +147,42 @@ export default {
         axios
           .get(`/usuario/${this.usuarioSeleccionado.id}/cuotas`)
           .then((res) => {
-            console.log('->usuario cuota: ',res.data);
-            this.cuotasUsuario = res.data;
+            console.log(res.data.body);
+            console.log("->usuario cuota: ", ...res.data.body);
+            console.log("->cuotas: ", this.cuotasUsuario);
+            this.castearCuotasParaTabla(res.data.body);
 
-            this.cuotasUsuario.forEach((cuota) => {
-              cuota.fechaPago = this.darFormatoFecha(cuota.fechaPago);
-            });
             this.busco = true;
           })
-          .catch((e) => this.callSnackbar("error al buscar las cuotas"));
+          .catch((e) => {
+            console.log("->error usuario cuota: ", e);
+            this.callSnackbar(["error al buscar las cuotas"]);
+          });
       }
     },
+    castearCuotasParaTabla(cuotasResponse) {
+      cuotasResponse.forEach((cuota) => {
+        let periodoDate = new Date(cuota.periodo);
+        this.cuotasUsuario.push({
+          mes: periodoDate.getMonth() + 1,
+          anio: periodoDate.getFullYear(),
+          importe: this.calcularImporte(cuota),
+          fechaPago: this.calcularFechaPago(cuota),
+        });
+      });
+    },
+
+    calcularImporte(cuota) {
+      if (cuota.pago) return cuota.pago.monto_total;
+      return cuota.cuota_detalle.reduce((total, cuotaDetalle) => {
+        return Number.parseFloat(total) + Number.parseFloat(cuotaDetalle.monto);
+      }, 0);
+    },
+    calcularFechaPago(cuota) {
+      if (cuota.pago) return cuota.pago.fecha_pago;
+      return "";
+    },
+
     darFormatoFecha(fecha) {
       if (!fecha) return null;
       console.log(fecha);
@@ -178,6 +205,7 @@ export default {
   },
   created() {
     axios.get("/usuario").then((res) => {
+      console.log("->usuarios: ", res.data);
       this.usuarios = res.data;
     });
   },
