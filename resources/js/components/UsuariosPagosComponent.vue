@@ -106,7 +106,7 @@
       ></info-cuota-paga>
     </v-dialog>
 
-    <v-dialog v-model="pagoCuota" max-width="400px">
+    <v-dialog v-model="pagoCuota" max-width="700px">
       <pago-cuota
         :cuota="cuotaActual"
         :usuario="usuarioSeleccionado"

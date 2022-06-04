@@ -28,7 +28,7 @@
           <tbody>
             <tr v-for="detalle in cuota.cuota_detalle" :key="detalle.id">
               <td v-for="detalleTipo in detalle.cuota_detalle_tipo" :key="detalleTipo.id">{{ detalleTipo.nombre }}</td>
-              <td>{{ detalle.observacion }}</td>
+              <td>{{ detalle.descripcion }}</td>
               <td>{{ detalle.monto }}</td>
             </tr>
           </tbody>
