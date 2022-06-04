@@ -55,15 +55,15 @@
             <tbody v-for="(cuota, index) in cuotasUsuario" :key="index">
               <tr
                 style="cursor: pointer"
-                v-if="cuota.fechaPago"
+                v-if="cuota.pago"
                 @click="
                   [(infoCuotaPaga = !infoCuotaPaga), (cuotaActual = cuota)]
                 "
               >
                 <td>{{ cuota.mes }}</td>
                 <td>{{ cuota.anio }}</td>
-                <td>${{ cuota.importe }}</td>
-                <td>{{ cuota.fechaPago }}</td>
+                <td>${{ cuota.monto_total }}</td>
+                <td>{{ cuota.pago.fecha_pago }}</td>
                 <td>
                   <div class="text-center">
                     <v-chip color="success" dark> Pagado </v-chip>
@@ -78,7 +78,7 @@
               >
                 <td>{{ cuota.mes }}</td>
                 <td>{{ cuota.anio }}</td>
-                <td>${{ cuota.importe }}</td>
+                <td>${{ cuota.monto_total }}</td>
                 <td>{{ cuota.fechaPago }}</td>
                 <td>
                   <div class="text-center">
@@ -141,33 +141,45 @@ export default {
   methods: {
     ...mapActions(["callSnackbar"]),
     nombreCompleto: (item) => item.apellido + " " + item.nombre,
-    buscarCuotasUsuario() {
-      if (this.usuarioSeleccionado != "") {
-        this.cuotasUsuario = [];
-        axios
-          .get(`/usuario/${this.usuarioSeleccionado.id}/cuotas`)
-          .then((res) => {
-            console.log(res.data.body);
-            console.log("->usuario cuota: ", ...res.data.body);
-            console.log("->cuotas: ", this.cuotasUsuario);
-            this.castearCuotasParaTabla(res.data.body);
+    async buscarCuotasUsuario() {
+      try {
+        if (this.usuarioSeleccionado != "") {
+          this.cuotasUsuario = await axios.get(
+            `/usuario/${this.usuarioSeleccionado.id}/cuotas`
+          );
+          this.cuotasUsuario = await this.cuotasUsuario.data.body;
+          this.calcularPeriodoCuota();
+          console.log(this.cuotasUsuario);
+          // .then((res) => {
+          //   console.log(res.data.body);
+          //   console.log("->usuario cuota: ", ...res.data.body);
+          //   console.log("->cuotas: ", this.cuotasUsuario);
+          //   this.castearCuotasParaTabla(res.data.body);
 
-            this.busco = true;
-          })
-          .catch((e) => {
-            console.log("->error usuario cuota: ", e);
-            this.callSnackbar(["error al buscar las cuotas"]);
-          });
+          this.busco = true;
+          // })
+        }
+      } catch (error) {
+        console.log("->error usuario cuota: ", e);
+        this.callSnackbar(["error al buscar las cuotas"]);
       }
     },
+    calcularPeriodoCuota() {
+      this.cuotasUsuario.forEach((cuota) => {
+        let periodoDate = new Date(cuota.periodo);
+        cuota.mes = periodoDate.getMonth() + 1;
+        cuota.anio = periodoDate.getFullYear();
+      });
+    },
+
     castearCuotasParaTabla(cuotasResponse) {
       cuotasResponse.forEach((cuota) => {
-        let periodoDate = new Date(cuota.periodo);
         this.cuotasUsuario.push({
           mes: periodoDate.getMonth() + 1,
           anio: periodoDate.getFullYear(),
           importe: this.calcularImporte(cuota),
           fechaPago: this.calcularFechaPago(cuota),
+          detalles: cuota.cuota_detalle,
         });
       });
     },
