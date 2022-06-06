@@ -108,6 +108,12 @@ Route::put('/contrasena', 'ChangePasswordController@store');
 Auth::routes();
 //relacionado con auth -- SUELTOS
 
+//TODO Tipos de cuotaDetalles -- SUELTOS revisar gonza
+
+Route::get('/tipo-detalles','CuotaDetalleTipoController@create')->middleware('auth');
+
+
+
 Route::get('{path}', function () {
     return view('index');
 })->where('path', '(.*)')->middleware('auth');
