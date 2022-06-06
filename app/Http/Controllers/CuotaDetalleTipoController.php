@@ -24,7 +24,8 @@ class CuotaDetalleTipoController extends Controller
      */
     public function create()
     {
-        //
+        $cuotaDetalleTipo = CuotaDetalleTipo::all();
+        return $cuotaDetalleTipo;
     }
 
     /**

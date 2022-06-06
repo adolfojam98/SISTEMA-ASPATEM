@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   data() {
     return {
@@ -138,8 +138,13 @@ export default {
       generarCuotasMasivas: false,
     };
   },
+  computed: {
+     ...mapState("cuotas", ["tipoCuotasDetalles"]),
+  },
   methods: {
     ...mapActions(["callSnackbar"]),
+    ...mapMutations('cuotas', ['setTipoCuotasDetalles']),
+     
     nombreCompleto: (item) => item.apellido + " " + item.nombre,
     async buscarCuotasUsuario() {
       try {
@@ -219,6 +224,11 @@ export default {
     axios.get("/usuario").then((res) => {
       console.log("->usuarios: ", res.data);
       this.usuarios = res.data;
+    });
+
+    axios.get("/tipo-detalles").then((res) => {
+      console.log("->tipo_cuota: ", res.data);
+      this.setTipoCuotasDetalles(res.data);
     });
   },
 };

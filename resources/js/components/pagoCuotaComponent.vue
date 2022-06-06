@@ -157,6 +157,7 @@ export default {
   },
   methods: {
     ...mapActions(["callSnackbar"]),
+    ...mapActions(["cuotas", "tipoCuotasDetalles"]),
     pagarCuota() {
       axios
         .put("/pagarCuota", {
