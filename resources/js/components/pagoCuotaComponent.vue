@@ -28,7 +28,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="detalle in cuota.cuota_detalle" :key="detalle.cuota_detalle_tipo[0].id" >
+            <tr
+              v-for="detalle in cuota.cuota_detalle"
+              :key="detalle.cuota_detalle_tipo[0].id"
+            >
               <td
                 v-for="detalleTipo in detalle.cuota_detalle_tipo"
                 :key="detalleTipo.id"
@@ -37,6 +40,18 @@
               </td>
               <td>{{ detalle.descripcion }}</td>
               <td>${{ detalle.monto }}</td>
+              <td v-if="!detalle.id">
+                <v-btn
+                  @click="quitarDetalleCuota(detalle)"
+                  class="mx-2"
+                  fab
+                  dark
+                  small
+                  color="error"
+                >
+                  <v-icon dark> mdi-minus </v-icon>
+                </v-btn>
+              </td>
             </tr>
             <tr>
               <td>
@@ -167,20 +182,26 @@ export default {
         this.cuota.cuota_detalle.push({
           cuota_detalle_tipo: [this.detalleSeleccionado],
           descripcion: this.descripcion,
-          monto: this.montoDetalleSeleccionado
+          monto: this.montoDetalleSeleccionado,
         });
         this.detalleSeleccionado = null;
         this.descripcion = null;
       }
     },
+    quitarDetalleCuota(detalle) {
+      console.log("->quitar detalle cuota", detalle);
+
+      this.cuota.cuota_detalle = this.cuota.cuota_detalle.filter(
+        (d) =>
+          d.cuota_detalle_tipo[0].codigo != detalle.cuota_detalle_tipo[0].codigo
+      );
+    },
 
     pagarCuota() {
+      this.cuota.montoTotal = this.montoTotal;
       axios
         .put("/pagarCuota", {
-          importe: this.cuota.importe,
-          fecha: this.fecha,
-          id: this.cuota.id,
-          observacion: this.observacion,
+          cuota: this.cuota,
         })
         .then((res) => {
           this.importePersonalizado = null;
@@ -235,13 +256,13 @@ export default {
 
       return null;
     },
-    montoTotal(){
+    montoTotal() {
       let total = 0;
-      this.cuota.cuota_detalle.forEach(detalle => {
+      this.cuota.cuota_detalle.forEach((detalle) => {
         total += Number.parseFloat(detalle.monto);
       });
       return total.toFixed(2);
-    }
+    },
   },
 };
 </script>
