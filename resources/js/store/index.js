@@ -9,6 +9,7 @@ import CrearTorneo from "./CrearTorneo.js";
 import gestionarTorneos from "./gestionarTorneos.js";
 import avisos from "./avisos.js";
 import historialJugador from "./historialJugador";
+import cuotas from "./cuotas";
 
 Vue.use(Vuex);
 
@@ -23,7 +24,8 @@ export default new Vuex.Store({
         CrearTorneo,
         gestionarTorneos,
         avisos,
-        historialJugador
+        historialJugador,
+        cuotas
     },
 
     state: {

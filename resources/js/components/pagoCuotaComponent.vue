@@ -19,7 +19,7 @@
         <v-divider class="mt-3"></v-divider>
 
         <div class="text-h6">Detalles</div>
-         <v-simple-table>
+        <v-simple-table>
           <thead>
             <tr>
               <th class="text-left">nombre</th>
@@ -28,59 +28,60 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="detalle in cuota.cuota_detalle" :key="detalle.id">
-              <td v-for="detalleTipo in detalle.cuota_detalle_tipo" :key="detalleTipo.id">{{ detalleTipo.nombre }}</td>
+            <tr v-for="detalle in cuota.cuota_detalle" :key="detalle.cuota_detalle_tipo[0].id" >
+              <td
+                v-for="detalleTipo in detalle.cuota_detalle_tipo"
+                :key="detalleTipo.id"
+              >
+                {{ detalleTipo.nombre }}
+              </td>
               <td>{{ detalle.descripcion }}</td>
-              <td>{{ detalle.monto }}</td>
+              <td>${{ detalle.monto }}</td>
+            </tr>
+            <tr>
+              <td>
+                <v-select
+                  v-model="detalleSeleccionado"
+                  :return-object="true"
+                  :items="tipoCuotasDetallesFaltantes"
+                  item-text="nombre"
+                  label="Tipo de detalle"
+                  required
+                ></v-select>
+              </td>
+              <td>
+                <v-text-field
+                  v-model="descripcion"
+                  label="Ingrese una descripcion"
+                  required
+                ></v-text-field>
+              </td>
+              <td v-if="detalleSeleccionado">
+                ${{ montoDetalleSeleccionado }}
+              </td>
+              <td>
+                <v-btn
+                  :disabled="!detalleSeleccionado"
+                  @click="agregarDetalleCuota"
+                  class="mx-2"
+                  fab
+                  dark
+                  small
+                  color="success"
+                >
+                  <v-icon dark> mdi-plus </v-icon>
+                </v-btn>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <p class="font-weight-black">total:</p>
+              </td>
+              <td>${{ montoTotal }}</td>
             </tr>
           </tbody>
         </v-simple-table>
-<!-- 
-            <div class="text-body-1">
-            <v-row dense justify="space-between" class="white" no-gutters>
-                <v-col cols="6">
-                <v-text-field
-                    label="Ingresar monto"
-                    prefix="$"
-                    outlined
-                    flat
-                    solo
-                    dense
-                    v-model="cuota.importe"
-                    :disabled="editarMonto"
-                    :rules="importeRules"
-                ></v-text-field>
-                </v-col>
-                <v-col cols="5">
-                <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                    <v-btn color="teal lighten-3" fab small dark>
-                        <v-icon
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="editarMonto = !editarMonto"
-                        >
-                        mdi-border-color</v-icon
-                        >
-                    </v-btn>
-                    </template>
-                    <span>Editar monto</span>
-                </v-tooltip>
-                </v-col>
-            </v-row>
-
-            <div v-if="!editarMonto">
-                <v-divider></v-divider>
-                <v-row dense no-gutters>
-                <v-col cols="11">
-                    <v-text-field
-                    v-model="observacion"
-                    label="Observacion del cambio de monto"
-                    ></v-text-field>
-                </v-col>
-                </v-row>
-            </div>
-            </div> -->
 
         <v-divider></v-divider>
 
@@ -123,7 +124,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   props: ["cuota", "usuario"],
   data() {
@@ -141,6 +142,8 @@ export default {
       ],
       editarMonto: true,
       observacion: null,
+      detalleSeleccionado: null,
+      descripcion: null,
     };
   },
   watch: {
@@ -157,7 +160,20 @@ export default {
   },
   methods: {
     ...mapActions(["callSnackbar"]),
-    ...mapActions(["cuotas", "tipoCuotasDetalles"]),
+    agregarDetalleCuota() {
+      console.log("ingresando a agregar detalle");
+      if (this.detalleSeleccionado) {
+        console.log("hay detalle seleccionado");
+        this.cuota.cuota_detalle.push({
+          cuota_detalle_tipo: [this.detalleSeleccionado],
+          descripcion: this.descripcion,
+          monto: this.montoDetalleSeleccionado
+        });
+        this.detalleSeleccionado = null;
+        this.descripcion = null;
+      }
+    },
+
     pagarCuota() {
       axios
         .put("/pagarCuota", {
@@ -186,6 +202,46 @@ export default {
       const [anio, mes, dia] = fecha.split("-");
       return `${dia}/${mes}/${anio}`;
     },
+  },
+  computed: {
+    ...mapState("cuotas", ["tipoCuotasDetalles"]),
+
+    tipoCuotasDetallesFaltantes() {
+      return this.tipoCuotasDetalles.filter(
+        (tipo) =>
+          !this.cuota.cuota_detalle.find(
+            (detalle) => detalle.cuota_detalle_tipo[0].id == tipo.id
+          )
+      );
+    },
+    montoDetalleSeleccionado() {
+      const detalleBase = this.tipoCuotasDetalles.find(
+        (tipo) => tipo.codigo == "precio_base"
+      );
+      console.log(detalleBase);
+      if (!this.detalleSeleccionado) return null;
+      console.log("->detallBase", detalleBase);
+      console.log("->detalleSeleccionado", this.detalleSeleccionado);
+      if (this.detalleSeleccionado.porcentaje) {
+        console.log("->porcentaje", this.detalleSeleccionado.porcentaje);
+        return Number.parseFloat(
+          detalleBase.valor * (this.detalleSeleccionado.porcentaje / 100)
+        ).toFixed(2);
+      }
+      if (this.detalleSeleccionado.valor) {
+        console.log("->monto", this.detalleSeleccionado.valor);
+        return this.detalleSeleccionado.valor;
+      }
+
+      return null;
+    },
+    montoTotal(){
+      let total = 0;
+      this.cuota.cuota_detalle.forEach(detalle => {
+        total += Number.parseFloat(detalle.monto);
+      });
+      return total.toFixed(2);
+    }
   },
 };
 </script>
