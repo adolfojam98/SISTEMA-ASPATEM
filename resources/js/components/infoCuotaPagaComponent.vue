@@ -6,7 +6,7 @@
       </v-card>
 
       <div class="ml-3 mt-3">
-        <div class="text-h6">Usuario</div>
+        <div class="text-h6">Socio</div>
         <div class="text-body-1 ml-1">
           {{ usuario.nombre }} {{ usuario.apellido }}
         </div>
@@ -34,7 +34,7 @@
           </tbody>
         </v-simple-table>
         <div class="text-h6">Importe total</div>
-        <div class="ml-1 text-body-1">${{ cuota.importe }}</div>
+        <div class="ml-1 text-body-1">${{ cuota.monto_total }}</div>
         <div v-if="cuota.observacion">
           <h5 class="text--secondary">(*) {{ cuota.observacion }}</h5>
         </div>
@@ -42,7 +42,7 @@
         <v-divider class="mt-3"></v-divider>
 
         <div class="text-h6">Fecha de pago</div>
-        <div class="ml-1 text-body-1">{{ cuota.fechaPagoNombre }}</div>
+        <div class="ml-1 text-body-1">{{ darFormatoFecha(cuota.pago.fecha_pago) }}</div>
 
         <br />
       </div>
@@ -58,7 +58,16 @@ export default {
   mounted() {
     console.log("->", this.cuota);
     console.log("->cuota detalle", this.cuota);
-  
   },
+
+  methods: {
+      darFormatoFecha(fecha) {
+        if (!fecha) return null;
+        console.log(fecha);
+        const [anio, mes, dia] = fecha.split("-");
+        console.log(typeof dia)
+        return `${dia.slice(0, -9)}/${mes}/${anio}`;
+    },
+  }
 };
 </script>

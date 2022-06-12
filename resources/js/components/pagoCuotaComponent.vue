@@ -6,7 +6,7 @@
       </div>
 
       <div class="ml-3 mt-3">
-        <div class="text-h6">Usuario</div>
+        <div class="text-h6">Socio</div>
         <div class="text-body-1 ml-1">
           {{ usuario.nombre }} {{ usuario.apellido }}
         </div>
@@ -200,8 +200,9 @@ export default {
     pagarCuota() {
       this.cuota.montoTotal = this.montoTotal;
       axios
-        .put("/pagarCuota", {
-          cuota: this.cuota,
+        .post(`/pago/store/${this.cuota.id}`, {
+          cuotaDetalles: JSON.stringify(this.cuota.cuota_detalle),
+          fechaPago: this.fecha
         })
         .then((res) => {
           this.importePersonalizado = null;

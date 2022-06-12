@@ -63,7 +63,7 @@
                 <td>{{ cuota.mes }}</td>
                 <td>{{ cuota.anio }}</td>
                 <td>${{ cuota.monto_total }}</td>
-                <td>{{ cuota.pago.fecha_pago }}</td>
+                <td>{{ darFormatoFecha(cuota.pago.fecha_pago) }}</td>
                 <td>
                   <div class="text-center">
                     <v-chip color="success" dark> Pagado </v-chip>
@@ -201,11 +201,11 @@ export default {
     },
 
     darFormatoFecha(fecha) {
-      if (!fecha) return null;
-      console.log(fecha);
-      fecha = fecha.substr(0, 10);
-      const [anio, mes, dia] = fecha.split("-");
-      return `${dia}/${mes}/${anio}`;
+        if (!fecha) return null;
+        console.log(fecha);
+        const [anio, mes, dia] = fecha.split("-");
+        console.log(typeof dia)
+        return `${dia.slice(0, -9)}/${mes}/${anio}`;
     },
     actualizarAbrirModalGenerarCuotasMasivas(valor) {
       this.abrirModalGenerarCuotasMasivas = valor;

@@ -9,6 +9,7 @@ use App\Http\Resources\Torneo as TorneoResources;
 use App\Http\Resources\Fecha as FechaResources;
 use App\Http\Resources\IngresosExternos as IngresosExternosResources;
 
+use App\Pago;
 use App\Cuota;
 use App\Fecha;
 use App\Torneo;
@@ -35,18 +36,26 @@ class IngresosExternosController extends Controller
         $informe = [];
         //Cuotas
         if(!$request->tipo || $request->tipo === 'Cuotas' || $request->tipo === 'Todos') {
-            $query_cuotas = Cuota::all();
-
+            $query_cuotas = Pago::all();
+            
             if($request->fecha_inicio) {
-                $query_cuotas = $query_cuotas->where('fechaPago','>=',$request->fecha_inicio);
+                $query_cuotas = $query_cuotas->where('fecha_pago','>=',$request->fecha_inicio);
             }
             if($request->fecha_fin) {
-                $query_cuotas = $query_cuotas->where('fechaPago','<=',$request->fecha_fin.' 23:59:59');
+                $query_cuotas = $query_cuotas->where('fecha_pago','<=',$request->fecha_fin.' 23:59:59');
             }
             //return(CuotaResources::collection($query_cuotas));
-            $cuotas = CuotaResources::collection($query_cuotas);
+            $cuotas = $query_cuotas;
+
             foreach ($cuotas as $key => $cuota) {
-                array_push($informe,$cuota);
+                $cuota_xd = (object)[
+                    'id' => $cuota->id,
+                    'tipo' => 'Cuota',
+                    'monto' => (float) $cuota->monto_total,
+                    'descripcion' => 'Cuota Pagada',
+                    'fecha' => date("Y-m-d",strtotime($cuota->fecha_pago))
+                ];
+                array_push($informe,$cuota_xd);
             }
         }
         //Torneo

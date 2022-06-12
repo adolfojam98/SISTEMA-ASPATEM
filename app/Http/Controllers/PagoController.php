@@ -46,16 +46,38 @@ class PagoController extends ApiController
         try
         {
             $request->validate([
-                'monto' => 'numeric|nullable',
-                'descripcion' => 'string|nullable',
+                'cuotaDetalles' => 'required',
                 'fechaPago' => 'date|nullable'
             ]);
-            $monto = $request->get('monto');
-            $descripcion = $request->get('descripcion');
+            
+            $cuota_detalles = json_decode($request->get('cuotaDetalles'));
             $fechaPago = $request->get('fechaPago');
             $cuota = Cuota::whereId($cuota_id)->first();
-            $montoTotal = $cuota->montoTotal();
             $service = new CuotaService();
+
+            //eliminamos los detalles de las cuotas y agregamos los que vienen en el request
+            $cuota->detalles()->delete();
+
+            foreach ($cuota_detalles as $key => $cuota_detalle) {
+                $service->createCuotaDetalle($cuota->id, $cuota_detalle->cuota_detalle_tipo[0]->id, $cuota_detalle->monto, $cuota_detalle->descripcion);
+
+                if ($service->hasErrors()) {
+                    return $this->sendServiceError($service->getLastError());
+                }
+            }
+
+            $montoTotal = $cuota->montoTotal();
+
+            
+            /* ESTO ERA PARA PASARLE UN MONTO ESPECIFICO
+
+            $request->validate([
+                'monto' => 'numeric|nullable',
+                'descripcion' => 'string|nullable',
+            ]);
+
+            $monto = $request->get('monto');
+            $descripcion = $request->get('descripcion');
 
             if($monto) {
                 //calculamos la dif
@@ -72,13 +94,17 @@ class PagoController extends ApiController
 
                 $montoTotal = $monto;
             }
+            */
 
-            if(!$fechaPago) {
+            if($fechaPago) {
+                $fechaPago = date('Y/m/d H:i:s', strtotime($fechaPago));
+            } else {
                 $fechaPago = date('Y/m/d H:i:s');
             }
+
             //ahora creamos el pago desde el service
             $service = new PagoService();
-            $newPago = $service->createPago($cuota->id, $montoTotal, $fechaPago);
+            $newPago = $service->createPago($cuota_id, $montoTotal, $fechaPago);
 
             if ($service->hasErrors()) {
                 return $this->sendServiceError($service->getLastError());
