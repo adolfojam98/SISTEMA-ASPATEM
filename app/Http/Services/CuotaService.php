@@ -18,6 +18,7 @@ class CuotaService extends BaseService
            
         $this->errorDefinitions[] = new Error("CUOTA0001", "Unespected error", "Unespected", 500);
         $this->errorDefinitions[] = new Error("CUOTA0002", "Specific mount need an specific description", "Unespected", 500);
+        $this->errorDefinitions[] = new Error("CUOTA0003", "To store a new CuotaDetalleTipe you need a porcentaje or value", "Unespected", 500);
     }
 
     public function createCuota($usuario_id, $periodo)
@@ -79,6 +80,10 @@ class CuotaService extends BaseService
 
             if($valor)
                 $cuotaDetalleTipo->valor = $valor;
+
+            // if(!$porcentaje && !$valor) {
+            //     $this->setError("CUOTA0003");
+            // }
 
             $cuotaDetalleTipo->save();
 

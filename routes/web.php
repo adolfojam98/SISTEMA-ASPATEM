@@ -42,7 +42,12 @@ Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middleware' => ['auth']*
     Route::put('/', 'CuotaController@update')->name('update');
     Route::post('/generarCuotasMasivas', 'CuotaController@generarCuotasMasivas')->name('generarCuotasMasivas');
     Route::get('/{id}', 'CuotaController@getCuotaById')->name('getCuotaById');
-  
+
+    Route::group(['prefix' => '/detalle', 'as' => 'detalle.'], function () {
+        Route::group(['prefix' => '/tipo', 'as' => 'tipo.'], function () {
+            Route::post('/', 'CuotaDetalleTipoController@store')->name('store');
+        });
+    });
 });
 
 

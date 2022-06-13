@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\CuotaDetalleTipo;
 use Illuminate\Http\Request;
+use App\Http\Services\CuotaService;
 
-class CuotaDetalleTipoController extends Controller
+class CuotaDetalleTipoController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -36,7 +37,28 @@ class CuotaDetalleTipoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try
+        {
+            $request->validate([
+                'nombre' => 'required',
+                'porcentaje' => 'numeric|nullable',
+                'valor' => 'numeric|nullable'
+            ]);
+
+            $service = new CuotaService();
+
+            $service->createCuotaDetalleTipo($request->get('nombre'), $request->get('porcentaje'), $request->get('valor'));
+
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            return $this->sendResponse(null, 'Tipo de detalle generado con exito');
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
     }
 
     /**
