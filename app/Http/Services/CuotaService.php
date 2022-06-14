@@ -96,5 +96,57 @@ class CuotaService extends BaseService
         return false;
     }
 
+    public function updateCuotaDetalleTipo($cuota_detalle_tipo_id, $nombre = null, $porcentaje = null, $valor = null)
+    {
+        // siempre LIMPIAR errores al iniciar un proceso de servicio
+        $this->clearErrors();
+
+        $cuotaDetalleTipo = CuotaDetalleTipo::find($cuota_detalle_tipo_id);
+
+        if($cuota_detalle_tipo_id && $cuotaDetalleTipo) {
+
+            if($nombre) {
+                $cuotaDetalleTipo->nombre = $nombre;
+                $cuotaDetalleTipo->codigo = Str::slug($nombre, '_');
+            }
+
+            if($porcentaje)
+                $cuotaDetalleTipo->porcentaje = $porcentaje;
+
+            if($valor)
+                $cuotaDetalleTipo->valor = $valor;
+
+            // if(!$porcentaje && !$valor) {
+            //     $this->setError("CUOTA0003");
+            // }
+
+            $cuotaDetalleTipo->update();
+
+            return $cuotaDetalleTipo;
+
+        } else {
+            $this->setError("CUOTA0001");
+        }
+
+        return false;
+    }
+
+    public function deleteCuotaDetalleTipo($cuota_detalle_tipo_id)
+    {
+        // siempre LIMPIAR errores al iniciar un proceso de servicio
+        $this->clearErrors();
+
+        if($cuota_detalle_tipo_id) {
+            $cuotaDetalleTipo = CuotaDetalleTipo::find($cuota_detalle_tipo_id);
+            $cuotaDetalleTipo->delete();
+
+            return $cuotaDetalleTipo;
+
+        } else {
+            $this->setError("CUOTA0001");
+        }
+
+        return false;
+    }
 
 }

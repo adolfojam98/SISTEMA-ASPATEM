@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\CuotaDetalleTipo;
 use Illuminate\Http\Request;
 use App\Http\Services\CuotaService;
+use App\Http\Resources\CuotaDetalleTipo as CuotaDetalleTipoResource;
 
 class CuotaDetalleTipoController extends ApiController
 {
@@ -25,8 +26,22 @@ class CuotaDetalleTipoController extends ApiController
      */
     public function create()
     {
-        $cuotaDetalleTipo = CuotaDetalleTipo::all();
-        return $cuotaDetalleTipo;
+        try
+        {
+            $cuotaDetalleTipos = CuotaDetalleTipo::all();
+
+            if ($cuotaDetalleTipos)
+            {
+                return $this->sendResponse(CuotaDetalleTipoResource::collection($cuotaDetalleTipos), 'Tipos de detalles listados con exito');
+            }
+
+            return $this->sendResponse(null, 'Tipo de detalle no se han podido listar');
+        }
+        
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
     }
 
     /**
@@ -67,9 +82,26 @@ class CuotaDetalleTipoController extends ApiController
      * @param  \App\CuotaDetalleTipo  $cuotaDetalleTipo
      * @return \Illuminate\Http\Response
      */
-    public function show(CuotaDetalleTipo $cuotaDetalleTipo)
+    public function show($cuotaDetalleTipoId)
     {
-        //
+        try
+        {
+            $cuotaDetalleTipo = CuotaDetalleTipo::find($cuotaDetalleTipoId);
+
+            if ($cuotaDetalleTipo)
+            {
+                return $this->sendResponse(new CuotaDetalleTipoResource($cuotaDetalleTipo), 'Tipo de detalle encontrado con exito.');
+            }
+            else
+            {
+                return $this->sendError('Tipo de detalle no encontrado');
+            }
+        }
+        
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        } 
     }
 
     /**
@@ -90,9 +122,31 @@ class CuotaDetalleTipoController extends ApiController
      * @param  \App\CuotaDetalleTipo  $cuotaDetalleTipo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CuotaDetalleTipo $cuotaDetalleTipo)
+    public function update(Request $request, $id)
     {
-        //
+        try
+        {
+            $request->validate([
+                'nombre' => 'string|nullable',
+                'porcentaje' => 'numeric|nullable',
+                'valor' => 'numeric|nullable'
+            ]);
+
+            $service = new CuotaService();
+
+            $service->updateCuotaDetalleTipo($id, $request->get('nombre'), $request->get('porcentaje'), $request->get('valor'));
+
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            return $this->sendResponse(null, 'Tipo de detalle actualizada con exito');
+
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
     }
 
     /**
@@ -101,8 +155,26 @@ class CuotaDetalleTipoController extends ApiController
      * @param  \App\CuotaDetalleTipo  $cuotaDetalleTipo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CuotaDetalleTipo $cuotaDetalleTipo)
+    public function destroy($cuotaDetalleTipoId)
     {
-        //
+        try
+        {
+            $cuotaDetalleTipo = CuotaDetalleTipo::find($cuotaDetalleTipoId);
+
+            if ($cuotaDetalleTipo)
+            {
+                $cuotaDetalleTipo->delete();
+                return $this->sendResponse(null, 'Tipo de detalle eliminado con exito');
+            }
+            else
+            {
+                return $this->sendError('Tipo de detalle no encontrado');
+            }
+        }
+        
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
     }
 }

@@ -45,7 +45,11 @@ Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middleware' => ['auth']*
 
     Route::group(['prefix' => '/detalle', 'as' => 'detalle.'], function () {
         Route::group(['prefix' => '/tipo', 'as' => 'tipo.'], function () {
+            Route::get('/', 'CuotaDetalleTipoController@create')->name('create');
             Route::post('/', 'CuotaDetalleTipoController@store')->name('store');
+            Route::get('/{id}', 'CuotaDetalleTipoController@show')->name('show');
+            Route::put('/{id}', 'CuotaDetalleTipoController@update')->name('update');
+            Route::delete('/{id}', 'CuotaDetalleTipoController@destroy')->name('destroy');
         });
     });
 });
