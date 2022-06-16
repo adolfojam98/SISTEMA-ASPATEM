@@ -164,7 +164,7 @@ class CuotaDetalleTipoController extends ApiController
             if ($cuotaDetalleTipo)
             {
                 $cuotaDetalleTipo->delete();
-                return $this->sendResponse(null, 'Tipo de detalle eliminado con exito');
+                return $this->sendResponse(null, 'Tipo de detalle eliminado con exito'); 
             }
             else
             {
