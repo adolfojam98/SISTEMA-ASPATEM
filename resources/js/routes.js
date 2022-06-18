@@ -77,6 +77,11 @@ export default new Router({
             name: 'historial-jugador',
             component: require('../js/views/HistorialJugador').default
         },
+		{
+            path: '/ajustes/cuotas',
+            name: 'ajustes-cuotas',
+            component: require('../js/views/AjustesCuotas').default
+        },
 		
 		{
             path: '/*',
