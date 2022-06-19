@@ -228,7 +228,7 @@ export default {
 
     axios.get("/tipo-detalles").then((res) => {
       console.log("->tipo_cuota: ", res.data);
-      this.setTipoCuotasDetalles(res.data);
+      this.setTipoCuotasDetalles(res.data.body);
     });
   },
 };

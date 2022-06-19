@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\CuotaDetalleTipo;
 use App\Http\Services\CuotaService;
+use App\Constants;
 
 
 class CuotaDetalleTipoSeeder extends Seeder
@@ -16,8 +17,11 @@ class CuotaDetalleTipoSeeder extends Seeder
     {
         $service = new CuotaService();
 
-        $service->createCuotaDetalleTipo('Precio Base', null, rand(500*10, 7500*10) / 10);
-        $service->createCuotaDetalleTipo('Otros', null, rand(500*10, 7500*10) / 10);
+        $detallesTiposDefault = Constants::CuotaDetalleTipos;
+
+        foreach ($detallesTiposDefault as $key => $tipo) {
+            $service->createCuotaDetalleTipo($key, null, null);
+        }
 
         // $cuotaDetalleTipo = new CuotaDetalleTipo();
         // $cuotaDetalleTipo->nombre = 'precio base';
@@ -25,6 +29,6 @@ class CuotaDetalleTipoSeeder extends Seeder
         // $cuotaDetalleTipo->valor = rand(500*10, 7500*10) / 10;
         // $cuotaDetalleTipo->save();
 
-        factory(CuotaDetalleTipo::class, 3)->create();
+        //factory(CuotaDetalleTipo::class, 3)->create();
     }
 }

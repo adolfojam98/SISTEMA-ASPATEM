@@ -94,10 +94,19 @@ class CuotaController extends ApiController
             if (!$cuotaDetalleTipoPrecioBase) {
                 return $this->sendError("No existe un detalle de cuota 'Precio Base'");
             }
-            //TODO ver si hacemos un factory para crear estos datos automaticos
+
+            if (!count($usuarios))  {
+                return $this->sendError("No se encontraron cuotas para generar en el periodo", "No se encontraron cuotas para generar en el periodo");
+            }
 
             $service = new CuotaService();
-            if (!count($usuarios)) return $this->sendError("No se encontraron cuotas para generar en el periodo", "No se encontraron cuotas para generar en el periodo");
+            $service->validateCuotaDetalleTiposDefaults();
+            //$service->updateLatePayment(); //TODO: hay que terminar de arreglarlo y no se esta usando ahora
+
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
             foreach ($usuarios as $usuario) {
                 $cuota = $service->createCuota($usuario->id, $fecha);
 
@@ -113,6 +122,7 @@ class CuotaController extends ApiController
             }
 
             return $this->sendResponse(null, 'Cuotas generadas correctamente');
+
         } catch (Exception $e) {
             return $this->sendError($e->errorInfo[2]);
         }
