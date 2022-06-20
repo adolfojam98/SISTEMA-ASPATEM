@@ -79,6 +79,46 @@ class CuotaController extends ApiController
 
     //NUEVO>>>>>>>>>>>>>>>>>>
 
+    public function generarCuotaIngreso(Request $request, $usuario_id)
+    {
+        try {
+            $request->validate([
+                'importe' => 'required|numeric',
+            ]);
+
+            $usuario = Usuario::findOrFail($usuario_id);
+
+            //datos para la cuota y detalle tipo
+            $periodo = date("Y-m-d H:i:s", strtotime(date("Y-m-d")));
+            $importe = $request->get('importe');
+            $cuotaDetalleTipoIngreso = CuotaDetalleTipo::where('codigo', 'ingreso')->first();
+
+            if (!$cuotaDetalleTipoIngreso) {
+                return $this->sendError("No existe un detalle de cuota 'Ingreso'");
+            }
+
+            //creamos el service
+            $service = new CuotaService();
+
+            //creamos la cuota
+            $cuota = $service->createCuota($usuario->id, $periodo);
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            //creamos el detalle
+            $service->createCuotaDetalle($cuota->id, $cuotaDetalleTipoIngreso->id, $importe);
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            return $this->sendResponse(null, 'Cuota generada con exito');
+
+        } catch (Exception $e) {
+            return $this->sendError($e->errorInfo[2]);
+        }
+    }
+
     public function generarCuotasMasivas(Request $request)
     {
         try {

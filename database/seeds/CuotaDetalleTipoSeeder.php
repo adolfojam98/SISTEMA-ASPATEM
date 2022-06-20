@@ -23,6 +23,12 @@ class CuotaDetalleTipoSeeder extends Seeder
             $service->createCuotaDetalleTipo($key, null, null);
         }
 
+        $detallesTiposExceptionals = Constants::CUOTA_DETALLES_TIPOS_EXCEPTIONLS;
+        
+        foreach ($detallesTiposExceptionals as $key => $tipo) {
+            $service->createCuotaDetalleTipo($key, null, null);
+        }
+
         // $cuotaDetalleTipo = new CuotaDetalleTipo();
         // $cuotaDetalleTipo->nombre = 'precio base';
         // $cuotaDetalleTipo->porcentaje = rand(0*10, 100.00*10) / 10;

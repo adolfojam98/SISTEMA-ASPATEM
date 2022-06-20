@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants;
 use App\CuotaDetalleTipo;
 use Illuminate\Http\Request;
 use App\Http\Services\CuotaService;
@@ -28,7 +29,9 @@ class CuotaDetalleTipoController extends ApiController
     {
         try
         {
-            $cuotaDetalleTipos = CuotaDetalleTipo::all();
+            //filtramos las exceptiones
+            $detallesTiposExceptionals = Constants::CUOTA_DETALLES_TIPOS_EXCEPTIONLS;
+            $cuotaDetalleTipos = CuotaDetalleTipo::whereNotIn('codigo', array_values($detallesTiposExceptionals))->get();
 
             if ($cuotaDetalleTipos)
             {
