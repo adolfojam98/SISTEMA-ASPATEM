@@ -6,7 +6,7 @@
 
         const CuotaDetalleTipos = [
             'Precio Base' => 'precio_base',
-            'Descuento Relaciones' => 'descuento_relaciones',
+            'Relaciones' => 'relaciones',
             'Moroso Bajo' => 'moroso_bajo',
             'Moroso Medio' => 'moroso_medio',
             'Moroso Alto' => 'moroso_alto'

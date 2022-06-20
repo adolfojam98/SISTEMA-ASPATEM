@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //$schedule->command('SociosTest')->everyMinute();//->monthly();
-        $schedule->command('cuota:UpdateLatePayment')->everyDay();
+        $schedule->command('cuota:UpdateLatePayment')->monthly();
     }
 
     /**

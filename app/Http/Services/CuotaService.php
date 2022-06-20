@@ -7,9 +7,12 @@ use App\Error;
 use App\CuotaDetalleTipo;
 use App\CuotaDetalle;
 use App\Cuota;
+use App\Usuario;
 use App\Http\Services\BaseService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+
+use App\Http\Services\UsuarioService;
 
 class CuotaService extends BaseService
 {
@@ -177,7 +180,7 @@ class CuotaService extends BaseService
                 $query->whereNotNull('porcentaje')
                     ->orWhereNotNull('valor');
             })->count();
-
+        
         if(count($detallesTiposDefault) === $validatedDetallesTiposDefault) {
             return true;
         } else {
@@ -253,6 +256,13 @@ class CuotaService extends BaseService
                     }
             }
         }
+
+        $service = new UsuarioService();
+        
+        foreach (Usuario::all() as $key => $usuario) {
+            $service->recalculateValueSocio($usuario->id);
+        }
+
     }
 
 }

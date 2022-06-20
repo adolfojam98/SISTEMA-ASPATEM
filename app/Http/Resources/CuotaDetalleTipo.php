@@ -17,6 +17,7 @@ class CuotaDetalleTipo extends JsonResource
         return [
             'id' => $this->id,
             'nombre' => $this->nombre,
+            'codigo' => $this->codigo,
             'porcentaje' => $this->porcentaje,
             'valor' => $this->valor
         ];

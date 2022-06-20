@@ -231,7 +231,7 @@ class UsuarioController extends ApiController
         try {
             //si el crone anda bien esto no iria
             $service = new CuotaService();
-            $service->updateLatePayment($id, null);
+            $service->updateLatePayment();
             if ($service->hasErrors()) {
                 return $this->sendServiceError($service->getLastError());
             }
