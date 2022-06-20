@@ -193,7 +193,7 @@ export default {
 
       this.cuota.cuota_detalle = this.cuota.cuota_detalle.filter(
         (d) =>
-          d.cuota_detalle_tipo[0].codigo != detalle.cuota_detalle_tipo[0].codigo
+          d.cuota_detalle_tipo[0].id != detalle.cuota_detalle_tipo[0].id
       );
     },
 

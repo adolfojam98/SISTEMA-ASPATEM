@@ -1,5 +1,5 @@
 <template>
-<mostrar-usuarios isListaSocios>
+<mostrar-usuarios>
 
 </mostrar-usuarios>
 </template>

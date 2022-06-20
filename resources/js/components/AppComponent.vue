@@ -68,6 +68,13 @@
             </v-list-item-icon>
           </v-list-item>
 
+           <v-list-item link :to="{ name: 'lista-externos' }">
+              <v-list-item-title>Lista jugadores externos</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>mdi-account-group</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+
           <v-list-item link :to="{ name: 'crear-torneos' }">
             <v-list-item-title>Nuevo torneo</v-list-item-title>
             <v-list-item-icon>

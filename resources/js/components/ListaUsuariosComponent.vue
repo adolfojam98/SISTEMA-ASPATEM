@@ -3,24 +3,8 @@
     <v-card>
       <v-card-title>
 
-        <v-checkbox
-          v-model="verSocios"
-          @click="filtrar()"
-          hide-details
-          label="Ver Socios"
-        ></v-checkbox>
-        
         <v-spacer></v-spacer>
 
-        <v-checkbox
-          v-model="verNoSocios"
-          @click="filtrar()"
-          hide-details
-          label="Ver No Socios"
-        ></v-checkbox>
-
-        <v-spacer></v-spacer>
-        
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -29,8 +13,13 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      
-      <v-data-table :headers="headers" :items="usuariosFiltrados" :search="search"> <!-- :custom-filter="filtrarPorSocio" -->
+
+      <v-data-table
+        :headers="headers"
+        :items="usuariosFiltrados"
+        :search="search"
+      >
+        <!-- :custom-filter="filtrarPorSocio" -->
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -40,7 +29,8 @@
                 class="mr-2"
                 @click="editItem(item)"
                 color="success"
-              >mdi-pencil</v-icon>
+                >mdi-pencil</v-icon
+              >
             </template>
             <span>Editar</span>
           </v-tooltip>
@@ -50,9 +40,12 @@
               <v-icon
                 v-bind="attrs"
                 v-on="on"
-                @click="[eliminarUsuarioModal = true, usuarioEliminar = item]"
+                @click="
+                  [(eliminarUsuarioModal = true), (usuarioEliminar = item)]
+                "
                 color="error"
-              >mdi-delete</v-icon>
+                >mdi-delete</v-icon
+              >
             </template>
             <span>Eliminar</span>
           </v-tooltip>
@@ -65,7 +58,8 @@
                 right
                 @click="gestionarRelaciones(item)"
                 color="primary"
-              >mdi-account-group</v-icon>
+                >mdi-account-group</v-icon
+              >
             </template>
             <span>Relaciones</span>
           </v-tooltip>
@@ -74,17 +68,33 @@
     </v-card>
 
     <v-dialog v-model="editarUsuarioModal" max-width="600px">
-      <editar-usuario :usuario="usuarioEditar" @reFiltrar = 'reFiltrar = $event'></editar-usuario>
+      <editar-usuario
+        :usuario="usuarioEditar"
+        @reFiltrar="reFiltrar = $event"
+      ></editar-usuario>
     </v-dialog>
 
     <v-dialog v-model="eliminarUsuarioModal" max-width="320">
       <v-card>
         <v-card-title class="headline">Desea borrar el usuario?</v-card-title>
-        <v-card-text>Este usuario no podra participar de ningun torneo, no saldrá en el ranking pero seguirá quedando registro de sus participaciones en torneos. ¿Desea continuar?.</v-card-text>
+        <v-card-text
+          >Este usuario no podra participar de ningun torneo, no saldrá en el
+          ranking pero seguirá quedando registro de sus participaciones en
+          torneos. ¿Desea continuar?.</v-card-text
+        >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" outlined @click="[eliminarUsuarioModal = false]">CANCELAR</v-btn>
-          <v-btn color="error" @click="[deleteItem(),eliminarUsuarioModal = false]">BORRAR</v-btn>
+          <v-btn
+            color="green darken-1"
+            outlined
+            @click="[(eliminarUsuarioModal = false)]"
+            >CANCELAR</v-btn
+          >
+          <v-btn
+            color="error"
+            @click="[deleteItem(), (eliminarUsuarioModal = false)]"
+            >BORRAR</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -97,7 +107,10 @@
 
 <script>
 export default {
-  name: 'vm',
+  props: {
+    isListaSocios: Boolean,
+  },
+  name: "vm",
   data() {
     return {
       reFiltrar: false,
@@ -108,12 +121,27 @@ export default {
       search: "",
       headers: [
         { text: "Apellido", value: "apellido" },
-        { text: "Nombre", value: "nombre"},
-        { text: "DNI", value: "dni"},
-        { text: "Mail", value: "mail", sortable: true, filterable: false},
-        { text: "Telefono", value: "telefono", sortable: false, filterable: false},
-        { text: "Fecha de alta", value: "fechaAlta", sortable: true, filterable: false},
-        { text: "Acciones", value: "actions", sortable: false, filterable: false},
+        { text: "Nombre", value: "nombre" },
+        { text: "DNI", value: "dni" },
+        { text: "Mail", value: "mail", sortable: true, filterable: false },
+        {
+          text: "Telefono",
+          value: "telefono",
+          sortable: false,
+          filterable: false,
+        },
+        {
+          text: "Fecha de alta",
+          value: "fechaAlta",
+          sortable: true,
+          filterable: false,
+        },
+        {
+          text: "Acciones",
+          value: "actions",
+          sortable: false,
+          filterable: false,
+        },
       ],
       usuarioEditar: [],
       editarUsuarioModal: false,
@@ -151,22 +179,30 @@ export default {
     },
 
     async created() {
-        await axios.get("/usuario").then((res) => {
-        this.usuarios = res.data;
-        this.usuarios.forEach(usuario =>{
-          usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
+      await axios
+        .get("/usuario")
+        .then((res) => {
+          this.usuarios = res.data;
+          this.usuarios.forEach((usuario) => {
+            usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
+          });
+          if (this.isListaSocios) {
+            this.verSocios = true;
+            this.verNoSocios = false;
+          } else {
+            this.verSocios = false;
+            this.verNoSocios = true;
+          }
         })
-
-      })
-      .catch(error => console.log(error));
+        .catch((error) => console.log(error));
       this.filtrar();
     },
     darFormatoFecha(fecha) {
-            if (!fecha) return null;
-            fecha = fecha.substr(0,10);
-            const [anio, mes, dia] = fecha.split("-");
-            return `${dia}/${mes}/${anio}`;
-        },
+      if (!fecha) return null;
+      fecha = fecha.substr(0, 10);
+      const [anio, mes, dia] = fecha.split("-");
+      return `${dia}/${mes}/${anio}`;
+    },
 
     /*filtrarPorSocio(value, search, items) {
       
@@ -188,27 +224,26 @@ export default {
       return inName || inLastname;
     },*/
 
-  
+    filtrar() {
+      this.usuariosFiltrados = [];
 
-    filtrar(){
-      this.usuariosFiltrados=[];
-
-      this.usuarios.forEach(usuario => {
-        if((usuario.socio==false && this.verNoSocios==true) || (usuario.socio==true && this.verSocios==true)) {this.usuariosFiltrados.push(usuario);}
+      this.usuarios.forEach((usuario) => {
+        if (
+          (usuario.socio == false && this.verNoSocios == true) ||
+          (usuario.socio == true && this.verSocios == true)
+        ) {
+          this.usuariosFiltrados.push(usuario);
+        }
       });
     },
-
-
   },
 
-      watch: {
-            reFiltrar : function(){
-                this.filtrar();
-                this.reFiltrar=false;
-            }
+  watch: {
+    reFiltrar: function () {
+      this.filtrar();
+      this.reFiltrar = false;
+    },
   },
-
-
 
   mounted() {
     this.created();

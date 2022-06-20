@@ -82,6 +82,11 @@ export default new Router({
             name: 'ajustes-cuotas',
             component: require('../js/views/AjustesCuotas').default
         },
+		{
+            path: '/torneos/jugadoresExternos',
+            name: 'lista-externos',
+            component: require('../js/views/UsuarioListaExternos').default
+        },
 		
 		{
             path: '/*',
