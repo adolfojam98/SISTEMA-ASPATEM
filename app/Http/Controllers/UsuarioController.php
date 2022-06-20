@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\CuotaService;
 use App\Pago;
 use App\Usuario;
 use App\Cuota;
@@ -225,9 +226,17 @@ class UsuarioController extends ApiController
         return $torneos;
     }
 
-    public function getCuotas(Request $request,$id)
-    { //lo hice post porque me dio paja ver como pasarlo por postman sino
+    public function getCuotas(Request $request, $id)
+    {
         try {
+            //si el crone anda bien esto no iria
+            $service = new CuotaService();
+            $service->updateLatePayment();
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+            //end
+
             $request->validate([
                 'id' => 'string|numeric|nullable',
                 'pagas' => 'bool|nullable'

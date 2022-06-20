@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants;
 use App\CuotaDetalleTipo;
 use Illuminate\Http\Request;
 use App\Http\Services\CuotaService;
@@ -28,7 +29,9 @@ class CuotaDetalleTipoController extends ApiController
     {
         try
         {
-            $cuotaDetalleTipos = CuotaDetalleTipo::all();
+            //filtramos las exceptiones
+            $detallesTiposExceptionals = Constants::CUOTA_DETALLES_TIPOS_EXCEPTIONLS;
+            $cuotaDetalleTipos = CuotaDetalleTipo::whereNotIn('codigo', array_values($detallesTiposExceptionals))->get();
 
             if ($cuotaDetalleTipos)
             {
@@ -159,11 +162,17 @@ class CuotaDetalleTipoController extends ApiController
     {
         try
         {
-            $cuotaDetalleTipo = CuotaDetalleTipo::find($cuotaDetalleTipoId);
+            $cuotaDetalleTipo = CuotaDetalleTipo::find($cuotaDetalleTipoId)->exists();
 
             if ($cuotaDetalleTipo)
             {
-                $cuotaDetalleTipo->delete();
+                $service = new CuotaService();
+                $service->deleteCuotaDetalleTipo($cuotaDetalleTipoId);
+
+                if ($service->hasErrors()) {
+                    return $this->sendServiceError($service->getLastError());
+                }
+                
                 return $this->sendResponse(null, 'Tipo de detalle eliminado con exito'); 
             }
             else

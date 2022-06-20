@@ -57,7 +57,7 @@ class PagoController extends ApiController
 
             //eliminamos los detalles de las cuotas y agregamos los que vienen en el request
             $cuota->detalles()->delete();
-
+            //dd($cuota_detalles);
             foreach ($cuota_detalles as $key => $cuota_detalle) {
                 $service->createCuotaDetalle($cuota->id, $cuota_detalle->cuota_detalle_tipo[0]->id, $cuota_detalle->monto, $cuota_detalle->descripcion);
 

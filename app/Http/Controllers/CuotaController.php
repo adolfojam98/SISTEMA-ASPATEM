@@ -31,6 +31,14 @@ class CuotaController extends ApiController
      */
     public function index()
     {
+        //si el crone anda bien esto no iria
+        $service = new CuotaService();
+        $service->updateLatePayment();
+        if ($service->hasErrors()) {
+            return $this->sendServiceError($service->getLastError());
+        }
+        //end
+
         return CuotaResource::collection(Cuota::all());
     }
 
@@ -71,6 +79,46 @@ class CuotaController extends ApiController
 
     //NUEVO>>>>>>>>>>>>>>>>>>
 
+    public function generarCuotaIngreso(Request $request, $usuario_id)
+    {
+        try {
+            $request->validate([
+                'importe' => 'required|numeric',
+            ]);
+
+            $usuario = Usuario::findOrFail($usuario_id);
+
+            //datos para la cuota y detalle tipo
+            $periodo = date("Y-m-d H:i:s", strtotime(date("Y-m-d")));
+            $importe = $request->get('importe');
+            $cuotaDetalleTipoIngreso = CuotaDetalleTipo::where('codigo', 'ingreso')->first();
+
+            if (!$cuotaDetalleTipoIngreso) {
+                return $this->sendError("No existe un detalle de cuota 'Ingreso'");
+            }
+
+            //creamos el service
+            $service = new CuotaService();
+
+            //creamos la cuota
+            $cuota = $service->createCuota($usuario->id, $periodo);
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            //creamos el detalle
+            $service->createCuotaDetalle($cuota->id, $cuotaDetalleTipoIngreso->id, $importe);
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            return $this->sendResponse(null, 'Cuota generada con exito');
+
+        } catch (Exception $e) {
+            return $this->sendError($e->errorInfo[2]);
+        }
+    }
+
     public function generarCuotasMasivas(Request $request)
     {
         try {
@@ -94,25 +142,48 @@ class CuotaController extends ApiController
             if (!$cuotaDetalleTipoPrecioBase) {
                 return $this->sendError("No existe un detalle de cuota 'Precio Base'");
             }
-            //TODO ver si hacemos un factory para crear estos datos automaticos
+
+            if (!count($usuarios))  {
+                return $this->sendError("No se encontraron cuotas para generar en el periodo", "No se encontraron cuotas para generar en el periodo");
+            }
 
             $service = new CuotaService();
-            if (!count($usuarios)) return $this->sendError("No se encontraron cuotas para generar en el periodo", "No se encontraron cuotas para generar en el periodo");
-            foreach ($usuarios as $usuario) {
-                $cuota = $service->createCuota($usuario->id, $fecha);
+            $service->validateCuotaDetalleTiposDefaults();
+            //$service->updateLatePayment(); //TODO: hora se esta usando en los getters y el crone esta, pero molesta la consola saliendo cada min asi que lo saque
 
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            foreach ($usuarios as $usuario) {
+                //creamos la cuota
+                $cuota = $service->createCuota($usuario->id, $fecha);
                 if ($service->hasErrors()) {
                     return $this->sendServiceError($service->getLastError());
                 }
 
+                //creamos el detalle precio base
                 $service->createCuotaDetalle($cuota->id, $cuotaDetalleTipoPrecioBase->id, $cuotaDetalleTipoPrecioBase->valor);
-
                 if ($service->hasErrors()) {
                     return $this->sendServiceError($service->getLastError());
+                }
+
+                //creamos el detalle de relacion si corresponde
+                if($usuario->hasRelacionesWithSocios()) {
+                    $cuotaDetalleTipoRelaciones = CuotaDetalleTipo::where('codigo', 'relaciones')->first();
+                    if (!$cuotaDetalleTipoRelaciones) {
+                        return $this->sendError("No existe un detalle de cuota 'Relaciones'");
+                    }
+
+                    $service->createCuotaDetalle($cuota->id, $cuotaDetalleTipoRelaciones->id, $cuotaDetalleTipoRelaciones->valor ?: $cuotaDetalleTipoPrecioBase->valor * $cuotaDetalleTipoRelaciones->porcentaje);
+                    if ($service->hasErrors()) {
+                        return $this->sendServiceError($service->getLastError());
+                    }
                 }
             }
 
             return $this->sendResponse(null, 'Cuotas generadas correctamente');
+
         } catch (Exception $e) {
             return $this->sendError($e->errorInfo[2]);
         }
@@ -121,6 +192,15 @@ class CuotaController extends ApiController
     public function getCuotaById(Request $request, $id)
     {
         try {
+
+            //si el crone anda bien esto no iria
+            $service = new CuotaService();
+            $service->updateLatePayment(null, $id);
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+            //end
+
             $cuota = Cuota::whereId($id)->first();
             return $cuota ? $this->sendResponse(new CuotaResource($cuota), 'Cuota encontrada con exito.') :
                 $this->sendError('Cuota no encontrada.');
