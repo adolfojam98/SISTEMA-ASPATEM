@@ -31,6 +31,14 @@ class CuotaController extends ApiController
      */
     public function index()
     {
+        //si el crone anda bien esto no iria
+        $service = new CuotaService();
+        $service->updateLatePayment();
+        if ($service->hasErrors()) {
+            return $this->sendServiceError($service->getLastError());
+        }
+        //end
+
         return CuotaResource::collection(Cuota::all());
     }
 
@@ -131,6 +139,15 @@ class CuotaController extends ApiController
     public function getCuotaById(Request $request, $id)
     {
         try {
+
+            //si el crone anda bien esto no iria
+            $service = new CuotaService();
+            $service->updateLatePayment(null, $id);
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+            //end
+
             $cuota = Cuota::whereId($id)->first();
             return $cuota ? $this->sendResponse(new CuotaResource($cuota), 'Cuota encontrada con exito.') :
                 $this->sendError('Cuota no encontrada.');

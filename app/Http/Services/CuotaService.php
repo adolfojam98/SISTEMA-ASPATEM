@@ -21,6 +21,7 @@ class CuotaService extends BaseService
         $this->errorDefinitions[] = new Error("CUOTA0002", "Un monto especifico necesita una descripcion", "Unespected", 500);
         $this->errorDefinitions[] = new Error("CUOTA0003", "Un nuevo tipo de detalle necesita un porcentaje o valor", "Unespected", 500);
         $this->errorDefinitions[] = new Error("CUOTA0004", "Los tipos de detalles defaults aun no se han configurado", "Unespected", 500);
+        $this->errorDefinitions[] = new Error("CUOTA0005", "No puede eliminar un tipo de detalle que ya esta en uso", "Unespected", 500);
     }
 
     public function createCuota($usuario_id, $periodo)
@@ -144,6 +145,14 @@ class CuotaService extends BaseService
         $this->clearErrors();
 
         if($cuota_detalle_tipo_id) {
+            //verificamos que no haya cuotas con este tipo de detalle
+            $hasCuotaDetalle = CuotaDetalle::where('cuota_detalle_tipo_id', $cuota_detalle_tipo_id)->exists();
+            
+            if($hasCuotaDetalle) {
+                $this->setError("CUOTA0005");
+                return false;
+            }
+
             $cuotaDetalleTipo = CuotaDetalleTipo::find($cuota_detalle_tipo_id);
             $cuotaDetalleTipo->delete();
 
@@ -209,36 +218,39 @@ class CuotaService extends BaseService
                 }
             }
 
+
             //calculamos si esta atrasado
-            if(date_create(date('Y-m-d')) > date_create($cuota->periodo)) {
+            $today = new \DateTime();
+            $period = new \DateTime($cuota->periodo);
+            if($today > $period) {
                 # obtenemos la diferencia entre las dos fechas
-                $interval = date_create(date('Y-m-d'))->diff(date_create($cuota->periodo));
+                $interval = $today->diff($period);
                 # obtenemos la diferencia en meses + obtenemos la diferencia en años y la multiplicamos por 12 para tener los meses
                 $intervalMeses = $interval->format("%m") + $interval->format("%y")*12;
-
                 //tomamos el precio base
                 $detalleTipoPrecioBase = CuotaDetalleTipo::where('codigo', $detallesTiposDefault['Precio Base'])->first()->valor;
 
                 //generamos el detalle segun el tipo de morosidad
-                switch ($intervalMeses) {
-                    case $intervalMeses == 1:
-                        $detalleTipoMorosoBajo = CuotaDetalleTipo::where('codigo', $detallesTiposDefault['Moroso Bajo'])->first();
-                        $this->createCuotaDetalle($cuota->id, $detalleTipoMorosoBajo->id, $detalleTipoMorosoBajo->porcentaje ? $detalleTipoPrecioBase * $detalleTipoMorosoBajo->porcentaje : $detalleTipoMorosoBajo->valor, 'Moroso Bajo');
-                        break;
+                if($intervalMeses)
+                    switch ($intervalMeses) {
+                        case $intervalMeses === 1:
+                            $detalleTipoMorosoBajo = CuotaDetalleTipo::where('codigo', $detallesTiposDefault['Moroso Bajo'])->first();
+                            $this->createCuotaDetalle($cuota->id, $detalleTipoMorosoBajo->id, $detalleTipoMorosoBajo->porcentaje ? $detalleTipoPrecioBase * $detalleTipoMorosoBajo->porcentaje : $detalleTipoMorosoBajo->valor, 'Moroso Bajo');
+                            break;
 
-                    case $intervalMeses == 2:
-                        $detalleTipoMorosoMedio = CuotaDetalleTipo::where('codigo', $detallesTiposDefault['Moroso Medio'])->first();
-                        $this->createCuotaDetalle($cuota->id, $detalleTipoMorosoMedio->id, $detalleTipoMorosoMedio->porcentaje ? $detalleTipoPrecioBase * $detalleTipoMorosoMedio->porcentaje : $detalleTipoMorosoMedio->valor, 'Moroso Medio');
-                        break;
+                        case $intervalMeses === 2:
+                            $detalleTipoMorosoMedio = CuotaDetalleTipo::where('codigo', $detallesTiposDefault['Moroso Medio'])->first();
+                            $this->createCuotaDetalle($cuota->id, $detalleTipoMorosoMedio->id, $detalleTipoMorosoMedio->porcentaje ? $detalleTipoPrecioBase * $detalleTipoMorosoMedio->porcentaje : $detalleTipoMorosoMedio->valor, 'Moroso Medio');
+                            break;
+                            
+                        case $intervalMeses >= 3:
+                            $detalleTipoMorosoAlto = CuotaDetalleTipo::where('codigo', $detallesTiposDefault['Moroso Alto'])->first();
+                            $this->createCuotaDetalle($cuota->id, $detalleTipoMorosoAlto->id, $detalleTipoMorosoAlto->porcentaje ? $detalleTipoPrecioBase * $detalleTipoMorosoAlto->porcentaje : $detalleTipoMorosoAlto->valor, 'Moroso Alto');
+                            break;
                         
-                    case $intervalMeses >= 3:
-                        $detalleTipoMorosoAlto = CuotaDetalleTipo::where('codigo', $detallesTiposDefault['Moroso Alto'])->first();
-                        $this->createCuotaDetalle($cuota->id, $detalleTipoMorosoAlto->id, $detalleTipoMorosoAlto->porcentaje ? $detalleTipoPrecioBase * $detalleTipoMorosoAlto->porcentaje : $detalleTipoMorosoAlto->valor, 'Moroso Alto');
-                        break;
-                    
-                    default:
-                        break;
-                }
+                        default:
+                            break;
+                    }
             }
         }
     }

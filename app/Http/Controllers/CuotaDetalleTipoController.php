@@ -159,11 +159,17 @@ class CuotaDetalleTipoController extends ApiController
     {
         try
         {
-            $cuotaDetalleTipo = CuotaDetalleTipo::find($cuotaDetalleTipoId);
+            $cuotaDetalleTipo = CuotaDetalleTipo::find($cuotaDetalleTipoId)->exists();
 
             if ($cuotaDetalleTipo)
             {
-                $cuotaDetalleTipo->delete();
+                $service = new CuotaService();
+                $service->deleteCuotaDetalleTipo($cuotaDetalleTipoId);
+
+                if ($service->hasErrors()) {
+                    return $this->sendServiceError($service->getLastError());
+                }
+                
                 return $this->sendResponse(null, 'Tipo de detalle eliminado con exito'); 
             }
             else

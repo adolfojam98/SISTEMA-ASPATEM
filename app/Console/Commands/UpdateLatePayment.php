@@ -40,6 +40,6 @@ class UpdateLatePayment extends Command
     {
         $service = new CuotaService();
         $service->updateLatePayment();
-        return 22;
+        return 1;
     }
 }
