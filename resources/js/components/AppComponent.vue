@@ -55,33 +55,33 @@
             </template>
 
             <v-list-item link :to="{ name: 'gestion-torneos' }">
-            <v-list-item-title>Gestion torneos</v-list-item-title>
-            <v-list-item-icon>
-              <v-icon>mdi-trophy</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
+              <v-list-item-title>Gestion torneos</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>mdi-trophy</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
 
-          <v-list-item link :to="{ name: 'historial-jugador' }">
-            <v-list-item-title>Historial por jugador</v-list-item-title>
-            <v-list-item-icon>
-              <v-icon>mdi-content-paste</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
+            <v-list-item link :to="{ name: 'historial-jugador' }">
+              <v-list-item-title>Historial por jugador</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>mdi-content-paste</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
 
-           <v-list-item link :to="{ name: 'lista-externos' }">
+            <v-list-item link :to="{ name: 'lista-externos' }">
               <v-list-item-title>Lista jugadores externos</v-list-item-title>
               <v-list-item-icon>
                 <v-icon>mdi-account-group</v-icon>
               </v-list-item-icon>
             </v-list-item>
 
-          <v-list-item link :to="{ name: 'crear-torneos' }">
-            <v-list-item-title>Nuevo torneo</v-list-item-title>
-            <v-list-item-icon>
-              <v-icon small>mdi-trophy</v-icon>
-              <v-icon small>mdi-plus</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
+            <v-list-item link :to="{ name: 'crear-torneos' }">
+              <v-list-item-title>Nuevo torneo</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon small>mdi-trophy</v-icon>
+                <v-icon small>mdi-plus</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
 
             <v-list-item link :to="{ name: 'crear-fecha' }">
               <v-list-item-title>Nueva fecha</v-list-item-title>
@@ -101,43 +101,32 @@
           </v-list-item>
 
           <v-list-item link :to="{ name: 'avisos' }">
-          <v-list-item-action>
-            <v-icon>mdi-email-send-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title> Avisos </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+            <v-list-item-action>
+              <v-icon>mdi-email-send-outline</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title> Avisos </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
-
-<v-list-group no-action prepend-icon="mdi-tournament">
+          <v-list-group no-action prepend-icon="mdi-wrench">
             <template v-slot:activator>
-              <v-list-item-title>configuracion</v-list-item-title>
+              <v-list-item-title>Configuraciones</v-list-item-title>
             </template>
 
             <v-list-item link :to="{ name: 'configuracion' }">
-            <v-list-item-title>Ajustes</v-list-item-title>
-            <v-list-item-icon>
-              <v-icon>mdi-trophy</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-           <v-list-item link :to="{ name: 'ajustes-cuotas' }">
-            <v-list-item-title>Cuotas</v-list-item-title>
-            <v-list-item-icon>
-              <v-icon>mdi-trophy</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-</v-list-group>
-
-
-          <v-list-item link :to="{ name: 'configuracion' }">
-            <v-list-item-action>
-              <v-icon>mdi-wrench</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title> Configuraciones </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+              <v-list-item-title>Ajustes</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>mdi-trophy</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+            <v-list-item link :to="{ name: 'ajustes-cuotas' }">
+              <v-list-item-title>Cuotas</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>mdi-cash </v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
 
           <v-list-item @click="salir()">
             <v-list-item-action>
@@ -178,8 +167,10 @@
         <span class="white--text">&copy; {{ new Date().getFullYear() }}</span>
       </v-footer>
 
-      <modal-login :isOpen="showModalLogin" :getSessionStatus="getSessionStatus"/>
-      
+      <modal-login
+        :isOpen="showModalLogin"
+        :getSessionStatus="getSessionStatus"
+      />
     </v-app>
   </div>
 </template>
@@ -193,7 +184,7 @@ export default {
   data: () => ({
     drawer: null,
     showModalLogin: false,
-    loggingOut: false
+    loggingOut: false,
   }),
 
   created() {
@@ -205,19 +196,22 @@ export default {
 
   methods: {
     async salir() {
-      this.showModalLogin = false
-      this.loggingOut = true
+      this.showModalLogin = false;
+      this.loggingOut = true;
 
-      window.location.replace('/login');
+      window.location.replace("/login");
       await axios.post("/logout");
 
-      this.showModalLogin = false
-      this.loggingOut = false
+      this.showModalLogin = false;
+      this.loggingOut = false;
     },
 
     async getSessionStatus() {
-      let res = await axios.get("/session/status")
-      this.showModalLogin = (res.data || window.location.href.includes('/login') || this.loggingOut) ? false : true
+      let res = await axios.get("/session/status");
+      this.showModalLogin =
+        res.data || window.location.href.includes("/login") || this.loggingOut
+          ? false
+          : true;
     },
   },
 };

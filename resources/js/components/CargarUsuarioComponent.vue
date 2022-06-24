@@ -198,9 +198,6 @@ export default {
 
             if (this.es_socio && this.id_usuario != null) {
               this.generarCuota();
-              
-
-           
             }
             console.log('la mama del gonza')
              this.$router.push({ path: '/usuarios/lista', replace: true })
@@ -224,8 +221,7 @@ export default {
         this.importe = 0;
       }
       axios
-        .post("/cuota", {
-          id_usuario: this.id_usuario,
+        .post(`/cuota/ingreso/${this.id_usuario}`, {
           importe: this.importe,
         })
         .then((response) => {
@@ -238,11 +234,9 @@ export default {
 
       this.$refs.form.reset();
     },
-
-    pagarCuota() {
-      axios.put("/cuota", {
-        id: this.id_cuota,
-        descuento: false,
+     pagarCuota() {
+      axios.post(`/pago/store/${this.id_usuario}`, {
+        cuota_id: this.id_cuota
       });
     },
   },
