@@ -112,7 +112,7 @@ class CuotaController extends ApiController
                 return $this->sendServiceError($service->getLastError());
             }
 
-            return $this->sendResponse(null, 'Cuota generada con exito');
+            return $this->sendResponse(new CuotaResource($cuota), 'Cuota generada con exito');
 
         } catch (Exception $e) {
             return $this->sendError($e->errorInfo[2]);

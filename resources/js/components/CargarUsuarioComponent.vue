@@ -225,7 +225,7 @@ export default {
           importe: this.importe,
         })
         .then((response) => {
-          this.id_cuota = response.data.id;
+          this.id_cuota = response.data.body.id;
           this.pagarCuota();
         })
         .catch(function (error) {
@@ -235,9 +235,7 @@ export default {
       this.$refs.form.reset();
     },
      pagarCuota() {
-      axios.post(`/pago/store/${this.id_usuario}`, {
-        cuota_id: this.id_cuota
-      });
+      axios.post(`/pago/store/${this.id_cuota}`);
     },
   },
 };
