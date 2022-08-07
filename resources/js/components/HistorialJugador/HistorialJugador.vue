@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-card>
+        <h3 cols="12">Historial de jugadores</h3>
       <v-select
         @input="setjugadorSeleccionado"
         :value="jugadorSeleccionado"

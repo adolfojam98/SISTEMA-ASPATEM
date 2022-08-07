@@ -1,5 +1,6 @@
 <template>
     <div>
+          <h3 cols="12">Crear nuevo torneo</h3>
         <v-stepper :value="e6" vertical>
             <v-stepper-step :complete="e6 > 1" editable step="1" @click="setStep(1)">
                 Nombre del torneo

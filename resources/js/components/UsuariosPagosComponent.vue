@@ -1,5 +1,6 @@
 <template>
   <div>
+      <h3 cols="12">Administración de pagos</h3>
     <v-container>
       <v-autocomplete
         v-model="usuarioSeleccionado"

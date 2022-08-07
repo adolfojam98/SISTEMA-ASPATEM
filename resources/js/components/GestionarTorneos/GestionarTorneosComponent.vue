@@ -1,6 +1,7 @@
 <template>
   <v-card>
     <v-card elevation="0">
+        <h3 cols="12">Gestión de torneos</h3>
       <v-select
         :value="torneoSeleccionado"
         @input="setTorneoSeleccionado"

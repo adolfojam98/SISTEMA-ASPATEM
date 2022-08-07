@@ -153,6 +153,7 @@
         <v-container fluid>
           <router-view :key="$route.fullPath"></router-view>
           <snackbar></snackbar>
+           <spinner></spinner>
         </v-container>
       </v-main>
 
@@ -172,7 +173,9 @@
         :getSessionStatus="getSessionStatus"
       />
     </v-app>
+   
   </div>
+
 </template>
 
 <script>
