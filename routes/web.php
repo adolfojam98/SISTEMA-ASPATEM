@@ -16,7 +16,7 @@ Route::group(['prefix' => '/session', 'as' => 'session.'], function () {
 
 Route::group(['prefix' => '/usuario', 'as' => 'usuario.'/*, 'middleware' => ['auth']*/], function () {
     Route::post('/', 'UsuarioController@store')->name('store');
-    Route::get('/', 'UsuarioController@create')->name('create');
+    Route::get('/', 'UsuarioController@index')->name('index');
     Route::put('/', 'UsuarioController@update')->name('update');
     Route::get('/{id}/cuotas', 'UsuarioController@getCuotas')->name('getCuotas');
 
