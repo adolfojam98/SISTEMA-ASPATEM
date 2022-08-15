@@ -100,14 +100,17 @@ export default {
           cabecera[3].toLowerCase() == "puntos"
         ) {
           let json = [];
-          data.forEach((participante) => {
-            let participanteJson = {
-              apellido: participante[0],
-              nombre: participante[1],
-              dni: participante[2],
-              puntos: participante[3],
-            };
-            json.push(participanteJson);
+          data.forEach((participante, i) => {
+            console.log(`participante nro ${i}`);
+            if (this.validarFilaParticipante(participante)) {
+              let participanteJson = {
+                apellido: participante[0],
+                nombre: participante[1],
+                dni: participante[2],
+                puntos: participante[3],
+              };
+              json.push(participanteJson);
+            }
           });
           console.log("Emitiendo");
           this.validarJugadoresImportados(json);
@@ -127,6 +130,14 @@ export default {
       this.prueba = [];
       this.json = [];
     },
+    validarFilaParticipante(participante) {
+      return !(
+        participante[0] === undefined ||
+        participante[1] === undefined ||
+        participante[2] === undefined ||
+        participante[3] ===undefined
+      );
+    },
     async validarJugadoresImportados(json) {
       for (const jugador of json) {
         const resp = await axios.get("/usuario", {
@@ -135,8 +146,7 @@ export default {
           },
         });
         if (Array.isArray(resp.data) && resp.data.length) {
-          jugador = {...resp.data[0], puntos : jugador.puntos};
-        
+          jugador = { ...resp.data[0], puntos: jugador.puntos };
         }
         this.pushJugadorTorneo(jugador);
       }
