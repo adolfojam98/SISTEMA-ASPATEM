@@ -4,7 +4,7 @@
     <v-card>
       <v-card-title>
   <h3 v-if='isListaSocios' cols="12">Lista socios</h3>
-  <h3 v-else>Lista jugadores</h3>
+  <h3 v-else>Listado de Jugadores Externos</h3>
         <v-spacer></v-spacer>
 
         <v-text-field
