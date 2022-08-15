@@ -21,8 +21,14 @@ class UsuarioController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $dni = $request->dni;
+        return Usuario::
+        when($dni, function ($query, $dni) {
+            $query->where('dni', $dni);
+        })
+        ->get();
     }
 
     /**
@@ -33,7 +39,7 @@ class UsuarioController extends ApiController
     public function create()
     {
 
-        return Usuario::all();
+     
     }
 
     /**
@@ -90,9 +96,9 @@ class UsuarioController extends ApiController
      * @param  \App\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function show(Usuario $request)
+    public function show(Request $request)
     {
-        $usuario = Usuario::findOrFail($request->mail);
+        $usuario = Usuario::findOrFail('dni',$request->dni);
         return $usuario;
         //Esta función devolverá los datos de una tarea que hayamos seleccionado para cargar el formulario con sus datos
     }

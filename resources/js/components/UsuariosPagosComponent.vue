@@ -146,7 +146,7 @@ export default {
     ...mapActions(["callSnackbar"]),
     ...mapMutations('cuotas', ['setTipoCuotasDetalles']),
      
-    nombreCompleto: (item) => item.apellido + " " + item.nombre,
+    nombreCompleto: (item) => `${item.nombre} ${item.apellido} (${item.dni})`,
     async buscarCuotasUsuario() {
       try {
         if (this.usuarioSeleccionado != "") {
