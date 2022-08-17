@@ -113,7 +113,9 @@ export default {
             }
           });
           console.log("Emitiendo");
+          json = this.sacarJugadoresRepetidos(json);
           this.validarJugadoresImportados(json);
+         
 
           this.callSnackbar(["Jugadores agregados correctamente", "success"]);
         } else {
@@ -130,6 +132,15 @@ export default {
       this.prueba = [];
       this.json = [];
     },
+sacarJugadoresRepetidos(json){
+const jugadoresSinRepetir = [];
+ json.FillingEventArgforEach(jugador => {
+   if(!jugadoresSinRepetir.some(e => e.dni === jugador.dni)){
+jugadoresSinRepetir.push(jugador);
+   }
+ });
+ return jugadoresSinRepetir;
+},
     validarFilaParticipante(participante) {
       return !(
         participante[0] === undefined ||
@@ -139,6 +150,7 @@ export default {
       );
     },
     async validarJugadoresImportados(json) {
+
       for (const jugador of json) {
         const resp = await axios.get("/usuario", {
           params: {
@@ -150,7 +162,11 @@ export default {
         }
         this.pushJugadorTorneo(jugador);
       }
+
+     
     },
+  
+
   },
 
   mounted() {
