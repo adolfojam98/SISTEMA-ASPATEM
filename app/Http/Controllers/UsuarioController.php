@@ -24,7 +24,7 @@ class UsuarioController extends ApiController
     public function index(Request $request)
     {
         $dni = $request->dni;
-        return Usuario::
+        return Usuario::with('cuotas')->
         when($dni, function ($query, $dni) {
             $query->where('dni', $dni);
         })

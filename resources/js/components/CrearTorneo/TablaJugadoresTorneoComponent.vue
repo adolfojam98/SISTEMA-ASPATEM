@@ -26,6 +26,18 @@
         </template>
       </v-data-table>
     </template>
+    <div v-if="listaJugadores.length > 0">
+      <p class="font-weight-medium">
+     Jugadores nuevos: {{cantidadJugadoresNuevos}}
+    </p>
+     <p class="font-weight-medium">
+     Jugadores existentes: {{cantidadJugadoresExistentes}}
+    </p>
+     <p class="font-weight-medium">
+     Socios: {{cantidadJugadoresSocios}}
+    </p>
+    </div>
+   
   </div>
 </template>
 
@@ -51,6 +63,15 @@ export default {
   },
   computed: {
     ...mapState("CrearTorneo", ["listaJugadores"]),
+    cantidadJugadoresNuevos(){
+      return this.listaJugadores.filter((jugador)=> jugador.id === undefined).length;
+    },
+    cantidadJugadoresExistentes(){
+       return this.listaJugadores.filter((jugador)=> jugador.id !== undefined).length;  
+    },
+    cantidadJugadoresSocios(){
+       return this.listaJugadores.filter((jugador)=>  jugador.socio === '1').length;  
+    }
   },
   methods: {
     ...mapMutations("CrearTorneo", ["eliminarJugador"]),
