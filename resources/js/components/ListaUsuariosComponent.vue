@@ -1,10 +1,9 @@
 <template>
   <div>
-   
     <v-card>
       <v-card-title>
-  <h3 v-if='isListaSocios' cols="12">Lista socios</h3>
-  <h3 v-else>Listado de Jugadores Externos</h3>
+        <h3 v-if="isListaSocios" cols="12">Lista socios</h3>
+        <h3 v-else>Listado de Jugadores Externos</h3>
         <v-spacer></v-spacer>
 
         <v-text-field
@@ -76,7 +75,7 @@
       ></editar-usuario>
     </v-dialog>
 
-    <v-dialog v-model="eliminarUsuarioModal" max-width="320">
+    <v-dialog v-model="eliminarUsuarioModal" max-width="400">
       <v-card>
         <v-card-title class="headline">Desea borrar el usuario?</v-card-title>
         <v-card-text
@@ -84,6 +83,16 @@
           ranking pero seguirá quedando registro de sus participaciones en
           torneos. ¿Desea continuar?.</v-card-text
         >
+        <v-container>
+          <v-textarea
+            outlined
+            v-model="motivoBaja"
+            label="Motivo de baja"
+            hint="Debe especificar el motivo de baja"
+            counter
+          ></v-textarea>
+        </v-container>
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -92,11 +101,7 @@
             @click="[(eliminarUsuarioModal = false)]"
             >CANCELAR</v-btn
           >
-          <v-btn
-            color="error"
-            @click="[deleteItem(), (eliminarUsuarioModal = false)]"
-            >BORRAR</v-btn
-          >
+          <v-btn color="error" @click="[deleteItem()]">BORRAR</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -108,6 +113,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   props: {
     isListaSocios: Boolean,
@@ -148,6 +154,7 @@ export default {
       usuarioEditar: [],
       editarUsuarioModal: false,
       usuarioEliminar: [],
+      motivoBaja: "",
       eliminarUsuarioModal: false,
       usuarioRelaciones: [],
       usuarioRelacionesModal: false,
@@ -155,18 +162,30 @@ export default {
   },
 
   methods: {
-    deleteItem() {
+    ...mapActions(["callSnackbar"]),
+    async deleteItem() {
       let me = this;
 
-      axios
-        .delete(`/usuario/${me.usuarioEliminar.id}`)
-        .then(function (res) {
+      if (this.motivoBaja.length >= 5) {
+        try {
+          const resp = await axios.delete(`/usuario/${me.usuarioEliminar.id}`, {
+            data: { motivo: this.motivoBaja },
+          });
+          console.log(resp);
           me.created();
           me.usuarioEliminar = [];
-        })
-        .catch(function (error) {
+          this.eliminarUsuarioModal = false;
+          this.motivoBaja = "";
+        } catch (error) {
           console.log(error);
-        });
+        }
+      } else {
+        this.eliminarUsuarioModal = true;
+        this.callSnackbar([
+          "El motivo debe ser de al menos 5 caracteres",
+          "error",
+        ]);
+      }
     },
 
     editItem(item) {

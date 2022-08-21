@@ -1,16 +1,17 @@
 <template>
   <div>
-    <v-card elevation ="0"
-      ><v-card-title>
-        
-      </v-card-title>
+    <v-card elevation="0"
+      ><v-card-title> </v-card-title>
       <v-container grid-list-xs>
         <v-form v-model="valid" ref="form" v-if="es_socio" lazy-validation>
           <v-container fluid>
-                <h3 cols="12">Ingresar nuevo socio</h3>
             <v-row align="center">
-              
-              <v-col cols="6">
+              <v-col offset="1">
+                <h3>Ingresar nuevo socio</h3>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="5">
                 <v-text-field
                   v-model="nombre"
                   :rules="nombreRules"
@@ -19,7 +20,7 @@
                   required
                 ></v-text-field>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="5">
                 <v-text-field
                   v-model="apellido"
                   :rules="apellidoRules"
@@ -28,7 +29,7 @@
                   required
                 ></v-text-field>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="5">
                 <v-text-field
                   v-model="dni"
                   :rules="dniRules"
@@ -38,21 +39,21 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="6">
+              <v-col cols="5">
                 <v-text-field
                   v-model="email"
                   :rules="emailRules"
                   label="E-mail"
                 ></v-text-field>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="5">
                 <v-text-field
                   v-model="telefono"
                   label="Telefono"
                   type="number"
                 ></v-text-field>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="5">
                 <v-text-field
                   v-model="importe"
                   label="Importe del corriente mes"
@@ -61,18 +62,29 @@
                   type="number"
                 ></v-text-field>
               </v-col>
+            </v-row>
 
-              <div class="ml-2">
+            <v-row>
+              <v-col offset="1" cols="2">
                 <v-btn
                   center
                   large
                   depressed
-                  color="primary"
+                  color="success"
                   :disabled="!valid"
                   @click.prevent="cargarUsuario"
                   >Dar de alta</v-btn
                 >
-              </div>
+              </v-col>
+              <v-col cols="2">
+                <v-btn
+                  large
+                  depressed
+                  color="error"
+                  @click.prevent="resetearFormulario"
+                  >Limpiar formulario</v-btn
+                >
+              </v-col>
             </v-row>
           </v-container>
         </v-form>
@@ -117,14 +129,23 @@
               label="Telefono"
               type="number"
             ></v-text-field>
-            <div >
-              <v-btn 
+            <div>
+              <v-btn
                 large
                 depressed
                 color="primary"
                 :disabled="!valid"
                 @click.prevent="cargarUsuario"
                 >Dar de Alta</v-btn
+              >
+            </div>
+            <div>
+              <v-btn
+                large
+                depressed
+                color="error"
+                @click.prevent="resetearFormulario"
+                >Limpiar formulario</v-btn
               >
             </div>
           </v-container>
@@ -199,24 +220,23 @@ export default {
             if (this.es_socio && this.id_usuario != null) {
               this.generarCuota();
             }
-            console.log('la mama del gonza')
-             this.$router.push({ path: '/usuarios/lista', replace: true })
+            console.log("la mama del gonza");
+            this.$router.push({ path: "/usuarios/lista", replace: true });
           })
           .catch((error) => {
-              console.log(error)
+            console.log(error);
             const errores = error.response.data.errors;
-           if (errores["nombre"])
-          this.callSnackbar([errores["nombre"][0], "error"]);
-           if (errores["apellido"])
-          this.callSnackbar([errores["apellido"][0], "error"]);
-           if (errores["dni"])
-          this.callSnackbar([errores["dni"][0], "error"]);
+            if (errores["nombre"])
+              this.callSnackbar([errores["nombre"][0], "error"]);
+            if (errores["apellido"])
+              this.callSnackbar([errores["apellido"][0], "error"]);
+            if (errores["dni"]) this.callSnackbar([errores["dni"][0], "error"]);
             console.log(errores.response);
           });
       }
     },
 
-  async  generarCuota() {
+    async generarCuota() {
       if (!this.importe || this.importe == "" || this.importe < 0) {
         this.importe = 0;
       }
@@ -232,9 +252,12 @@ export default {
           this.callSnackbar(["Error al guardar cuota", "error"]);
         });
 
+      this.resetearFormulario();
+    },
+    resetearFormulario() {
       this.$refs.form.reset();
     },
-     pagarCuota() {
+    pagarCuota() {
       axios.post(`/pago/store/${this.id_cuota}`);
     },
   },

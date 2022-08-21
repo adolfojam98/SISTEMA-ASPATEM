@@ -21,6 +21,7 @@ class CreateUsuariosTable extends Migration
             $table->string('telefono',12)->nullable();
             $table->boolean('socio');
             $table->integer('dni');
+            $table->integer('motivo_baja')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

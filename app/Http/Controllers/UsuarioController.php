@@ -146,7 +146,11 @@ class UsuarioController extends ApiController
      */
     public function destroy(Request $request)
     {
+     $motivo = $request->motivo;    
+        
         $usuario = Usuario::findOrFail($request->id);
+        $usuario->motivo_baja = $motivo;
+        $usuario->update();
         $usuario->delete();
 
         //Esta función obtendra el id de la tarea que hayamos seleccionado y la borrará de nuestra BD
