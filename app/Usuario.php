@@ -51,28 +51,46 @@ class Usuario extends Model
     }
 
     public function socio(){
-        $socio = false;
-        $activo = false;
+        /* casos: 
+            1) no socio: socio == false y no tiene cuotas generadas; 
+            2) inactivo: (socio == false y tiene cuotas generadas) || (socio == true y ultimas 4 cuotas no pagas);
+            3) socio: socio == true y al menos una de las ultimas 4 cuotas pagada
+        */
+        $state = (object) [
+            'socio' => null,
+            'activo' => null
+        ];
 
-        //obtenemos las cuotas no pagas
-        $cuotasNoPagas = Cuota::Where('usuario_id', $this->id)->get()->filter(function ($cuota) {
-            return !$cuota->pago;
-        })->values();
-
-        //si tiene alguna cuota generada entonces alguna vez fue socio
+        //cantidad de cuotas generadas
         $hasLeastOneCuota = Cuota::Where('usuario_id', $this->id)->get()->count();
 
-        //si alguna vez fue socio y tiene las ultimas 3 cuotas no pagas es inactivo
-        if($cuotasNoPagas->count() >= 3 ){
-            $socio = true;
-        } else {
-            $socio = true;
+        //obtenemos las ultimas 4 cuotas
+        $lastFourCuotas = Cuota::Where('usuario_id', $this->id)->latest()->take(4)->get();
+
+        //si tiene alguna de las ultimas 4 cuotas pagas no es moroso
+        $moroso = true;
+        foreach ($lastFourCuotas as $key => $cuota) {
+            if($cuota->pago) {
+                $moroso = false;
+            }
+        }
+        
+        //caso 1
+        if(!$this->socio && !$hasLeastOneCuota) {
+            $state->socio = false;
+            $state->activo = false;
+        }
+        //caso 2
+        else if((!$this->socio && $hasLeastOneCuota) || ($this->socio && $moroso )) {
+            $state->socio = true;
+            $state->activo = false;
+        }
+        //caso 3
+        else if($this->socio && !$moroso) {
+            $state->socio = true;
+            $state->activo = true;
         }
 
-        if(!$hasLeastOneCuota) {
-            $socio = false;
-        }
-
-        return $socio;
+        return $state;
     }
 }

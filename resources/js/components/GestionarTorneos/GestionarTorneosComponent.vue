@@ -14,7 +14,7 @@
         v-on:change="getFechas(), getInfoGraficasCategorias()"
       ></v-select>
 
-      <center>
+      <center v-if="torneoSeleccionado">
         <v-btn
           v-if="!editPuntos"
           @click="[(editPuntos = true)]"
@@ -25,7 +25,7 @@
           Configuración de puntos
         </v-btn>
       </center>
-      <div v-if="editPuntos">
+      <div v-if="torneoSeleccionado && editPuntos">
         <v-card class="elevation-2 ma-4">
           <v-form>
             <center>
@@ -112,7 +112,7 @@
             </v-row>
           </v-form>
         </v-card>
-        <v-card class="elevation-2 ma-4">
+        <v-card class="elevation-2 ma-4" v-if="torneoSeleccionado">
           <v-form>
             <center>
               <h2>Jugadores de diferentes categorias</h2>
@@ -199,7 +199,7 @@
         </center>
       </div>
     </v-card>
-    <v-card class="ma-4">
+    <v-card class="ma-4" v-if="torneoSeleccionado">
       <v-text-field
         class="ma-2"
         v-model="search"
@@ -223,6 +223,8 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <torneo-lista-jugadores v-if="torneoSeleccionado"/>
 
     <grafico-donut v-if="renderComponent && infoGraficas.data && infoGraficas.labels.length > 0 && infoGraficas.series.length > 0" v-bind:info="infoGraficas" />
         

@@ -9,6 +9,7 @@ export default{
         torneos: [],
         fechas: [],
         torneoSeleccionado: null,
+        listaJugadores: [],
         infoGraficas: {
             data: null,
             labels: [],
@@ -28,6 +29,9 @@ export default{
         },
         setInfoGraficas(state,data){
             state.infoGraficas = {...state.infoGraficas, ...data}
+        },
+        setListaJugadores(state, data){
+            state.listaJugadores = data
         }
     }
 }
