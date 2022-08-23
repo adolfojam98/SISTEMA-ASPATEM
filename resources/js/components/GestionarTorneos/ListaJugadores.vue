@@ -31,7 +31,7 @@
                 >mdi-help-circle-outline</v-icon>
             </template>
             <span>
-                <v-icon color="blue"> mdi-star </v-icon>: Socio
+                <v-icon color="blue"> mdi-star </v-icon> Socio
                 <v-icon color="blue"> mdi-star-outline </v-icon> Socio Inactivo
                 <v-icon> mdi-star-off-outline </v-icon> No Socio
             </span>
