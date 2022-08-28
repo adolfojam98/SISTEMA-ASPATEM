@@ -1,5 +1,56 @@
 <template>
   <div>
+
+    <v-container>
+      <v-row>
+<v-col offset="3">
+    <h3 v-if="es_socio">Ingresar nuevo socio</h3>
+    <h3 v-else>Ingresar nuevo jugador</h3>
+</v-col>
+      
+      </v-row>
+      <v-row justify="center">
+        <v-col cols="6">
+          <v-form ref="form" v-model="valid">
+            <v-text-field v-model="nombre" :rules="nombreRules" :counter="20" label="Nombre*" required></v-text-field>
+            <v-text-field v-model="apellido" :rules="apellidoRules" :counter="20" label="Apellido*" required>
+            </v-text-field>
+            <v-text-field v-model="dni" :rules="dniRules" label="DNI*" type="number" required></v-text-field>
+            <v-text-field v-model="email" :rules="emailRules" label="E-mail"></v-text-field>
+            <v-text-field v-model="telefono" label="Telefono" type="number"></v-text-field>
+            <div v-if="es_socio">
+            <v-text-field v-model="importe" label="Importe del corriente mes" :rules="importeRules" prefix="$"
+              type="number">
+            </v-text-field>
+            </div>
+            
+            <v-btn :disabled="!valid" color="success" class="mr-4" @click.prevent="cargarUsuario">
+              Dar de alta
+            </v-btn>
+
+            <v-btn color="error" class="mr-4" @click="resetearFormulario">
+              Limpiar Formulario
+            </v-btn>
+
+          </v-form>
+        </v-col>
+
+      </v-row>
+    </v-container>
+
+
+
+
+
+
+
+  </div>
+</template>
+ 
+
+<!--           
+<template>
+  <div>
     <v-card elevation="0"
       ><v-card-title> </v-card-title>
       <v-container grid-list-xs>
@@ -153,7 +204,7 @@
       </v-container>
     </v-card>
   </div>
-</template>
+</template> -->
 
 <script>
 import { mapActions } from "vuex";
@@ -162,7 +213,7 @@ export default {
     es_socio: Boolean,
   },
   data: () => ({
-    valid: false,
+    valid: true,
     id_usuario: null,
 
     nombre: "",
@@ -203,7 +254,7 @@ export default {
   methods: {
     ...mapActions(["callSnackbar"]),
     cargarUsuario() {
-      if (this.valid) {
+      if (this.validarFormulario()) {
         axios
           .post("/usuario", {
             nombre: this.nombre,
@@ -234,6 +285,9 @@ export default {
             console.log(errores.response);
           });
       }
+    },
+    validarFormulario() {
+      return this.$refs.form.validate();
     },
 
     async generarCuota() {
