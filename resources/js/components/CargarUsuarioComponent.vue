@@ -3,11 +3,11 @@
 
     <v-container>
       <v-row>
-<v-col offset="3">
-    <h3 v-if="es_socio">Ingresar nuevo socio</h3>
-    <h3 v-else>Ingresar nuevo jugador</h3>
-</v-col>
-      
+        <v-col offset="3">
+          <h3 v-if="es_socio">Ingresar nuevo socio</h3>
+          <h3 v-else>Ingresar nuevo jugador</h3>
+        </v-col>
+
       </v-row>
       <v-row justify="center">
         <v-col cols="6">
@@ -19,11 +19,11 @@
             <v-text-field v-model="email" :rules="emailRules" label="E-mail"></v-text-field>
             <v-text-field v-model="telefono" label="Telefono" type="number"></v-text-field>
             <div v-if="es_socio">
-            <v-text-field v-model="importe" label="Importe del corriente mes" :rules="importeRules" prefix="$"
-              type="number">
-            </v-text-field>
+              <v-text-field v-model="importe" label="Importe del corriente mes" :rules="importeRules" prefix="$"
+                type="number">
+              </v-text-field>
             </div>
-            
+
             <v-btn :disabled="!valid" color="success" class="mr-4" @click.prevent="cargarUsuario">
               Dar de alta
             </v-btn>
