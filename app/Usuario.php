@@ -49,4 +49,30 @@ class Usuario extends Model
     public function cuotas(){
         return $this->hasMany(Cuota::class)->orderByDesc('id');
     }
+
+    public function socio(){
+        $socio = false;
+        $activo = false;
+
+        //obtenemos las cuotas no pagas
+        $cuotasNoPagas = Cuota::Where('usuario_id', $this->id)->get()->filter(function ($cuota) {
+            return !$cuota->pago;
+        })->values();
+
+        //si tiene alguna cuota generada entonces alguna vez fue socio
+        $hasLeastOneCuota = Cuota::Where('usuario_id', $this->id)->get()->count();
+
+        //si alguna vez fue socio y tiene las ultimas 3 cuotas no pagas es inactivo
+        if($cuotasNoPagas->count() >= 3 ){
+            $socio = true;
+        } else {
+            $socio = true;
+        }
+
+        if(!$hasLeastOneCuota) {
+            $socio = false;
+        }
+
+        return $socio;
+    }
 }

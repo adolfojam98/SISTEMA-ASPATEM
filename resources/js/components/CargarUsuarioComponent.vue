@@ -1,138 +1,46 @@
 <template>
   <div>
-    <v-card elevation ="0"
-      ><v-card-title>
-        
-      </v-card-title>
-      <v-container grid-list-xs>
-        <v-form v-model="valid" ref="form" v-if="es_socio" lazy-validation>
-          <v-container fluid>
-                <h3 cols="12">Ingresar nuevo socio</h3>
-            <v-row align="center">
-              
-              <v-col cols="6">
-                <v-text-field
-                  v-model="nombre"
-                  :rules="nombreRules"
-                  :counter="20"
-                  label="Nombre*"
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  v-model="apellido"
-                  :rules="apellidoRules"
-                  :counter="20"
-                  label="Apellido*"
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  v-model="dni"
-                  :rules="dniRules"
-                  label="DNI*"
-                  type="number"
-                  required
-                ></v-text-field>
-              </v-col>
 
-              <v-col cols="6">
-                <v-text-field
-                  v-model="email"
-                  :rules="emailRules"
-                  label="E-mail"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  v-model="telefono"
-                  label="Telefono"
-                  type="number"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  v-model="importe"
-                  label="Importe del corriente mes"
-                  :rules="importeRules"
-                  prefix="$"
-                  type="number"
-                ></v-text-field>
-              </v-col>
+    <v-container>
+      <v-row>
+        <v-col offset="3">
+          <h3 v-if="es_socio">Ingresar nuevo socio</h3>
+          <h3 v-else>Ingresar nuevo jugador</h3>
+        </v-col>
 
-              <div class="ml-2">
-                <v-btn
-                  center
-                  large
-                  depressed
-                  color="primary"
-                  :disabled="!valid"
-                  @click.prevent="cargarUsuario"
-                  >Dar de alta</v-btn
-                >
-              </div>
-            </v-row>
-          </v-container>
-        </v-form>
-      </v-container>
-
-      <v-container grid-list-xs>
-        <v-form v-model="valid" ref="form" v-if="!es_socio" lazy-validation>
-          <v-container>
-            <h1>no es socio</h1>
-            <v-text-field
-              v-model="nombre"
-              :rules="nombreRules"
-              :counter="20"
-              label="Nombre"
-              required
-            ></v-text-field>
-
-            <v-text-field
-              v-model="apellido"
-              :rules="apellidoRules"
-              :counter="20"
-              label="Apellido"
-              required
-            ></v-text-field>
-
-            <v-text-field
-              v-model="dni"
-              :rules="dniRules"
-              label="DNI"
-              type="number"
-              required
-            ></v-text-field>
-
-            <v-text-field
-              v-model="email"
-              :rules="emailRules"
-              label="E-mail"
-            ></v-text-field>
-
-            <v-text-field
-              v-model="telefono"
-              label="Telefono"
-              type="number"
-            ></v-text-field>
-            <div >
-              <v-btn 
-                large
-                depressed
-                color="primary"
-                :disabled="!valid"
-                @click.prevent="cargarUsuario"
-                >Dar de Alta</v-btn
-              >
+      </v-row>
+      <v-row justify="center">
+        <v-col cols="6">
+          <v-form ref="form" v-model="valid">
+            <v-text-field v-model="nombre" :rules="nombreRules" :counter="20" label="Nombre*" required></v-text-field>
+            <v-text-field v-model="apellido" :rules="apellidoRules" :counter="20" label="Apellido*" required>
+            </v-text-field>
+            <v-text-field v-model="dni" :rules="dniRules" label="DNI*" type="number" required></v-text-field>
+            <v-text-field v-model="email" :rules="emailRules" label="E-mail"></v-text-field>
+            <v-text-field v-model="telefono" label="Telefono" type="number"></v-text-field>
+            <div v-if="es_socio">
+              <v-text-field v-model="importe" label="Importe del corriente mes" :rules="importeRules" prefix="$"
+                type="number">
+              </v-text-field>
             </div>
-          </v-container>
-        </v-form>
-      </v-container>
-    </v-card>
+
+            <v-btn :disabled="!valid" color="success" class="mr-4" @click.prevent="cargarUsuario">
+              Dar de alta
+            </v-btn>
+
+            <v-btn color="error" class="mr-4" @click="resetearFormulario">
+              Limpiar Formulario
+            </v-btn>
+
+          </v-form>
+        </v-col>
+
+      </v-row>
+    </v-container>
+
   </div>
 </template>
+ 
 
 <script>
 import { mapActions } from "vuex";
@@ -141,7 +49,7 @@ export default {
     es_socio: Boolean,
   },
   data: () => ({
-    valid: false,
+    valid: true,
     id_usuario: null,
 
     nombre: "",
@@ -182,7 +90,7 @@ export default {
   methods: {
     ...mapActions(["callSnackbar"]),
     cargarUsuario() {
-      if (this.valid) {
+      if (this.validarFormulario()) {
         axios
           .post("/usuario", {
             nombre: this.nombre,
@@ -199,24 +107,26 @@ export default {
             if (this.es_socio && this.id_usuario != null) {
               this.generarCuota();
             }
-            console.log('la mama del gonza')
-             this.$router.push({ path: '/usuarios/lista', replace: true })
+            console.log("la mama del gonza");
+            this.$router.push({ path: "/usuarios/lista", replace: true });
           })
           .catch((error) => {
-              console.log(error)
+            console.log(error);
             const errores = error.response.data.errors;
-           if (errores["nombre"])
-          this.callSnackbar([errores["nombre"][0], "error"]);
-           if (errores["apellido"])
-          this.callSnackbar([errores["apellido"][0], "error"]);
-           if (errores["dni"])
-          this.callSnackbar([errores["dni"][0], "error"]);
+            if (errores["nombre"])
+              this.callSnackbar([errores["nombre"][0], "error"]);
+            if (errores["apellido"])
+              this.callSnackbar([errores["apellido"][0], "error"]);
+            if (errores["dni"]) this.callSnackbar([errores["dni"][0], "error"]);
             console.log(errores.response);
           });
       }
     },
+    validarFormulario() {
+      return this.$refs.form.validate();
+    },
 
-  async  generarCuota() {
+    async generarCuota() {
       if (!this.importe || this.importe == "" || this.importe < 0) {
         this.importe = 0;
       }
@@ -232,9 +142,12 @@ export default {
           this.callSnackbar(["Error al guardar cuota", "error"]);
         });
 
+      this.resetearFormulario();
+    },
+    resetearFormulario() {
       this.$refs.form.reset();
     },
-     pagarCuota() {
+    pagarCuota() {
       axios.post(`/pago/store/${this.id_cuota}`);
     },
   },
