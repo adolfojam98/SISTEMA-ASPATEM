@@ -82,7 +82,7 @@ Route::group(['prefix' => '/torneo', 'as' => 'torneo.', 'middleware' => ['auth']
     Route::get('/fecha/{id}', 'FechaController@getFecha')->name('getFecha');
 });
 
-Route::group(['prefix' => '/torneos', 'as' => 'torneos.', 'middleware' => ['auth']], function () {
+Route::group(['prefix' => '/torneos', 'as' => 'torneos.', /*'middleware' => ['auth']*/], function () {
     Route::get('/', 'TorneoController@create')->name('create');
 
     Route::get('/{id}/jugadores', 'TorneoController@getJugadores')->name('getJugadores');

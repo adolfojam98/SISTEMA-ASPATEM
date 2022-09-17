@@ -79,6 +79,7 @@ Vue.component('modal-cambio-contrasena',            require('./components/Modals
 Vue.component('generar-cuotas-masivas',             require('./components/Pagos/GenerarCuotasMasivasComponent').default);
 Vue.component('ajustes-cuotas',                     require('./components/Ajustes/AjustesCuotasComponent').default);
 Vue.component('spinner',                            require('./components/SpinnerComponent').default);
+Vue.component('torneo-lista-jugadores',             require('./components/GestionarTorneos/ListaJugadores').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

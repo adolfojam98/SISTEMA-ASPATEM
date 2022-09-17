@@ -8,6 +8,7 @@ use App\Categoria;
 use DB;
 use App\Fecha;
 use Carbon\Carbon;
+use App\Http\Services\TorneoService;
 
 use Illuminate\Http\Request;
 
@@ -169,6 +170,18 @@ class TorneoController extends Controller
                     $jugador->pivot->puntos += $fecha_usuario->puntos;
                 }
             }
+
+            $service = new TorneoService();
+            $categoria = $service->calculateCategoria($request->id, $jugador->pivot->puntos);
+
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            } else {
+                $jugador->pivot->categoria = $categoria;
+            }
+
+            $jugador->socio = $jugador->socio();
+
         };
         return $jugadores;
     }
