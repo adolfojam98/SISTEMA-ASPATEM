@@ -78,7 +78,7 @@ export default {
       return this.$emit("cerrarDialog");
     },
     async generarCuota() {
-      //TODO revisar el pago de cuotas
+      //TODO revisar el pago de cuotas, debe controlar los errores
       try {
         console.log("anio" + this.anio);
         console.log("mes" + this.mes);

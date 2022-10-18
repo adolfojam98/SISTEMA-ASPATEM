@@ -24,11 +24,14 @@ class UsuarioController extends ApiController
     public function index(Request $request)
     {
         $dni = $request->dni;
-        return Usuario::
+     $usuarios = Usuario::
         when($dni, function ($query, $dni) {
             $query->where('dni', $dni);
-        })
-        ->get();
+        })->get();
+        foreach ($usuarios as $key => $usuario) {
+            $usuario->socio = $usuario->socio();
+        }
+        return $usuarios;
     }
 
     /**

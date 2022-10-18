@@ -48,6 +48,12 @@
             </template>
             <span>Relaciones</span>
           </v-tooltip>
+        </template >
+
+        <template v-slot:[`item.isSocio`]="{ item }">
+<v-icon :color="elegirColorIcono(item)">
+  {{elegirIcono(item)}}
+</v-icon>
         </template>
       </v-data-table>
     </v-card>
@@ -134,6 +140,12 @@ export default {
           sortable: false,
           filterable: false,
         },
+        {
+          text: "Socio",
+          value: "isSocio",
+          sortable: false,
+          filterable: false,
+        },
       ],
       usuarioEditar: [],
       editarUsuarioModal: false,
@@ -146,6 +158,7 @@ export default {
   },
 
   methods: {
+    //TODO hay que arreglar el tema de las cuotas
     ...mapActions(["callSnackbar"]),
     async deleteItem() {
       let me = this;
@@ -182,6 +195,17 @@ export default {
       this.usuarioRelaciones = item;
       this.usuarioRelacionesModal = true;
     },
+    elegirIcono(item){
+      if(item.socio.socio && item.socio.activo) return "mdi-star";
+      if(item.socio.socio && !item.socio.activo) return "mdi-star-outline";
+      return "mdi-star-off-outline";
+    },
+    elegirColorIcono(item){
+      if(item.socio.socio && item.socio.activo) return "success";
+      if(item.socio.socio && !item.socio.activo) return "grays";
+      return "black";
+    },
+  
 
     async created() {
       await axios
@@ -230,15 +254,8 @@ export default {
     },*/
 
     filtrar() {
-      this.usuariosFiltrados = [];
-
       this.usuarios.forEach((usuario) => {
-        if (
-          (usuario.socio == false && this.verNoSocios == true) ||
-          (usuario.socio == true && this.verSocios == true)
-        ) {
           this.usuariosFiltrados.push(usuario);
-        }
       });
     },
   },
