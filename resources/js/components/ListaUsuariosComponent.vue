@@ -35,22 +35,6 @@
             </template>
             <span>Editar</span>
           </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="
-                  [(eliminarUsuarioModal = true), (usuarioEliminar = item)]
-                "
-                color="error"
-                >mdi-delete</v-icon
-              >
-            </template>
-            <span>Eliminar</span>
-          </v-tooltip>
-
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
