@@ -56,7 +56,7 @@
             <tbody v-for="(cuota, index) in cuotasUsuario" :key="index">
               <tr
                 style="cursor: pointer"
-                v-if="cuota.pago"
+                v-if="(cuota.pago != null)"
                 @click="
                   [(infoCuotaPaga = !infoCuotaPaga), (cuotaActual = cuota)]
                 "
@@ -153,14 +153,16 @@ export default {
           this.cuotasUsuario = await axios.get(
             `/usuario/${this.usuarioSeleccionado.id}/cuotas`
           );
+        
           this.cuotasUsuario = await this.cuotasUsuario.data.body;
-          this.calcularPeriodoCuota();
-          console.log(this.cuotasUsuario);
+          console.log(this.cuotasUsuario.length);
+          if(this.cuotasUsuario.length == 0){
+            this.callSnackbar(["No se encontraron cuotas", "error"]);
+          }
+          this.calcularPeriodoCuotas();
+
           // .then((res) => {
-          //   console.log(res.data.body);
-          //   console.log("->usuario cuota: ", ...res.data.body);
-          //   console.log("->cuotas: ", this.cuotasUsuario);
-          //   this.castearCuotasParaTabla(res.data.body);
+          //  
 
           this.busco = true;
           // })
@@ -170,7 +172,7 @@ export default {
         this.callSnackbar(["error al buscar las cuotas"]);
       }
     },
-    calcularPeriodoCuota() {
+    calcularPeriodoCuotas() {
       this.cuotasUsuario.forEach((cuota) => {
         let periodoDate = new Date(cuota.periodo);
         cuota.mes = periodoDate.getMonth() + 1;
@@ -202,10 +204,10 @@ export default {
     },
 
     darFormatoFecha(fecha) {
-        if (!fecha) return null;
-        console.log(fecha);
-        const [anio, mes, dia] = fecha.split("-");
-        console.log(typeof dia)
+        if (!fecha || typeof fecha === 'undefined'){
+           return null;
+        }
+        const [anio, mes, dia] = fecha.split("/");
         return `${dia.slice(0, -9)}/${mes}/${anio}`;
     },
     actualizarAbrirModalGenerarCuotasMasivas(valor) {
