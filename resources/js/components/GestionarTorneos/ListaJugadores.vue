@@ -15,28 +15,26 @@
       :search="search"
       class="row-pointer"
     >
-    <template v-slot:[`item.socio`]="{ item }">
-        <v-icon v-if="item.socio.socio && item.socio.activo" color="blue"> mdi-star </v-icon>
-        <v-icon v-if="item.socio.socio && !item.socio.activo" color="blue"> mdi-star-outline </v-icon>
-        <v-icon v-if="!item.socio.socio"> mdi-star-off-outline </v-icon>
-    </template>
-    <template v-slot:[`header.socio`]="{ header }">
+      <template v-slot:[`item.socio`]="{ item }">
+        <v-icon :color="elegirColorIcono(item)">
+          {{ elegirIcono(item) }}
+        </v-icon>
+      </template>
+      <template v-slot:[`header.socio`]="{ header }">
         {{ header.text }}
         <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                    style="margin-top: 0px"
-                    v-bind="attrs"
-                    v-on="on"
-                >mdi-help-circle-outline</v-icon>
-            </template>
-            <span>
-                <v-icon color="blue"> mdi-star </v-icon> Socio
-                <v-icon color="blue"> mdi-star-outline </v-icon> Socio Inactivo
-                <v-icon> mdi-star-off-outline </v-icon> No Socio
-            </span>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon style="margin-top: 0px" v-bind="attrs" v-on="on"
+              >mdi-help-circle-outline</v-icon
+            >
+          </template>
+          <span>
+            <v-icon color="blue"> mdi-star </v-icon> Socio
+            <v-icon color="blue"> mdi-star-outline </v-icon> Socio Inactivo
+            <v-icon> mdi-star-off-outline </v-icon> No Socio
+          </span>
         </v-tooltip>
-    </template>
+      </template>
       <!-- <template v-slot:[`item.ingresos`]="{ item }">
         <p class="mt-4">${{ item.ingresos }}</p>
 
@@ -63,33 +61,37 @@ export default {
         { text: "Puntos", value: "pivot.puntos" },
         { text: "Categoria", value: "pivot.categoria.nombre" },
         { text: "Monto Pagado", value: "montoPagado" },
-        { 
-            text: "Socio", 
-            value: "socio", 
-            sortable: false, 
-            filterable: false 
+        {
+          text: "Socio",
+          value: "socio",
+          sortable: false,
+          filterable: false,
         },
       ],
     };
   },
 
   computed: {
-    ...mapState("gestionarTorneos", [
-        "torneoSeleccionado",
-        "listaJugadores"
-    ]),
+    ...mapState("gestionarTorneos", ["torneoSeleccionado", "listaJugadores"]),
   },
 
   methods: {
-    ...mapMutations("gestionarTorneos", [
-      "setListaJugadores",
-    ]),
-    
+    ...mapMutations("gestionarTorneos", ["setListaJugadores"]),
+    elegirIcono(item) {
+      if (item.socio.socio && item.socio.activo) return "mdi-star";
+      if (item.socio.socio && !item.socio.activo) return "mdi-star-outline";
+      return "mdi-star-off-outline";
+    },
+    elegirColorIcono(item) {
+      if (item.socio.socio && item.socio.activo) return "blue";
+      if (item.socio.socio && !item.socio.activo) return "blue";
+      return "black";
+    },
     initialice() {
       axios
         .get(`/torneos/${this.torneoSeleccionado.id}/jugadores`)
         .then((res) => {
-          this.setListaJugadores(res.data)
+          this.setListaJugadores(res.data);
         });
     },
   },
