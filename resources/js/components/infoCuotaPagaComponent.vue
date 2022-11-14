@@ -64,7 +64,7 @@ export default {
       darFormatoFecha(fecha) {
         if (!fecha) return null;
         console.log(fecha);
-        const [anio, mes, dia] = fecha.split("-");
+        const [anio, mes, dia] = fecha.split("/");
         console.log(typeof dia)
         return `${dia.slice(0, -9)}/${mes}/${anio}`;
     },
