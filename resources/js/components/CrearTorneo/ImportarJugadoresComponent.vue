@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import XLSX from "xlsx";
 export default {
   data() {
@@ -53,6 +53,9 @@ export default {
       prueba: [],
       json: [],
     };
+  },
+  computed: {
+    ...mapState("CrearTorneo", ["importacionJugadores"]),
   },
   methods: {
     ...mapMutations("CrearTorneo", ["pushJugadorTorneo"]),
@@ -100,16 +103,20 @@ export default {
           cabecera[3].toLowerCase() == "puntos"
         ) {
           let json = [];
-          data.forEach((participante) => {
-            let participanteJson = {
-              apellido: participante[0],
-              nombre: participante[1],
-              dni: participante[2],
-              puntos: participante[3],
-            };
-            json.push(participanteJson);
+          data.forEach((participante, i) => {
+            console.log(`participante nro ${i}`);
+            if (this.validarFilaParticipante(participante)) {
+              let participanteJson = {
+                apellido: participante[0],
+                nombre: participante[1],
+                dni: participante[2],
+                puntos: participante[3],
+              };
+              json.push(participanteJson);
+            }
           });
           console.log("Emitiendo");
+          json = this.sacarJugadoresRepetidos(json);
           this.validarJugadoresImportados(json);
 
           this.callSnackbar(["Jugadores agregados correctamente", "success"]);
@@ -127,19 +134,41 @@ export default {
       this.prueba = [];
       this.json = [];
     },
+    sacarJugadoresRepetidos(json) {
+      const jugadoresSinRepetir = [];
+      json.forEach((jugador) => {
+        if (!jugadoresSinRepetir.some((e) => e.dni === jugador.dni)) {
+          jugadoresSinRepetir.push(jugador);
+        }
+      });
+      return jugadoresSinRepetir;
+    },
+    validarFilaParticipante(participante) {
+      return !(
+        participante[0] === undefined ||
+        participante[1] === undefined ||
+        participante[2] === undefined ||
+        participante[3] === undefined
+      );
+    },
     async validarJugadoresImportados(json) {
       for (const jugador of json) {
-        const resp = await axios.get("/usuario", {
-          params: {
-            dni: jugador.dni,
-          },
-        });
-        if (Array.isArray(resp.data) && resp.data.length) {
-          jugador = {...resp.data[0], puntos : jugador.puntos};
-        
+        if (this.esDniValido(jugador.dni)) {
+          const resp = await axios.get("/usuario", {
+            params: {
+              dni: jugador.dni,
+            },
+          });
+          if (Array.isArray(resp.data) && resp.data.length) {
+            jugador = { ...resp.data[0], puntos: jugador.puntos };
+          }
+          this.pushJugadorTorneo(jugador);
         }
-        this.pushJugadorTorneo(jugador);
       }
+    },
+    esDniValido(dni){
+    const reg = new RegExp('^[0-9,$]{7,8}$');
+    return reg.test(dni);
     },
   },
 
