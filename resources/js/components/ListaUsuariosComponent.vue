@@ -48,12 +48,30 @@
             </template>
             <span>Relaciones</span>
           </v-tooltip>
-        </template >
+        </template>
+
+        <template v-slot:[`header.isSocio`]="{ header }">
+        {{ header.text }}
+        <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                    style="margin-top: 0px"
+                    v-bind="attrs"
+                    v-on="on"
+                >mdi-help-circle-outline</v-icon>
+            </template>
+            <span>
+                <v-icon color="blue"> mdi-star </v-icon> Socio
+                <v-icon color="blue"> mdi-star-outline </v-icon> Socio Inactivo
+                <v-icon> mdi-star-off-outline </v-icon> No Socio
+            </span>
+        </v-tooltip>
+    </template>
 
         <template v-slot:[`item.isSocio`]="{ item }">
-<v-icon :color="elegirColorIcono(item)">
-  {{elegirIcono(item)}}
-</v-icon>
+          <v-icon :color="elegirColorIcono(item)">
+            {{ elegirIcono(item) }}
+          </v-icon>
         </template>
       </v-data-table>
     </v-card>
@@ -195,17 +213,16 @@ export default {
       this.usuarioRelaciones = item;
       this.usuarioRelacionesModal = true;
     },
-    elegirIcono(item){
-      if(item.socio.socio && item.socio.activo) return "mdi-star";
-      if(item.socio.socio && !item.socio.activo) return "mdi-star-outline";
+    elegirIcono(item) {
+      if (item.socio.socio && item.socio.activo) return "mdi-star";
+      if (item.socio.socio && !item.socio.activo) return "mdi-star-outline";
       return "mdi-star-off-outline";
     },
-    elegirColorIcono(item){
-      if(item.socio.socio && item.socio.activo) return "success";
-      if(item.socio.socio && !item.socio.activo) return "grays";
+    elegirColorIcono(item) {
+      if (item.socio.socio && item.socio.activo) return "success";
+      if (item.socio.socio && !item.socio.activo) return "grays";
       return "black";
     },
-  
 
     async created() {
       await axios
@@ -255,7 +272,7 @@ export default {
 
     filtrar() {
       this.usuarios.forEach((usuario) => {
-          this.usuariosFiltrados.push(usuario);
+        this.usuariosFiltrados.push(usuario);
       });
     },
   },
