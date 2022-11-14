@@ -35,22 +35,6 @@
             </template>
             <span>Editar</span>
           </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="
-                  [(eliminarUsuarioModal = true), (usuarioEliminar = item)]
-                "
-                color="error"
-                >mdi-delete</v-icon
-              >
-            </template>
-            <span>Eliminar</span>
-          </v-tooltip>
-
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -64,6 +48,30 @@
             </template>
             <span>Relaciones</span>
           </v-tooltip>
+        </template>
+
+        <template v-slot:[`header.isSocio`]="{ header }">
+        {{ header.text }}
+        <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                    style="margin-top: 0px"
+                    v-bind="attrs"
+                    v-on="on"
+                >mdi-help-circle-outline</v-icon>
+            </template>
+            <span>
+                <v-icon color="blue"> mdi-star </v-icon> Socio
+                <v-icon color="blue"> mdi-star-outline </v-icon> Socio Inactivo
+                <v-icon> mdi-star-off-outline </v-icon> No Socio
+            </span>
+        </v-tooltip>
+    </template>
+
+        <template v-slot:[`item.isSocio`]="{ item }">
+          <v-icon :color="elegirColorIcono(item)">
+            {{ elegirIcono(item) }}
+          </v-icon>
         </template>
       </v-data-table>
     </v-card>
@@ -150,6 +158,12 @@ export default {
           sortable: false,
           filterable: false,
         },
+        {
+          text: "Socio",
+          value: "isSocio",
+          sortable: false,
+          filterable: false,
+        },
       ],
       usuarioEditar: [],
       editarUsuarioModal: false,
@@ -162,6 +176,7 @@ export default {
   },
 
   methods: {
+    //TODO hay que arreglar el tema de las cuotas
     ...mapActions(["callSnackbar"]),
     async deleteItem() {
       let me = this;
@@ -197,6 +212,16 @@ export default {
       this.usuarioRelaciones = [];
       this.usuarioRelaciones = item;
       this.usuarioRelacionesModal = true;
+    },
+    elegirIcono(item) {
+      if (item.socio.socio && item.socio.activo) return "mdi-star";
+      if (item.socio.socio && !item.socio.activo) return "mdi-star-outline";
+      return "mdi-star-off-outline";
+    },
+    elegirColorIcono(item) {
+      if (item.socio.socio && item.socio.activo) return "success";
+      if (item.socio.socio && !item.socio.activo) return "grays";
+      return "black";
     },
 
     async created() {
@@ -246,15 +271,8 @@ export default {
     },*/
 
     filtrar() {
-      this.usuariosFiltrados = [];
-
       this.usuarios.forEach((usuario) => {
-        if (
-          (usuario.socio == false && this.verNoSocios == true) ||
-          (usuario.socio == true && this.verSocios == true)
-        ) {
-          this.usuariosFiltrados.push(usuario);
-        }
+        this.usuariosFiltrados.push(usuario);
       });
     },
   },

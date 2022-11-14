@@ -51,6 +51,26 @@ class Usuario extends Model
     }
 
     public function socio(){
+/*
+//TODO quitar accion eliminar de lista socio
+//TODO mostras socios activos e inactivos
+//TODO swuitch de socio activo/inactivo en editar socio
+
+
+
+Socio activo
+        1) Si socio true
+        2) Si tiene cuotas
+Socio inactivo
+        1) Si socio false
+        2 Si tiene cuota
+ Externo
+        1) Si socio false
+        2) Si no tiene cuota     
+*/
+
+
+
         /* casos: 
             1) no socio: socio == false y no tiene cuotas generadas; 
             2) inactivo: (socio == false y tiene cuotas generadas) || (socio == true y ultimas 4 cuotas no pagas);
