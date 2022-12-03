@@ -1,15 +1,20 @@
 <template>
   <div>
-      <h3 cols="12">Administración de pagos</h3>
+    <h3 cols="12">Administración de pagos</h3>
     <v-container>
-      <v-autocomplete
-        v-model="usuarioSeleccionado"
-        :items="usuarios"
-        :item-text="nombreCompleto"
-        return-object
-        filled
-        label="Ingrese el nombre del socio"
-      ></v-autocomplete>
+      <v-row>
+        <v-col cols="8">
+          <v-autocomplete
+            v-model="usuarioSeleccionado"
+            :items="usuarios"
+            :item-text="nombreCompleto"
+            return-object
+            filled
+            label="Ingrese el nombre del socio"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col>
           <v-btn @click="buscarCuotasUsuario" large color="primary">
@@ -25,14 +30,14 @@
         <v-spacer></v-spacer>
         <v-col>
           <div v-show="busco">
-            <v-btn
+            <!-- <v-btn
               @click="[(CrearCuotaModal = true)]"
               large
               color="teal lighten-3"
               class="white--text"
             >
               Nueva cuota
-            </v-btn>
+            </v-btn> -->
           </div>
         </v-col>
 
@@ -56,7 +61,7 @@
             <tbody v-for="(cuota, index) in cuotasUsuario" :key="index">
               <tr
                 style="cursor: pointer"
-                v-if="(cuota.pago != null)"
+                v-if="cuota.pago != null"
                 @click="
                   [(infoCuotaPaga = !infoCuotaPaga), (cuotaActual = cuota)]
                 "
@@ -140,12 +145,12 @@ export default {
     };
   },
   computed: {
-     ...mapState("cuotas", ["tipoCuotasDetalles"]),
+    ...mapState("cuotas", ["tipoCuotasDetalles"]),
   },
   methods: {
     ...mapActions(["callSnackbar"]),
-    ...mapMutations('cuotas', ['setTipoCuotasDetalles']),
-     
+    ...mapMutations("cuotas", ["setTipoCuotasDetalles"]),
+
     nombreCompleto: (item) => `${item.nombre} ${item.apellido} (${item.dni})`,
     async buscarCuotasUsuario() {
       try {
@@ -153,16 +158,16 @@ export default {
           this.cuotasUsuario = await axios.get(
             `/usuario/${this.usuarioSeleccionado.id}/cuotas`
           );
-        
+
           this.cuotasUsuario = await this.cuotasUsuario.data.body;
           console.log(this.cuotasUsuario.length);
-          if(this.cuotasUsuario.length == 0){
+          if (this.cuotasUsuario.length == 0) {
             this.callSnackbar(["No se encontraron cuotas", "error"]);
           }
           this.calcularPeriodoCuotas();
 
           // .then((res) => {
-          //  
+          //
 
           this.busco = true;
           // })
@@ -204,11 +209,11 @@ export default {
     },
 
     darFormatoFecha(fecha) {
-        if (!fecha || typeof fecha === 'undefined'){
-           return null;
-        }
-        const [anio, mes, dia] = fecha.split("/");
-        return `${dia.slice(0, -9)}/${mes}/${anio}`;
+      if (!fecha || typeof fecha === "undefined") {
+        return null;
+      }
+      const [anio, mes, dia] = fecha.split("/");
+      return `${dia.slice(0, -9)}/${mes}/${anio}`;
     },
     actualizarAbrirModalGenerarCuotasMasivas(valor) {
       this.abrirModalGenerarCuotasMasivas = valor;
@@ -227,12 +232,16 @@ export default {
     axios.get("/usuario").then((res) => {
       console.log("->usuarios: ", res.data);
       this.usuarios = res.data;
+      this.filtrarUsuariosNoSocios();
     });
-
     axios.get("/tipo-detalles").then((res) => {
       console.log("->tipo_cuota: ", res.data);
       this.setTipoCuotasDetalles(res.data.body);
     });
   },
+  filtrarUsuariosNoSocios(){
+    this.usuarios.filter((usuario) => usuario.socio.socio);
+    }
+
 };
 </script>

@@ -51,22 +51,20 @@
         </template>
 
         <template v-slot:[`header.isSocio`]="{ header }">
-        {{ header.text }}
-        <v-tooltip bottom>
+          {{ header.text }}
+          <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                    style="margin-top: 0px"
-                    v-bind="attrs"
-                    v-on="on"
-                >mdi-help-circle-outline</v-icon>
+              <v-icon style="margin-top: 0px" v-bind="attrs" v-on="on"
+                >mdi-help-circle-outline</v-icon
+              >
             </template>
             <span>
-                <v-icon color="blue"> mdi-star </v-icon> Socio
-                <v-icon color="blue"> mdi-star-outline </v-icon> Socio Inactivo
-                <v-icon> mdi-star-off-outline </v-icon> No Socio
+              <v-icon color="blue"> mdi-star </v-icon> Socio
+              <v-icon color="blue"> mdi-star-outline </v-icon> Socio Inactivo
+              <v-icon> mdi-star-off-outline </v-icon> No Socio
             </span>
-        </v-tooltip>
-    </template>
+          </v-tooltip>
+        </template>
 
         <template v-slot:[`item.isSocio`]="{ item }">
           <v-icon :color="elegirColorIcono(item)">
@@ -219,8 +217,8 @@ export default {
       return "mdi-star-off-outline";
     },
     elegirColorIcono(item) {
-      if (item.socio.socio && item.socio.activo) return "success";
-      if (item.socio.socio && !item.socio.activo) return "grays";
+      if (item.socio.socio && item.socio.activo) return "blue";
+      if (item.socio.socio && !item.socio.activo) return "blue";
       return "black";
     },
 
@@ -272,7 +270,11 @@ export default {
 
     filtrar() {
       this.usuarios.forEach((usuario) => {
-        this.usuariosFiltrados.push(usuario);
+        if (!this.isListaSocios) {
+          this.usuariosFiltrados.push(usuario);
+        } else if (usuario.socio.socio) {
+          this.usuariosFiltrados.push(usuario);
+        }
       });
     },
   },
