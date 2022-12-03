@@ -70,7 +70,7 @@ export default {
        return this.listaJugadores.filter((jugador)=> jugador.id !== undefined).length;  
     },
     cantidadJugadoresSocios(){
-       return this.listaJugadores.filter((jugador)=>  jugador.socio === '1').length;  
+       return this.listaJugadores.filter((jugador)=>  jugador.socio?.socio !== undefined ? jugador.socio.socio : jugador.socio === '1').length;  
     }
   },
   methods: {

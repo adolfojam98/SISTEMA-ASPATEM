@@ -1,8 +1,9 @@
 <template>
   <div>
     <v-select
+      id="selc-torneo"
       :value="torneoSeleccionado"
-      @input="setTorneoSeleccionado"
+      v-on:change="confirmarCambioTorneo"
       :items="torneos"
       item-text="nombre"
       return-object
@@ -20,7 +21,6 @@
         class="subheading font-weight-bold"
         label="Nombre de la fecha"
         :rules="nombreFechaRules"
-        required
       ></v-text-field>
 
       <v-row>
@@ -69,24 +69,51 @@
         </v-col>
       </v-row>
     </v-card>
+
+    <!-- modal confirmacion cambio torneo seleccionado -->
+
+    <v-dialog
+      persistent
+      v-model="showConfirmarCambioTorneo"
+      @click="showConfirmarCambioTorneo = false"
+      max-width="600px"
+    >
+      <v-card>
+        <v-card-title class="text-h5 grey lighten-2">
+            ¿Seguro que desea cambiar el torneo seleccionado? Se perderan todos los cambios.
+        </v-card-title>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="() => cambiarTorneo(false)">
+            Cancelar
+          </v-btn>
+          <v-btn color="primary" text @click="() => cambiarTorneo(true)">
+            Aceptar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from "vuex";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 export default {
   data() {
     return {
+      torneoAnterior: null,
+      torneoPorConfirmar: null,
+      showConfirmarCambioTorneo: false,
       nombreFechaRules: [
-        (v) => !!v || "Nombre requerido",
         (v) =>
-          /^(([A-Za-z0-9]*([/])*[ \t\n\r\f]?[A-Za-z0-9])*)+$/.test(v) ||
+          !v || /^(([A-Za-z0-9]*([/])*[ \t\n\r\f]?[A-Za-z0-9])*)+$/.test(v) ||
           "Nombre invalido",
-        (v) => v.length <= 30 || "Demasiado largo",
+        (v) => !v || v.length <= 30 || "Demasiado largo",
       ],
       montoRules: [
-        (v) => !!v || "Monto requerido",
-        (v) => /^(([0-9]*)([.][0-9]([0-9])*)*)+$/.test(v) || "Monto no valido ",
+        (v) =>  !v || /^(([0-9]*)([.][0-9]([0-9])*)*)+$/.test(v) || "Monto no valido ",
       ],
     };
   },
@@ -101,6 +128,7 @@ export default {
       "montoNoSociosUnaCategoria",
       "montoNoSociosDosCategorias",
     ]),
+    ...mapGetters("crearFecha", ["tieneAlgunCampoCompletado"])
   },
   methods: {
     ...mapMutations("crearFecha", [
@@ -114,7 +142,7 @@ export default {
       "setListaJugadores",
     ]),
     ...mapActions(["callSnackbar"]),
-    ...mapActions("crearFecha", ["calcularMonto"]),
+    ...mapActions("crearFecha", ["calcularMonto", "setTorneo"]),
     traerJugadoresTorneo() {
       
         let me = this;
@@ -131,6 +159,25 @@ export default {
             )
           );
       
+    },
+
+    confirmarCambioTorneo(data) {
+        if(this.torneoSeleccionado && this.tieneAlgunCampoCompletado) {
+            this.torneoPorConfirmar = data
+            this.showConfirmarCambioTorneo = true
+        } else {
+            this.setTorneo(data)
+        }
+    },
+
+    cambiarTorneo(confirm) {
+        if(confirm) {
+            this.setTorneo(this.torneoPorConfirmar)
+        } else {
+            this.torneoPorConfirmar = null
+            window.location.reload()
+        }
+        this.showConfirmarCambioTorneo = false
     },
 
     traerCategorias() {
