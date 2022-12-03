@@ -218,6 +218,9 @@ export default {
     actualizarAbrirModalGenerarCuotasMasivas(valor) {
       this.abrirModalGenerarCuotasMasivas = valor;
     },
+    filtrarUsuariosNoSocios(){
+        this.usuarios = this.usuarios.filter((usuario) => !usuario.socio.socio);
+    }
   },
 
   watch: {
@@ -239,9 +242,6 @@ export default {
       this.setTipoCuotasDetalles(res.data.body);
     });
   },
-  filtrarUsuariosNoSocios(){
-    this.usuarios.filter((usuario) => usuario.socio.socio);
-    }
 
 };
 </script>
