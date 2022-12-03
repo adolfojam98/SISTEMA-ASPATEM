@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card elevation="4" class="rounded-b-xl">
+    <v-card elevation="4">
       <v-card-title>Agregar nuevo Jugador</v-card-title>
       <v-form v-model="valid" ref="form">
         <v-text-field
@@ -35,7 +35,7 @@
 
         <v-btn
           block
-          class="rounded-pill mb-2"
+          class="mb-2"
           color="primary"
           :disabled="!valid"
           @click="[agregarJugador(), resetValidate()]"

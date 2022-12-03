@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-card elevation="4" class="rounded-b-xl mb-0">
-        <v-card-title elevation="4" class="rounded-b-xl mb-0">Nueva categoria</v-card-title>
+        <v-card elevation="4" class="mb-0">
+        <v-card-title elevation="4" class=" mb-0">Nueva categoria</v-card-title>
 
         <v-divider></v-divider>
         <v-form v-model="valid" ref="form">
@@ -26,7 +26,7 @@
 
                 <v-btn
                     block
-                    class="rounded-pill mb-0"
+                    class="mb-0"
                     color="primary"
                     @click="[agregarCategoria(), resetValidate()]"
                     :disabled="!valid"
