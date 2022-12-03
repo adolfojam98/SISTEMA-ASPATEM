@@ -219,7 +219,7 @@ export default {
       this.abrirModalGenerarCuotasMasivas = valor;
     },
     filtrarUsuariosNoSocios(){
-        this.usuarios = this.usuarios.filter((usuario) => !usuario.socio.socio);
+        this.usuarios = this.usuarios.filter((usuario) => usuario.socio.socio);
     }
   },
 
