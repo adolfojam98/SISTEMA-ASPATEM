@@ -1,14 +1,10 @@
 <template>
     <div>
-        <v-card class="mb-12" min-height="360px">
             <v-row>
                 <v-col cols="8" md="4">
                     <v-container mb-0>
                         <v-form v-model="valid" lazy-validation>
-                            <v-card elevation="4" class="rounded-sm"> </v-card>
-
                             <v-spacer></v-spacer>
-
                                 <agregar-categoria-component></agregar-categoria-component>
 
                         </v-form>
@@ -19,15 +15,6 @@
                     <tabla-categorias-component></tabla-categorias-component>
                 </v-col>
             </v-row>
-        </v-card>
-        <v-btn
-            color="primary"
-            @click="setStep(3)"
-            :rules="rulesCategorias()"
-            :disabled="!valid"
-        >
-            Continuar
-        </v-btn>
     </div>
 </template>
 
@@ -40,7 +27,6 @@ export default {
     components: { AgregarCategoriaComponent, TablaCategoriasComponent },
     data() {
         return {
-            valid: false,
            
             //RULES
             nombreCategoriaRules: [
