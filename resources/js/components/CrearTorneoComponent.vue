@@ -62,11 +62,11 @@ export default {
   data: () => ({
     valid: true,
     nombreTorneoRules: [
-      (v) => !!v || "Nombre requerido",
+      (v) => !!v || "El nombre del torneo es requerido.",
       (v) =>
         /^([A-Za-z]([A-Za-z0-9]*[ \t\n\r\f]?[A-Za-z0-9])*)+$/.test(v) ||
-        "Nombre invalido",
-      (v) => v.length <= 30 || "Demasiado largo",
+        "El nombre del torneo tiene caracteres no permitidos.",
+      (v) => v.length <= 30 || "El nombre del torneo es demasiado largo.",
     ],
   }),
   computed: {
@@ -119,12 +119,71 @@ export default {
       }
     },
     verificarNombreTorneo() {
-      return false;
-    },
-    datosCargadosCorrectamente(){
-        //TODO implementar todas las validaciones antes de mandar al back
+      if (this.nombreTorneo == null || this.nombreTorneo.trim() == "") {
+        this.callSnackbar(["El nombre del torneo es requerido.", "error"]);
         return false;
-    }
+      }
+      if (
+        !/^([A-Za-z]([A-Za-z0-9]*[ \t\n\r\f]?[A-Za-z0-9])*)+$/.test(
+          this.nombreTorneo
+        )
+      ) {
+        this.callSnackbar(
+          "El nombre del torneo tiene caracteres no permitidos.",
+          "error"
+        );
+        return false;
+      }
+      if (this.nombreTorneo.length >= 30) {
+        this.callSnackbar([
+          "El nombre del torneo es demasiado largo.",
+          "error",
+        ]);
+        return false;
+      }
+      return true;
+    },
+    verificarCategorias() {
+      if (this.arrayCategorias.length < 1) {
+        this.callSnackbar(["Debe cargar al menos una categoria", "error"]);
+        return false;
+      }
+      return true;
+    },
+    verificarJugadores() {
+      if (this.listaJugadores.length < 5) {
+        this.callSnackbar(["Debe cargar al menos 5 jugadores", "error"]);
+        return false;
+      }
+      return true;
+    },
+    verificarConfiguracionPuntos() {
+      if (
+        this.gestionPuntos.mismaCat_MayorNivel_Ganador == null ||
+        this.gestionPuntos.mismaCat_MayorNivel_Perdedor == null ||
+        this.gestionPuntos.mismaCat_MenorNivel_Ganador == null ||
+        this.gestionPuntos.mismaCat_MenorNivel_Perdedor == null ||
+        this.gestionPuntos.diferenteCat_MayorNivel_Ganador == null ||
+        this.gestionPuntos.diferenteCat_MayorNivel_Perdedor == null ||
+        this.gestionPuntos.diferenteCat_MenorNivel_Ganador == null ||
+        this.gestionPuntos.diferenteCat_MenorNivel_Perdedor == null
+      ) {
+        this.callSnackbar([
+          "Debe cargar la configuracion de los puntos de los torneos.",
+          "error",
+        ]);
+        return false;
+      }
+      return true;
+    },
+    datosCargadosCorrectamente() {
+      return (
+        this.verificarNombreTorneo() &&
+        this.verificarCategorias() &&
+        this.verificarJugadores() &&
+        this.verificarConfiguracionPuntos()
+      );
+    },
   },
   created() {
     this.getTorneos();
