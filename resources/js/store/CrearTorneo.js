@@ -55,5 +55,10 @@ export default {
             })
            
         }
+    },
+    actions: {
+        setStep(action,data){
+            action.commit('setStep',data);
+        }
     }
 };

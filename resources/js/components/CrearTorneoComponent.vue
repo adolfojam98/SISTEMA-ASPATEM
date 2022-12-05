@@ -7,7 +7,6 @@
         editable
         step="1"
         @click="setStep(1)"
-        :rules="step2Rules"
       >
         Nombre del torneo
       </v-stepper-step>
@@ -84,7 +83,8 @@ export default {
   },
 
   methods: {
-    ...mapMutations("CrearTorneo", ["setStep", "getTorneos"]),
+    ...mapMutations("CrearTorneo", ["getTorneos"]),
+    ...mapActions("CrearTorneo",["setStep"]),
     ...mapActions(["callSnackbar"]),
 
     async generarTorneo() {
