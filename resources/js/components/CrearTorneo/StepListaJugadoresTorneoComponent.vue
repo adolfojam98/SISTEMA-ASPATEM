@@ -17,9 +17,6 @@
                 </v-col>
             </v-row>
         </v-card>
-        <v-btn color="primary" @click="setStep(4)" >
-            Continuar
-        </v-btn>
     </div>
 </template>
 

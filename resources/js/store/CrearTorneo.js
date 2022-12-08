@@ -1,12 +1,11 @@
 import Axios from "axios";
-import { every } from "lodash";
 
 
 export default {
     namespaced: true,
 
     state: {
-        nombreTorneo: "",
+        nombreTorneo: null,
         torneos: null,
         arrayCategorias: [],
         listaJugadores: [],
@@ -55,6 +54,11 @@ export default {
                     return torneo.nombre != nombreTorneo
             })
            
+        }
+    },
+    actions: {
+        setStep(action,data){
+            action.commit('setStep',data);
         }
     }
 };
