@@ -164,13 +164,9 @@ export default {
           if (this.cuotasUsuario.length == 0) {
             this.callSnackbar(["No se encontraron cuotas", "error"]);
           }
+          this.callSnackbar(['Cuotas listadas correctamente','success']);
           this.calcularPeriodoCuotas();
-
-          // .then((res) => {
-          //
-
           this.busco = true;
-          // })
         }
       } catch (error) {
         console.log("->error usuario cuota: ", e);
