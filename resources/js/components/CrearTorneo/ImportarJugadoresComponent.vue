@@ -24,28 +24,14 @@
         Importar jugadores
       </label>
     </div>
-
-    <div>
-      <!-- <v-simple-table
-    
-    >
-      <template v-slot:default>
-        
-        <tbody>
-          <tr v-for="fila in excelData" :key="fila">
-            <td v-for="celda in fila" :key="celda">{{celda}}</td>
-           
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table> -->
-    </div>
+    <v-btn @click="exportarExcelEjemplo()" block>Ejemplo excel</v-btn>
   </div>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
 import XLSX from "xlsx";
+import FileSaver from "file-saver";
 export default {
   data() {
     return {
@@ -60,7 +46,33 @@ export default {
   methods: {
     ...mapMutations("CrearTorneo", ["pushJugadorTorneo"]),
     ...mapActions(["callSnackbar"]),
+    exportarExcelEjemplo() {
+      const jsonData = [
+        {
+          apellido: "Perez",
+          nombre: "Juan",
+          dni: "12345678",
+          puntos: 223,
+        },
+        {
+          apellido: "Jose",
+          nombre: "Gonzales",
+          dni: "87654321",
+          puntos: 0,
+        },
+      ];
 
+      // Convertimos el JSON a una hoja de cálculo de Excel
+      const ws = XLSX.utils.json_to_sheet(jsonData);
+
+      // Creamos un libro de Excel y le agregamos la hoja de cálculo
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws);
+
+      // Creamos un archivo de Excel en formato binario y lo guardamos en el disco
+      const excelFile = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      FileSaver.saveAs(new Blob([excelFile]), "ejemplo_importacion_jugadores.xlsx");
+    },
     focusInput() {
       this.$refs.input.focus();
     },
@@ -166,9 +178,9 @@ export default {
         }
       }
     },
-    esDniValido(dni){
-    const reg = new RegExp('^[0-9,$]{7,8}$');
-    return reg.test(dni);
+    esDniValido(dni) {
+      const reg = new RegExp("^[0-9,$]{7,8}$");
+      return reg.test(dni);
     },
   },
 
