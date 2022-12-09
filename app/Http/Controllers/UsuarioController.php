@@ -14,7 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Cuota as CuotaResource;
 
-class UsuarioController extends ApiController 
+class UsuarioController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -24,12 +24,14 @@ class UsuarioController extends ApiController
     public function index(Request $request)
     {
         $dni = $request->dni;
-        $usuarios = Usuario::with('cuotas')->
-        when($dni, function ($query, $dni) {
-            $query->where('dni', $dni);
-        })->get();
+        $usuarios = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
+                $query->where('dni', $dni);
+            })->get();
         foreach ($usuarios as $key => $usuario) {
             $usuario->socio = $usuario->socio();
+            foreach ($usuario->cuotas as $k => $cuota) {
+                $cuota->pago;
+            }
         }
         return $usuarios;
     }
@@ -41,8 +43,6 @@ class UsuarioController extends ApiController
      */
     public function create()
     {
-
-     
     }
 
     /**
@@ -101,7 +101,7 @@ class UsuarioController extends ApiController
      */
     public function show(Request $request)
     {
-        $usuario = Usuario::findOrFail('dni',$request->dni);
+        $usuario = Usuario::findOrFail('dni', $request->dni);
         return $usuario;
         //Esta función devolverá los datos de una tarea que hayamos seleccionado para cargar el formulario con sus datos
     }
@@ -149,8 +149,8 @@ class UsuarioController extends ApiController
      */
     public function destroy(Request $request)
     {
-     $motivo = $request->motivo;    
-        
+        $motivo = $request->motivo;
+
         $usuario = Usuario::findOrFail($request->id);
         $usuario->motivo_baja = $motivo;
         $usuario->update();
@@ -256,11 +256,11 @@ class UsuarioController extends ApiController
             ]);
             $pagas = (int)$request->input('pagas');
 
-                // $query = Cuota::where('id', $id);
-        
+            // $query = Cuota::where('id', $id);
 
-                // $query = $query->Leftjoin('pagos', 'pagos.cuota_id', 'cuotas.id');
-         
+
+            // $query = $query->Leftjoin('pagos', 'pagos.cuota_id', 'cuotas.id');
+
             $cuotas =  Cuota::with('pago')->where('usuario_id', $id)->get();
 
             // $cuotas = $query->get();

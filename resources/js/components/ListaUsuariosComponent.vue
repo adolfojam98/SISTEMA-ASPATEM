@@ -71,6 +71,10 @@
             {{ elegirIcono(item) }}
           </v-icon>
         </template>
+
+        <template v-slot:[`item.cuotasAdeudadas`]="{ item }">
+         {{calcularCuotasAdeudadas(item)}}
+        </template>
       </v-data-table>
     </v-card>
 
@@ -162,6 +166,7 @@ export default {
           sortable: false,
           filterable: false,
         },
+        {text: "Cuotas adeudadas", value: "cuotasAdeudadas",sortable:true},
       ],
       usuarioEditar: [],
       editarUsuarioModal: false,
@@ -220,6 +225,13 @@ export default {
       if (item.socio.socio && item.socio.activo) return "blue";
       if (item.socio.socio && !item.socio.activo) return "blue";
       return "black";
+    },
+    calcularCuotasAdeudadas(item){
+     if(item.cuotas == null || item.cuotas.length < 1){
+       return 0;
+     }
+     console.log(item.cuotas);
+    return item.cuotas.filter((cuota)=> cuota.pago == null).length;
     },
 
     async created() {
