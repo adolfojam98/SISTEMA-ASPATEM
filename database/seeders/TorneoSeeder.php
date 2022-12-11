@@ -1,10 +1,12 @@
-
 <?php
+
+namespace Database\Seeders;
+use Illuminate\Database\Seeder;
 
 use App\Categoria;
 use App\Torneo;
 use App\Usuario;
-use Illuminate\Database\Seeder;
+
 
 class TorneoSeeder extends Seeder
 {

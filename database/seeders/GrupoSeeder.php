@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-class CuotaDetalleSeeder extends Seeder
+class GrupoSeeder extends Seeder
 {
     /**
      * Run the database seeds.
