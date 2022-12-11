@@ -39,7 +39,7 @@ class CuotaSeeder extends Seeder
                 $cuotaDetalle = new CuotaDetalle();
                 $cuotaDetalle->monto = 123;
                 $cuotaDetalle->cuota_id = $cuota->id;
-                $cuotaDetalle->cuota_detalle_tipo_id = $monto_base->id;
+                $cuotaDetalle->cuota_detalle_tipo_id = 1; //$monto_base->id
                 $cuotaDetalle->save();
             }
             for ($i = $meses_no_pagados; $i <= $mesesTotales; $i++) {
@@ -53,7 +53,7 @@ class CuotaSeeder extends Seeder
                 $cuotaDetalle = new CuotaDetalle();
                 $cuotaDetalle->monto = 123;
                 $cuotaDetalle->cuota_id = $cuota->id;
-                $cuotaDetalle->cuota_detalle_tipo_id = $monto_base->id;
+                $cuotaDetalle->cuota_detalle_tipo_id = 1; //$monto_base->id
                 $cuotaDetalle->save();
 
                 $pago = new Pago();

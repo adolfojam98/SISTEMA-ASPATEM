@@ -73,7 +73,7 @@
         </template>
 
         <template v-slot:[`item.cuotasAdeudadas`]="{ item }">
-         {{calcularCuotasAdeudadas(item)}}
+         {{item.cuotasAdeudadas}}
         </template>
       </v-data-table>
     </v-card>
@@ -166,7 +166,12 @@ export default {
           sortable: false,
           filterable: false,
         },
-        {text: "Cuotas adeudadas", value: "cuotasAdeudadas",sortable:true},
+        {
+          text: "Cuotas adeudadas", 
+          value: "cuotasAdeudadas",
+          sortable:true,
+          sort: (a, b) => {return a - b}
+        },
       ],
       usuarioEditar: [],
       editarUsuarioModal: false,
@@ -230,7 +235,7 @@ export default {
      if(item.cuotas == null || item.cuotas.length < 1){
        return 0;
      }
-     console.log(item.cuotas);
+    //  console.log(item.cuotas);
     return item.cuotas.filter((cuota)=> cuota.pago == null).length;
     },
 
@@ -241,6 +246,7 @@ export default {
           this.usuarios = res.data;
           this.usuarios.forEach((usuario) => {
             usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
+            usuario.cuotasAdeudadas = this.calcularCuotasAdeudadas(usuario);
           });
           if (this.isListaSocios) {
             this.verSocios = true;
