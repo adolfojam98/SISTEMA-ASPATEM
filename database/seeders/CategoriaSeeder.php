@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-class PagoSeeder extends Seeder
+class CategoriaSeeder extends Seeder
 {
     /**
      * Run the database seeds.

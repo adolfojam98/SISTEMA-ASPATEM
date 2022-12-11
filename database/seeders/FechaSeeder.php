@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-class RelacionSeeder extends Seeder
+class FechaSeeder extends Seeder
 {
     /**
      * Run the database seeds.

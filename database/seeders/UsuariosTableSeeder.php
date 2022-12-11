@@ -1,8 +1,11 @@
 <?php
 
+namespace Database\Seeders;
+
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use App\Usuario;
-use App\Torneo;
+
 
 class UsuariosTableSeeder extends Seeder
 {
@@ -54,7 +57,8 @@ crearUsuariosFalsos(100);
 }
 
 function crearUsuariosFalsos($cantidad){
-    $faker = Faker\Factory::create();
+    $faker = Faker::create();
+  
 
     for ($i=0; $i < $cantidad; $i++) { 
 

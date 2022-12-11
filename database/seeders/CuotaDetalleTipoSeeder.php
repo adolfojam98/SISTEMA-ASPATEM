@@ -1,7 +1,8 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
-use App\CuotaDetalleTipo;
 use App\Http\Services\CuotaService;
 use App\Constants;
 
