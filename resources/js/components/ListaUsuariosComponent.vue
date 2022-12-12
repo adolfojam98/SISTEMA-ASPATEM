@@ -236,7 +236,9 @@ export default {
        return 0;
      }
     //  console.log(item.cuotas);
-    return item.cuotas.filter((cuota)=> cuota.pago == null).length;
+    return item.cuotas
+    .slice(item.cuotas.findLastIndex((cuota)=> cuota.pago != null))
+    .filter((cuota)=> cuota.pago == null).length;
     },
 
     async created() {
