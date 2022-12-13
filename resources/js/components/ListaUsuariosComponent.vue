@@ -73,10 +73,15 @@
         </template>
 
         <template v-slot:[`item.cuotasAdeudadas`]="{ item }">
-         {{item.cuotasAdeudadas}}
+          {{ item.cuotasAdeudadas }}
+          <v-btn @click="mostrarDetalleCuotasAdeudadas(item)">detalle</v-btn>
         </template>
       </v-data-table>
     </v-card>
+
+    <v-dialog v-model='detalleCuotasAdeudadasModal'>
+      <detalle-cuotas-usuario :usuario="usuarioVerDetalleCuotas"></detalle-cuotas-usuario>
+    </v-dialog>
 
     <v-dialog v-model="editarUsuarioModal" max-width="600px">
       <editar-usuario
@@ -167,17 +172,21 @@ export default {
           filterable: false,
         },
         {
-          text: "Cuotas adeudadas", 
+          text: "Cuotas adeudadas",
           value: "cuotasAdeudadas",
-          sortable:true,
-          sort: (a, b) => {return a - b}
+          sortable: true,
+          sort: (a, b) => {
+            return a - b;
+          },
         },
       ],
       usuarioEditar: [],
+      usuarioVerDetalleCuotas : null,
       editarUsuarioModal: false,
       usuarioEliminar: [],
       motivoBaja: "",
       eliminarUsuarioModal: false,
+      detalleCuotasAdeudadasModal: false,
       usuarioRelaciones: [],
       usuarioRelacionesModal: false,
     };
@@ -210,6 +219,10 @@ export default {
         ]);
       }
     },
+    mostrarDetalleCuotasAdeudadas(item){
+      this.usuarioVerDetalleCuotas = item;
+      this.detalleCuotasAdeudadasModal = true;
+    },
 
     editItem(item) {
       this.usuarioEditar = item;
@@ -231,14 +244,14 @@ export default {
       if (item.socio.socio && !item.socio.activo) return "blue";
       return "black";
     },
-    calcularCuotasAdeudadas(item){
-     if(item.cuotas == null || item.cuotas.length < 1){
-       return 0;
-     }
-    //  console.log(item.cuotas);
-    return item.cuotas
-    .slice(item.cuotas.findLastIndex((cuota)=> cuota.pago != null))
-    .filter((cuota)=> cuota.pago == null).length;
+    calcularCuotasAdeudadas(item) {
+      if (item.cuotas == null || item.cuotas.length < 1) {
+        return 0;
+      }
+      //  console.log(item.cuotas);
+      return item.cuotas
+        .slice(item.cuotas.findLastIndex((cuota) => cuota.pago != null))
+        .filter((cuota) => cuota.pago == null).length;
     },
 
     async created() {

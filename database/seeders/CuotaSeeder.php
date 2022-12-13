@@ -25,7 +25,7 @@ class CuotaSeeder extends Seeder
         $cantidadJugadores = Usuario::where("socio", 1)->get();
 
         foreach ($cantidadJugadores as $jugador) {
-            $meses_no_pagados = rand(1, 3); //2
+            $meses_no_pagados = rand(1, 6); //2
             $mesesTotales = rand($meses_no_pagados + 1, 12); //6
 
             for ($i = 1; $i < $meses_no_pagados; $i++) {
