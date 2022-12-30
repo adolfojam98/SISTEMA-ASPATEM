@@ -73,12 +73,14 @@
         </template>
 
         <template v-slot:[`item.cuotasAdeudadas`]="{ item }">
-          {{ item.cuotasAdeudadas }}
-          <v-btn @click="mostrarDetalleCuotasAdeudadas(item)">detalle</v-btn>
+          {{ item.cuotasAdeudadas }}    
+          <v-btn color="success"  @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
         </template>
       </v-data-table>
     </v-card>
 
+    
+<!-- dialogs -->
     <v-dialog v-model='detalleCuotasAdeudadasModal'>
       <detalle-cuotas-usuario :usuario="usuarioVerDetalleCuotas"></detalle-cuotas-usuario>
     </v-dialog>
@@ -220,8 +222,9 @@ export default {
       }
     },
     mostrarDetalleCuotasAdeudadas(item){
-      this.usuarioVerDetalleCuotas = item;
-      this.detalleCuotasAdeudadasModal = true;
+      this.$router.push({ path: `/usuarios/pagos`,query: { usuario: item.id }  });
+      // this.usuarioVerDetalleCuotas = item;
+      // this.detalleCuotasAdeudadasModal = true;
     },
 
     editItem(item) {
