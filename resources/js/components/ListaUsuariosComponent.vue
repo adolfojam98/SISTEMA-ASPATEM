@@ -48,6 +48,9 @@
             </template>
             <span>Relaciones</span>
           </v-tooltip>
+          <v-btn color="success" @click="mostrarDetalleCuotasAdeudadas(item)"
+            >ver cuotas</v-btn
+          >
         </template>
 
         <template v-slot:[`header.isSocio`]="{ header }">
@@ -73,16 +76,16 @@
         </template>
 
         <template v-slot:[`item.cuotasAdeudadas`]="{ item }">
-          {{ item.cuotasAdeudadas }}    
-          <v-btn color="success"  @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
+          {{ item.cuotasAdeudadas }}
         </template>
       </v-data-table>
     </v-card>
 
-    
-<!-- dialogs -->
-    <v-dialog v-model='detalleCuotasAdeudadasModal'>
-      <detalle-cuotas-usuario :usuario="usuarioVerDetalleCuotas"></detalle-cuotas-usuario>
+    <!-- dialogs -->
+    <v-dialog v-model="detalleCuotasAdeudadasModal">
+      <detalle-cuotas-usuario
+        :usuario="usuarioVerDetalleCuotas"
+      ></detalle-cuotas-usuario>
     </v-dialog>
 
     <v-dialog v-model="editarUsuarioModal" max-width="600px">
@@ -162,10 +165,12 @@ export default {
           filterable: false,
         },
         {
-          text: "Acciones",
-          value: "actions",
-          sortable: false,
-          filterable: false,
+          text: "Cuotas adeudadas",
+          value: "cuotasAdeudadas",
+          sortable: true,
+          sort: (a, b) => {
+            return a - b;
+          },
         },
         {
           text: "Socio",
@@ -174,16 +179,14 @@ export default {
           filterable: false,
         },
         {
-          text: "Cuotas adeudadas",
-          value: "cuotasAdeudadas",
-          sortable: true,
-          sort: (a, b) => {
-            return a - b;
-          },
+          text: "Acciones",
+          value: "actions",
+          sortable: false,
+          filterable: false,
         },
       ],
       usuarioEditar: [],
-      usuarioVerDetalleCuotas : null,
+      usuarioVerDetalleCuotas: null,
       editarUsuarioModal: false,
       usuarioEliminar: [],
       motivoBaja: "",
@@ -221,8 +224,11 @@ export default {
         ]);
       }
     },
-    mostrarDetalleCuotasAdeudadas(item){
-      this.$router.push({ path: `/usuarios/pagos`,query: { usuario: item.id }  });
+    mostrarDetalleCuotasAdeudadas(item) {
+      this.$router.push({
+        path: `/usuarios/pagos`,
+        query: { usuario: item.id },
+      });
       // this.usuarioVerDetalleCuotas = item;
       // this.detalleCuotasAdeudadasModal = true;
     },
