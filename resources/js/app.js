@@ -81,7 +81,6 @@ Vue.component('generar-cuotas-masivas',             require('./components/Pagos/
 Vue.component('ajustes-cuotas',                     require('./components/Ajustes/AjustesCuotasComponent').default);
 Vue.component('spinner',                            require('./components/SpinnerComponent').default);
 Vue.component('torneo-lista-jugadores',             require('./components/GestionarTorneos/ListaJugadores').default);
-Vue.component('detalle-cuotas-usuario',             require('./components/DetalleCuotasUsuarioComponent').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
