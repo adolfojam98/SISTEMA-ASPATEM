@@ -15,7 +15,7 @@
       >Guardar Fecha</v-btn
     >
 
-    <v-dialog
+    <!-- <v-dialog
       v-model="showValidaciones"
       @click="showValidaciones = false"
       max-width="600px"
@@ -45,7 +45,7 @@
           </v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
   </div>
 </template>
 
@@ -97,6 +97,15 @@ export default {
         } catch (e) {
           this.callSnackbar(["No se ha podido guardar. " + e, "error"]);
         }
+      } else {
+        let mensajes = 'No se ha podido guardar: <ul>'
+
+        this.validaciones.forEach(validacion => {
+            mensajes += '<li>' + validacion.mensaje + '</li>'
+        })
+
+        mensajes += '</ul>'
+        this.callSnackbar([mensajes, "error"]);
       }
       if (this.validaciones.length) {
         this.showValidaciones = true;
