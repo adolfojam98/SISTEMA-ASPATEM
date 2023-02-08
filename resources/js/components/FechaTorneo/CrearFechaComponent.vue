@@ -5,7 +5,7 @@
         <datos-fecha></datos-fecha>
         <v-card elevation="4" class="rounded-sm">
           <jugadores-fecha></jugadores-fecha>
-        </v-card>
+        </v-card> 
       </v-container>
     </v-card>
     <v-card v-if="listaCategorias.length > 0" dark>
