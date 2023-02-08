@@ -48,6 +48,9 @@
             </template>
             <span>Relaciones</span>
           </v-tooltip>
+          <v-btn color="success" @click="mostrarDetalleCuotasAdeudadas(item)"
+            >ver cuotas</v-btn
+          >
         </template>
 
         <template v-slot:[`header.isSocio`]="{ header }">
@@ -71,8 +74,19 @@
             {{ elegirIcono(item) }}
           </v-icon>
         </template>
+
+        <template v-slot:[`item.cuotasAdeudadas`]="{ item }">
+          {{ item.cuotasAdeudadas }}
+        </template>
       </v-data-table>
     </v-card>
+
+    <!-- dialogs -->
+    <v-dialog v-model="detalleCuotasAdeudadasModal">
+      <detalle-cuotas-usuario
+        :usuario="usuarioVerDetalleCuotas"
+      ></detalle-cuotas-usuario>
+    </v-dialog>
 
     <v-dialog v-model="editarUsuarioModal" max-width="600px">
       <editar-usuario
@@ -151,10 +165,12 @@ export default {
           filterable: false,
         },
         {
-          text: "Acciones",
-          value: "actions",
-          sortable: false,
-          filterable: false,
+          text: "Cuotas adeudadas",
+          value: "cuotasAdeudadas",
+          sortable: true,
+          sort: (a, b) => {
+            return a - b;
+          },
         },
         {
           text: "Socio",
@@ -162,12 +178,20 @@ export default {
           sortable: false,
           filterable: false,
         },
+        {
+          text: "Acciones",
+          value: "actions",
+          sortable: false,
+          filterable: false,
+        },
       ],
       usuarioEditar: [],
+      usuarioVerDetalleCuotas: null,
       editarUsuarioModal: false,
       usuarioEliminar: [],
       motivoBaja: "",
       eliminarUsuarioModal: false,
+      detalleCuotasAdeudadasModal: false,
       usuarioRelaciones: [],
       usuarioRelacionesModal: false,
     };
@@ -200,6 +224,14 @@ export default {
         ]);
       }
     },
+    mostrarDetalleCuotasAdeudadas(item) {
+      this.$router.push({
+        path: `/usuarios/pagos`,
+        query: { usuario: item.id },
+      });
+      // this.usuarioVerDetalleCuotas = item;
+      // this.detalleCuotasAdeudadasModal = true;
+    },
 
     editItem(item) {
       this.usuarioEditar = item;
@@ -221,6 +253,15 @@ export default {
       if (item.socio.socio && !item.socio.activo) return "blue";
       return "black";
     },
+    calcularCuotasAdeudadas(item) {
+      if (item.cuotas == null || item.cuotas.length < 1) {
+        return 0;
+      }
+      //  console.log(item.cuotas);
+      return item.cuotas
+        .slice(item.cuotas.findLastIndex((cuota) => cuota.pago != null))
+        .filter((cuota) => cuota.pago == null).length;
+    },
 
     async created() {
       await axios
@@ -229,6 +270,7 @@ export default {
           this.usuarios = res.data;
           this.usuarios.forEach((usuario) => {
             usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
+            usuario.cuotasAdeudadas = this.calcularCuotasAdeudadas(usuario);
           });
           if (this.isListaSocios) {
             this.verSocios = true;
