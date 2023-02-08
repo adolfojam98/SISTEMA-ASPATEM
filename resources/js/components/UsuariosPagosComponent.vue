@@ -135,7 +135,7 @@ export default {
       cuotaActual: "",
       usuarioSeleccionado: "",
       usuarios: [],
-      cuotasUsuario: "",
+      cuotasUsuario: [],
       infoCuotaPaga: false,
       pagoCuota: false,
       CrearCuotaModal: false,
@@ -164,7 +164,7 @@ export default {
           if (this.cuotasUsuario.length == 0) {
             this.callSnackbar(["No se encontraron cuotas", "error"]);
           }
-          this.callSnackbar(['Cuotas listadas correctamente','success']);
+          this.callSnackbar(["Cuotas listadas correctamente", "success"]);
           this.calcularPeriodoCuotas();
           this.busco = true;
         }
@@ -214,30 +214,39 @@ export default {
     actualizarAbrirModalGenerarCuotasMasivas(valor) {
       this.abrirModalGenerarCuotasMasivas = valor;
     },
-    filtrarUsuariosNoSocios(){
-        this.usuarios = this.usuarios.filter((usuario) => usuario.socio.socio);
-    }
+    filtrarUsuariosNoSocios() {
+      this.usuarios = this.usuarios.filter((usuario) => usuario.socio.socio);
+    },
   },
 
   watch: {
     recargarCuotas: function () {
       this.buscarCuotasUsuario();
       this.pagoCuota = false;
-
       this.recargarCuotas = false;
     },
   },
-  created() {
-    axios.get("/usuario").then((res) => {
-      console.log("->usuarios: ", res.data);
-      this.usuarios = res.data;
-      this.filtrarUsuariosNoSocios();
-    });
-    axios.get("/tipo-detalles").then((res) => {
-      console.log("->tipo_cuota: ", res.data);
-      this.setTipoCuotasDetalles(res.data.body);
-    });
-  },
+  async created() {
+    console.log("parametros usuarios pagos component:", this.$route.query);
+    const idUsuario = this.$route.query.usuario;
 
+    const responseUsuarios = await axios.get("/usuario");
+    this.usuarios = responseUsuarios.data;
+    console.log('->usuarios: ',this.usuarios);
+    this.filtrarUsuariosNoSocios();
+
+    const resp = await axios.get("/tipo-detalles");
+    console.log("->tipo_cuota: ", resp.data);
+    this.setTipoCuotasDetalles(resp.data.body);
+
+    if (idUsuario) {
+      this.usuarioSeleccionado = this.usuarios.find(
+        (usuario) => usuario.id == idUsuario
+      );
+      if (this.usuarioSeleccionado) {
+        this.buscarCuotasUsuario();
+      }
+    }
+  },
 };
 </script>
