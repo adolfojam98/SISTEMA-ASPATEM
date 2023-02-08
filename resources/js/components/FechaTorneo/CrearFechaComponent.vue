@@ -11,20 +11,41 @@
     <v-card v-if="listaCategorias.length > 0" dark>
       <grupos-fecha></grupos-fecha>
     </v-card>
-    <v-btn class="primary mt-3 mb-3" @click="guardarFechaComponent()">Guardar Fecha</v-btn>
-
-   
-
-
-    <v-alert
-      v-for="(validacion, index) in validaciones"
-      :key="index"
-      dense
-      outlined
-      type="error"
+    <v-btn class="primary mt-3 mb-3" @click="guardarFechaComponent()"
+      >Guardar Fecha</v-btn
     >
-      {{ validacion.mensaje }}
-    </v-alert>
+
+    <!-- <v-dialog
+      v-model="showValidaciones"
+      @click="showValidaciones = false"
+      max-width="600px"
+    >
+      <v-card>
+        <v-card-title class="text-h5 grey lighten-2">
+            Error al guardar
+        </v-card-title>
+
+        <v-card-text class="py-5">
+          <v-alert
+            v-for="(validacion, index) in validaciones"
+            :key="index"
+            dense
+            outlined
+            type="error"
+            class=""
+          >
+            {{ validacion.mensaje }}
+          </v-alert>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="showValidaciones = false">
+            Aceptar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog> -->
   </div>
 </template>
 
@@ -34,17 +55,22 @@ export default {
   data() {
     return {
       validaciones: [],
+      showValidaciones: false,
     };
   },
   computed: {
-    ...mapState("crearFecha", ["listaCategorias","listaJugadores","cargandoStorage"]),
+    ...mapState("crearFecha", [
+      "listaCategorias",
+      "listaJugadores",
+      "cargandoStorage",
+    ]),
 
     store() {
       return this.$store.state;
     },
   },
   methods: {
-    ...mapMutations("crearFecha", ["setTorneos","setCargandoStorage"]),
+    ...mapMutations("crearFecha", ["setTorneos", "setCargandoStorage"]),
     ...mapActions(["callSnackbar"]),
 
     async guardarFechaComponent() {
@@ -71,6 +97,18 @@ export default {
         } catch (e) {
           this.callSnackbar(["No se ha podido guardar. " + e, "error"]);
         }
+      } else {
+        let mensajes = 'No se ha podido guardar: <ul>'
+
+        this.validaciones.forEach(validacion => {
+            mensajes += '<li>' + validacion.mensaje + '</li>'
+        })
+
+        mensajes += '</ul>'
+        this.callSnackbar([mensajes, "error"]);
+      }
+      if (this.validaciones.length) {
+        this.showValidaciones = true;
       }
     },
     verificarDatosCargados() {
@@ -94,10 +132,11 @@ export default {
           valido = false;
           this.validaciones.push({
             mensaje:
-              "Se han generado los grupos para" + categoria.nombre + "per no se han generado las llaves"
+              "Se han generado los grupos para" +
+              categoria.nombre +
+              "pero no se han generado las llaves",
           });
-        }
-        else {
+        } else {
           if (!this.verificarPartidosLlavesCategorias(categoria)) {
             valido = false;
             this.validaciones.push({
@@ -152,28 +191,32 @@ export default {
       localStorage.crearFecha = JSON.stringify(this.store.crearFecha);
     },
     cargarLocalStorage() {
-      if(localStorage.crearFecha){
-
-        this.setCargandoStorage(true)
+      if (localStorage.crearFecha) {
+        this.setCargandoStorage(true);
         const crearFecha = JSON.parse(localStorage.crearFecha);
-        this.store.crearFecha.torneoSeleccionado = crearFecha.torneoSeleccionado 
-      
-        this.store.crearFecha.nombreFecha = crearFecha.nombreFecha 
-        this.store.crearFecha.listaJugadores = crearFecha.listaJugadores
-        this.store.crearFecha.montoSociosUnaCategoria = crearFecha.montoSociosUnaCategoria
-        this.store.crearFecha.montoSociosDosCategorias = crearFecha.montoSociosDosCategorias
-        this.store.crearFecha.montoNoSociosUnaCategoria = crearFecha.montoNoSociosUnaCategoria
-        this.store.crearFecha.montoNoSociosDosCategorias = crearFecha.montoNoSociosDosCategorias
-        
-        this.store.crearFecha.listaCategorias = crearFecha.listaCategorias
-        this.setCargandoStorage(false)
+        this.store.crearFecha.torneoSeleccionado =
+          crearFecha.torneoSeleccionado;
+
+        this.store.crearFecha.nombreFecha = crearFecha.nombreFecha;
+        this.store.crearFecha.listaJugadores = crearFecha.listaJugadores;
+        this.store.crearFecha.montoSociosUnaCategoria =
+          crearFecha.montoSociosUnaCategoria;
+        this.store.crearFecha.montoSociosDosCategorias =
+          crearFecha.montoSociosDosCategorias;
+        this.store.crearFecha.montoNoSociosUnaCategoria =
+          crearFecha.montoNoSociosUnaCategoria;
+        this.store.crearFecha.montoNoSociosDosCategorias =
+          crearFecha.montoNoSociosDosCategorias;
+
+        this.store.crearFecha.listaCategorias = crearFecha.listaCategorias;
+        this.setCargandoStorage(false);
       }
 
       console.log(this.store.crearFecha);
     },
-    backupBase(){
-      axios.get('/base/descargar').then(res => res.download());
-    }
+    backupBase() {
+      axios.get("/base/descargar").then((res) => res.download());
+    },
   },
 
   created() {
@@ -185,9 +228,8 @@ export default {
   },
 
   beforeMount() {
-      this.cargarLocalStorage()
-  }
-
+    this.cargarLocalStorage();
+  },
 };
 </script>
 

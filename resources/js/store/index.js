@@ -54,11 +54,11 @@ export default new Vuex.Store({
     },
 
     actions: {
-    callSnackbar(action,[nombre,color]) {
+        callSnackbar(action,[mensaje, color]) {
            if(color == null){
              color = 'black'
             }
-            action.commit("setMessage", nombre);
+            action.commit("setMessage", mensaje);
             action.commit("setSnackBar", true);
             action.commit("setSnackBarColor", color);
             setTimeout(function(){

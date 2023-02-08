@@ -29,6 +29,9 @@
                   <p class="text--secondary d-flex justify-end">
                     Jugadores anotados: {{ item.jugadoresAnotados.length }}
                   </p>
+                  <p class="text--secondary d-flex justify-end" v-if="item.cantidadGrupos && item.cantidadGrupos%1 == 0">
+                    Cantidad minima de jugadores: {{ item.cantidadGrupos * 3 }}
+                  </p>
                   <v-switch
                     v-model="item.gruposConEliminatoria"
                     label="Fase de grupos con eliminatoria"

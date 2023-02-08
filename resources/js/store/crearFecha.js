@@ -1,5 +1,6 @@
 //fecha
 
+import { data } from "jquery";
 import { mapMutations, mapState } from "vuex";
 
 export default {
@@ -8,7 +9,6 @@ export default {
     namespaced: true,
 
     state: {
-
         torneoSeleccionado: null,
         nombreFecha: "",
         listaJugadores: [],
@@ -26,18 +26,28 @@ export default {
             console.log("Me ejecuto")
             console.log(data)
             state.cargandoStorage = data;
-
-        
         },
-        setTorneoSeleccionado(state, data) {
+
+        clearFecha(state) {
+            state.nombreFecha = "",
+            state.listaJugadores = [],
+            state.listaCategorias = [],
+            state.montoSociosUnaCategoria = null,
+            state.montoSociosDosCategorias = null,
+            state.montoNoSociosUnaCategoria = null,
+            state.montoNoSociosDosCategorias = null,
+            state.cargandoStorage = false
+        },
+
+        setTorneoSeleccionado( state, data ) {
             state.torneoSeleccionado = data;
          
             console.log("setTorneoSeleccionado")
             console.log(state.cargandoStorage)
-            if( !state.cargandoStorage){
 
+            if( !state.cargandoStorage){
                 localStorage.crearFecha = JSON.stringify(state);
-            } 
+            }
         },
 
         setNombreFecha(state, data) {
@@ -171,6 +181,17 @@ export default {
             return state.listaCategorias;
         },
 
+        tieneAlgunCampoCompletado(state) {
+            if(state.nombreFecha || state.montoSociosUnaCategoria || state.montoSociosDosCategorias || state.montoNoSociosUnaCategoria || state.montoNoSociosDosCategorias) {
+                return true
+            }
+
+            return false 
+        },
+
+        getCurrentTorneo(state) {
+            return state.torneoSeleccionado;
+        }
 
     },
 
@@ -198,13 +219,17 @@ export default {
                 if (parseInt(state.montoSociosUnaCategoria) >= 0 && parseInt(state.montoSociosDosCategorias) >= 0
                     && parseInt(state.montoNoSociosUnaCategoria) >= 0 && parseInt(state.montoNoSociosDosCategorias) >= 0) {
                     if (anotadoEnCategorias == 0) { jugador.montoPagado = 0; }
-                    else if (anotadoEnCategorias == 1 && jugador.socio == 1) { monto = state.montoSociosUnaCategoria; commit('setMontoPagadoJugador', { indiceJugador, monto }); }
-                    else if (anotadoEnCategorias == 2 && jugador.socio == 1) { monto = state.montoSociosDosCategorias; commit('setMontoPagadoJugador', { indiceJugador, monto }); }
-                    else if (anotadoEnCategorias == 1 && jugador.socio == 0) { monto = state.montoNoSociosUnaCategoria; commit('setMontoPagadoJugador', { indiceJugador, monto }); }
-                    else if (anotadoEnCategorias == 2 && jugador.socio == 0) { monto = state.montoNoSociosDosCategorias; commit('setMontoPagadoJugador', { indiceJugador, monto }); }
+                    else if (anotadoEnCategorias == 1 && jugador.socio.socio == 1) { monto = state.montoSociosUnaCategoria; commit('setMontoPagadoJugador', { indiceJugador, monto }); }
+                    else if (anotadoEnCategorias == 2 && jugador.socio.socio == 1) { monto = state.montoSociosDosCategorias; commit('setMontoPagadoJugador', { indiceJugador, monto }); }
+                    else if (anotadoEnCategorias == 1 && jugador.socio.socio == 0) { monto = state.montoNoSociosUnaCategoria; commit('setMontoPagadoJugador', { indiceJugador, monto }); }
+                    else if (anotadoEnCategorias == 2 && jugador.socio.socio == 0) { monto = state.montoNoSociosDosCategorias; commit('setMontoPagadoJugador', { indiceJugador, monto }); }
                 }
             })
-        }
-    }
+        },
 
+        setTorneo({ commit, state }, data) {
+            commit('setTorneoSeleccionado', data)
+            commit('clearFecha')
+        },
+    }
 }

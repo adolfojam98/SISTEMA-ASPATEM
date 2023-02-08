@@ -22,48 +22,21 @@
               :search="search"
             >
               <template v-slot:[`item.actions`]="{ item }">
-                <v-tooltip bottom>
+                <v-tooltip bottom v-if="calcularCategoria(item) !== ''">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-icon
-                      class="ml-2 mr-4"
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="[agregarEnSuCategoria(item)]"
-                      color="green"
-                      >=</v-icon
-                    >
+                    <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarEnSuCategoria(item)]" :style="calcularCategoria(item).includes('Agregar') ? 'cursor: pointer; background-color: gray; color: white; padding: 4px; border-radius: 10px;' : 'cursor: pointer; background-color: lightseagreen; color: white; padding: 4px; border-radius: 10px;'">{{calcularCategoria(item).replace('Quitar de la categoria: ','').replace('Agregar a la categoria: ','')}}</small>
                   </template>
-
                   <span>{{ calcularCategoria(item) }}</span>
                 </v-tooltip>
 
-                <v-tooltip bottom>
+                <v-tooltip bottom v-if="!calcularCategoriaSuperior(item).includes('No hay una categoria superior')">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-icon
-                      class="mt-1"
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="[agregarEnLaCategoriaSuperior(item)]"
-                      color="primary"
-                      >^</v-icon
-                    >
+                    <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarEnLaCategoriaSuperior(item)]" :style="calcularCategoriaSuperior(item).includes('Agregar') ? 'cursor: pointer; background-color: gray; color: white; padding: 4px; border-radius: 10px;' : 'cursor: pointer; background-color: lightseagreen; color: white; padding: 4px; border-radius: 10px;'">{{calcularCategoriaSuperior(item).replace('Quitar de la categoria superior: ','').replace('Agregar en la categoria superior: ','')}}</small>
                   </template>
                   <span>{{ calcularCategoriaSuperior(item) }}</span>
                 </v-tooltip>
               </template>
 
-              <template v-slot:[`item.pivot.puntos`]="{ item }">
-                <input
-                  min="0"
-                  max="7"
-                  oninput="validity.valid||(value='');"
-                  type="number"
-                  class="soloNumeros"
-                  style="width: 80px"
-                  v-on:change="[setPuntos(item)]"
-                  v-model="item.pivot.puntos"
-                />
-              </template>
             </v-data-table>
             <v-btn
               block
@@ -210,7 +183,7 @@ export default {
         {
           puntos: jugador.pivot.puntos,
         }
-      );
+      )
     },
 
     agregarEnSuCategoria(item) {
