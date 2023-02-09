@@ -89,6 +89,14 @@ class FechaController extends Controller
         //
     }
 
+    public function getFechaById($id) {
+        $fecha = Fecha::find($id);
+        $resumen_jugadores = $fecha->resumen_jugadores;
+
+        //TODO hacer el resource para fecha
+        return $torneo;
+    }
+
 
     public function guardarFecha(Request $request)
     {

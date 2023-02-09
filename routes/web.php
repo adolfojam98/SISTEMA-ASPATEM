@@ -100,6 +100,10 @@ Route::group(['prefix' => '/ingresos', 'as' => 'ingresos.', 'middleware' => ['au
     Route::get('/{fecha_inicio?}/{fecha_fin?}/{tipo?}/{torneo_id?}/{fecha_id?}', 'IngresosExternosController@create')->name('create');
 });
 
+Route::group(['prefix' => '/fechas', 'as' => 'ingresos.', 'middleware' => []], function () {
+    Route::get('/{id}', 'FechaController@getFechaById')->name('fechas.getFechaById');
+});
+
 //relacionado con torneo -- SUELTOS
 Route::get('/fechas', 'FechaController@create')->middleware('auth');
 Route::get('/export-fecha/{id}', 'ExcelController@getFechaRankingExcel')->middleware('auth');
