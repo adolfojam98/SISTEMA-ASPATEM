@@ -41,7 +41,7 @@ class FechaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return crearNuevaFecha($request);
     }
 
     /**
@@ -100,16 +100,16 @@ class FechaController extends Controller
 
     public function guardarFecha(Request $request)
     {
-        $fecha = crearNuevaFecha($request);
-        $categorias = $request->categorias;
+       return crearNuevaFecha($request);
+        // $categorias = $request->categorias;
 
-        crearRelacionFechaJugador($fecha, $categorias, $request->jugadores);
+        // crearRelacionFechaJugador($fecha, $categorias, $request->jugadores);
 
-        foreach ($categorias as $categoria) {
+        // foreach ($categorias as $categoria) {
 
-            guardarCategoriaFecha($categoria, $fecha->id);
-        }
-        return;
+        //     guardarCategoriaFecha($categoria, $fecha->id);
+        // }
+        // return;
     }
 
     public function getFecha(Request $request){
@@ -396,14 +396,13 @@ function crearRelacionFechaJugador($fecha, $categorias, $jugadores) {
 
 function crearNuevaFecha(Request $request)
 {
-
     $fecha                                  = new Fecha();
     $fecha->nombre                          = $request->nombreFecha;
-    $fecha->monto_socios_una_categoria      = $request->montos['montoSociosUnaCategoria'];
-    $fecha->monto_socios_dos_categorias     = $request->montos['montoSociosDosCategorias'];
-    $fecha->monto_no_socios_una_categoria   = $request->montos['montoNoSociosUnaCategoria'];
-    $fecha->monto_no_socios_dos_categorias  = $request->montos['montoNoSociosDosCategorias'];
-    $fecha->torneo_id                       = $request->categorias[0]['torneo_id'];
+    $fecha->monto_socios_una_categoria      = $request->montoSociosUnaCategoria;
+    $fecha->monto_socios_dos_categorias     = $request->montoSociosDosCategorias;
+    $fecha->monto_no_socios_una_categoria   = $request->montoNoSociosUnaCategoria;
+    $fecha->monto_no_socios_dos_categorias  = $request->montoNoSociosDosCategorias;
+    $fecha->torneo_id                       = $request->torneoId;
     $fecha->save();
     return $fecha;
 

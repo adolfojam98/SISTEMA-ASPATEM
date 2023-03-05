@@ -15,12 +15,12 @@ class Fecha extends Model
     
     public function resumen_jugadores() {//todos los jugadores anotados al torneo hasta esta fecha
         $ranking_hasta_esta_fecha = [];
-        $torneo_usuarios = this->torneo()->jugadores;
-        $categorias = this->torneo()->categorias;
+        $torneo_usuarios = $this->torneo()->jugadores;
+        $categorias = $this->torneo()->categorias;
 
         foreach ($torneo_usuarios as $key => $torneo_usuario) {
-            $fechas_usuarios = this->torneo()->fechas()
-            ->where('fechas.created_at', '=<', this->created_at) //TODO voy a traer todas las fechas anteriores y esta
+            $fechas_usuarios = $this->torneo()->fechas()
+            ->where('fechas.created_at', '=<', $this->created_at) //TODO voy a traer todas las fechas anteriores y esta
             ->where('fecha_usuario.usuario_id', $torneo_jugador->usuario_id)
             ->join('fecha_usuario', 'fecha_usuario.fecha_id', '=', 'fechas.id')
             ->get();
@@ -35,7 +35,7 @@ class Fecha extends Model
                 "nombre" => $torneo_usuario->nombre,
                 "apellido" => $torneo_usuario->apellido,
                 "puntos" => $torneo_usuario->puntos,
-                "puntos_ultima_fecha" => this->jugador_fecha($torneo_usuario->usuario_id)->puntos || 0,
+                "puntos_ultima_fecha" => $this->jugador_fecha($torneo_usuario->usuario_id)->puntos || 0,
                 "categoria" => calcularCategoria($categorias, $torneo_usuario->puntos)
             ];
                 
@@ -68,8 +68,8 @@ class Fecha extends Model
 
     function jugador_fecha($jugador_id) {
         $fecha_usuario = DB::table('fecha_usuario')
-        ->where('usuario_id',$usuario_id)
-        ->where('fecha_id', this->id)->first();
+        ->where('usuario_id',$jugador_id)
+        ->where('fecha_id', $this->id)->first();
     
         return $fecha_usuario;
     }

@@ -32,7 +32,7 @@ Route::group(['prefix' => '/usuario', 'as' => 'usuario.'/*, 'middleware' => ['au
     });
 });
 
-Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middleware' => ['auth']*/], function () {
+Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middlewafre' => ['auth']*/], function () {
     Route::post('/store/{cuota_id}', 'PagoController@store')->name('store');
 });
 
@@ -73,7 +73,6 @@ Route::group(['prefix' => '/configuraciones', 'as' => 'configuraciones.', 'middl
 
 Route::group(['prefix' => '/torneo', 'as' => 'torneo.', 'middleware' => ['auth']], function () {
     Route::post('/', 'TorneoController@store')->name('store');
-
     Route::post('/fecha/guardar', 'FechaController@guardarFecha')->name('guardarFecha');
     Route::post('/puntos', 'TorneoController@updatePuntos')->name('updatePuntos');
     Route::post('/{torneo_id}/usuario/{usuario_id}', 'TorneoController@editPuntos')->name('editPuntos');
@@ -101,6 +100,7 @@ Route::group(['prefix' => '/ingresos', 'as' => 'ingresos.', 'middleware' => ['au
 });
 
 Route::group(['prefix' => '/fechas', 'as' => 'ingresos.', 'middleware' => []], function () {
+    Route::post('/', 'FechaController@store')->name('guardarFecha');
     Route::get('/{id}', 'FechaController@getFechaById')->name('fechas.getFechaById');
 });
 

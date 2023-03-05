@@ -92,7 +92,14 @@ export default {
             if (!this.validarFormulario()) {
         return;
             }
-            //TODO implementar guardado de fecha, ver de pasar al apartado de agregar jugadores, etc...
+           axios.post('/fechas',{
+            nombreFecha : this.nombreFecha,
+            montoSociosUnaCategoria : this.montoSociosUnaCategoria,
+            montoSociosDosCategorias: this.montoSociosDosCategorias,
+            montoNoSociosUnaCategoria: this.montoNoSociosUnaCategoria,
+            montoNoSociosDosCategorias: this.montoNoSociosDosCategorias,
+            torneoId: this.torneoSeleccionado.id
+           })
             this.callSnackbar(['Fecha generada exitosamente','success']);
         },
 
