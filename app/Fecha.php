@@ -74,6 +74,14 @@ class Fecha extends Model
         return $fecha_usuario;
     }
 
+    function fecha_usuario($usuario_id) {
+        $fecha_usuario = $this->belongsToMany(Usuario::class)
+        ->where('usuario_id',$usuario_id)
+        ->where('fecha_id', $this->id)->withPivot('puntos', 'monto_pagado', 'categoria_mayor_id', 'categoria_menor_id');
+
+        return $fecha_usuario;
+    }
+
     function calcularCategoria($categorias, $puntos){//TODO mover
         foreach ($categorias as $key => $categoria) {
             if ($puntos >= $categoria->puntos_minimos && $puntos <= $categoria->puntos_maximos) 

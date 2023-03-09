@@ -99,9 +99,10 @@ Route::group(['prefix' => '/ingresos', 'as' => 'ingresos.', 'middleware' => ['au
     Route::get('/{fecha_inicio?}/{fecha_fin?}/{tipo?}/{torneo_id?}/{fecha_id?}', 'IngresosExternosController@create')->name('create');
 });
 
-Route::group(['prefix' => '/fechas', 'as' => 'ingresos.', 'middleware' => []], function () {
+Route::group(['prefix' => '/fechas', 'as' => 'fechas.', 'middleware' => []], function () {
     Route::post('/', 'FechaController@store')->name('guardarFecha');
     Route::get('/{id}', 'FechaController@getFechaById')->name('fechas.getFechaById');
+    Route::post('/{id}/usuarios/{usuario_id}', 'FechaController@storeUsuario')->name('guardarFechaUsuario');
 });
 
 //relacionado con torneo -- SUELTOS

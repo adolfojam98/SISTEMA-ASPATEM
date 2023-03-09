@@ -10,8 +10,10 @@ use App\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Services\FechaService;
+use App\Http\Resources\FechaUsuario as FechaUsuarioResource;
 
-class FechaController extends Controller
+class FechaController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -111,6 +113,33 @@ class FechaController extends Controller
         // }
         // return;
     }
+
+    public function storeUsuario(Request $request, $id, $usuario_id)
+    {
+        try
+        {
+            $request->validate([
+                'categoria_mayor_id' => ['required'],
+                'categoria_menor_id' => ['required'],
+                'monto_pagado' => ['nullable'],
+                'puntos' => ['nullable']
+            ]);
+
+            $service = new FechaService();
+            $fecha_usuario = $service->updateFechaUsuario($id, $usuario_id, $request->get('categoria_mayor_id'), $request->get('categoria_menor_id'), $request->get('monto_pagado'), $request->get('puntos'));
+
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            return $this->sendResponse(new FechaUsuarioResource($fecha_usuario), 'Jugador modificado con exito.');
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
+    }
+    
 
     public function getFecha(Request $request){
         $fecha = Fecha::whereId($request->id)->first();
