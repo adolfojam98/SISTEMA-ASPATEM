@@ -36,17 +36,18 @@ class FechaService extends BaseService
 
         if($fecha_id && $usuario_id)
         {
-            $fecha_usuario->pivot->categoria_menor_id = $categoria_menor_id;
-            $fecha_usuario->pivot->categoria_mayor_id = $categoria_mayor_id;
+            $fecha_usuario->pivot->categoria_menor_id = $categoria_menor_id;//TODO arreglar, no esta guardando
+            $fecha_usuario->pivot->categoria_mayor_id = $categoria_mayor_id;//TODO arreglar, no esta guardando
 
             if($monto_pagado){
-                $fecha_usuario->pivot->monto_pagado = $monto_pagado;
+                $fecha_usuario->pivot->monto_pagado = $monto_pagado;//TODO arreglar, no esta guardando
             }
 
             if($puntos){
-                $fecha_usuario->pivot->puntos = $puntos;
+                $fecha_usuario->pivot->puntos = $puntos;//TODO arreglar, no esta guardando
             }
             
+            $fecha_usuario->pivot->save();
             $fecha_usuario->save();
 
             return $fecha_usuario;
