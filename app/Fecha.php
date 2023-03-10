@@ -10,7 +10,7 @@ use App\Torneo;
 class Fecha extends Model
 {
     public function jugadores() {
-        return $this->belongsToMany(Usuario::class)->withPivot('puntos', 'monto_pagado');
+        return $this->belongsToMany(Usuario::class)->withPivot('puntos', 'monto_pagado', 'categoria_mayor_id', 'categoria_menor_id');
     }
     
     public function resumen_jugadores() {//todos los jugadores anotados al torneo hasta esta fecha

@@ -139,6 +139,22 @@ class FechaController extends ApiController
             return $this->sendError($e->errorInfo[2]);
         }
     }
+
+    public function getUsuariosAnotados($id)
+    {
+        try
+        {
+            $fecha_usuarios = Fecha::find($id)->jugadores()->get();
+            // dd($fecha_usuarios);
+            
+            return $this->sendResponse(FechaUsuarioResource::collection($fecha_usuarios), 'Success');
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
+
+    }
     
 
     public function getFecha(Request $request){
