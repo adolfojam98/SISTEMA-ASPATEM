@@ -29,15 +29,15 @@ class Fecha extends Model
             foreach ($fechas_usuarios as $key => $fecha_usuario) {
                 $torneo_usuario->puntos += $fecha_usuario->puntos;
             }
-
+            
             $jugador = [//TODO hacer el resource
-                "usuario_id" => $torneo_usuario->usuario_id,
+                "usuario_id" => $torneo_usuario->pivot->usuario_id,
                 "dni" => $torneo_usuario->dni,
                 "nombre" => $torneo_usuario->nombre,
                 "apellido" => $torneo_usuario->apellido,
-                "puntos" => $torneo_usuario->puntos,
-                "puntos_ultima_fecha" => $this->fecha_usuario($torneo_usuario->usuario_id)->first()->puntos ?? 0,
-                "categoria" => $this->calcularCategoria($categorias, $torneo_usuario->puntos)
+                "puntos" => $torneo_usuario->pivot->puntos,
+                "puntos_ultima_fecha" => $this->fecha_usuario($torneo_usuario->pivot->usuario_id)->first()->pivot->puntos ?? 0,
+                "categoria" => $this->calcularCategoria($categorias, $torneo_usuario->pivot->puntos)
             ];
                 
             array_push($ranking_hasta_esta_fecha, $jugador);
