@@ -93,10 +93,13 @@ class FechaController extends ApiController
 
     public function getFechaById($id) {
         $fecha = Fecha::find($id);
-        $resumen_jugadores = $fecha->resumen_jugadores;
+        $resumen_jugadores = $fecha->resumen_jugadores();
 
-        //TODO hacer el resource para fecha
-        return $torneo;
+        //TODO hacer el resource
+        return [
+            "fecha" => $fecha,
+            "resumen_jugadores" => $resumen_jugadores
+        ];
     }
 
 

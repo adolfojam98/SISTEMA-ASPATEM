@@ -15,13 +15,14 @@ class Fecha extends Model
     
     public function resumen_jugadores() {//todos los jugadores anotados al torneo hasta esta fecha
         $ranking_hasta_esta_fecha = [];
-        $torneo_usuarios = $this->torneo()->jugadores;
-        $categorias = $this->torneo()->categorias;
+        $categorias = $this->torneo->categorias;
+        $torneo_usuarios = $this->torneo->jugadores;
+        
 
         foreach ($torneo_usuarios as $key => $torneo_usuario) {
-            $fechas_usuarios = $this->torneo()->fechas()
+            $fechas_usuarios = $this->torneo->fechas()
             ->where('fechas.created_at', '=<', $this->created_at) //TODO voy a traer todas las fechas anteriores y esta
-            ->where('fecha_usuario.usuario_id', $torneo_jugador->usuario_id)
+            ->where('fecha_usuario.usuario_id', $torneo_usuario->usuario_id)
             ->join('fecha_usuario', 'fecha_usuario.fecha_id', '=', 'fechas.id')
             ->get();
 
@@ -35,8 +36,8 @@ class Fecha extends Model
                 "nombre" => $torneo_usuario->nombre,
                 "apellido" => $torneo_usuario->apellido,
                 "puntos" => $torneo_usuario->puntos,
-                "puntos_ultima_fecha" => $this->jugador_fecha($torneo_usuario->usuario_id)->puntos || 0,
-                "categoria" => calcularCategoria($categorias, $torneo_usuario->puntos)
+                "puntos_ultima_fecha" => $this->fecha_usuario($torneo_usuario->usuario_id)->first()->puntos ?? 0,
+                "categoria" => $this->calcularCategoria($categorias, $torneo_usuario->puntos)
             ];
                 
             array_push($ranking_hasta_esta_fecha, $jugador);
@@ -45,7 +46,7 @@ class Fecha extends Model
 
         $data = [//TODO hacer el resource
             "ranking" => $ranking_hasta_esta_fecha,
-            "fecha_nombre" => $fecha->nombre,
+            "fecha_nombre" => $this->nombre,
             "categorias" => $categorias
         ];
         
