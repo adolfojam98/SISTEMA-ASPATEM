@@ -36,7 +36,7 @@ class Fecha extends Model
                 "nombre" => $torneo_usuario->nombre,
                 "apellido" => $torneo_usuario->apellido,
                 "puntos" => $torneo_usuario->pivot->puntos,
-                "puntos_ultima_fecha" => $this->fecha_usuario($torneo_usuario->pivot->usuario_id)->first()->pivot->puntos ?? 0,
+                "puntos_ultima_fecha" => $this->fecha_usuario($torneo_usuario->pivot->usuario_id)->first()->puntos ?? 0,
                 "categoria" => $this->calcularCategoria($categorias, $torneo_usuario->pivot->puntos)
             ];
                 
@@ -67,19 +67,11 @@ class Fecha extends Model
         return $this->belongsTo(Torneo::class);
     }
 
-    function jugador_fecha($jugador_id) {
-        $fecha_usuario = DB::table('fecha_usuario')
-        ->where('usuario_id',$jugador_id)
-        ->where('fecha_id', $this->id)->first();
-    
-        return $fecha_usuario;
-    }
-
     function fecha_usuario($usuario_id) {
-        $fecha_usuario = $this->belongsToMany(Usuario::class)
+        $fecha_usuario = DB::table('fecha_usuario')
         ->where('usuario_id',$usuario_id)
-        ->where('fecha_id', $this->id)->withPivot('puntos', 'monto_pagado', 'categoria_mayor_id', 'categoria_menor_id');
-
+        ->where('fecha_id', $this->id);
+    
         return $fecha_usuario;
     }
 

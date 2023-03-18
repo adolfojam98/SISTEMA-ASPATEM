@@ -104,6 +104,7 @@ Route::group(['prefix' => '/fechas', 'as' => 'fechas.', 'middleware' => []], fun
     Route::get('/{id}', 'FechaController@getFechaById')->name('fechas.getFechaById');
     Route::post('/{id}/usuarios/{usuario_id}', 'FechaController@storeUsuario')->name('guardarFechaUsuario');
     Route::get('/{id}/usuarios', 'FechaController@getUsuariosAnotados')->name('fechas.getUsuariosAnotados');
+    Route::post('/{id}/categoria/{categoria_id}', 'FechaController@storeCategoriaPartidos')->name('fechas.storeCategoriaPartidos');
 });
 
 //relacionado con torneo -- SUELTOS

@@ -8,6 +8,7 @@ use App\FechaUsuario;
 use App\Http\Services\BaseService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class FechaService extends BaseService
 {
@@ -18,6 +19,14 @@ class FechaService extends BaseService
         $this->errorDefinitions[] = new Error("FEC0001", "Unespected error", "Unespected", 500);
     }
 
+    function fechaUsuarioDelete($fecha_id, $usuario_id)
+    {
+        $this->clearErrors();
+        
+        $fecha_usuario = DB::table('fecha_usuario')
+        ->where('usuario_id',$usuario_id)
+        ->where('fecha_id', $fecha_id)->delete();
+    }
 
     function updateFechaUsuario($fecha_id, $usuario_id, $categoria_mayor_id = null, $categoria_menor_id = null, $monto_pagado = null, $puntos = null)
     {
@@ -27,27 +36,28 @@ class FechaService extends BaseService
         $fecha = Fecha::whereId($fecha_id)->first();
         $fecha_usuario = $fecha->fecha_usuario($usuario_id)->first();
 
-        if(!$fecha_usuario)
+        if($fecha_id && $usuario_id)
         {
+
+            if($fecha_usuario) {
+                $this->fechaUsuarioDelete($fecha_id, $usuario_id);
+            }
+
             $fecha_usuario = new FechaUsuario();
             $fecha_usuario->fecha_id = $fecha_id;
             $fecha_usuario->usuario_id = $usuario_id;
-        }
 
-        if($fecha_id && $usuario_id)
-        {
-            $fecha_usuario->pivot->categoria_menor_id = $categoria_menor_id;//TODO arreglar, no esta guardando
-            $fecha_usuario->pivot->categoria_mayor_id = $categoria_mayor_id;//TODO arreglar, no esta guardando
+            $fecha_usuario->categoria_menor_id = $categoria_menor_id;
+            $fecha_usuario->categoria_mayor_id = $categoria_mayor_id;
 
             if($monto_pagado){
-                $fecha_usuario->pivot->monto_pagado = $monto_pagado;//TODO arreglar, no esta guardando
+                $fecha_usuario->monto_pagado = $monto_pagado;
             }
 
             if($puntos){
-                $fecha_usuario->pivot->puntos = $puntos;//TODO arreglar, no esta guardando
+                $fecha_usuario->puntos = $puntos;
             }
-            
-            $fecha_usuario->pivot->save();
+
             $fecha_usuario->save();
 
             return $fecha_usuario;
@@ -57,6 +67,10 @@ class FechaService extends BaseService
         }
 
         return false;
+    }
+
+    function createPartido($id, $categoria_id, $partidos) {
+        dd($id, $categoria_id, $partidos);
     }
 
 }

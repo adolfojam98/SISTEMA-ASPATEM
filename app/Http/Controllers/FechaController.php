@@ -9,6 +9,7 @@ use App\Torneo;
 use App\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\FechaService;
 use App\Http\Resources\FechaUsuario as FechaUsuarioResource;
@@ -204,8 +205,53 @@ class FechaController extends ApiController
         
         return $data;
     }
-}
 
+    public function storeCategoriaPartidos(Request $request, $id, $categoria_id) 
+    {
+        try
+            {
+                $request->validate([
+                    'partidos' => 'required|array',
+                    'partidos.*' => 'required',
+                    'partidos.*.fase' => 'required | string',
+                    'partidos.*.id_jugador1' => 'required',
+                    'partidos.*.id_jugador2' => 'required',
+                    'partidos.*.set_jugador1' => 'required',
+                    'partidos.*.set_jugador2' => 'required | different:partidos.*.set_jugador1',
+                    'partidos.*.misma_cat' => 'required',
+                    'partidos.*.id_jugador_mayor_nivel' => 'required',
+                ]);
+
+                $service = new FechaService();
+
+                foreach ($request->get('partidos') as $key => $partido) {
+
+                    if($partido['fase'] === "grupos") {
+                        $request->validate([
+                            'partidos.*.grupo_nombre' => 'required | string',
+                        ]);
+                    }
+
+                    $service->createPartido($id, $categoria_id, $request->get('partidos'));
+                }
+
+                if ($service->hasErrors()) {
+                    return $this->sendServiceError($service->getLastError());
+                }
+
+                return $this->sendOK();
+                // return $this->sendResponse(new FechaUsuarioResource($fecha_usuario), 'Jugador modificado con exito.');
+            }
+            catch(Exception $e)
+            {
+                // return $this->sendError($e->errorInfo[2]);
+            }
+        }
+    }
+
+
+
+//????????????????
 function calcularCategoria($categorias, $puntos){
     foreach ($categorias as $key => $categoria) {
         if ($puntos >= $categoria->puntos_minimos && $puntos <= $categoria->puntos_maximos) 
