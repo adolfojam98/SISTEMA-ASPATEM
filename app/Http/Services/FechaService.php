@@ -69,8 +69,15 @@ class FechaService extends BaseService
         return false;
     }
 
-    function createPartido($id, $categoria_id, $partidos) {
-        dd($id, $categoria_id, $partidos);
+    function updatePuntos($fecha_id)
+    {
+        //todo los jugadores que jugaron del torneo con su categoria y puntos
+        $jugadores = Fecha::find($fecha_id)->first()->resumen_jugadores();
+
+        //filtramos por los jugadores que juegan esta fecha
+        
+
+        dd($jugadores);
     }
 
 }

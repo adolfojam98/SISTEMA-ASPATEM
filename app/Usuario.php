@@ -41,6 +41,12 @@ class Usuario extends Model
         return $this->belongsToMany(Partido::class)->withPivot('sets');
     }
 
+    public function getPartidosByFechaId($fecha_id)
+    {
+        return $this->partidos()->where('fecha_id', $fecha_id);
+    }
+
+
     public function fechas()
     {
         return $this->belongsToMany(Fecha::class)->withPivot('puntos','monto_pagado');
@@ -94,7 +100,7 @@ Socio inactivo
                 $moroso = false;
             }
         }
-        
+
         //caso 1
         if(!$this->socio && !$hasLeastOneCuota) {
             $state->socio = false;

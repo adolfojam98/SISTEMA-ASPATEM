@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\FechaService;
+use App\Http\Services\PartidoService;
 use App\Http\Resources\FechaUsuario as FechaUsuarioResource;
 
 class FechaController extends ApiController
@@ -126,7 +127,7 @@ class FechaController extends ApiController
                 'categoria_mayor_id' => ['required'],
                 'categoria_menor_id' => ['required'],
                 'monto_pagado' => ['nullable'],
-                'puntos' => ['nullable']
+                // 'puntos' => ['nullable']
             ]);
 
             $service = new FechaService();
@@ -149,7 +150,10 @@ class FechaController extends ApiController
         try
         {
             $fecha_usuarios = Fecha::find($id)->jugadores()->get();
-            // dd($fecha_usuarios);
+           
+            foreach($fecha_usuarios as $key => $fecha_usuario) {
+                $fecha_usuario->info_socio = $fecha_usuario->socio();
+            }
             
             return $this->sendResponse(FechaUsuarioResource::collection($fecha_usuarios), 'Success');
         }
@@ -222,29 +226,43 @@ class FechaController extends ApiController
                     'partidos.*.id_jugador_mayor_nivel' => 'required',
                 ]);
 
-                $service = new FechaService();
+                $servicePartido = new PartidoService();
 
                 foreach ($request->get('partidos') as $key => $partido) {
+                    $partido = (object) $partido;
 
-                    if($partido['fase'] === "grupos") {
+                    if($partido->fase === "grupos") {
                         $request->validate([
                             'partidos.*.grupo_nombre' => 'required | string',
                         ]);
                     }
 
-                    $service->createPartido($id, $categoria_id, $request->get('partidos'));
+                    $partido_info = (object) [
+                        "id_jugador1" => $partido->id_jugador1,
+                        "id_jugador2" => $partido->id_jugador2,
+                        "set_jugador1" => $partido->set_jugador1,
+                        "set_jugador2" => $partido->set_jugador2,
+                    ];
+
+                    $servicePartido->createPartido($id, $categoria_id, $partido->fase, $partido->grupo_nombre ?? null, $partido_info);
                 }
 
-                if ($service->hasErrors()) {
-                    return $this->sendServiceError($service->getLastError());
+                if ($servicePartido->hasErrors()) {
+                    return $this->sendServiceError($servicePartido->getLastError());
+                }
+
+                $serviceFecha = new FechaService();
+                $serviceFecha->updatePuntos($id);
+
+                if ($serviceFecha->hasErrors()) {
+                    return $this->sendServiceError($serviceFecha->getLastError());
                 }
 
                 return $this->sendOK();
-                // return $this->sendResponse(new FechaUsuarioResource($fecha_usuario), 'Jugador modificado con exito.');
             }
             catch(Exception $e)
             {
-                // return $this->sendError($e->errorInfo[2]);
+                return $this->sendError($e->errorInfo[2]);
             }
         }
     }

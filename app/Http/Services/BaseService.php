@@ -15,7 +15,7 @@ class BaseService
         $this->clearErrors();        
     }
 
-    public function getError($code) 
+    public function getError($code)
     {
         foreach($this->errorDefinitions as $e) {
             if ($e->code == $code) {
@@ -26,11 +26,11 @@ class BaseService
 
     public function clearErrors()
     {
-        $this->lastError = null;        
+        $this->lastError = null;
     }
 
     public function setError($code)
-    {   
+    {
         $this->lastError = $this->getError($code); 
     }
     
