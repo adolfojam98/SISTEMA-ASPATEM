@@ -89,7 +89,16 @@
                 <v-icon>mdi-plus</v-icon>
               </v-list-item-icon>
             </v-list-item>
+
+            <v-list-item link :to="{ name: 'gestion-fechas' }">
+              <v-list-item-title>Gestion fechas</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>mdi-plus</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+
           </v-list-group>
+          
 
           <v-list-item link :to="{ name: 'ingresos' }">
             <v-list-item-action>
