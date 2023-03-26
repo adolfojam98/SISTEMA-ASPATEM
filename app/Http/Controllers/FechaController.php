@@ -124,15 +124,14 @@ class FechaController extends ApiController
         try
         {
             $request->validate([
-                'categoria_mayor_id' => ['required'],
-                'categoria_menor_id' => ['required'],
+                'categoria_mayor_id' => ['nullable'],
+                'categoria_menor_id' => ['nullable'],
                 'monto_pagado' => ['nullable'],
                 // 'puntos' => ['nullable']
             ]);
 
             $service = new FechaService();
             $fecha_usuario = $service->updateFechaUsuario($id, $usuario_id, $request->get('categoria_mayor_id'), $request->get('categoria_menor_id'), $request->get('monto_pagado'), $request->get('puntos'));
-
             if ($service->hasErrors()) {
                 return $this->sendServiceError($service->getLastError());
             }

@@ -49,15 +49,9 @@ class FechaService extends BaseService
 
             $fecha_usuario->categoria_menor_id = $categoria_menor_id;
             $fecha_usuario->categoria_mayor_id = $categoria_mayor_id;
-
-            if($monto_pagado){
-                $fecha_usuario->monto_pagado = $monto_pagado;
-            }
-
-            if($puntos){
-                $fecha_usuario->puntos = $puntos;
-            }
-
+            $fecha_usuario->monto_pagado = $monto_pagado ?? 0;
+            $fecha_usuario->puntos = $puntos ?? 0;
+        
             $fecha_usuario->save();
 
             return $fecha_usuario;
