@@ -104,10 +104,13 @@ export default {
 
     agregarJugadoresAnotados(listaJugadoresAnotados) {
       this.listaCategorias.forEach(categoria => {
+        console.log(listaJugadoresAnotados);
         listaJugadoresAnotados.forEach(jugador => {
+          console.log(jugador);
+          console.log(categoria);
           if (categoria.id == jugador.categoria_mayor_id || categoria.id == jugador.categoria_menor_id) {
             const jugadorEncontrado = this.listaJugadores.find(j => j.usuario_id == jugador.usuario_id);
-            categoria.jugadoresAnotados.push(jugadorEncontrado);
+            categoria.jugadoresAnotados.push( );
           }
         });
       });
@@ -115,7 +118,8 @@ export default {
 
 
     getCategoriaJugador(jugador) {
-      return this.listaCategorias.find((categoria) => categoria.nombre == jugador.categoria);
+      const categoria = this.listaCategorias.find((categoria) => categoria.nombre == jugador.categoria);
+      return categoria;
     },
 
     getCategoriaSuperiorJugador(jugador) {
@@ -200,9 +204,8 @@ export default {
           parseInt(item.puntos) >= parseInt(categoria.puntos_minimos) &&
           parseInt(item.puntos) <= parseInt(categoria.puntos_maximos)
         ) {
-          const indice = this.getIndexjugadorAnotado(categoria, item);
-          //if (!categoria.jugadoresAnotados.includes(item)) {
-          if (indice == -1) {
+    
+          if (this.estaAnotadoEnCategoria(categoria, item)) {
             mensaje = "Agregar a la categoria: " + categoria.nombre;
           } else {
             mensaje = "Quitar de la categoria: " + categoria.nombre;
@@ -213,14 +216,9 @@ export default {
     },
 
     estaAnotadoEnCategoria(categoria, jugador) {
-      let indice = -1
-      categoria.jugadoresAnotados.forEach(function (elemento, index) {
-        if (elemento.usuario_id === jugador.usuario_id) {
-          indice = index;
-        }
-      });
-      return indice != -1 ;
-    }
+      
+    return categoria.jugadoresAnotados.some((elemento) => elemento.usuario_id == jugador.usuario_id);
+}
   }
 }
 </script>
