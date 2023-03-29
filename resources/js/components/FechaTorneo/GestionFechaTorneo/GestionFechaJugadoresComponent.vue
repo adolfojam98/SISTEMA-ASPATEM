@@ -1,5 +1,5 @@
 <template>
-  <div>
+    <div>
     <v-autocomplete return-object :items="torneos" :item-text="nombreTorneo" v-model="torneoSeleccionado"
       label="Buscar Torneo" @change="getFechas()"></v-autocomplete>
     <v-autocomplete return-object :items="fechas" :item-text="nombreFecha" v-model="fechaSeleccionada"
@@ -104,13 +104,11 @@ export default {
 
     agregarJugadoresAnotados(listaJugadoresAnotados) {
       this.listaCategorias.forEach(categoria => {
-        console.log(listaJugadoresAnotados);
         listaJugadoresAnotados.forEach(jugador => {
-          console.log(jugador);
-          console.log(categoria);
+
           if (categoria.id == jugador.categoria_mayor_id || categoria.id == jugador.categoria_menor_id) {
             const jugadorEncontrado = this.listaJugadores.find(j => j.usuario_id == jugador.usuario_id);
-            categoria.jugadoresAnotados.push( );
+            categoria.jugadoresAnotados.push(jugadorEncontrado);
           }
         });
       });
@@ -118,7 +116,7 @@ export default {
 
 
     getCategoriaJugador(jugador) {
-      const categoria = this.listaCategorias.find((categoria) => categoria.nombre == jugador.categoria);
+      const categoria = this.listaCategorias.find((categoria) => { return categoria.nombre == jugador.categoria });
       return categoria;
     },
 
@@ -133,7 +131,7 @@ export default {
       if (!categoria) {
         return "No hay una categoria superior";
       }
-      if (this.estaAnotadoEnCategoria(categoria, jugador)) {
+      if (!this.estaAnotadoEnCategoria(categoria, jugador)) {
         return "Agregar a la categoria: " + categoria.nombre;
       } else {
         return "Quitar de la categoria: " + categoria.nombre;
@@ -145,7 +143,7 @@ export default {
       if (!categoria) {
         return "No hay una categoria superior";
       }
-      if (this.estaAnotadoEnCategoria(categoria, jugador)) {
+      if (!this.estaAnotadoEnCategoria(categoria, jugador)) {
         return "Agregar en la categoria superior: " + categoria.nombre;
       } else {
         return "Quitar de la categoria superior: " + categoria.nombre;
@@ -155,22 +153,59 @@ export default {
 
     agregarJugadorEnCategoria(infoJugador) {
       axios.post(`/fechas/${this.fechaSeleccionada.id}/usuarios/${infoJugador.id}`, { ...infoJugador }).then(
-        
-      res => console.log(res))
-      ;
+        (res) => {
+          this.actualizarEstadoJugador(res.data.body);
+        });
     },
+    actualizarEstadoJugador(estadoJugador) {
+      const jugador = this.listaJugadores.find(j => j.usuario_id == estadoJugador.usuario_id);
+      if (estadoJugador.categoria_mayor_id) {
+        const categoria = this.getCategoriaSuperiorJugador(jugador);
+        const jugadorEncontrado = categoria.jugadoresAnotados.find(j => j.usuario_id == estadoJugador.usuario_id);
+        if (!jugadorEncontrado) {
+          categoria.jugadoresAnotados.push(jugador);
+        }
+      } else {
+        const categoria = this.getCategoriaSuperiorJugador(jugador);
+        if (categoria) {
+          categoria.jugadoresAnotados = categoria.jugadoresAnotados.filter(j => j.usuario_id != jugador.usuario_id);
+        }
+      }
 
+      if (estadoJugador.categoria_menor_id) {
+        const categoria = this.listaCategorias.find(c => c.id == estadoJugador.categoria_menor_id);
+        const jugadorEncontrado = categoria.jugadoresAnotados.find(j => j.usuario_id == estadoJugador.usuario_id);
+        if (!jugadorEncontrado) {
+          categoria.jugadoresAnotados.push(jugador);
+        }
+      } else {
+        const categoria = this.getCategoriaJugador(jugador);
+        if (categoria) {
+        
+          categoria.jugadoresAnotados = categoria.jugadoresAnotados.filter(j => j.usuario_id != jugador.usuario_id);
+        }
+      }
+
+    },
     agregarJugadorEnSuCategoria(jugador) {
       const estadoJugador = this.getEstadoJugador(jugador);
-      estadoJugador.categoria_menor_id = this.getCategoriaJugador(jugador).id;
+      if (estadoJugador.categoria_menor_id) {
+        estadoJugador.categoria_menor_id = null
+      } else {
+        estadoJugador.categoria_menor_id = this.getCategoriaJugador(jugador).id;
+      }
       this.agregarJugadorEnCategoria(estadoJugador);
 
     },
 
     agregarJugadorEnLaCategoriaSuperior(jugador) {
-      console.log('entro aca');
+
       const estadoJugador = this.getEstadoJugador(jugador);
-      estadoJugador.categoria_mayor_id = this.getCategoriaSuperiorJugador(jugador).id;
+      if (estadoJugador.categoria_mayor_id) {
+        estadoJugador.categoria_mayor_id = null
+      } else {
+        estadoJugador.categoria_mayor_id = this.getCategoriaSuperiorJugador(jugador).id;
+      }
       this.agregarJugadorEnCategoria(estadoJugador);
 
     },
@@ -179,11 +214,7 @@ export default {
       const categoriaSuperior = this.getCategoriaSuperiorJugador(jugador);
       const categoriaActualId = categoriaActual && this.buscarJugadorEnCategoria(jugador, categoriaActual) ? categoriaActual.id : null;
       const categoriaSuperiorId = categoriaSuperior && this.buscarJugadorEnCategoria(jugador, categoriaSuperior) ? categoriaSuperior.id : null;
-    console.log(categoriaActual);
-    console.log(categoriaSuperior);
-    console.log(categoriaActualId);
-    console.log(categoriaSuperiorId);
-    
+
       return {
         id: jugador.usuario_id,
         categoria_menor_id: categoriaActualId,
@@ -196,29 +227,11 @@ export default {
     buscarJugadorEnCategoria(jugador, categoria) {
       return categoria.jugadoresAnotados.find(j => j.usuario_id == jugador.usuario_id);
     },
-    calcularCategoria(item) {
-      let mensaje = "";
-      this.listaCategorias.forEach((categoria) => {
-
-        if (
-          parseInt(item.puntos) >= parseInt(categoria.puntos_minimos) &&
-          parseInt(item.puntos) <= parseInt(categoria.puntos_maximos)
-        ) {
-    
-          if (this.estaAnotadoEnCategoria(categoria, item)) {
-            mensaje = "Agregar a la categoria: " + categoria.nombre;
-          } else {
-            mensaje = "Quitar de la categoria: " + categoria.nombre;
-          }
-        }
-      });
-      return mensaje;
-    },
 
     estaAnotadoEnCategoria(categoria, jugador) {
-      
-    return categoria.jugadoresAnotados.some((elemento) => elemento.usuario_id == jugador.usuario_id);
-}
+
+      return categoria.jugadoresAnotados.some((elemento) => elemento.usuario_id == jugador.usuario_id);
+    }
   }
 }
 </script>
