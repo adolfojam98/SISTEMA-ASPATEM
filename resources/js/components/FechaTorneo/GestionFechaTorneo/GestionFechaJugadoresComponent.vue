@@ -1,10 +1,23 @@
 <template>
-    <div>
-    <v-autocomplete return-object :items="torneos" :item-text="nombreTorneo" v-model="torneoSeleccionado"
-      label="Buscar Torneo" @change="getFechas()"></v-autocomplete>
-    <v-autocomplete return-object :items="fechas" :item-text="nombreFecha" v-model="fechaSeleccionada"
-      label="Buscar Fecha"></v-autocomplete>
-    <v-btn @click="cargarFecha()">BUSCAR</v-btn>
+  <div>
+    <v-container>
+      <v-row>
+        <v-col cols="4">
+          <v-autocomplete return-object :items="torneos" :item-text="nombreTorneo" v-model="torneoSeleccionado"
+            label="Buscar Torneo" @change="getFechas()"></v-autocomplete>
+        </v-col>
+        <v-col cols="4">
+          <v-autocomplete return-object :items="fechas" :item-text="nombreFecha" v-model="fechaSeleccionada"
+            label="Buscar Fecha"></v-autocomplete>
+        </v-col>
+        <v-col cols="2" class="d-flex align-center">
+          <v-btn @click="cargarFecha()" color="primary">BUSCAR</v-btn>
+        </v-col>
+      </v-row>
+
+
+    </v-container>
+
 
     <v-data-table dense :headers="headers" :items="listaJugadores" item-key="dni" :items-per-page="15" :search="search">
 
@@ -24,6 +37,10 @@
         </template>
 
 </v-data-table>
+
+
+
+    <grupos-categorias :categorias="listaCategorias"></grupos-categorias>
   </div>
 </template>
 
@@ -87,20 +104,24 @@ export default {
         this.listaJugadores = fechaResponse.data.resumen_jugadores.ranking;
         this.listaCategorias = fechaResponse.data.resumen_jugadores.categorias;
         const listaJugadoresAnotados = jugadoresAnotadosResponse.data.body;
+       
         this.listaCategorias = this.listaCategorias.map(categoria => {
-          return {
-            ...categoria,
-            jugadoresAnotados: []
-          }
-        });
-
+        return {
+          ...categoria,
+          jugadoresAnotados: [],
+          cantidadGrupos: 0,
+          gruposConEliminatoria: false,
+          listaGrupos: [],
+          
+          
+        }
+      });
         this.agregarJugadoresAnotados(listaJugadoresAnotados);
 
       } catch (error) {
         console.error(error);
       }
     },
-
 
     agregarJugadoresAnotados(listaJugadoresAnotados) {
       this.listaCategorias.forEach(categoria => {
@@ -159,34 +180,32 @@ export default {
     },
     actualizarEstadoJugador(estadoJugador) {
       const jugador = this.listaJugadores.find(j => j.usuario_id == estadoJugador.usuario_id);
+      const categoriaSuperior = this.getCategoriaSuperiorJugador(jugador);
+      const categoriaMenor = this.getCategoriaJugador(jugador);
+
       if (estadoJugador.categoria_mayor_id) {
-        const categoria = this.getCategoriaSuperiorJugador(jugador);
-        const jugadorEncontrado = categoria.jugadoresAnotados.find(j => j.usuario_id == estadoJugador.usuario_id);
+        const jugadorEncontrado = categoriaSuperior.jugadoresAnotados.find(j => j.usuario_id == estadoJugador.usuario_id);
         if (!jugadorEncontrado) {
-          categoria.jugadoresAnotados.push(jugador);
+          categoriaSuperior.jugadoresAnotados.push(jugador);
         }
-      } else {
-        const categoria = this.getCategoriaSuperiorJugador(jugador);
-        if (categoria) {
-          categoria.jugadoresAnotados = categoria.jugadoresAnotados.filter(j => j.usuario_id != jugador.usuario_id);
-        }
+      } else if (categoriaSuperior) {
+        categoriaSuperior.jugadoresAnotados = categoriaSuperior.jugadoresAnotados.filter(j => j.usuario_id != jugador.usuario_id);
       }
 
       if (estadoJugador.categoria_menor_id) {
-        const categoria = this.listaCategorias.find(c => c.id == estadoJugador.categoria_menor_id);
-        const jugadorEncontrado = categoria.jugadoresAnotados.find(j => j.usuario_id == estadoJugador.usuario_id);
+
+        const jugadorEncontrado = categoriaMenor.jugadoresAnotados.find(j => j.usuario_id == estadoJugador.usuario_id);
         if (!jugadorEncontrado) {
-          categoria.jugadoresAnotados.push(jugador);
+          categoriaMenor.jugadoresAnotados.push(jugador);
         }
       } else {
-        const categoria = this.getCategoriaJugador(jugador);
-        if (categoria) {
-        
-          categoria.jugadoresAnotados = categoria.jugadoresAnotados.filter(j => j.usuario_id != jugador.usuario_id);
+
+        if (categoriaMenor) {
+          categoriaMenor.jugadoresAnotados = categoriaMenor.jugadoresAnotados.filter(j => j.usuario_id != jugador.usuario_id);
         }
       }
-
     },
+
     agregarJugadorEnSuCategoria(jugador) {
       const estadoJugador = this.getEstadoJugador(jugador);
       if (estadoJugador.categoria_menor_id) {
