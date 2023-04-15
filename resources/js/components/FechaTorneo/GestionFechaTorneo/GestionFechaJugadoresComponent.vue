@@ -112,6 +112,7 @@ export default {
           cantidadGrupos: 0,
           gruposConEliminatoria: false,
           listaGrupos: [],
+          partidosLlaves: []
           
           
         }

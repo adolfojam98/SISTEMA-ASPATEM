@@ -197,7 +197,6 @@
             </div>
 
             <div v-if="!item.llavesGeneradas">
-              <center>
                 <v-btn
                   class="center mb-6 mt-4"
                   dark
@@ -206,7 +205,6 @@
                 >
                   Generar llaves
                 </v-btn>
-              </center>
             </div>
 
             <div v-else>

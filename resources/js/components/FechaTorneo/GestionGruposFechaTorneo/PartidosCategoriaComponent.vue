@@ -22,120 +22,20 @@
       </v-form>
       <v-divider></v-divider>
 
-      <div v-if="gruposGenerados">
+      <div v-if="gruposGenerados && !llavesGeneradas">
         <partidos-fase-grupos :categoria="categoria" @generar-llaves="generarLLavess"></partidos-fase-grupos>
-     
-            <resultados-grupos v-if="llavesGeneradas" :categoria="categoria">
-            </resultados-grupos>
-            <!-- 
-            <div class="bracket">
-              <v-row>
-                <v-col cols="12" sm="6" md="3">
-                  <h3>Octavos de final</h3>
-                  <v-card>
-                    <v-card-text>
-                      <v-container>
-                        <v-row>
-                          <v-col cols="6">
-                            <p>Equipo A</p>
-                          </v-col>
-                          <v-col cols="6">
-                            <p>Equipo B</p>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col cols="6">
-                            <p>Equipo C</p>
-                          </v-col>
-                          <v-col cols="6">
-                            <p>Equipo D</p>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col cols="6">
-                            <p>Equipo E</p>
-                          </v-col>
-                          <v-col cols="6">
-                            <p>Equipo F</p>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col cols="6">
-                            <p>Equipo G</p>
-                          </v-col>
-                          <v-col cols="6">
-                            <p>Equipo H</p>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <h3>Cuartos de final</h3>
-                  <v-card>
-                    <v-card-text>
-                      <v-container>
-                        <v-row>
-                          <v-col cols="6">
-                            <p>Ganador 1</p>
-                          </v-col>
-                          <v-col cols="6">
-                            <p>Ganador 2</p>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col cols="6">
-                            <p>Ganador 3</p>
-                          </v-col>
-                          <v-col cols="6">
-                            <p>Ganador 4</p>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <h3>Semifinales</h3>
-                  <v-card>
-                    <v-card-text>
-                      <v-container>
-                        <v-row>
-                          <v-col cols="6">
-                            <p>Ganador 5</p>
-                          </v-col>
-                          <v-col cols="6">
-                            <p>Ganador 6</p>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <h3>Final</h3>
-                  <v-card>
-                    <v-card-text>
-                      <v-container>
-                        <v-row>
-                          <v-col cols="12">
-                            <p>Ganador 7</p>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </div> -->
+
+        
 
 
-      
       </div>
+      <div  v-if="llavesGeneradas"> 
+      <resultados-grupos :categoria="categoria">
+      </resultados-grupos>
+      <partidos-fase-llaves :categoria="categoria"></partidos-fase-llaves>
+      </div>
+     
     </div>
-
-
   </div>
 </template>
 

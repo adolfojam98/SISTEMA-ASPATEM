@@ -47,7 +47,6 @@ export default {
     props : ["categoria"],
     methods: {
         generarLlaves(){
-          console.log('generando llaves..');
              this.$emit('generar-llaves', null);
         }
        
