@@ -17,15 +17,15 @@
         "lodash": "^4.17.21",
         "popper.js": "^1.12",
         "resolve-url-loader": "^5.0.0",
-        "sass": "^1.32.8",
-        "sass-loader": "^8.0.0",
+        "sass": "~1.32.6",
+        "sass-loader": "^10.4.1",
         "vue": "^2.6.12",
         "vue-loader": "^15.9.8",
         "vue-router": "^3.5.1",
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
-        "@tiptap/extension-text-align": "^2.0.0-beta.29",
+        "@tiptap/extension-text-align": "^2.0.3",
         "apexcharts": "^3.33.0",
         "file-saver": "^2.0.5",
         "moment": "^2.29.4",
