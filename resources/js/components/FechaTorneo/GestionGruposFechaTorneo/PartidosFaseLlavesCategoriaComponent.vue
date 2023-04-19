@@ -7,30 +7,31 @@
 
 
 <script>
-import { timeouts } from 'retry';
 
 export default {
     props: ["categoria"],
     data: () => ({
-            FASES: {
-                1: 'Final',
-                2: 'semis',
-                3: 'cuartos',
-                4: 'octavos',
-                5: 'dieciseisavos',
-                6: 'treintaydosavos'
+        FASES: {
+            1: 'final',
+            2: 'semis',
+            3: 'cuartos',
+            4: 'octavos',
+            5: 'dieciseisavos',
+            6: 'treintaidosavos'
 
-            },
-            partidos: []
-        }),
+        },
+        partidos: []
+    }),
     created() {
-        
-        this.partidos = this.generarPartidos(23);
-     
+        const partidosss = this.generarPartidos(32);
+        for (const fase of Object.values(this.FASES)) {
+        this.partidos.push(...partidosss[fase]);
+    }
+
     },
     methods: {
         generarPartidos(nroJugadores) {
-           let partidosLlaves = [];
+            let partidosLlaves = [];
             let rondas = Math.ceil(Math.log2(nroJugadores));
             let idPartidoActual = 1;
             partidosLlaves[this.FASES[1]] = [];
@@ -41,7 +42,8 @@ export default {
                 jugador2: null,
                 setsJugador1: null,
                 setsJugador2: null,
-                idPartidoPadre: null
+                idPartidoPadre: null,
+                fase: this.FASES[1]
             };
             partidosLlaves[this.FASES[1]].push(final);
             idPartidoActual++;
@@ -56,7 +58,8 @@ export default {
                         jugador2: null,
                         setsJugador1: null,
                         setsJugador2: null,
-                        idPartidoPadre: partidoAnterior.id
+                        idPartidoPadre: partidoAnterior.id,
+                        fase: this.FASES[ronda]
                     };
                     partidosLlaves[this.FASES[ronda]].push(nuevoPartido1);
                     idPartidoActual++;
@@ -67,13 +70,14 @@ export default {
                         jugador2: null,
                         setsJugador1: null,
                         setsJugador2: null,
-                        idPartidoPadre: partidoAnterior.id
+                        idPartidoPadre: partidoAnterior.id,
+                        fase: this.FASES[ronda]
                     };
                     partidosLlaves[this.FASES[ronda]].push(nuevoPartido2);
                     idPartidoActual++;
                 });
             }
-         
+
             return partidosLlaves;
         },
 
