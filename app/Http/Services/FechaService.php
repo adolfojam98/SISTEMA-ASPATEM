@@ -48,7 +48,7 @@ class FechaService extends BaseService
         $fecha_usuario = $fecha->fecha_usuario($usuario_id)->first();
 
         if($fecha_id && $usuario_id)
-        {
+        {//TODO esto que borro para volver a agregar se puede arreglar como la funcion de arriba "resetPuntosFecha"
 
             if($fecha_usuario) { //guardamos los datos que necesitamos antes de borrar
                 $categoria_menor_id = $fecha_usuario->categoria_menor_id;
