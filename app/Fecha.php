@@ -6,24 +6,28 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 use App\Torneo;
+use App\Partido;
 
 class Fecha extends Model
 {
     public function jugadores() {
         return $this->belongsToMany(Usuario::class)->withPivot('puntos', 'monto_pagado', 'categoria_mayor_id', 'categoria_menor_id');
     }
+
+    public function partidos() {
+        return $this->hasMany(Partido::class);
+    }
     
-    public function resumen_jugadores() {//todos los jugadores anotados al torneo hasta esta fecha
+    public function resumen_jugadores() {//todos los jugadores anotados al torneo hasta la fecha anterior a la ultima
         $ranking_hasta_esta_fecha = [];
         $categorias = $this->torneo->categorias;
         $torneo_usuarios = $this->torneo->jugadores;
-        
 
         foreach ($torneo_usuarios as $key => $torneo_usuario) {
             $fechas_usuarios = $this->torneo->fechas()
-            ->where('fechas.created_at', '=<', $this->created_at) //TODO voy a traer todas las fechas anteriores y esta
-            ->where('fecha_usuario.usuario_id', $torneo_usuario->usuario_id)
             ->join('fecha_usuario', 'fecha_usuario.fecha_id', '=', 'fechas.id')
+            ->where('fechas.created_at', '<', $this->created_at) //traigo todas las fechas anteriores
+            ->where('fecha_usuario.usuario_id', $torneo_usuario->usuario_id)
             ->get();
 
             foreach ($fechas_usuarios as $key => $fecha_usuario) {
@@ -36,7 +40,7 @@ class Fecha extends Model
                 "nombre" => $torneo_usuario->nombre,
                 "apellido" => $torneo_usuario->apellido,
                 "puntos" => $torneo_usuario->pivot->puntos,
-                "puntos_ultima_fecha" => $this->fecha_usuario($torneo_usuario->pivot->usuario_id)->first()->puntos ?? 0,
+                "puntos_ultima_fecha" => $this->fecha_usuario($torneo_usuario->pivot->usuario_id)->first()->puntos ?? 0, //si tengo una fecha abierta aqui se van a mostrar los puntos actuales, se deben ignorar por parte del front
                 "categoria" => $this->calcularCategoria($categorias, $torneo_usuario->pivot->puntos)
             ];
                 

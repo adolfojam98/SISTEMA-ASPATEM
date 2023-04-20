@@ -52,6 +52,14 @@ class PartidoService extends BaseService
         }
     }
 
+    function deletePartidos($fecha_id, $categoria_id) {
+        $this->clearErrors();
+        
+        Partido::where('fecha_id', $fecha_id)
+            ->where('categoria_id', $categoria_id)
+            ->delete();
+    }
+
     function createPartidoFase($fase_nombre)
     {
         // siempre LIMPIAR errores al iniciar un proceso de servicio
