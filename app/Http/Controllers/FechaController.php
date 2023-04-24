@@ -220,12 +220,13 @@ class FechaController extends ApiController
                     'partidos.*.id_jugador1' => 'required',
                     'partidos.*.id_jugador2' => 'required',
                     'partidos.*.set_jugador1' => 'required',
-                    'partidos.*.set_jugador2' => 'required | different:partidos.*.set_jugador1',
-                    'partidos.*.misma_cat' => 'required',
-                    'partidos.*.id_jugador_mayor_nivel' => 'required',
+                    'partidos.*.set_jugador2' => 'required | different:partidos.*.set_jugador1'
                 ]);
 
                 $servicePartido = new PartidoService();
+                
+                //borramos los partidos de esta fecha-categoria por si ya se había guardado antes
+                $servicePartido->deletePartidos($id, $categoria_id);
 
                 foreach ($request->get('partidos') as $key => $partido) {
                     $partido = (object) $partido;
