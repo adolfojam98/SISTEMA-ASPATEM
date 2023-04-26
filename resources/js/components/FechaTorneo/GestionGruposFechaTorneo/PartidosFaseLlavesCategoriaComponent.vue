@@ -8,7 +8,7 @@
                             <h3>{{ fase }}</h3>
                         </v-col>
                     </v-row>
-                    <div v-for="partido in partidos" :key="partido.id">
+                    <div v-for="partido in categoria.partidosLlaves" :key="partido.id">
 
                         <!-- NODOS HOJAS -->
                         <div v-if="esNodoHoja(partido)">
@@ -17,18 +17,20 @@
                                     <v-card-text>
                                         <v-row>
                                             <v-col>
-                                                <v-autocomplete :items="jugadoresDisponibles(partido)"
-                                                    :item-text="nombreCompletoJugador" return-object 
-                                                    v-model="partido.jugador1" ></v-autocomplete>
+                                                <v-autocomplete :items="jugadoresDisponibles(partido.jugador1)"
+                                                    :item-text="nombreCompletoJugador" return-object clearable
+                                                    v-model="partido.jugador1"></v-autocomplete>
 
-                                                <v-text-field label="Sets" v-model="partido.setsJugador1" 
+                                                <v-text-field label="Sets" v-model="partido.setsJugador1"
+                                                    @change="asingarGanadorASiguientePartido(partido)"
                                                     type="number"></v-text-field>
                                             </v-col>
                                             <v-col>
-                                                <v-autocomplete :items="jugadoresDisponibles(partido)"
-                                                    :item-text="nombreCompletoJugador" return-object  
+                                                <v-autocomplete :items="jugadoresDisponibles(partido.jugador2)"
+                                                    :item-text="nombreCompletoJugador" return-object clearable
                                                     v-model="partido.jugador2"></v-autocomplete>
                                                 <v-text-field label="Sets" v-model="partido.setsJugador2"
+                                                    @change="asingarGanadorASiguientePartido(partido)"
                                                     type="number"></v-text-field>
                                             </v-col>
                                         </v-row>
@@ -45,15 +47,19 @@
                                     <v-card-text>
                                         <v-row>
                                             <v-col>
-                                                <p>{{ partido.jugador1?.nombre }} {{ partido.jugador1?.apellido }}
-                                                </p>
+                                                <v-select disabled :items="categoria.jugadoresAnotados"
+                                                    :item-text="nombreCompletoJugador"
+                                                    v-model="partido.jugador1"></v-select>
                                                 <v-text-field label="Sets" v-model="partido.setsJugador1"
+                                                    @change="asingarGanadorASiguientePartido(partido)"
                                                     type="number"></v-text-field>
                                             </v-col>
                                             <v-col>
-                                                <p>{{ partido.jugador2?.nombre }} {{ partido.jugador2?.apellido }}
-                                                </p>
+                                                <v-select disabled :items="categoria.jugadoresAnotados"
+                                                    :item-text="nombreCompletoJugador"
+                                                    v-model="partido.jugador2"></v-select>
                                                 <v-text-field label="Sets" v-model="partido.setsJugador2"
+                                                    @change="asingarGanadorASiguientePartido(partido)"
                                                     type="number"></v-text-field>
                                             </v-col>
                                         </v-row>
@@ -84,30 +90,60 @@ export default {
             5: 'dieciseisavos',
             6: 'treintaidosavos'
         },
-        partidos: []
     }),
     created() {
-        const partidosss = this.generarPartidos(8);
+        const partidos = this.generarPartidos(this.categoria.jugadoresAnotados.length);
         for (const fase of Object.values(this.FASES)) {
-            this.partidos.push(...partidosss[fase]);
+            this.categoria.partidosLlaves.push(...partidos[fase]);
         }
 
     },
     methods: {
-        jugadoresDisponibles(partido) {
-            const jugadoresSeleccionados = this.partidos
-                .filter(p => p.jugador1 || p.jugador2)
-                .map(p => p.jugador1?.usuario_id || p.jugador2?.usuario_id);
-            return this.categoria.jugadoresAnotados.filter(jugador => (partido.jugador1?.usuario_id == jugador.usuario_id ||partido.jugador2?.usuario_id == jugador.usuario_id ) || !jugadoresSeleccionados.includes(jugador.usuario_id) );
+        asingarGanadorASiguientePartido(partido) {
+            if (!(partido.jugador1 && partido.jugador2)) {
+                return;
+            }
+
+            if (!(partido.setsJugador1 && partido.setsJugador2)) {
+                return;
+            }
+            //saco el jugador ganador del partido
+            const jugadorGanador = partido.setsJugador1 > partido.setsJugador2 ? partido.jugador1 : partido.jugador2;
+            //saco el siguiente partido de la fase siguiente
+            const partidoSiguiente = this.categoria.partidosLlaves.find(p => p.id == partido.idPartidoPadre);
+            if (!partidoSiguiente) {
+                return;
+            }
+            //saco los 2 partidos que apuntan al mismo partido
+            const partidosAsociados = this.categoria.partidosLlaves.filter(p => p.idPartidoPadre == partidoSiguiente.id);
+
+            if (partidosAsociados[0] == partido) {
+                partidoSiguiente.jugador1 = jugadorGanador;
+            }
+
+            if (partidosAsociados[1] == partido) {
+                partidoSiguiente.jugador2 = jugadorGanador;
+            }
+
         },
+        jugadoresDisponibles(jugadorPartido) {
+            let jugadoresSeleccionados = this.categoria.jugadoresAnotados.filter(jugador => {
+                return !this.categoria.partidosLlaves.some(p => (p.jugador1 && p.jugador1.usuario_id == jugador.usuario_id) || (p.jugador2 && p.jugador2.usuario_id == jugador.usuario_id));
+            })
+            if (jugadorPartido) {
+                jugadoresSeleccionados.push(jugadorPartido);
+            }
+            return jugadoresSeleccionados;
+        },
+
         nombreCompletoJugador(jugador) {
             return `${jugador.nombre} ${jugador.apellido}`;
         },
         esNodoHoja(partido) {
-            return !this.partidos.some(p => p.idPartidoPadre == partido.id);
+            return !this.categoria.partidosLlaves.some(p => p.idPartidoPadre == partido.id);
         },
         faseTienePartidos(fase) {
-            return this.partidos.some(partido => partido.fase == fase);
+            return this.categoria.partidosLlaves.some(partido => partido.fase == fase);
         },
         generarPartidos(nroJugadores) {
             let partidosLlaves = [];
@@ -180,7 +216,7 @@ export default {
             return Object.values(this.FASES).reverse();
         },
 
-      
+
     },
 
 };

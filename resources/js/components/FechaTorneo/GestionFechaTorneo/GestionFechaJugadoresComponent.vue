@@ -14,14 +14,10 @@
           <v-btn @click="cargarFecha()" color="primary">BUSCAR</v-btn>
         </v-col>
       </v-row>
-
-
     </v-container>
 
-
     <v-data-table dense :headers="headers" :items="listaJugadores" item-key="dni" :items-per-page="15" :search="search">
-
-<template v-slot:[`item.actions`]="{ item }">
+      <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom v-if="mensajeAgregarCategoria(item) !== ''">
             <template v-slot:activator="{ on, attrs }">
               <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarJugadorEnSuCategoria(item)]" :class="{'add-category': mensajeAgregarCategoria(item).includes('Agregar'), 'remove-category': mensajeAgregarCategoria(item).includes('Quitar')}">{{mensajeAgregarCategoria(item).replace('Quitar de la categoria: ','').replace('Agregar a la categoria: ','')}}</small>                  </template>
@@ -35,12 +31,12 @@
             <span>{{ mensajeAgregarCategoriaSuperior(item)}}</span>
           </v-tooltip>
         </template>
+    </v-data-table>
 
-</v-data-table>
-
-
-
-    <grupos-categorias :categorias="listaCategorias"></grupos-categorias>
+    <div v-if="busquedaRealizada">
+       <grupos-categorias  :categorias="listaCategorias"></grupos-categorias>
+    </div>
+   
   </div>
 </template>
 
@@ -49,6 +45,7 @@
 export default {
   data() {
     return {
+      busquedaRealizada: false,
       torneos: [],
       torneoSeleccionado: null,
       fechas: [],
@@ -100,23 +97,23 @@ export default {
           axios.get(`/fechas/${this.fechaSeleccionada.id}`),
           axios.get(`/fechas/${this.fechaSeleccionada.id}/usuarios`)
         ]);
+        this.busquedaRealizada = true;
 
         this.listaJugadores = fechaResponse.data.resumen_jugadores.ranking;
         this.listaCategorias = fechaResponse.data.resumen_jugadores.categorias;
         const listaJugadoresAnotados = jugadoresAnotadosResponse.data.body;
-       
+
         this.listaCategorias = this.listaCategorias.map(categoria => {
-        return {
-          ...categoria,
-          jugadoresAnotados: [],
-          cantidadGrupos: 0,
-          gruposConEliminatoria: false,
-          listaGrupos: [],
-          partidosLlaves: []
-          
-          
-        }
-      });
+          return {
+            ...categoria,
+            jugadoresAnotados: [],
+            cantidadGrupos: 0,
+            gruposConEliminatoria: false,
+            listaGrupos: [],
+            partidosLlaves: [],
+            fecha_id: this.fechaSeleccionada.id
+          }
+        });
         this.agregarJugadoresAnotados(listaJugadoresAnotados);
 
       } catch (error) {

@@ -25,16 +25,15 @@
       <div v-if="gruposGenerados && !llavesGeneradas">
         <partidos-fase-grupos :categoria="categoria" @generar-llaves="generarLLavess"></partidos-fase-grupos>
 
-        
-
 
       </div>
-      <div  v-if="llavesGeneradas"> 
-      <resultados-grupos :categoria="categoria">
-      </resultados-grupos>
-      <partidos-fase-llaves :categoria="categoria"></partidos-fase-llaves>
+      <div v-if="llavesGeneradas">
+        <resultados-grupos :categoria="categoria">
+        </resultados-grupos>
+        <partidos-fase-llaves :categoria="categoria"></partidos-fase-llaves>
       </div>
-     
+      <br>
+      <v-btn color="success" @click='guardarFecha()'>guardar fecha</v-btn>
     </div>
   </div>
 </template>
@@ -143,6 +142,48 @@ export default {
     },
     mostrarNotificacion(mensaje) {
       console.log(`Notificación: ${mensaje[0]} (${mensaje[1]})`);
+    },
+    guardarFecha() {
+      console.log('guardando fecha....')
+      const partidosRequest = this.transformarPartidosRequest();
+      axios.post(`/fechas/${this.categoria.fecha_id}/categoria/${this.categoria.id}`, {
+        'partidos': partidosRequest
+      }).then(res => {
+        console.log(res)
+      });
+    },
+    transformarPartidosRequest() {
+      let partidos = [];
+
+      this.categoria.listaGrupos.forEach(grupo => {
+        console.log(grupo)
+        grupo.partidos.forEach(partido => {
+          partidos.push({
+            "fase": "grupos",
+            "grupo_nombre": "A",
+            "id_jugador1": partido.jugador1.usuario_id,
+            "id_jugador2": partido.jugador2.usuario_id,
+            "set_jugador1": partido.setsJugador1,
+            "set_jugador2": partido.setsJugador2
+          });
+        });
+
+      });
+      this.categoria.partidosLlaves.forEach(partido => {
+        partidos.push({
+          "fase": partido.fase,
+          "grupo_nombre": "A",
+          "id_jugador1": partido.jugador1.usuario_id,
+          "id_jugador2": partido.jugador2.usuario_id,
+          "set_jugador1": partido.setsJugador1,
+          "set_jugador2": partido.setsJugador2
+        });
+      })
+
+
+      return partidos;
+
+
     }
 
   },
