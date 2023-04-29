@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\FechaService;
 use App\Http\Services\PartidoService;
 use App\Http\Resources\FechaUsuario as FechaUsuarioResource;
+use App\Http\Resources\FechaPartido as FechaPartidosResource;
 
 class FechaController extends ApiController
 {
@@ -161,6 +162,20 @@ class FechaController extends ApiController
             return $this->sendError($e->errorInfo[2]);
         }
 
+    }
+
+    public function getPartidos($id)
+    {
+        try
+        {
+            $fecha_partidos = Fecha::find($id)->partidos()->with('fase', 'grupo', 'jugadores')->get();
+
+            return $this->sendResponse(FechaPartidosResource::collection($fecha_partidos), 'Success');
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
     }
     
 

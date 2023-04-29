@@ -12,4 +12,14 @@ class Partido extends Model
     public function jugadores(){
         return $this->belongsToMany(Usuario::class)->withPivot('sets');
     }
+
+    public function fase()
+    {
+        return $this->hasOne(PartidoFase::class, 'id', 'partido_fase_id');
+    }
+
+    public function grupo()
+    {
+        return $this->hasOne(Grupo::class, 'id', 'grupo_id');
+    }
 }
