@@ -132,8 +132,27 @@ export default {
       categoria.gruposGenerados = false;
     },
     generarLLavess(prop) {
+      if (!this.validarPartidos()) {
+        return;
+      }
       console.log('generando llaves componente padre...')
       this.llavesGeneradas = true;
+    },
+    validarPartidos() {
+      const setsCargados = this.categoria.listaGrupos.every(grupo=> grupo.partidos.every(partido => partido.setsJugador1 !== null && partido.setsJugador2 !== null)) ;
+      const hayEmpates = this.categoria.listaGrupos.some(grupo => grupo.partidos.some(partido => partido.setsJugador1 == partido.setsJugador2));
+
+      if (!setsCargados) {
+        this.callSnackbar(["Falta cargar al menos un partido", "warning"]);
+        return false;
+      }
+
+      if (hayEmpates) {
+        this.callSnackbar(["Hay al menos un partido empatado", "warning"]);
+        return false;
+      }
+
+      return true;
     },
     deshacerLlaves(categoria) {
       console.log("Ejecución deshacerLlaves");

@@ -1,17 +1,18 @@
 <template>
     <div>
         <div class="d-flex">
-            <div v-for="fase in FASES_REVERSE">
-                <v-col v-if="faseTienePartidos(fase)">
+            <div v-for="fase in FASES_REVERSE" class="align-self-center">
+                <v-col v-if="faseTienePartidos(fase)" class="d-flex flex-column">
                     <v-row>
-                        <v-col>
+                        <v-col >
                             <h3>{{ fase }}</h3>
                         </v-col>
                     </v-row>
                     <div v-for="partido in categoria.partidosLlaves" :key="partido.id">
 
                         <!-- NODOS HOJAS -->
-                        <div v-if="esNodoHoja(partido)">
+                        <div v-if="esNodoHoja(partido)" class="ma-2">
+
                             <v-card outlined flat v-if="partido.fase == fase">
                                 <div>
                                     <v-card-text>
@@ -41,7 +42,7 @@
                         </div>
 
                         <!-- NODOS COMUNES -->
-                        <div v-if="!esNodoHoja(partido)">
+                        <div v-if="!esNodoHoja(partido)" class="ma-2">
                             <v-card outlined flat v-if="partido.fase == fase">
                                 <div>
                                     <v-card-text>
