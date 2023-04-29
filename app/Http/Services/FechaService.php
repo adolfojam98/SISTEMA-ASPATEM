@@ -51,8 +51,8 @@ class FechaService extends BaseService
         {//TODO esto que borro para volver a agregar se puede arreglar como la funcion de arriba "resetPuntosFecha"
 
             if($fecha_usuario) { //guardamos los datos que necesitamos antes de borrar
-                $categoria_menor_id = $fecha_usuario->categoria_menor_id;
-                $categoria_mayor_id = $fecha_usuario->categoria_mayor_id;
+                $categoria_menor_id = $categoria_menor_id ?? $fecha_usuario->categoria_menor_id;
+                $categoria_mayor_id = $categoria_mayor_id ?? $fecha_usuario->categoria_mayor_id;
                 $puntos = $fecha_usuario->puntos + $puntos ?? 0; //voy sumando los puntos
                 $this->fechaUsuarioDelete($fecha_id, $usuario_id);
             }
