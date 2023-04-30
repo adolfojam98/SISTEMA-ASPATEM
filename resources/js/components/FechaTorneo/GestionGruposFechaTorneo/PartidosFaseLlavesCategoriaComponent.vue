@@ -4,30 +4,31 @@
             <div v-for="fase in FASES_REVERSE" class="align-self-center">
                 <v-col v-if="faseTienePartidos(fase)" class="d-flex flex-column">
                     <v-row>
-                        <v-col >
+                        <v-col>
                             <h3>{{ fase }}</h3>
                         </v-col>
                     </v-row>
                     <div v-for="partido in categoria.partidosLlaves" :key="partido.id">
 
                         <!-- NODOS HOJAS -->
-                        <div v-if="esNodoHoja(partido)" class="ma-2">
+                        <div class="ma-2" v-if="partido.fase == fase">
 
-                            <v-card outlined flat v-if="partido.fase == fase">
+                            <v-card outlined flat >
                                 <div>
                                     <v-card-text>
                                         <v-row>
                                             <v-col>
-                                                <v-autocomplete :items="jugadoresDisponibles(partido.jugador1)"
+                                                <v-autocomplete :disabled="tienePartidoAnterior(partido, 1)"
+                                                    :items="jugadoresDisponibles(partido.jugador1)"
                                                     :item-text="nombreCompletoJugador" return-object clearable
                                                     v-model="partido.jugador1"></v-autocomplete>
-
                                                 <v-text-field label="Sets" v-model="partido.setsJugador1"
                                                     @change="asingarGanadorASiguientePartido(partido)"
                                                     type="number"></v-text-field>
                                             </v-col>
                                             <v-col>
-                                                <v-autocomplete :items="jugadoresDisponibles(partido.jugador2)"
+                                                <v-autocomplete :disabled="tienePartidoAnterior(partido, 2)"
+                                                    :items="jugadoresDisponibles(partido.jugador2)"
                                                     :item-text="nombreCompletoJugador" return-object clearable
                                                     v-model="partido.jugador2"></v-autocomplete>
                                                 <v-text-field label="Sets" v-model="partido.setsJugador2"
@@ -38,36 +39,8 @@
                                     </v-card-text>
                                 </div>
                             </v-card>
-
                         </div>
 
-                        <!-- NODOS COMUNES -->
-                        <div v-if="!esNodoHoja(partido)" class="ma-2">
-                            <v-card outlined flat v-if="partido.fase == fase">
-                                <div>
-                                    <v-card-text>
-                                        <v-row>
-                                            <v-col>
-                                                <v-select disabled :items="categoria.jugadoresAnotados"
-                                                    :item-text="nombreCompletoJugador"
-                                                    v-model="partido.jugador1"></v-select>
-                                                <v-text-field label="Sets" v-model="partido.setsJugador1"
-                                                    @change="asingarGanadorASiguientePartido(partido)"
-                                                    type="number"></v-text-field>
-                                            </v-col>
-                                            <v-col>
-                                                <v-select disabled :items="categoria.jugadoresAnotados"
-                                                    :item-text="nombreCompletoJugador"
-                                                    v-model="partido.jugador2"></v-select>
-                                                <v-text-field label="Sets" v-model="partido.setsJugador2"
-                                                    @change="asingarGanadorASiguientePartido(partido)"
-                                                    type="number"></v-text-field>
-                                            </v-col>
-                                        </v-row>
-                                    </v-card-text>
-                                </div>
-                            </v-card>
-                        </div>
                     </div>
                 </v-col>
             </div>
@@ -79,6 +52,8 @@
 
 
 <script>
+import { RFC_2822 } from 'moment';
+
 
 export default {
     props: ["categoria"],
@@ -100,6 +75,13 @@ export default {
 
     },
     methods: {
+        tienePartidoAnterior(partido, nroJugador) {
+            //recibe el partido y el nro de jugador(1 o 2)
+            //dependiendo de cuantos partidos tiene como hijos,
+            //devuelve si se oculta o no.
+            const partidosAsociados = this.categoria.partidosLlaves.filter(p => p.idPartidoPadre == partido.id);
+            return partidosAsociados.length >= nroJugador;
+        },
         asingarGanadorASiguientePartido(partido) {
             if (!(partido.jugador1 && partido.jugador2)) {
                 return;
@@ -143,12 +125,20 @@ export default {
         esNodoHoja(partido) {
             return !this.categoria.partidosLlaves.some(p => p.idPartidoPadre == partido.id);
         },
+
         faseTienePartidos(fase) {
             return this.categoria.partidosLlaves.some(partido => partido.fase == fase);
         },
+        calcularNumeroDeRondas(nroJugadores) {
+            let nroRondas = Math.ceil(Math.log2(nroJugadores));
+            if (nroJugadores % 2 != 0) {
+                nroRondas--;
+            }
+            return nroRondas
+        },
         generarPartidos(nroJugadores) {
             let partidosLlaves = [];
-            let rondas = Math.ceil(Math.log2(nroJugadores));
+            let rondas = this.calcularNumeroDeRondas(nroJugadores);
             let idPartidoActual = 1;
             partidosLlaves[this.FASES[1]] = [];
             // Crear la final
@@ -193,9 +183,43 @@ export default {
                     idPartidoActual++;
                 });
             }
+            if (this.categoria.gruposConEliminatoria) {
+                partidosLlaves[this.FASES[rondas + 1]] = [];
+                console.log(partidosLlaves);
+                // Calcula la potencia de 2 más cercana y menor al número dado
+                const jugadoresLlavesPerfectas = Math.pow(2, Math.floor(Math.log2(nroJugadores)));
+                // Calcula la diferencia entre el número y la potencia de 2 más cercana y menor
+                let jugadoresLlavesAjustes = nroJugadores - jugadoresLlavesPerfectas;
+                
+                const partidosFaseAnterior = partidosLlaves[this.FASES[rondas]];
+                console.log('jugadores llaves ajustes:', jugadoresLlavesAjustes);
+
+                while (jugadoresLlavesAjustes > 0) {
+                    console.log(jugadoresLlavesAjustes);
+                    partidosFaseAnterior.forEach(partidoAnterior => {
+                        if (jugadoresLlavesAjustes > 0) {
+                            let nuevoPartido = {
+                                id: idPartidoActual,
+                                jugador1: null,
+                                jugador2: null,
+                                setsJugador1: null,
+                                setsJugador2: null,
+                                idPartidoPadre: partidoAnterior.id,
+                                fase: this.FASES[rondas + 1]
+                            };
+                            partidosLlaves[this.FASES[rondas + 1]].push(nuevoPartido);
+                            idPartidoActual++;
+                            jugadoresLlavesAjustes = jugadoresLlavesAjustes - 1;
+                        }
+
+                    })
+                }
+                console.log(partidosLlaves);
+            }
 
             return partidosLlaves;
         },
+
 
         generarId() {
             // Creamos un timestamp con precisión de milisegundos
