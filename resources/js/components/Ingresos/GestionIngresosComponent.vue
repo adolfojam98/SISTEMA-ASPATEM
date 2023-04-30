@@ -331,10 +331,10 @@ export default {
       if (this.tipo === "Cuotas" || this.tipo === "Otros") {
         this.torneoId = 0;
         this.fechaId = 0;
-        getAllFechas();
+        this.getAllFechas();
       } else if (this.tipo === "Torneo") {
         this.fechaId = 0;
-        getAllFechas();
+        this.getAllFechas();
       }
     },
   },
