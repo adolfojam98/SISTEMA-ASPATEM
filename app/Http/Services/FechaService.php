@@ -6,6 +6,7 @@ use App\Error;
 use App\Fecha;
 use App\FechaUsuario;
 use App\Partido;
+use App\Usuario;
 use App\Http\Services\BaseService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -31,6 +32,9 @@ class FechaService extends BaseService
 
     function resetPuntosFecha($fecha_id)
     {
+        // siempre LIMPIAR errores al iniciar un proceso de servicio
+        $this->clearErrors();
+
         $fecha_usuarios = FechaUsuario::where('fecha_id', $fecha_id)->get();
 
         foreach ($fecha_usuarios as $key => $fecha_usuario) {
@@ -67,7 +71,10 @@ class FechaService extends BaseService
             if($categoria_mayor_id)
                 $fecha_usuario->categoria_mayor_id = $categoria_mayor_id;
 
-            $fecha_usuario->monto_pagado = $monto_pagado ?? 0;
+            $numCategorias = ($categoria_menor_id && $categoria_mayor_id) ? 2 : ($categoria_menor_id || $categoria_mayor_id) ? 1 : 0;
+
+            $fecha_usuario->monto_pagado = $this->calculateMonto($fecha_id, $usuario_id, $numCategorias) ?? 0; 
+            
             $fecha_usuario->puntos = $puntos ?? 0;
         
             $fecha_usuario->save();
@@ -81,8 +88,31 @@ class FechaService extends BaseService
         return false;
     }
 
+    function calculateMonto($fechaId, $usuarioId, $numCategorias)
+    {
+        // siempre LIMPIAR errores al iniciar un proceso de servicio
+        $this->clearErrors();
+
+        if($numCategorias == 0)
+            return 0;
+        
+        $fecha = Fecha::find($fechaId)->first();
+        $statusSocio = Usuario::find($usuarioId)->socio();
+        
+        if($statusSocio->activo) {
+            return $numCategorias == 1 ? $fecha->monto_socios_una_categoria : $fecha->monto_socio_dos_categorias;
+        } else {
+            return $numCategorias == 1 ? $fecha->monto_no_socios_una_categoria : $fecha->monto_no_socio_dos_categorias;
+        }
+
+        return 0;
+    }
+
     function updatePuntos($fecha_id)
     {
+        // siempre LIMPIAR errores al iniciar un proceso de servicio
+        $this->clearErrors();
+
         //reiniciamos los puntos de la fecha, ya que los vamos a recalcular
         $this->resetPuntosFecha($fecha_id);
 
@@ -135,6 +165,9 @@ class FechaService extends BaseService
     }
 
     function calcularPuntosJugadoresPartidos($torneo, $mismaCategoria, $jugadorUnoMasPuntos, $jugadorUnoGano) {
+        // siempre LIMPIAR errores al iniciar un proceso de servicio
+        $this->clearErrors();
+
         $puntos = (object) [
             "puntosJugadorUno" => 0,
             "puntosJugadorDos" => 0

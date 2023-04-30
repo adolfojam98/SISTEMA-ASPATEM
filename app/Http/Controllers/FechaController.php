@@ -127,7 +127,7 @@ class FechaController extends ApiController
             $request->validate([
                 'categoria_mayor_id' => ['nullable'],
                 'categoria_menor_id' => ['nullable'],
-                'monto_pagado' => ['nullable'],
+                // 'monto_pagado' => ['nullable'],
                 // 'puntos' => ['nullable']
             ]);
 
