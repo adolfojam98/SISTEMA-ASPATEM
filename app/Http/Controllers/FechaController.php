@@ -164,11 +164,15 @@ class FechaController extends ApiController
 
     }
 
-    public function getPartidos($id)
+    public function getPartidos($id, $categoria_id)
     {
         try
         {
-            $fecha_partidos = Fecha::find($id)->partidos()->with('fase', 'grupo', 'jugadores')->get();
+            $fecha_partidos = Fecha::find($id)
+            ->partidos()
+            ->where('categoria_id', $categoria_id)
+            ->with('fase', 'grupo', 'jugadores')
+            ->get();
 
             return $this->sendResponse(FechaPartidosResource::collection($fecha_partidos), 'Success');
         }
