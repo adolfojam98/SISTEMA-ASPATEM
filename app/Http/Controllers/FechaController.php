@@ -251,9 +251,9 @@ class FechaController extends ApiController
                     $partido = (object) $partido;
 
                     if($partido->fase === "grupos") {
-                        $request->validate([
-                            'partidos.*.grupo_nombre' => 'required | string',
-                        ]);
+                        if(!$partido->grupo_nombre) {
+                            return $this->sendError('Los partiods en fase "grupos" requieren de un nombre de grupo.');
+                        }
                     }
 
                     $partido_info = (object) [
