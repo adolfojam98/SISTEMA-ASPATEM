@@ -14,7 +14,7 @@
         <v-divider class="mt-3"></v-divider>
 
         <div class="text-h6">Mes al que corresponde</div>
-        <div class="ml-1 text-body-1">{{ cuota.mes }} del {{ cuota.anio }}</div>
+        <div class="ml-1 text-body-1">{{ fecha && monthNames && monthNames[new Date(fecha).getMonth()] }} del {{ new Date(fecha).getFullYear() }}</div>
 
         <v-divider class="mt-3"></v-divider>
 
@@ -159,6 +159,20 @@ export default {
       observacion: null,
       detalleSeleccionado: null,
       descripcion: null,
+      monthNames: [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+      ]
     };
   },
   watch: {
@@ -219,10 +233,17 @@ export default {
     },
 
     darFormatoFecha(fecha) {
-      if (!fecha) return null;
-      console.log(fecha);
-      const [anio, mes, dia] = fecha.split("-");
-      return `${dia}/${mes}/${anio}`;
+      if (!fecha || typeof fecha === "undefined") {
+        return null;
+      }
+
+      const date = new Date(fecha);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString();
+      const outputDateString = `${day}/${month}/${year}`;
+
+      return outputDateString;
     },
   },
   computed: {

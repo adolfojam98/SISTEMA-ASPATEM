@@ -14,7 +14,7 @@
         <v-divider class="mt-3"></v-divider>
 
         <div class="text-h6">Mes al que corresponde</div>
-        <div class="ml-1 text-body-1">{{ cuota.mes }} del {{ cuota.anio }}</div>
+        <div class="ml-1 text-body-1">{{ monthNames && monthNames[new Date(cuota.periodo).getMonth()] }} del {{ new Date(cuota.periodo).getFullYear() }}</div>
         <v-divider class="mt-3"></v-divider>
         <div class="text-h6">Detalles</div>
         <v-simple-table>
@@ -53,6 +53,24 @@
 <script>
 export default {
   props: ["usuario", "cuota"],
+  data() {
+    return {
+      monthNames: [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+      ]
+    };
+  },
 
 
   mounted() {
@@ -61,12 +79,18 @@ export default {
   },
 
   methods: {
-      darFormatoFecha(fecha) {
-        if (!fecha) return null;
-        console.log(fecha);
-        const [anio, mes, dia] = fecha.split("/");
-        console.log(typeof dia)
-        return `${dia.slice(0, -9)}/${mes}/${anio}`;
+    darFormatoFecha(fecha) {
+      if (!fecha || typeof fecha === "undefined") {
+        return null;
+      }
+
+      const date = new Date(fecha);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString();
+      const outputDateString = `${day}/${month}/${year}`;
+
+      return outputDateString;
     },
   }
 };

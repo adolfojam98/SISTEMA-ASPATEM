@@ -61,15 +61,15 @@
             <tbody v-for="(cuota, index) in cuotasUsuario" :key="index">
               <tr
                 style="cursor: pointer"
-                v-if="cuota.pago != null"
+                v-if="cuota?.pago?.fecha_pago != null"
                 @click="
                   [(infoCuotaPaga = !infoCuotaPaga), (cuotaActual = cuota)]
                 "
               >
-                <td>{{ cuota.mes }}</td>
-                <td>{{ cuota.anio }}</td>
+                <td>{{ monthNames && monthNames[new Date(cuota.periodo).getMonth()] }}</td>
+                <td>{{ new Date(cuota.periodo).getFullYear().toString() }}</td>
                 <td>${{ cuota.monto_total }}</td>
-                <td>{{ darFormatoFecha(cuota.pago.fecha_pago) }}</td>
+                <td>{{ cuota?.pago?.fecha_pago && darFormatoFecha(cuota.pago.fecha_pago) }}</td>
                 <td>
                   <div class="text-center">
                     <v-chip color="success" dark> Pagado </v-chip>
@@ -82,10 +82,10 @@
                 style="cursor: pointer"
                 @click="[(pagoCuota = !pagoCuota), , (cuotaActual = cuota)]"
               >
-                <td>{{ cuota.mes }}</td>
-                <td>{{ cuota.anio }}</td>
+                <td>{{ monthNames && monthNames[new Date(cuota.periodo).getMonth()] }}</td>
+                <td>{{ new Date(cuota.periodo).getFullYear().toString() }}</td>
                 <td>${{ cuota.monto_total }}</td>
-                <td>{{ cuota.fechaPago }}</td>
+                <td></td>
                 <td>
                   <div class="text-center">
                     <v-chip color="error" dark> Pagar </v-chip>
@@ -142,6 +142,20 @@ export default {
       busco: false,
       recargarCuotas: false,
       generarCuotasMasivas: false,
+      monthNames: [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+      ]
     };
   },
   computed: {
@@ -155,12 +169,12 @@ export default {
     async buscarCuotasUsuario() {
       try {
         if (this.usuarioSeleccionado != "") {
-          this.cuotasUsuario = await axios.get(
+          axios.get(
             `/usuario/${this.usuarioSeleccionado.id}/cuotas`
-          );
+          ).then((res) => {
+            this.cuotasUsuario = res.data.body
+          })
 
-          this.cuotasUsuario = await this.cuotasUsuario.data.body;
-          console.log(this.cuotasUsuario.length);
           if (this.cuotasUsuario.length == 0) {
             this.callSnackbar(["No se encontraron cuotas", "error"]);
           }
@@ -208,8 +222,14 @@ export default {
       if (!fecha || typeof fecha === "undefined") {
         return null;
       }
-      const [anio, mes, dia] = fecha.split("/");
-      return `${dia.slice(0, -9)}/${mes}/${anio}`;
+
+      const date = new Date(fecha);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString();
+      const outputDateString = `${day}/${month}/${year}`;
+
+      return outputDateString;
     },
     actualizarAbrirModalGenerarCuotasMasivas(valor) {
       this.abrirModalGenerarCuotasMasivas = valor;
