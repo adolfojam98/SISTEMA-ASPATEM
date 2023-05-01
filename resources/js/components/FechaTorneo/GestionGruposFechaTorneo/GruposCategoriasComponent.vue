@@ -22,11 +22,11 @@
     <!-- MODAL CATEGORIA -->
     <div v-if="categoriaSeleccionada">
       <v-row justify="center">
-        <v-dialog v-model="modalPartidosCategoria" fullscreen hide-overlay transition="dialog-bottom-transition">
+        <v-dialog v-model="modalPartidosCategoria" persistent fullscreen hide-overlay transition="dialog-bottom-transition">
 
           <v-card>
             <v-toolbar dark color="primary">
-              <v-btn icon dark @click="modalPartidosCategoria = false">
+              <v-btn icon dark @click="modalPartidosCategoria = false">               
                 <v-icon>mdi-close</v-icon>
               </v-btn>
               <v-toolbar-title>Partidos categoria : {{ categoriaSeleccionada.nombre }}</v-toolbar-title>
