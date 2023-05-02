@@ -8,7 +8,7 @@
                 <v-col>
                   <h3>Grupo {{ grupo.nombre }}</h3>
                   <v-row cols="12">
-                    <v-col v-for="partido in grupo.partidos" :key="partido.id" md="4" sm="6">
+                    <v-col v-for="partido in grupo.partidos" :key="partido.id" md="3" sm="4" >
                       <partido :partido="partido"></partido>
                     </v-col>
                   </v-row>
@@ -16,7 +16,7 @@
 
               </v-row>
             </v-container>
-            <v-btn class="ml-2 mr-4" dark @click="[generarLlaves()]" color="blue">Generar
+            <v-btn class="ml-2 mr-4"  @click="[generarLlaves()]" color="primary">Generar
               llaves</v-btn>
             </v-card-text>
         </v-card>

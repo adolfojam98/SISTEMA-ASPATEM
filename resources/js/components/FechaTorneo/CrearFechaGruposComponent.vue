@@ -199,12 +199,13 @@
             <div v-if="!item.llavesGeneradas">
                 <v-btn
                   class="center mb-6 mt-4"
-                  dark
+
                   @click="validarPartidos(item)"
-                  color="blue"
+                  color="primary"
                 >
                   Generar llaves
                 </v-btn>
+
             </div>
 
             <div v-else>

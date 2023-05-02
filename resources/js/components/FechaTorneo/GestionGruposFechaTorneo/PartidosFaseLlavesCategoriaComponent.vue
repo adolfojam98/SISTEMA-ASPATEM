@@ -52,8 +52,6 @@
 
 
 <script>
-import { RFC_2822 } from 'moment';
-
 
 export default {
     props: ["categoria"],
@@ -131,7 +129,8 @@ export default {
         },
         calcularNumeroDeRondas(nroJugadores) {
             let nroRondas = Math.ceil(Math.log2(nroJugadores));
-            if (nroJugadores % 2 != 0) {
+            const jugadoresLlavesPerfectas = Math.pow(2, Math.floor(Math.log2(nroJugadores)));
+            if ( nroJugadores != jugadoresLlavesPerfectas) {
                 nroRondas--;
             }
             return nroRondas

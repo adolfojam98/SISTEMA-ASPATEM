@@ -1,6 +1,6 @@
 <template>
   <div>
-  <v-card outlined flat>
+  <v-card outlined flat  max-width="374">
     <v-card-text>
       <v-row>
         <v-col>

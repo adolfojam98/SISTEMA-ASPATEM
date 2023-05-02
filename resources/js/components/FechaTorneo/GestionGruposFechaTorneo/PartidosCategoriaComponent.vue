@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div v-if="categoria.jugadoresAnotados">
+    <div v-if="categoria.jugadoresAnotados ">
 
-      <v-form v-model="valid" lazy-validation>
+      <v-form v-model="valid" lazy-validation v-if="!gruposGenerados">
         <v-col>
           <v-text-field label="Cantidad de Grupos" v-model="categoria.cantidadGrupos" :rules="cantidadGruposRules"
             required class="mb-0 ml-2"></v-text-field>
@@ -16,13 +16,16 @@
           <v-switch v-model="categoria.gruposConEliminatoria" label="Fase de grupos con eliminatoria"
             class="ml-2 mt-0"></v-switch>
 
-          <v-btn class="ml-2 mr-4" dark :disabled="!valid" @click="[generarGrupos()]" color="blue">Generar
+          <v-btn class="ml-2 mr-4" dark :disabled="!valid" @click="[generarGrupos()]" color="primary">Generar
             grupos</v-btn>
         </v-col>
       </v-form>
       <v-divider></v-divider>
 
-      <div v-if="gruposGenerados && !llavesGeneradas">
+      <div v-if="gruposGenerados && !llavesGeneradas" class="mt-3">
+               <v-btn  class='ml-7' @click="[deshacerGrupos()]" color="primary">Deshacer
+            grupos</v-btn>
+   
         <partidos-fase-grupos :categoria="categoria" @generar-llaves="generarLLavess"></partidos-fase-grupos>
 
 
@@ -45,8 +48,8 @@ export default {
   data() {
     return {
       valid: true,
-      gruposGenerados: false,
       llavesGeneradas: false,
+      gruposGenerados: false,
       numeroGrupos: 0,
       cantidadGruposRules: [
         (v) => !!v || "Cantidad de grupos requerido",
@@ -126,10 +129,10 @@ export default {
       });
       return grupos;
     },
-    deshacerGrupos(categoria) {
+    deshacerGrupos() {
       console.log("Ejecución deshacerGrupos");
-      categoria.listaGrupos = [];
-      categoria.gruposGenerados = false;
+      this.categoria.listaGrupos = [];
+      this.gruposGenerados = false;
     },
     generarLLavess(prop) {
       if (!this.validarPartidos()) {
@@ -179,7 +182,7 @@ export default {
         grupo.partidos.forEach(partido => {
           partidos.push({
             "fase": "grupos",
-            "grupo_nombre": "A",
+            "grupo_nombre": grupo.nombre,
             "id_jugador1": partido.jugador1.usuario_id,
             "id_jugador2": partido.jugador2.usuario_id,
             "set_jugador1": partido.setsJugador1,
@@ -191,7 +194,6 @@ export default {
       this.categoria.partidosLlaves.forEach(partido => {
         partidos.push({
           "fase": partido.fase,
-          "grupo_nombre": "A",
           "id_jugador1": partido.jugador1.usuario_id,
           "id_jugador2": partido.jugador2.usuario_id,
           "set_jugador1": partido.setsJugador1,
