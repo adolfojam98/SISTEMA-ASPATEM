@@ -14,16 +14,12 @@ class FechaPartido extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $array = [
             'fecha_id' => $this->fecha_id,
             'categoria_id' => $this->categoria_id,
             'fase' => [
                 'id' => $this->fase->id,
                 'nombre' => $this->fase->nombre,
-            ],
-            'grupo' => [
-                'id' => $this->grupo->id,
-                'nombre' => $this->grupo->nombre,
             ],
             'jugadores' => [
                 'jugador1' => [
@@ -39,7 +35,15 @@ class FechaPartido extends JsonResource
                     'sets' => $this->jugadores[1]->pivot->sets,
                 ],
             ]
-
         ];
+        
+        if ($this->grupo) {
+            $array['grupo'] = [
+                'id' => $this->grupo->id,
+                'nombre' => $this->grupo->nombre,
+            ];
+        }
+        
+        return $array;
     }
 }
