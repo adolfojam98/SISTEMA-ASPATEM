@@ -55,12 +55,11 @@ class FechaService extends BaseService
         {//TODO esto que borro para volver a agregar se puede arreglar como la funcion de arriba "resetPuntosFecha"
 
             if($fecha_usuario) { //guardamos los datos que necesitamos antes de borrar
-                $categoria_menor_id = $categoria_menor_id ?? $fecha_usuario->categoria_menor_id;
-                $categoria_mayor_id = $categoria_mayor_id ?? $fecha_usuario->categoria_mayor_id;
+                $categoria_menor_id = $categoria_menor_id !== false ? $categoria_menor_id  :  $fecha_usuario->categoria_menor_id ;
+                $categoria_mayor_id = $categoria_mayor_id !== false ? $categoria_mayor_id :  $fecha_usuario->categoria_mayor_id ;
                 $puntos = $fecha_usuario->puntos + $puntos ?? 0; //voy sumando los puntos
                 $this->fechaUsuarioDelete($fecha_id, $usuario_id);
             }
-
             $fecha_usuario = new FechaUsuario();
             $fecha_usuario->fecha_id = $fecha_id;
             $fecha_usuario->usuario_id = $usuario_id;
@@ -158,8 +157,8 @@ class FechaService extends BaseService
                 //asigno los puntos en funcion de lo anterior y del ganador y perdedor
                 $puntosObtenidosPorJugador = $this->calcularPuntosJugadoresPartidos($torneo, $mismaCategoria, $jugadorUnoMasPuntos, $jugadorUnoGano);
                 
-                $this->updateFechaUsuario($fecha_id, $jugadores_partido[0]->id, null, null, null, $puntosObtenidosPorJugador->puntosJugadorUno); //se van sumando los puntos
-                $this->updateFechaUsuario($fecha_id, $jugadores_partido[1]->id, null, null, null, $puntosObtenidosPorJugador->puntosJugadorDos); //se van sumando los puntos
+                $this->updateFechaUsuario($fecha_id, $jugadores_partido[0]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorUno); //se van sumando los puntos
+                $this->updateFechaUsuario($fecha_id, $jugadores_partido[1]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorDos); //se van sumando los puntos
                 
             }
     }
