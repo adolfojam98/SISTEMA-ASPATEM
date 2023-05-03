@@ -14,20 +14,20 @@ use Illuminate\Support\Facades\DB;
 
 class FechaService extends BaseService
 {
-    function __construct() 
+    function __construct()
     {
         parent::__construct();
-           
+
         $this->errorDefinitions[] = new Error("FEC0001", "Unespected error", "Unespected", 500);
     }
 
     function fechaUsuarioDelete($fecha_id, $usuario_id)
     {
         $this->clearErrors();
-        
+
         $fecha_usuario = DB::table('fecha_usuario')
-        ->where('usuario_id',$usuario_id)
-        ->where('fecha_id', $fecha_id)->delete();
+            ->where('usuario_id', $usuario_id)
+            ->where('fecha_id', $fecha_id)->delete();
     }
 
     function resetPuntosFecha($fecha_id)
@@ -50,13 +50,13 @@ class FechaService extends BaseService
 
         $fecha = Fecha::whereId($fecha_id)->first();
         $fecha_usuario = $fecha->fecha_usuario($usuario_id)->first();
+        $numCategorias = 0;
 
-        if($fecha_id && $usuario_id)
-        {//TODO esto que borro para volver a agregar se puede arreglar como la funcion de arriba "resetPuntosFecha"
+        if ($fecha_id && $usuario_id) { //TODO esto que borro para volver a agregar se puede arreglar como la funcion de arriba "resetPuntosFecha"
 
-            if($fecha_usuario) { //guardamos los datos que necesitamos antes de borrar
-                $categoria_menor_id = $categoria_menor_id !== false ? $categoria_menor_id  :  $fecha_usuario->categoria_menor_id ;
-                $categoria_mayor_id = $categoria_mayor_id !== false ? $categoria_mayor_id :  $fecha_usuario->categoria_mayor_id ;
+            if ($fecha_usuario) { //guardamos los datos que necesitamos antes de borrar
+                $categoria_menor_id = $categoria_menor_id !== false ? $categoria_menor_id  :  $fecha_usuario->categoria_menor_id;
+                $categoria_mayor_id = $categoria_mayor_id !== false ? $categoria_mayor_id :  $fecha_usuario->categoria_mayor_id;
                 $puntos = $fecha_usuario->puntos + $puntos ?? 0; //voy sumando los puntos
                 $this->fechaUsuarioDelete($fecha_id, $usuario_id);
             }
@@ -64,22 +64,23 @@ class FechaService extends BaseService
             $fecha_usuario->fecha_id = $fecha_id;
             $fecha_usuario->usuario_id = $usuario_id;
 
-            if($categoria_menor_id)
+            if ($categoria_menor_id) {
                 $fecha_usuario->categoria_menor_id = $categoria_menor_id;
+                $numCategorias++;
+            }
 
-            if($categoria_mayor_id)
+            if ($categoria_mayor_id) {
                 $fecha_usuario->categoria_mayor_id = $categoria_mayor_id;
+                $numCategorias++;
+            }
 
-            $numCategorias = ($categoria_menor_id && $categoria_mayor_id) ? 2 : ($categoria_menor_id || $categoria_mayor_id) ? 1 : 0;
+            $fecha_usuario->monto_pagado = $this->calculateMonto($fecha_id, $usuario_id, $numCategorias) ?? 0;
 
-            $fecha_usuario->monto_pagado = $this->calculateMonto($fecha_id, $usuario_id, $numCategorias) ?? 0; 
-            
             $fecha_usuario->puntos = $puntos ?? 0;
-        
+
             $fecha_usuario->save();
 
             return $fecha_usuario;
-
         } else {
             $this->setError("FEC0001");
         }
@@ -92,13 +93,13 @@ class FechaService extends BaseService
         // siempre LIMPIAR errores al iniciar un proceso de servicio
         $this->clearErrors();
 
-        if($numCategorias == 0)
+        if ($numCategorias == 0)
             return 0;
-        
+
         $fecha = Fecha::find($fechaId)->first();
         $statusSocio = Usuario::find($usuarioId)->socio();
-        
-        if($statusSocio->activo) {
+
+        if ($statusSocio->activo) {
             return $numCategorias == 1 ? $fecha->monto_socios_una_categoria : $fecha->monto_socio_dos_categorias;
         } else {
             return $numCategorias == 1 ? $fecha->monto_no_socios_una_categoria : $fecha->monto_no_socio_dos_categorias;
@@ -128,42 +129,43 @@ class FechaService extends BaseService
         $partidos = $fecha->partidos()->get();
 
         //recoro los partidos
-            foreach ($partidos as $key => $partido) {
-                //por cada partido busco los jugadores por su id en la lista de jugadores (reutilizamos para tomar los puntos ya calculados)
-                $jugadores_partido = $partido->jugadores()->get();
+        foreach ($partidos as $key => $partido) {
+            //por cada partido busco los jugadores por su id en la lista de jugadores (reutilizamos para tomar los puntos ya calculados)
+            $jugadores_partido = $partido->jugadores()->get();
 
-                $keyJugadorUno = array_search($jugadores_partido[0]->id, array_column($jugadores['ranking'], 'usuario_id'));
-                $keyJugadorDos = array_search($jugadores_partido[1]->id, array_column($jugadores['ranking'], 'usuario_id'));
+            $keyJugadorUno = array_search($jugadores_partido[0]->id, array_column($jugadores['ranking'], 'usuario_id'));
+            $keyJugadorDos = array_search($jugadores_partido[1]->id, array_column($jugadores['ranking'], 'usuario_id'));
 
-                $puntosParaJugadorUno = 0;
-                $puntosParaJugadorDos = 0;
+            $puntosParaJugadorUno = 0;
+            $puntosParaJugadorDos = 0;
 
-                //aqui tenemos los jugadores
-                $jugadorUno = $jugadores['ranking'][$keyJugadorUno];
-                $jugadorDos = $jugadores['ranking'][$keyJugadorDos];
-                
-                //TODO checkear que los puntos esten bien cuando haya más de una fecha
-                //TODO falta ver y asignar lo que pagaron los jugadores
-                
-                //vemos si son de la misma categoria
-                $mismaCategoria = $jugadorUno['categoria'] == $jugadorDos['categoria'];
+            //aqui tenemos los jugadores
+            $jugadorUno = $jugadores['ranking'][$keyJugadorUno];
+            $jugadorDos = $jugadores['ranking'][$keyJugadorDos];
 
-                //vemos si jugador1 tiene puntos >= a jugador2
-                $jugadorUnoMasPuntos = $jugadorUno['puntos'] >= $jugadorDos['puntos'];
+            //TODO checkear que los puntos esten bien cuando haya más de una fecha
+            //TODO falta ver y asignar lo que pagaron los jugadores
 
-                //vemos si jugador1 gano
-                $jugadorUnoGano = $jugadores_partido[0]->pivot->sets > $jugadores_partido[1]->pivot->sets;
+            //vemos si son de la misma categoria
+            $mismaCategoria = $jugadorUno['categoria'] == $jugadorDos['categoria'];
 
-                //asigno los puntos en funcion de lo anterior y del ganador y perdedor
-                $puntosObtenidosPorJugador = $this->calcularPuntosJugadoresPartidos($torneo, $mismaCategoria, $jugadorUnoMasPuntos, $jugadorUnoGano);
-                
-                $this->updateFechaUsuario($fecha_id, $jugadores_partido[0]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorUno); //se van sumando los puntos
-                $this->updateFechaUsuario($fecha_id, $jugadores_partido[1]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorDos); //se van sumando los puntos
-                
-            }
+            //vemos si jugador1 tiene puntos >= a jugador2
+            $jugadorUnoMasPuntos = $jugadorUno['puntos'] >= $jugadorDos['puntos'];
+
+            //vemos si jugador1 gano
+            $jugadorUnoGano = $jugadores_partido[0]->pivot->sets > $jugadores_partido[1]->pivot->sets;
+
+            //asigno los puntos en funcion de lo anterior y del ganador y perdedor
+            $puntosObtenidosPorJugador = $this->calcularPuntosJugadoresPartidos($torneo, $mismaCategoria, $jugadorUnoMasPuntos, $jugadorUnoGano);
+
+            $this->updateFechaUsuario($fecha_id, $jugadores_partido[0]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorUno); //se van sumando los puntos
+            $this->updateFechaUsuario($fecha_id, $jugadores_partido[1]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorDos); //se van sumando los puntos
+
+        }
     }
 
-    function calcularPuntosJugadoresPartidos($torneo, $mismaCategoria, $jugadorUnoMasPuntos, $jugadorUnoGano) {
+    function calcularPuntosJugadoresPartidos($torneo, $mismaCategoria, $jugadorUnoMasPuntos, $jugadorUnoGano)
+    {
         // siempre LIMPIAR errores al iniciar un proceso de servicio
         $this->clearErrors();
 
@@ -172,47 +174,46 @@ class FechaService extends BaseService
             "puntosJugadorDos" => 0
         ];
 
-        if($mismaCategoria && $jugadorUnoMasPuntos && $jugadorUnoGano) {
+        if ($mismaCategoria && $jugadorUnoMasPuntos && $jugadorUnoGano) {
             $puntos->puntosJugadorUno += $torneo->misma_categoria_mayor_nivel_ganador;
             $puntos->puntosJugadorDos -= $torneo->misma_categoria_menor_nivel_perdedor;
             return $puntos;
         }
-        
-        if($mismaCategoria && $jugadorUnoMasPuntos && !$jugadorUnoGano) {
+
+        if ($mismaCategoria && $jugadorUnoMasPuntos && !$jugadorUnoGano) {
             $puntos->puntosJugadorUno -= $torneo->misma_categoria_mayor_nivel_perdedor;
             $puntos->puntosJugadorDos += $torneo->misma_categoria_menor_nivel_ganador;
             return $puntos;
         }
-        
-        if($mismaCategoria && !$jugadorUnoMasPuntos && $jugadorUnoGano) {
+
+        if ($mismaCategoria && !$jugadorUnoMasPuntos && $jugadorUnoGano) {
             $puntos->puntosJugadorUno += $torneo->misma_categoria_menor_nivel_ganador;
             $puntos->puntosJugadorDos -= $torneo->misma_categoria_mayor_nivel_perdedor;
             return $puntos;
         }
-        
-        if($mismaCategoria && !$jugadorUnoMasPuntos && !$jugadorUnoGano) {
+
+        if ($mismaCategoria && !$jugadorUnoMasPuntos && !$jugadorUnoGano) {
             $puntos->puntosJugadorUno -= $torneo->misma_categoria_menor_nivel_perdedor;
             $puntos->puntosJugadorDos += $torneo->misma_categoria_mayor_nivel_ganador;
             return $puntos;
         }
-        
-        if(!$mismaCategoria && $jugadorUnoMasPuntos && $jugadorUnoGano) {
+
+        if (!$mismaCategoria && $jugadorUnoMasPuntos && $jugadorUnoGano) {
             $puntos->puntosJugadorUno += $torneo->mayor_categoria_ganador;
             $puntos->puntosJugadorDos -= $torneo->menor_categoria_perdedor;
             return $puntos;
         }
-        
-        if(!$mismaCategoria && $jugadorUnoMasPuntos && !$jugadorUnoGano) {
+
+        if (!$mismaCategoria && $jugadorUnoMasPuntos && !$jugadorUnoGano) {
             $puntos->puntosJugadorUno -= $torneo->mayor_categoria_perdedor;
             $puntos->puntosJugadorDos += $torneo->menor_categoria_ganador;
             return $puntos;
         }
-        
-        if(!$mismaCategoria && !$jugadorUnoMasPuntos && $jugadorUnoGano) {
+
+        if (!$mismaCategoria && !$jugadorUnoMasPuntos && $jugadorUnoGano) {
             $puntos->puntosJugadorUno += $torneo->menor_categoria_ganador;
             $puntos->puntosJugadorDos -= $torneo->mayor_categoria_perdedor;
             return $puntos;
         }
     }
-
 }

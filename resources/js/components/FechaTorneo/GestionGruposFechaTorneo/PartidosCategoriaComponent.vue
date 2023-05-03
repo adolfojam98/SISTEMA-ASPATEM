@@ -174,6 +174,7 @@ export default {
         console.log(res)
       });
     },
+
     transformarPartidosRequest() {
       let partidos = [];
 
@@ -193,11 +194,13 @@ export default {
       });
       this.categoria.partidosLlaves.forEach(partido => {
         partidos.push({
+          "id" : partido.id,
           "fase": partido.fase,
           "id_jugador1": partido.jugador1.usuario_id,
           "id_jugador2": partido.jugador2.usuario_id,
           "set_jugador1": partido.setsJugador1,
-          "set_jugador2": partido.setsJugador2
+          "set_jugador2": partido.setsJugador2,
+          "sig_partido_id" : partido.idPartidoPadre
         });
       })
 

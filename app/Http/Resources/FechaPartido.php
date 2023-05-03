@@ -15,8 +15,10 @@ class FechaPartido extends JsonResource
     public function toArray($request)
     {
         $array = [
+            'id' => $this->id,
             'fecha_id' => $this->fecha_id,
             'categoria_id' => $this->categoria_id,
+            'sig_partido_id' => $this->sig_partido_id,
             'fase' => [
                 'id' => $this->fase->id,
                 'nombre' => $this->fase->nombre,
@@ -43,7 +45,7 @@ class FechaPartido extends JsonResource
                 'nombre' => $this->grupo->nombre,
             ];
         }
-        
+
         return $array;
     }
 }

@@ -11,10 +11,10 @@ use Illuminate\Support\Str;
 
 class PartidoService extends BaseService
 {
-    function __construct() 
+    function __construct()
     {
         parent::__construct();
-           
+
         $this->errorDefinitions[] = new Error("PART0001", "Unespected error", "Unespected", 500);
     }
 
@@ -25,15 +25,14 @@ class PartidoService extends BaseService
 
         $partidoFase = $this->createPartidoFase($fase_nombre);
 
-        if($fecha_id && $categoria_id) {
+        if ($fecha_id && $categoria_id) {
             $newPartido = [
                 'fecha_id' => $fecha_id,
                 'categoria_id' => $categoria_id,
-                'partido_fase_id' => $partidoFase->id,
-                // 'sig_partido_id' => $sig_partido_id,
+                'partido_fase_id' => $partidoFase->id
             ];
 
-            if($grupo_nombre) {
+            if ($grupo_nombre) {
                 $partidoGrupo = $this->createPartidoGrupo($grupo_nombre);
 
                 $newPartido['grupo_id'] = $partidoGrupo->id;
@@ -45,16 +44,36 @@ class PartidoService extends BaseService
             $newPartidoUsuario2 = $this->createPartidoUsuario($newPartido->id, $partido_info->id_jugador2, $partido_info->set_jugador2);
 
             return $newPartido;
-
-
         } else {
             $this->setError("PARO0001");
         }
     }
 
-    function deletePartidos($fecha_id, $categoria_id) {
+    function asociarPartidoPadre($partidos)
+    {
+        foreach ($partidos as $key => $partido) {
+            if ($partido->fake_padre_id) {
+                foreach ($partidos as $k => $p) {
+                    if ($partido->fake_padre_id === $p->fake_id) {
+                        $partido->sig_partido_id = $p->id;
+                        break;
+                    }
+                }
+            }
+        }
+        foreach ($partidos as $key => $partido) {
+            if ($partido->fake_padre_id) {
+                unset($partido->fake_padre_id);
+                unset($partido->fake_id);
+                $partido->save();
+            }
+        }
+    }
+
+    function deletePartidos($fecha_id, $categoria_id)
+    {
         $this->clearErrors();
-        
+
         Partido::where('fecha_id', $fecha_id)
             ->where('categoria_id', $categoria_id)
             ->delete();
@@ -67,7 +86,7 @@ class PartidoService extends BaseService
 
         $partidoFase = DB::table('partido_fase')->where('nombre', $fase_nombre)->first();
 
-        if($partidoFase) {
+        if ($partidoFase) {
             return $partidoFase;
         } else {
             DB::table('partido_fase')->insert([
@@ -85,7 +104,7 @@ class PartidoService extends BaseService
 
         $partidoFase = DB::table('grupos')->where('nombre', $grupo_nombre)->first();
 
-        if($partidoFase) {
+        if ($partidoFase) {
             return $partidoFase;
         } else {
             DB::table('grupos')->insert([
@@ -108,5 +127,4 @@ class PartidoService extends BaseService
             ->where('partido_id', $partido_id)
             ->where('usuario_id', $jugador_id)->first();
     }
-
 }

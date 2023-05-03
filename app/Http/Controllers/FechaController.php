@@ -243,6 +243,7 @@ class FechaController extends ApiController
                 ]);
 
                 $servicePartido = new PartidoService();
+                $partidosCreados = [];
                 
                 //borramos los partidos de esta fecha-categoria por si ya se había guardado antes
                 $servicePartido->deletePartidos($id, $categoria_id);
@@ -254,21 +255,30 @@ class FechaController extends ApiController
                         if(!$partido->grupo_nombre) {
                             return $this->sendError('Los partiods en fase "grupos" requieren de un nombre de grupo.');
                         }
+                    } else {
+                        if($partido->fase !== "final" && !$partido->sig_partido_id) {
+                            return $this->sendError('Los partiods en fase "llaves" requieren de un id de partido padre.');  
+                        }
                     }
 
                     $partido_info = (object) [
+                        "id_partido" => $partido->id ?? null,
                         "id_jugador1" => $partido->id_jugador1,
                         "id_jugador2" => $partido->id_jugador2,
                         "set_jugador1" => $partido->set_jugador1,
-                        "set_jugador2" => $partido->set_jugador2,
+                        "set_jugador2" => $partido->set_jugador2
                     ];
-
-                    $servicePartido->createPartido($id, $categoria_id, $partido->fase, $partido->grupo_nombre ?? null, $partido_info);
+                    $partidoNuevo = $servicePartido->createPartido($id, $categoria_id, $partido->fase, $partido->grupo_nombre ?? null, $partido_info);
+                    $partidoNuevo->fake_id = $partido->id ?? null;
+                    $partidoNuevo->fake_padre_id = $partido->sig_partido_id ?? null;
+                    array_push($partidosCreados, $partidoNuevo);
+                
                 }
-
+                $servicePartido->asociarPartidoPadre($partidosCreados);
                 if ($servicePartido->hasErrors()) {
                     return $this->sendServiceError($servicePartido->getLastError());
                 }
+
 
                 $serviceFecha = new FechaService();
                 $serviceFecha->updatePuntos($id);
