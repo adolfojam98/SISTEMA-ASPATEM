@@ -44,7 +44,7 @@
 
 <script>
 export default {
-  props: ["categorias"],
+  props: ["categorias", "listaJugadores"],
   data() {
     return {
       categoriaSeleccionada: null,
@@ -56,46 +56,63 @@ export default {
       console.log(categoria);
       const res = await axios.get(`/fechas/${categoria.fecha_id}/categoria/${categoria.id}/partidos`);
       const partidos = res.data.body;
-      if (partidos.length > 0) {
-        // this.mapearPartidosDeCategoria(partidos);
-      }
       this.categoriaSeleccionada = categoria
+      if (partidos.length > 0) {
+        this.mapearPartidosDeCategoria(partidos);
+      }
       console.log(categoria);
       console.log('abriendoModalCategoria');
       this.modalPartidosCategoria = true;
     },
     mapearPartidosDeCategoria(partidos) {
-      //TODO hay que revisar esta parte
-      partidos.forEach(partido => {
+
+      partidos.forEach((partido) => {
+        partido.setsJugador1 = partido.jugadores.jugador1.sets;
+        partido.setsJugador2 = partido.jugadores.jugador2.sets;
+        partido.jugadores.jugador1 = this.listaJugadores.find(j => j.usuario_id == partido.jugadores.jugador1.id);
+        partido.jugadores.jugador2 = this.listaJugadores.find(j => j.usuario_id == partido.jugadores.jugador2.id);
+      });
+
+
+
+      const partidosAgrupados = partidos.reduce((grupos, partido) => {
+        console.log('->partido unico:', partido);
         if (partido.grupo) {
-          console.log('partido fase de grupo:',partido)
-          if(this.categoriaSeleccionada.listaGrupos.length){
-            this.categoriaSeleccionada.listaGrupos.push({
-              nombre: partido.grupo.nombre,
-              jugadoresDelGrupo: [],
-              partidos: []
-            });
-          }
-        
-          const grupoPartido = this.categoriaSeleccionada.listaGrupos.find(grupo => grupo.nombre == partido.grupo.nombre);
-          if(!grupoPartido){
-            this.categoriaSeleccionada.listaGrupos.push({
-              nombre: partido.grupo.nombre,
-              jugadoresDelGrupo: [],
-              partidos: []
-            });
-            grupoPartido.push({
-              
-            })
+          const nuevoPartido = {
+            "id": partido.id,
+            "jugador1": partido.jugadores.jugador1,
+            "jugador2": partido.jugadores.jugador2,
+            "setsJugador1": partido.setsJugador1,
+            "setsJugador2": partido.setsJugador2
           }
 
+          const nombreGrupo = partido.grupo.nombre;
+          const grupoExistente = grupos.find((grupo) => grupo.nombre === nombreGrupo);
 
+          if (!grupoExistente) {
+            console.log('nuevo grupo');
+            const nuevoGrupo = { nombre: nombreGrupo, partidos: [nuevoPartido], jugadoresDelGrupo: [partido.jugadores.jugador1, partido.jugadores.jugador2] };
+            grupos.push(nuevoGrupo);
+          } else {
+            grupoExistente.partidos.push(nuevoPartido);
 
-        } else {
-          console.log('partido llaves: ', partido)
+            // verificamos si el jugador ya existe en el array jugadoresDelGrupo antes de agregarlo
+            if (!grupoExistente.jugadoresDelGrupo.some(jugador => jugador.usuario_id === partido.jugadores.jugador1.usuario_id)) {
+              grupoExistente.jugadoresDelGrupo.push(partido.jugadores.jugador1);
+            }
+
+            if (!grupoExistente.jugadoresDelGrupo.some(jugador => jugador.usuario_id === partido.jugadores.jugador2.usuario_id)) {
+              grupoExistente.jugadoresDelGrupo.push(partido.jugadores.jugador2);
+            }
+          }
         }
 
-      });
+        return grupos;
+      }, []);
+
+      if (partidosAgrupados) {
+        this.categoriaSeleccionada.listaGrupos = partidosAgrupados;
+      }
     }
   },
 }

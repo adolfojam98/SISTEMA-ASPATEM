@@ -34,7 +34,7 @@
     </v-data-table>
 
     <div v-if="busquedaRealizada">
-       <grupos-categorias  :categorias="listaCategorias"></grupos-categorias>
+       <grupos-categorias  :categorias="listaCategorias" :listaJugadores="listaJugadores"></grupos-categorias>
     </div>
    
   </div>

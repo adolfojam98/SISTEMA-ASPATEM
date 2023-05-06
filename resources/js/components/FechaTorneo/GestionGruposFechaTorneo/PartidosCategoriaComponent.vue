@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="categoria.jugadoresAnotados ">
+    <div v-if="categoria.jugadoresAnotados">
 
       <v-form v-model="valid" lazy-validation v-if="!gruposGenerados">
         <v-col>
@@ -23,9 +23,9 @@
       <v-divider></v-divider>
 
       <div v-if="gruposGenerados && !llavesGeneradas" class="mt-3">
-               <v-btn  class='ml-7' @click="[deshacerGrupos()]" color="primary">Deshacer
-            grupos</v-btn>
-   
+        <v-btn class='ml-7' @click="[deshacerGrupos()]" color="primary">Deshacer
+          grupos</v-btn>
+
         <partidos-fase-grupos :categoria="categoria" @generar-llaves="generarLLavess"></partidos-fase-grupos>
 
 
@@ -56,6 +56,11 @@ export default {
         (v) => /^([0-9]*)?[0-9]+$/.test(v) || "Deben ser solo numeros enteros",
       ],
 
+    }
+  },
+  created() {
+    if (this.categoria.listaGrupos.length) {
+      this.gruposGenerados = true;
     }
   },
   methods: {
@@ -142,7 +147,7 @@ export default {
       this.llavesGeneradas = true;
     },
     validarPartidos() {
-      const setsCargados = this.categoria.listaGrupos.every(grupo=> grupo.partidos.every(partido => partido.setsJugador1 !== null && partido.setsJugador2 !== null)) ;
+      const setsCargados = this.categoria.listaGrupos.every(grupo => grupo.partidos.every(partido => partido.setsJugador1 !== null && partido.setsJugador2 !== null));
       const hayEmpates = this.categoria.listaGrupos.some(grupo => grupo.partidos.some(partido => partido.setsJugador1 == partido.setsJugador2));
 
       if (!setsCargados) {
@@ -194,13 +199,13 @@ export default {
       });
       this.categoria.partidosLlaves.forEach(partido => {
         partidos.push({
-          "id" : partido.id,
+          "id": partido.id,
           "fase": partido.fase,
           "id_jugador1": partido.jugador1.usuario_id,
           "id_jugador2": partido.jugador2.usuario_id,
           "set_jugador1": partido.setsJugador1,
           "set_jugador2": partido.setsJugador2,
-          "sig_partido_id" : partido.idPartidoPadre
+          "sig_partido_id": partido.idPartidoPadre
         });
       })
 
