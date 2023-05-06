@@ -64,45 +64,39 @@ export default {
       console.log('abriendoModalCategoria');
       this.modalPartidosCategoria = true;
     },
+    mapearJugadoresDePartido(partido, listaJugadores) {
+      const { jugador1, jugador2 } = partido.jugadores;
+      partido.setsJugador1 = jugador1.sets;
+      partido.setsJugador2 = jugador2.sets;
+      partido.jugadores.jugador1 = listaJugadores.find(jugador => jugador.usuario_id == jugador1.id);
+      partido.jugadores.jugador2 = listaJugadores.find(jugador => jugador.usuario_id == jugador2.id);
+    },
+
     mapearPartidosDeCategoria(partidos) {
+      for (const partido of partidos) {
+        this.mapearJugadoresDePartido(partido, this.listaJugadores);
+      }
 
-      partidos.forEach((partido) => {
-        partido.setsJugador1 = partido.jugadores.jugador1.sets;
-        partido.setsJugador2 = partido.jugadores.jugador2.sets;
-        partido.jugadores.jugador1 = this.listaJugadores.find(j => j.usuario_id == partido.jugadores.jugador1.id);
-        partido.jugadores.jugador2 = this.listaJugadores.find(j => j.usuario_id == partido.jugadores.jugador2.id);
-      });
-
-
-
-      const partidosAgrupados = partidos.reduce((grupos, partido) => {
-        console.log('->partido unico:', partido);
+      const gruposDePartidos = partidos.reduce((grupos, partido) => {
         if (partido.grupo) {
-          const nuevoPartido = {
-            "id": partido.id,
-            "jugador1": partido.jugadores.jugador1,
-            "jugador2": partido.jugadores.jugador2,
-            "setsJugador1": partido.setsJugador1,
-            "setsJugador2": partido.setsJugador2
-          }
+          const { id, jugadores, setsJugador1, setsJugador2 } = partido;
+          const { nombre } = partido.grupo;
+          const nuevoPartido = { id, jugador1: jugadores.jugador1, jugador2: jugadores.jugador2, setsJugador1, setsJugador2 };
 
-          const nombreGrupo = partido.grupo.nombre;
-          const grupoExistente = grupos.find((grupo) => grupo.nombre === nombreGrupo);
+          const grupoExistente = grupos.find(grupo => grupo.nombre === nombre);
 
           if (!grupoExistente) {
-            console.log('nuevo grupo');
-            const nuevoGrupo = { nombre: nombreGrupo, partidos: [nuevoPartido], jugadoresDelGrupo: [partido.jugadores.jugador1, partido.jugadores.jugador2] };
+            const nuevoGrupo = { nombre, partidos: [nuevoPartido], jugadoresDelGrupo: [jugadores.jugador1, jugadores.jugador2] };
             grupos.push(nuevoGrupo);
           } else {
             grupoExistente.partidos.push(nuevoPartido);
 
-            // verificamos si el jugador ya existe en el array jugadoresDelGrupo antes de agregarlo
-            if (!grupoExistente.jugadoresDelGrupo.some(jugador => jugador.usuario_id === partido.jugadores.jugador1.usuario_id)) {
-              grupoExistente.jugadoresDelGrupo.push(partido.jugadores.jugador1);
+            if (!grupoExistente.jugadoresDelGrupo.some(jugador => jugador.usuario_id === jugadores.jugador1.usuario_id)) {
+              grupoExistente.jugadoresDelGrupo.push(jugadores.jugador1);
             }
 
-            if (!grupoExistente.jugadoresDelGrupo.some(jugador => jugador.usuario_id === partido.jugadores.jugador2.usuario_id)) {
-              grupoExistente.jugadoresDelGrupo.push(partido.jugadores.jugador2);
+            if (!grupoExistente.jugadoresDelGrupo.some(jugador => jugador.usuario_id === jugadores.jugador2.usuario_id)) {
+              grupoExistente.jugadoresDelGrupo.push(jugadores.jugador2);
             }
           }
         }
@@ -110,8 +104,8 @@ export default {
         return grupos;
       }, []);
 
-      if (partidosAgrupados) {
-        this.categoriaSeleccionada.listaGrupos = partidosAgrupados;
+      if (gruposDePartidos.length > 0) {
+        this.categoriaSeleccionada.listaGrupos = gruposDePartidos;
       }
     }
   },
