@@ -13,7 +13,7 @@
                         <!-- NODOS HOJAS -->
                         <div class="ma-2" v-if="partido.fase == fase">
 
-                            <v-card outlined flat >
+                            <v-card outlined flat>
                                 <div>
                                     <v-card-text>
                                         <v-row>
@@ -66,10 +66,13 @@ export default {
         },
     }),
     created() {
-        const partidos = this.generarPartidos(this.categoria.jugadoresAnotados.length);
-        for (const fase of Object.values(this.FASES)) {
-            this.categoria.partidosLlaves.push(...partidos[fase]);
+        if (!this.categoria.partidosLlaves.length) {
+            const partidos = this.generarPartidos(this.categoria.jugadoresAnotados.length);
+            for (const fase of Object.values(this.FASES)) {
+                this.categoria.partidosLlaves.push(...partidos[fase]);
+            }
         }
+
 
     },
     methods: {
@@ -130,7 +133,7 @@ export default {
         calcularNumeroDeRondas(nroJugadores) {
             let nroRondas = Math.ceil(Math.log2(nroJugadores));
             const jugadoresLlavesPerfectas = Math.pow(2, Math.floor(Math.log2(nroJugadores)));
-            if ( nroJugadores != jugadoresLlavesPerfectas) {
+            if (nroJugadores != jugadoresLlavesPerfectas) {
                 nroRondas--;
             }
             return nroRondas
@@ -189,7 +192,7 @@ export default {
                 const jugadoresLlavesPerfectas = Math.pow(2, Math.floor(Math.log2(nroJugadores)));
                 // Calcula la diferencia entre el número y la potencia de 2 más cercana y menor
                 let jugadoresLlavesAjustes = nroJugadores - jugadoresLlavesPerfectas;
-                
+
                 const partidosFaseAnterior = partidosLlaves[this.FASES[rondas]];
                 console.log('jugadores llaves ajustes:', jugadoresLlavesAjustes);
 

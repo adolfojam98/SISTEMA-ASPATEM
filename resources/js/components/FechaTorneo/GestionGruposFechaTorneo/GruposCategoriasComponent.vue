@@ -107,6 +107,19 @@ export default {
       if (gruposDePartidos.length > 0) {
         this.categoriaSeleccionada.listaGrupos = gruposDePartidos;
       }
+
+     let partidosLlaves = [];
+      partidos.forEach((partido) => {
+        if (!partido.grupo) {
+          const { id, jugadores, setsJugador1, setsJugador2, sig_partido_id,fase } = partido;
+          const nuevoPartido = { id, jugador1: jugadores.jugador1, jugador2: jugadores.jugador2, setsJugador1, setsJugador2, idPartidoPadre: sig_partido_id, fase: fase.nombre };
+          partidosLlaves.push(nuevoPartido);
+        }
+      });
+      if (partidosLlaves.length > 0) {
+        this.categoriaSeleccionada.partidosLlaves = partidosLlaves;
+      }
+
     }
   },
 }

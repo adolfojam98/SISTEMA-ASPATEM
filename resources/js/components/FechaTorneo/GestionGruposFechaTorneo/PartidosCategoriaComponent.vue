@@ -59,12 +59,19 @@ export default {
     }
   },
   created() {
-    if (this.categoria.listaGrupos.length) {
-      this.gruposGenerados = true;
+    this.recargarVariables();
+  },
+  watch: {
+    categoria: function () {
+      this.recargarVariables();
     }
   },
   methods: {
     ...mapActions(["callSnackbar"]),
+    recargarVariables() {
+      this.gruposGenerados = this.categoria.listaGrupos.length ? true : false;
+      this.llavesGeneradas = this.categoria.partidosLlaves.length ? true : false;
+    },
 
     generarGrupos() {
       const jugadoresAgrupados = this.agruparJugadores(this.categoria.jugadoresAnotados, this.categoria.cantidadGrupos);
