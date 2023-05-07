@@ -34,9 +34,9 @@
     </v-data-table>
 
     <div v-if="busquedaRealizada">
-       <grupos-categorias  :categorias="listaCategorias" :listaJugadores="listaJugadores"></grupos-categorias>
+      <grupos-categorias :categorias="listaCategorias" :listaJugadores="listaJugadores"></grupos-categorias>
     </div>
-   
+
   </div>
 </template>
 
@@ -81,6 +81,7 @@ export default {
     nombreTorneo: (item) => item.nombre,
     nombreFecha: (item) => item.nombre,
     getFechas() {
+      this.vaciarVariables();
       if (this.torneoSeleccionado) {
         axios.get(`/torneo/${this.torneoSeleccionado.id}/fechas`).then((res) => {
           this.fechas = res.data
@@ -90,9 +91,14 @@ export default {
         })
       }
     },
-
+    vaciarVariables() {
+      this.listaJugadores = [];
+      this.listaCategorias = [];
+      this.jugadoresAnotados = [];
+},
     async cargarFecha() {
       try {
+
         const [fechaResponse, jugadoresAnotadosResponse] = await Promise.all([
           axios.get(`/fechas/${this.fechaSeleccionada.id}`),
           axios.get(`/fechas/${this.fechaSeleccionada.id}/usuarios`)
