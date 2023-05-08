@@ -18,9 +18,9 @@ class CreatePartidoUsuarioTable extends Migration
             $table->timestamps();
 
         
-            $table->integer('sets');
+            $table->integer('sets')->nullable();;
 
-            $table->BigInteger('usuario_id')->unsigned();
+            $table->BigInteger('usuario_id')->unsigned()->nullable();
             $table->BigInteger('partido_id')->unsigned();
 
             $table->foreign('usuario_id')->references('id')->on('usuarios')

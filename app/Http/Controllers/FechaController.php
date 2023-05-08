@@ -78,9 +78,40 @@ class FechaController extends ApiController
      * @param  \App\Fecha  $fecha
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Fecha $fecha)
+    public function update(Request $request, $fecha_id)
     {
-        //
+        try
+            {
+                $request->validate([
+                    "nombre" => 'string|nullable',
+                    "vigencia" => 'boolean|nullable',
+                    "monto_no_socios_dos_categorias" => 'numeric|nullable',
+                    "monto_no_socios_una_categoria" => 'numeric|nullable',
+                    "monto_socios_dos_categorias" => 'numeric|nullable',
+                    "monto_socios_una_categoria" => 'numeric|nullable'
+                ]);
+                
+                $service = new FechaService();
+                $fecha = $service->update(
+                    $fecha_id,
+                    $request->get('nombre'),
+                    $request->get('vigencia'),
+                    $request->get('monto_no_socios_dos_categorias'), 
+                    $request->get('monto_no_socios_una_categoria'),
+                    $request->get('monto_socios_dos_categorias'),
+                    $request->get('monto_socios_una_categoria')
+                );
+                
+                if ($service->hasErrors()) {
+                    return $this->sendServiceError($service->getLastError());
+                } 
+
+                return $fecha;
+            }
+        catch(Exception $e)
+            {
+                return $this->sendError($e->errorInfo[2]);
+            }
     }
 
     /**
@@ -236,10 +267,10 @@ class FechaController extends ApiController
                     'partidos' => 'required|array',
                     'partidos.*' => 'required',
                     'partidos.*.fase' => 'required | string',
-                    'partidos.*.id_jugador1' => 'required',
-                    'partidos.*.id_jugador2' => 'required',
-                    'partidos.*.set_jugador1' => 'required',
-                    'partidos.*.set_jugador2' => 'required | different:partidos.*.set_jugador1'
+                    // 'partidos.*.id_jugador1' => 'required',
+                    // 'partidos.*.id_jugador2' => 'required',
+                    // 'partidos.*.set_jugador1' => 'required',
+                    // 'partidos.*.set_jugador2' => 'required | different:partidos.*.set_jugador1'
                 ]);
 
                 $servicePartido = new PartidoService();
@@ -268,6 +299,7 @@ class FechaController extends ApiController
                         "set_jugador1" => $partido->set_jugador1,
                         "set_jugador2" => $partido->set_jugador2
                     ];
+                    
                     $partidoNuevo = $servicePartido->createPartido($id, $categoria_id, $partido->fase, $partido->grupo_nombre ?? null, $partido_info);
                     $partidoNuevo->fake_id = $partido->id ?? null;
                     $partidoNuevo->fake_padre_id = $partido->sig_partido_id ?? null;

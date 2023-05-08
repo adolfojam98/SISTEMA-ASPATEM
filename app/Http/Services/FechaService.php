@@ -19,6 +19,7 @@ class FechaService extends BaseService
         parent::__construct();
 
         $this->errorDefinitions[] = new Error("FEC0001", "Unespected error", "Unespected", 500);
+        $this->errorDefinitions[] = new Error("FEC0002", "Hay partidos sin usuarios asignados.", "Unespected", 500);
     }
 
     function fechaUsuarioDelete($fecha_id, $usuario_id)
@@ -41,6 +42,58 @@ class FechaService extends BaseService
             $fecha_usuario->puntos = 0;
             $fecha_usuario->save();
         }
+    }
+
+    function validarPartidosFecha($fecha_id)
+    {
+        // siempre LIMPIAR errores al iniciar un proceso de servicio
+        $this->clearErrors();
+        $valid = true;
+
+        $fecha_usuarios = FechaUsuario::where('fecha_id', $fecha_id)->get();
+
+        foreach ($fecha_usuarios as $key => $fecha_usuario) {
+            if(!$fecha_usuario->usuario_id) {
+                $valid = false;
+            }
+        }
+
+        return $valid;
+    }
+
+    function update($fecha_id, $nombre = null, $vigencia = null, $monto_no_socios_dos_categorias = null, $monto_no_socios_una_categoria = null, $monto_socios_dos_categorias = null, $monto_socios_una_categoria = null)
+    {
+        // siempre LIMPIAR errores al iniciar un proceso de servicio
+        $this->clearErrors();
+
+        $fecha = Fecha::find($fecha_id)->first();
+
+        if($nombre)
+            $fecha->nombre = $nombre;
+
+        if(isset($vigencia)) {
+            $fecha->vigencia = $vigencia;
+
+            $partidosValidos = $this->validarPartidosFecha($fecha_id);
+            if(!$partidosValidos) {
+                $this->setError("FEC0002");
+            }
+        }
+
+        if(isset($monto_no_socios_dos_categorias))
+            $fecha->monto_no_socios_dos_categorias = $monto_no_socios_dos_categorias;
+
+        if(isset($monto_no_socios_una_categoria))
+            $fecha->monto_no_socios_una_categoria = $monto_no_socios_una_categoria;
+
+        if(isset($monto_socios_dos_categorias))
+            $fecha->monto_socios_dos_categorias = $monto_socios_dos_categorias;
+
+        if(isset($monto_socios_una_categoria))
+            $fecha->monto_socios_una_categoria = $monto_socios_una_categoria;
+
+        $fecha->save();
+        return $fecha;
     }
 
     function updateFechaUsuario($fecha_id, $usuario_id, $categoria_mayor_id = null, $categoria_menor_id = null, $monto_pagado = null, $puntos = null)
@@ -133,34 +186,36 @@ class FechaService extends BaseService
             //por cada partido busco los jugadores por su id en la lista de jugadores (reutilizamos para tomar los puntos ya calculados)
             $jugadores_partido = $partido->jugadores()->get();
 
-            $keyJugadorUno = array_search($jugadores_partido[0]->id, array_column($jugadores['ranking'], 'usuario_id'));
-            $keyJugadorDos = array_search($jugadores_partido[1]->id, array_column($jugadores['ranking'], 'usuario_id'));
+            //chequeamos si el partido tiene todos los datos cargados (puede cargarse a medias)
+            if(count($jugadores_partido) == 2 && isset($jugadores_partido[0]->pivot->sets) && isset($jugadores_partido[1]->pivot->sets)) {
+                $keyJugadorUno = array_search($jugadores_partido[0]->id, array_column($jugadores['ranking'], 'usuario_id'));
+                $keyJugadorDos = array_search($jugadores_partido[1]->id, array_column($jugadores['ranking'], 'usuario_id'));
 
-            $puntosParaJugadorUno = 0;
-            $puntosParaJugadorDos = 0;
+                $puntosParaJugadorUno = 0;
+                $puntosParaJugadorDos = 0;
 
-            //aqui tenemos los jugadores
-            $jugadorUno = $jugadores['ranking'][$keyJugadorUno];
-            $jugadorDos = $jugadores['ranking'][$keyJugadorDos];
+                //aqui tenemos los jugadores
+                $jugadorUno = $jugadores['ranking'][$keyJugadorUno];
+                $jugadorDos = $jugadores['ranking'][$keyJugadorDos];
 
-            //TODO checkear que los puntos esten bien cuando haya más de una fecha
-            //TODO falta ver y asignar lo que pagaron los jugadores
+                //TODO checkear que los puntos esten bien cuando haya más de una fecha
+                //TODO falta ver y asignar lo que pagaron los jugadores
 
-            //vemos si son de la misma categoria
-            $mismaCategoria = $jugadorUno['categoria'] == $jugadorDos['categoria'];
+                //vemos si son de la misma categoria
+                $mismaCategoria = $jugadorUno['categoria'] == $jugadorDos['categoria'];
 
-            //vemos si jugador1 tiene puntos >= a jugador2
-            $jugadorUnoMasPuntos = $jugadorUno['puntos'] >= $jugadorDos['puntos'];
+                //vemos si jugador1 tiene puntos >= a jugador2
+                $jugadorUnoMasPuntos = $jugadorUno['puntos'] >= $jugadorDos['puntos'];
 
-            //vemos si jugador1 gano
-            $jugadorUnoGano = $jugadores_partido[0]->pivot->sets > $jugadores_partido[1]->pivot->sets;
+                //vemos si jugador1 gano
+                $jugadorUnoGano = $jugadores_partido[0]->pivot->sets > $jugadores_partido[1]->pivot->sets;
 
-            //asigno los puntos en funcion de lo anterior y del ganador y perdedor
-            $puntosObtenidosPorJugador = $this->calcularPuntosJugadoresPartidos($torneo, $mismaCategoria, $jugadorUnoMasPuntos, $jugadorUnoGano);
+                //asigno los puntos en funcion de lo anterior y del ganador y perdedor
+                $puntosObtenidosPorJugador = $this->calcularPuntosJugadoresPartidos($torneo, $mismaCategoria, $jugadorUnoMasPuntos, $jugadorUnoGano);
 
-            $this->updateFechaUsuario($fecha_id, $jugadores_partido[0]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorUno); //se van sumando los puntos
-            $this->updateFechaUsuario($fecha_id, $jugadores_partido[1]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorDos); //se van sumando los puntos
-
+                $this->updateFechaUsuario($fecha_id, $jugadores_partido[0]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorUno); //se van sumando los puntos
+                $this->updateFechaUsuario($fecha_id, $jugadores_partido[1]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorDos); //se van sumando los puntos
+            }
         }
     }
 

@@ -17,6 +17,7 @@ class CreateFechasTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('nombre');
+            $table->boolean('vigencia')->defaultValue(true);
             $table->integer('monto_no_socios_dos_categorias');
             $table->integer('monto_no_socios_una_categoria');
             $table->integer('monto_socios_dos_categorias');
