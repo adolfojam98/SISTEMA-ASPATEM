@@ -299,7 +299,7 @@ class FechaController extends ApiController
                         "set_jugador1" => $partido->set_jugador1,
                         "set_jugador2" => $partido->set_jugador2
                     ];
-                    
+
                     $partidoNuevo = $servicePartido->createPartido($id, $categoria_id, $partido->fase, $partido->grupo_nombre ?? null, $partido_info);
                     $partidoNuevo->fake_id = $partido->id ?? null;
                     $partidoNuevo->fake_padre_id = $partido->sig_partido_id ?? null;
@@ -576,6 +576,7 @@ function crearNuevaFecha(Request $request)
     $fecha->monto_no_socios_una_categoria   = $request->montoNoSociosUnaCategoria;
     $fecha->monto_no_socios_dos_categorias  = $request->montoNoSociosDosCategorias;
     $fecha->torneo_id                       = $request->torneoId;
+    $fecha->vigencia                        = true;
     $fecha->save();
     return $fecha;
 
