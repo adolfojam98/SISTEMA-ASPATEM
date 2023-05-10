@@ -25,16 +25,16 @@ class FechaPartido extends JsonResource
             ],
             'jugadores' => [
                 'jugador1' => [
-                    'id' => $this->jugadores[0]->id,
-                    'nombre' => $this->jugadores[0]->nombre,
-                    'apellido' => $this->jugadores[0]->apellido,
-                    'sets' => $this->jugadores[0]->pivot->sets,
+                    'id' => $this->jugadores[0] ? $this->jugadores[0]->id : null,
+                    'nombre' => $this->jugadores[0] ? $this->jugadores[0]->nombre : null,
+                    'apellido' => $this->jugadores[0] ? $this->jugadores[0]->apellido : null,
+                    'sets' => $this->jugadores[0] ? $this->jugadores[0]->pivot->sets : null,
                 ],
                 'jugador2' => [
-                    'id' => $this->jugadores[1]->id,
-                    'nombre' => $this->jugadores[1]->nombre,
-                    'apellido' => $this->jugadores[1]->apellido,
-                    'sets' => $this->jugadores[1]->pivot->sets,
+                    'id' => $this->jugadores[1] ? $this->jugadores[0]->id : null,
+                    'nombre' => $this->jugadores[1] ? $this->jugadores[0]->nombre : null,
+                    'apellido' => $this->jugadores[1] ? $this->jugadores[0]->apellido : null,
+                    'sets' => $this->jugadores[1] ? $this->jugadores[0]->pivot->sets : null,
                 ],
             ]
         ];
