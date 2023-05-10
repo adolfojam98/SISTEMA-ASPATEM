@@ -31,10 +31,10 @@ class FechaPartido extends JsonResource
                     'sets' => $this->jugadores[0] ? $this->jugadores[0]->pivot->sets : null,
                 ],
                 'jugador2' => [
-                    'id' => $this->jugadores[1] ? $this->jugadores[0]->id : null,
-                    'nombre' => $this->jugadores[1] ? $this->jugadores[0]->nombre : null,
-                    'apellido' => $this->jugadores[1] ? $this->jugadores[0]->apellido : null,
-                    'sets' => $this->jugadores[1] ? $this->jugadores[0]->pivot->sets : null,
+                    'id' => $this->jugadores[1] ? $this->jugadores[1]->id : null,
+                    'nombre' => $this->jugadores[1] ? $this->jugadores[1]->nombre : null,
+                    'apellido' => $this->jugadores[1] ? $this->jugadores[1]->apellido : null,
+                    'sets' => $this->jugadores[1] ? $this->jugadores[1]->pivot->sets : null,
                 ],
             ]
         ];
