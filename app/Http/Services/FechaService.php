@@ -117,12 +117,12 @@ class FechaService extends BaseService
             $fecha_usuario->fecha_id = $fecha_id;
             $fecha_usuario->usuario_id = $usuario_id;
 
-            if ($categoria_menor_id) {
+            if (isset($categoria_menor_id)) {
                 $fecha_usuario->categoria_menor_id = $categoria_menor_id;
                 $numCategorias++;
             }
 
-            if ($categoria_mayor_id) {
+            if (isset($categoria_mayor_id)) {
                 $fecha_usuario->categoria_mayor_id = $categoria_mayor_id;
                 $numCategorias++;
             }
@@ -153,9 +153,9 @@ class FechaService extends BaseService
         $statusSocio = Usuario::find($usuarioId)->socio();
 
         if ($statusSocio->activo) {
-            return $numCategorias == 1 ? $fecha->monto_socios_una_categoria : $fecha->monto_socio_dos_categorias;
+            return $numCategorias == 1 ? $fecha->monto_socios_una_categoria : $fecha->monto_socios_dos_categorias;
         } else {
-            return $numCategorias == 1 ? $fecha->monto_no_socios_una_categoria : $fecha->monto_no_socio_dos_categorias;
+            return $numCategorias == 1 ? $fecha->monto_no_socios_una_categoria : $fecha->monto_no_socios_dos_categorias;
         }
 
         return 0;
