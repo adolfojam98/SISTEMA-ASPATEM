@@ -162,25 +162,8 @@ class FechaController extends ApiController
                 // 'puntos' => ['nullable']
             ]);
 
-            //consultamos el monto
-            $numCategorias = 0;
-            if(isset($request->get('categoria_mayor_id'))) {
-                $numCategorias++;
-            }
-            if(isset($request->get('categoria_menor_id'))) {
-                $numCategorias++;
-            }
-
-            $service = new FechaService()
-
-            $monto_pagado = $service->calculateMonto($id, $usuario_id, $);
-
-            if ($service->hasErrors()) {
-                return $this->sendServiceError($service->getLastError());
-            }
-
-            $fecha_usuario = $service->updateFechaUsuario($id, $usuario_id, $request->get('categoria_mayor_id'), $request->get('categoria_menor_id'), $monto_pagado, $request->get('puntos'));
-            
+            $service = new FechaService();
+            $fecha_usuario = $service->updateFechaUsuario($id, $usuario_id, $request->get('categoria_mayor_id'), $request->get('categoria_menor_id'), $request->get('monto_pagado'), $request->get('puntos'));
             if ($service->hasErrors()) {
                 return $this->sendServiceError($service->getLastError());
             }
