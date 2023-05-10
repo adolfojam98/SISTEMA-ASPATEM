@@ -294,10 +294,10 @@ class FechaController extends ApiController
 
                     $partido_info = (object) [
                         "id_partido" => $partido->id ?? null,
-                        "id_jugador1" => $partido->id_jugador1,
-                        "id_jugador2" => $partido->id_jugador2,
-                        "set_jugador1" => $partido->set_jugador1,
-                        "set_jugador2" => $partido->set_jugador2
+                        "id_jugador1" => $partido->id_jugador1 ?? null,
+                        "id_jugador2" => $partido->id_jugador2 ?? null,
+                        "set_jugador1" => $partido->set_jugador1 ?? null,
+                        "set_jugador2" => $partido->set_jugador2 ?? null
                     ];
 
                     $partidoNuevo = $servicePartido->createPartido($id, $categoria_id, $partido->fase, $partido->grupo_nombre ?? null, $partido_info);
