@@ -18,7 +18,6 @@
     </div>
 
 
-
     <!-- MODAL CATEGORIA -->
     <div v-if="categoriaSeleccionada">
       <v-row justify="center">
@@ -52,75 +51,15 @@ export default {
     }
   }, methods: {
 
-    async abrirModalCategoria(categoria) {
+     abrirModalCategoria(categoria) {
       console.log(categoria);
-      const res = await axios.get(`/fechas/${categoria.fecha_id}/categoria/${categoria.id}/partidos`);
-      const partidos = res.data.body;
-      this.categoriaSeleccionada = categoria
-      if (partidos.length > 0) {
-        this.mapearPartidosDeCategoria(partidos);
-      }
+      this.categoriaSeleccionada = categoria;
       console.log(categoria);
       console.log('abriendoModalCategoria');
       this.modalPartidosCategoria = true;
     },
-    mapearJugadoresDePartido(partido, listaJugadores) {
-      const { jugador1, jugador2 } = partido.jugadores;
-      partido.setsJugador1 = jugador1.sets;
-      partido.setsJugador2 = jugador2.sets;
-      partido.jugadores.jugador1 = listaJugadores.find(jugador => jugador.usuario_id == jugador1.id);
-      partido.jugadores.jugador2 = listaJugadores.find(jugador => jugador.usuario_id == jugador2.id);
-    },
+ 
 
-    mapearPartidosDeCategoria(partidos) {
-      for (const partido of partidos) {
-        this.mapearJugadoresDePartido(partido, this.listaJugadores);
-      }
-
-      const gruposDePartidos = partidos.reduce((grupos, partido) => {
-        if (partido.grupo) {
-          const { id, jugadores, setsJugador1, setsJugador2 } = partido;
-          const { nombre } = partido.grupo;
-          const nuevoPartido = { id, jugador1: jugadores.jugador1, jugador2: jugadores.jugador2, setsJugador1, setsJugador2 };
-
-          const grupoExistente = grupos.find(grupo => grupo.nombre === nombre);
-
-          if (!grupoExistente) {
-            const nuevoGrupo = { nombre, partidos: [nuevoPartido], jugadoresDelGrupo: [jugadores.jugador1, jugadores.jugador2] };
-            grupos.push(nuevoGrupo);
-          } else {
-            grupoExistente.partidos.push(nuevoPartido);
-
-            if (!grupoExistente.jugadoresDelGrupo.some(jugador => jugador.usuario_id === jugadores.jugador1.usuario_id)) {
-              grupoExistente.jugadoresDelGrupo.push(jugadores.jugador1);
-            }
-
-            if (!grupoExistente.jugadoresDelGrupo.some(jugador => jugador.usuario_id === jugadores.jugador2.usuario_id)) {
-              grupoExistente.jugadoresDelGrupo.push(jugadores.jugador2);
-            }
-          }
-        }
-
-        return grupos;
-      }, []);
-
-      if (gruposDePartidos.length > 0) {
-        this.categoriaSeleccionada.listaGrupos = gruposDePartidos;
-      }
-
-     let partidosLlaves = [];
-      partidos.forEach((partido) => {
-        if (!partido.grupo) {
-          const { id, jugadores, setsJugador1, setsJugador2, sig_partido_id,fase } = partido;
-          const nuevoPartido = { id, jugador1: jugadores.jugador1, jugador2: jugadores.jugador2, setsJugador1, setsJugador2, idPartidoPadre: sig_partido_id, fase: fase.nombre };
-          partidosLlaves.push(nuevoPartido);
-        }
-      });
-      if (partidosLlaves.length > 0) {
-        this.categoriaSeleccionada.partidosLlaves = partidosLlaves;
-      }
-
-    }
   },
 }
 </script>

@@ -54,7 +54,7 @@ class PartidoService extends BaseService
         foreach ($partidos as $key => $partido) {
             if ($partido->fake_padre_id) {
                 foreach ($partidos as $k => $p) {
-                    if ($partido->fake_padre_id === $p->fake_id) {
+                    if ($partido->fake_padre_id == $p->fake_id) {
                         $partido->sig_partido_id = $p->id;
                         break;
                     }
