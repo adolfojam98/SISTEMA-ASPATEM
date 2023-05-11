@@ -33,9 +33,14 @@
         </template>
     </v-data-table>
 
+
     <div v-if="busquedaRealizada">
       <grupos-categorias :categorias="listaCategorias" :listaJugadores="listaJugadores"></grupos-categorias>
     </div>
+
+    <v-btn color="success" dark @click="guardarFecha()">
+      GUARDAR FECHA
+    </v-btn>
 
   </div>
 </template>
@@ -91,11 +96,56 @@ export default {
         })
       }
     },
+    guardarFecha() {
+      try{
+      this.validarGuardarFecha();
+      // axios.post(`fechas/${this.fechaSeleccionada.id}`).then((res) => {
+      //   console.log(res);
+      // }) 
+      }catch(e){
+        console.log(e);
+      }
+      
+    },
+    validarGuardarFecha() {
+      this.listaCategorias.forEach(categoria => {
+        if (!categoria.jugadoresAnotados || !categoria.jugadoresAnotados.length > 0) {
+          return;
+        }
+        //TODO validar si una categoria tiene jugadoresAnotados pero no partidos
+        //validar partidos fase de grupo
+        const isPartidosGruposValid = categoria.listaGrupos.every(grupo => grupo.partidos.every(partido => this.validarPartido(partido)));
+
+        console.log(categoria);
+        if (!isPartidosGruposValid) {
+          throw `Hay al menos un partido sin cargar o en empate en los grupos en la categoria ${categoria.nombre}`;
+        }
+
+        //validar partidos llaves
+       const isPartidosLlaveValid = categoria.partidosLlaves.every(partido => this.validarPartido(partido));
+        if(!isPartidosLlaveValid){
+          throw `Hay al menos un partido sin cargar o en empate en la llave en la categoria ${categoria.nombre}`;
+        }
+
+      });
+    },
+    validarPartido(partido){
+      if(!partido.jugador1 || !partido.jugador2){
+        return false;
+      }
+      if(!partido.setsJugador1 || !partido.setsJugador2){
+        return false;
+      }
+      const setsJugador1 = parseInt(partido.setsJugador1);
+      const setsJugador2 = parseInt(partido.setsJugador2);
+
+      return  setsJugador1 !== setsJugador2;
+    },
     vaciarVariables() {
       this.listaJugadores = [];
       this.listaCategorias = [];
       this.jugadoresAnotados = [];
-},
+    },
     async cargarFecha() {
       try {
 
@@ -121,10 +171,78 @@ export default {
           }
         });
         this.agregarJugadoresAnotados(listaJugadoresAnotados);
-
+        this.mapearPartidosJugadosCategorias();
       } catch (error) {
         console.error(error);
       }
+    },
+
+    async mapearPartidosJugadosCategorias() {
+      this.listaCategorias.forEach(async (categoria) => {
+        const res = await axios.get(`/fechas/${categoria.fecha_id}/categoria/${categoria.id}/partidos`);
+        const partidos = res.data.body;
+        this.categoriaSeleccionada = categoria
+        if (partidos.length > 0) {
+          this.mapearPartidosDeCategoria(partidos);
+        }
+      });
+    },
+    mapearJugadoresDePartido(partido, listaJugadores) {
+      const { jugador1, jugador2 } = partido.jugadores;
+      partido.setsJugador1 = jugador1?.sets;
+      partido.setsJugador2 = jugador2?.sets;
+      partido.jugadores.jugador1 = listaJugadores.find(jugador => jugador.usuario_id == jugador1?.id);
+      partido.jugadores.jugador2 = listaJugadores.find(jugador => jugador.usuario_id == jugador2?.id);
+    },
+
+    mapearPartidosDeCategoria(partidos) {
+      for (const partido of partidos) {
+        this.mapearJugadoresDePartido(partido, this.listaJugadores);
+      }
+
+      const gruposDePartidos = partidos.reduce((grupos, partido) => {
+        if (partido.grupo) {
+          const { id, jugadores, setsJugador1, setsJugador2 } = partido;
+          const { nombre } = partido.grupo;
+          const nuevoPartido = { id, jugador1: jugadores.jugador1, jugador2: jugadores.jugador2, setsJugador1, setsJugador2 };
+
+          const grupoExistente = grupos.find(grupo => grupo.nombre === nombre);
+
+          if (!grupoExistente) {
+            const nuevoGrupo = { nombre, partidos: [nuevoPartido], jugadoresDelGrupo: [jugadores.jugador1, jugadores.jugador2] };
+            grupos.push(nuevoGrupo);
+          } else {
+            grupoExistente.partidos.push(nuevoPartido);
+
+            if (!grupoExistente.jugadoresDelGrupo.some(jugador => jugador.usuario_id === jugadores.jugador1.usuario_id)) {
+              grupoExistente.jugadoresDelGrupo.push(jugadores.jugador1);
+            }
+
+            if (!grupoExistente.jugadoresDelGrupo.some(jugador => jugador.usuario_id === jugadores.jugador2.usuario_id)) {
+              grupoExistente.jugadoresDelGrupo.push(jugadores.jugador2);
+            }
+          }
+        }
+
+        return grupos;
+      }, []);
+
+      if (gruposDePartidos.length > 0) {
+        this.categoriaSeleccionada.listaGrupos = gruposDePartidos;
+      }
+
+      let partidosLlaves = [];
+      partidos.forEach((partido) => {
+        if (!partido.grupo) {
+          const { id, jugadores, setsJugador1, setsJugador2, sig_partido_id, fase } = partido;
+          const nuevoPartido = { id, jugador1: jugadores.jugador1, jugador2: jugadores.jugador2, setsJugador1, setsJugador2, idPartidoPadre: sig_partido_id, fase: fase.nombre };
+          partidosLlaves.push(nuevoPartido);
+        }
+      });
+      if (partidosLlaves.length > 0) {
+        this.categoriaSeleccionada.partidosLlaves = partidosLlaves;
+      }
+
     },
 
     agregarJugadoresAnotados(listaJugadoresAnotados) {
@@ -182,6 +300,7 @@ export default {
           this.actualizarEstadoJugador(res.data.body);
         });
     },
+
     actualizarEstadoJugador(estadoJugador) {
       const jugador = this.listaJugadores.find(j => j.usuario_id == estadoJugador.usuario_id);
       const categoriaSuperior = this.getCategoriaSuperiorJugador(jugador);
