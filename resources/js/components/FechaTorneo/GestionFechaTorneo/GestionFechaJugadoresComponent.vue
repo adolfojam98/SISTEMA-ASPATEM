@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <v-container>
@@ -36,17 +37,19 @@
 
     <div v-if="busquedaRealizada">
       <grupos-categorias :categorias="listaCategorias" :listaJugadores="listaJugadores"></grupos-categorias>
-    </div>
-
     <v-btn color="success" dark @click="guardarFecha()">
       GUARDAR FECHA
     </v-btn>
+    </div>
+
+   
 
   </div>
 </template>
 
 
 <script>
+import { mapActions } from 'vuex';
 export default {
   data() {
     return {
@@ -83,6 +86,7 @@ export default {
     });
   },
   methods: {
+    ...mapActions(['callSnackbar']),
     nombreTorneo: (item) => item.nombre,
     nombreFecha: (item) => item.nombre,
     getFechas() {
@@ -103,7 +107,7 @@ export default {
       //   console.log(res);
       // }) 
       }catch(e){
-        console.log(e);
+        this.callSnackbar([e,'error'])
       }
       
     },
@@ -112,8 +116,10 @@ export default {
         if (!categoria.jugadoresAnotados || !categoria.jugadoresAnotados.length > 0) {
           return;
         }
-        //TODO validar si una categoria tiene jugadoresAnotados pero no partidos
-        //validar partidos fase de grupo
+  if(categoria.jugadoresAnotados.length > 0 && categoria.listaGrupos.length === 0 ){
+    console.log('categoria a medio llenar: ',categoria)
+throw `La categoria ${categoria.nombre} tiene jugadores anotados pero le faltan partidos`;
+  }
         const isPartidosGruposValid = categoria.listaGrupos.every(grupo => grupo.partidos.every(partido => this.validarPartido(partido)));
 
         console.log(categoria);
@@ -142,6 +148,7 @@ export default {
       return  setsJugador1 !== setsJugador2;
     },
     vaciarVariables() {
+      this.busquedaRealizada = false;
       this.listaJugadores = [];
       this.listaCategorias = [];
       this.jugadoresAnotados = [];
@@ -331,22 +338,37 @@ export default {
 
     agregarJugadorEnSuCategoria(jugador) {
       const estadoJugador = this.getEstadoJugador(jugador);
+      const categoriaJugador = this.getCategoriaJugador(jugador);
+      console.log('categoriaJugaodor: ', categoriaJugador);
+
+      if(categoriaJugador.listaGrupos.length > 0){
+        this.callSnackbar(['No se puede realizar el cambio ya que se esta jugando la categoria','error']);
+        return;
+      }
+
       if (estadoJugador.categoria_menor_id) {
         estadoJugador.categoria_menor_id = null
       } else {
-        estadoJugador.categoria_menor_id = this.getCategoriaJugador(jugador).id;
+        estadoJugador.categoria_menor_id = categoriaJugador.id;
       }
+
       this.agregarJugadorEnCategoria(estadoJugador);
 
     },
 
     agregarJugadorEnLaCategoriaSuperior(jugador) {
-
       const estadoJugador = this.getEstadoJugador(jugador);
+      const categoriaSuperiorJugador = this.getCategoriaSuperiorJugador(jugador);
+
+      if(categoriaSuperiorJugador.listaGrupos.length > 0){
+        this.callSnackbar(['No se puede realizar el cambio ya que se esta jugando la categoria','error']);
+        return;
+      }
+
       if (estadoJugador.categoria_mayor_id) {
         estadoJugador.categoria_mayor_id = null
       } else {
-        estadoJugador.categoria_mayor_id = this.getCategoriaSuperiorJugador(jugador).id;
+        estadoJugador.categoria_mayor_id = categoriaSuperiorJugador.id;
       }
       this.agregarJugadorEnCategoria(estadoJugador);
 

@@ -31,6 +31,8 @@
 
       </div>
       <div v-if="llavesGeneradas">
+        <v-btn class='ml-7' @click="[deshacerLlaves()]" color="primary">Deshacer
+          llaves</v-btn>
         <resultados-grupos :categoria="categoria">
         </resultados-grupos>
         <partidos-fase-llaves :categoria="categoria"></partidos-fase-llaves>
@@ -169,10 +171,10 @@ export default {
 
       return true;
     },
-    deshacerLlaves(categoria) {
+    deshacerLlaves() {
       console.log("Ejecución deshacerLlaves");
-      categoria.partidosLlaves = [];
-      categoria.llavesGeneradas = false;
+      this.categoria.partidosLlaves = [];
+      this.llavesGeneradas = false;
     },
     mostrarNotificacion(mensaje) {
       console.log(`Notificación: ${mensaje[0]} (${mensaje[1]})`);
@@ -183,7 +185,7 @@ export default {
       axios.post(`/fechas/${this.categoria.fecha_id}/categoria/${this.categoria.id}`, {
         'partidos': partidosRequest
       }).then(res => {
-        console.log(res)
+        this.callSnackbar(["categoria guardada correctamente", "success"])
       });
     },
 

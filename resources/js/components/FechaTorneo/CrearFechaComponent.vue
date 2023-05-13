@@ -5,15 +5,14 @@
         <datos-fecha></datos-fecha>
         <v-card elevation="4" class="rounded-sm">
           <jugadores-fecha></jugadores-fecha>
-        </v-card> 
+        </v-card>
       </v-container>
     </v-card>
     <v-card v-if="listaCategorias.length > 0" dark>
       <grupos-fecha></grupos-fecha>
+      <v-btn class="primary mt-3 mb-3" @click="guardarFechaComponent()">Guardar Fecha</v-btn>
     </v-card>
-    <v-btn class="primary mt-3 mb-3" @click="guardarFechaComponent()"
-      >Guardar Fecha</v-btn
-    >
+
 
     <!-- <v-dialog
       v-model="showValidaciones"
@@ -101,7 +100,7 @@ export default {
         let mensajes = 'No se ha podido guardar: <ul>'
 
         this.validaciones.forEach(validacion => {
-            mensajes += '<li>' + validacion.mensaje + '</li>'
+          mensajes += '<li>' + validacion.mensaje + '</li>'
         })
 
         mensajes += '</ul>'
@@ -155,9 +154,9 @@ export default {
       let valido = true;
       categoria.partidosLlaves.forEach((partido) => {
         partido.jugador1 == null ||
-        partido.jugador2 == null ||
-        partido.set1 == null ||
-        partido.set2 == null
+          partido.jugador2 == null ||
+          partido.set1 == null ||
+          partido.set2 == null
           ? (valido = false)
           : true;
       });
