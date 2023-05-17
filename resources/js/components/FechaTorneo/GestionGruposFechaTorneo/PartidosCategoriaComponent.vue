@@ -1,5 +1,6 @@
 <template>
   <div>
+    <v-container>
     <div v-if="categoria.jugadoresAnotados">
 
       <v-form v-model="valid" lazy-validation v-if="!gruposGenerados">
@@ -15,31 +16,71 @@
           </p>
           <v-switch v-model="categoria.gruposConEliminatoria" label="Fase de grupos con eliminatoria"
             class="ml-2 mt-0"></v-switch>
-
           <v-btn class="ml-2 mr-4" dark :disabled="!valid" @click="[generarGrupos()]" color="primary">Generar
             grupos</v-btn>
         </v-col>
       </v-form>
-      <v-divider></v-divider>
 
       <div v-if="gruposGenerados && !llavesGeneradas" class="mt-3">
-        <v-btn class='ml-7' @click="[deshacerGrupos()]" color="primary">Deshacer
+        <v-btn class='ml-7' @click="[confirmModalDeshacerGrupos = true]" color="primary">Deshacer
           grupos</v-btn>
 
         <partidos-fase-grupos :categoria="categoria" @generar-llaves="generarLLavess"></partidos-fase-grupos>
 
 
       </div>
-      <div v-if="llavesGeneradas">
-        <v-btn class='ml-7' @click="[deshacerLlaves()]" color="primary">Deshacer
+      <div v-if="llavesGeneradas" class="mt-3">
+        <v-btn class='ml-7' @click="[confirmModalDeshacerLlaves = true]" color="primary">Deshacer
           llaves</v-btn>
         <resultados-grupos :categoria="categoria">
         </resultados-grupos>
         <partidos-fase-llaves :categoria="categoria"></partidos-fase-llaves>
       </div>
       <br>
-      <v-btn color="success" @click='guardarFecha()'>guardar fecha</v-btn>
+
+         <v-btn  class="ma-3" color="success" @click='guardarFecha()'>Guardar partidos</v-btn>
     </div>
+
+    <!-- DIALOGS -->
+
+    <v-dialog persist v-model="confirmModalDeshacerLlaves" max-width="290">
+      <v-card>
+        <v-card-title>
+          Confirmación
+        </v-card-title>
+        <v-card-text>Esta acción no puede volverse atras. </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" text @click="confirmModalDeshacerLlaves = false">
+            CANCELAR
+          </v-btn>
+          <v-btn color="success" text @click="[confirmModalDeshacerLlaves = false, deshacerLlaves()]">
+            ACEPTAR
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    
+    <v-dialog persist v-model="confirmModalDeshacerGrupos" max-width="290">
+      <v-card>
+        <v-card-title>
+          Confirmación
+        </v-card-title>
+        <v-card-text>Esta acción no puede volverse atras. </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" text @click="confirmModalDeshacerGrupos = false">
+            CANCELAR
+          </v-btn>
+          <v-btn color="success" text @click="[confirmModalDeshacerGrupos = false, deshacerGrupos()]">
+            ACEPTAR
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+  </v-container>
   </div>
 </template>
 
@@ -53,6 +94,8 @@ export default {
       llavesGeneradas: false,
       gruposGenerados: false,
       numeroGrupos: 0,
+      confirmModalDeshacerLlaves: false,
+      confirmModalDeshacerGrupos : false,
       cantidadGruposRules: [
         (v) => !!v || "Cantidad de grupos requerido",
         (v) => /^([0-9]*)?[0-9]+$/.test(v) || "Deben ser solo numeros enteros",

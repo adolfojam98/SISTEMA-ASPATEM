@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card>
+        <v-card elevation="0">
           <v-card-title>Fase de grupos</v-card-title>
           <v-card-text>
             <v-container>

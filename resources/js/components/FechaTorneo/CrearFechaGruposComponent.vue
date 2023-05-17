@@ -210,10 +210,9 @@
 
             <div v-else>
               <v-btn
-                class="ml-6 mt-6 mt-6 mb-6"
                 dark
                 @click="deshacerLlaves(item)"
-                color="blue"
+                color="red"
                 >Deshacer llaves</v-btn
               >
 
@@ -229,6 +228,22 @@
         </v-card>
       </v-tab-item>
     </v-tabs-items>
+
+<!-- DIALOGS -->
+<v-dialog v-model="confirmModalDeshacerLlaves" max-width="500px">
+      <v-card>
+        <v-card-title class="headline">Confirmación</v-card-title>
+        <v-card-text>¿Estás seguro de que deseas realizar esta acción?</v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="performAction">Confirmar</v-btn>
+          <v-btn color="error" @click="confirmModalDeshacerLlaves = false">Cancelar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+
+
   </div>
 </template>
 
