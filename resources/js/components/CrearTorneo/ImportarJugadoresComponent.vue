@@ -164,7 +164,7 @@ export default {
       );
     },
     async validarJugadoresImportados(json) {
-      for (const jugador of json) {
+      for (let jugador of json) {
         if (this.esDniValido(jugador.dni)) {
           const resp = await axios.get("/usuario", {
             params: {
