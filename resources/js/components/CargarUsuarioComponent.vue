@@ -3,10 +3,10 @@
 
     <v-container>
       <v-row>
-        <v-col offset="3">
-          <h3 v-if="es_socio">Ingresar nuevo socio</h3>
-          <h3 v-else>Ingresar nuevo jugador</h3>
-        </v-col>
+        <div class="d-flex mx-auto">
+          <h2 v-if="es_socio">Ingresar nuevo socio</h2>
+          <h2 v-else>Ingresar nuevo jugador</h2>
+        </div>
 
       </v-row>
       <v-row justify="center">

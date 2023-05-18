@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="ma-9 mt-0">
+    <div class="d-flex mx-auto mb-9" style="justify-content: center">
+      <h2 v-if="isListaSocios">Lista socios</h2>
+      <h2 v-else>Listado de Jugadores Externos</h2>
+    </div>
     <v-card>
-      <v-card-title>
-        <h3 v-if="isListaSocios" cols="12">Lista socios</h3>
-        <h3 v-else>Listado de Jugadores Externos</h3>
-        <v-spacer></v-spacer>
-
+      <div class="mx-2">
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -13,7 +13,7 @@
           single-line
           hide-details
         ></v-text-field>
-      </v-card-title>
+      </div>
 
       <v-data-table
         :headers="headers"
@@ -48,7 +48,11 @@
             </template>
             <span>Relaciones</span>
           </v-tooltip>
-          <v-btn color="success" @click="mostrarDetalleCuotasAdeudadas(item)"
+          <v-btn
+            class="ml-6"
+            color="primary"
+            small
+            @click="mostrarDetalleCuotasAdeudadas(item)"
             >ver cuotas</v-btn
           >
         </template>
@@ -79,56 +83,56 @@
           {{ item.cuotasAdeudadas }}
         </template>
       </v-data-table>
-    </v-card>
 
-    <!-- dialogs -->
-    <v-dialog v-model="detalleCuotasAdeudadasModal">
-      <detalle-cuotas-usuario
-        :usuario="usuarioVerDetalleCuotas"
-      ></detalle-cuotas-usuario>
-    </v-dialog>
+      <!-- dialogs -->
+      <v-dialog v-model="detalleCuotasAdeudadasModal">
+        <detalle-cuotas-usuario
+          :usuario="usuarioVerDetalleCuotas"
+        ></detalle-cuotas-usuario>
+      </v-dialog>
 
-    <v-dialog v-model="editarUsuarioModal" max-width="600px">
-      <editar-usuario
-        :usuario="usuarioEditar"
-        @reFiltrar="reFiltrar = $event"
-      ></editar-usuario>
-    </v-dialog>
+      <v-dialog v-model="editarUsuarioModal" max-width="600px">
+        <editar-usuario
+          :usuario="usuarioEditar"
+          @reFiltrar="reFiltrar = $event"
+        ></editar-usuario>
+      </v-dialog>
 
-    <v-dialog v-model="eliminarUsuarioModal" max-width="400">
-      <v-card>
-        <v-card-title class="headline">Desea borrar el usuario?</v-card-title>
-        <v-card-text
-          >Este usuario no podra participar de ningun torneo, no saldrá en el
-          ranking pero seguirá quedando registro de sus participaciones en
-          torneos. ¿Desea continuar?.</v-card-text
-        >
-        <v-container>
-          <v-textarea
-            outlined
-            v-model="motivoBaja"
-            label="Motivo de baja"
-            hint="Debe especificar el motivo de baja"
-            counter
-          ></v-textarea>
-        </v-container>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="green darken-1"
-            outlined
-            @click="[(eliminarUsuarioModal = false)]"
-            >CANCELAR</v-btn
+      <v-dialog v-model="eliminarUsuarioModal" max-width="400">
+        <v-card>
+          <v-card-title class="headline">Desea borrar el usuario?</v-card-title>
+          <v-card-text
+            >Este usuario no podra participar de ningun torneo, no saldrá en el
+            ranking pero seguirá quedando registro de sus participaciones en
+            torneos. ¿Desea continuar?.</v-card-text
           >
-          <v-btn color="error" @click="[deleteItem()]">BORRAR</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <v-container>
+            <v-textarea
+              outlined
+              v-model="motivoBaja"
+              label="Motivo de baja"
+              hint="Debe especificar el motivo de baja"
+              counter
+            ></v-textarea>
+          </v-container>
 
-    <v-dialog v-model="usuarioRelacionesModal" id="adddd" max-width="700px">
-      <relaciones-usuario :usuario="usuarioRelaciones"></relaciones-usuario>
-    </v-dialog>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="green darken-1"
+              outlined
+              @click="[(eliminarUsuarioModal = false)]"
+              >CANCELAR</v-btn
+            >
+            <v-btn color="error" @click="[deleteItem()]">BORRAR</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="usuarioRelacionesModal" id="adddd" max-width="700px">
+        <relaciones-usuario :usuario="usuarioRelaciones"></relaciones-usuario>
+      </v-dialog>
+    </v-card>
   </div>
 </template>
 

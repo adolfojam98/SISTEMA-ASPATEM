@@ -1,48 +1,50 @@
 
 <template>
-  <div>
-    <v-container>
-      <v-row>
-        <v-col cols="4">
+    <div class="ma-9 mt-0">
+        <div class="d-flex mx-auto mb-9" style="justify-content: center;">
+          <h2>Gestion de fechas</h2>
+        </div>
+
+      <v-row class="align-center">
+        <div class="mr-6" style="width: 300px;">
           <v-autocomplete return-object :items="torneos" :item-text="nombreTorneo" v-model="torneoSeleccionado"
             label="Buscar Torneo" @change="getFechas()"></v-autocomplete>
-        </v-col>
-        <v-col cols="4">
+        </div>
+        <div class="mx-6" style="width: 300px;">
           <v-autocomplete return-object :items="fechas" :item-text="nombreFecha" v-model="fechaSeleccionada"
             label="Buscar Fecha"></v-autocomplete>
-        </v-col>
-        <v-col cols="2" class="d-flex align-center">
-          <v-btn @click="cargarFecha()" color="primary">BUSCAR</v-btn>
-        </v-col>
+        </div>
+        <v-btn class="mx-6" @click="cargarFecha()" color="primary">BUSCAR</v-btn>
       </v-row>
-    </v-container>
 
-    <v-data-table dense :headers="headers" :items="listaJugadores" item-key="dni" :items-per-page="15" :search="search">
-      <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip bottom v-if="mensajeAgregarCategoria(item) !== ''">
-            <template v-slot:activator="{ on, attrs }">
-              <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarJugadorEnSuCategoria(item)]" :class="{'add-category': mensajeAgregarCategoria(item).includes('Agregar'), 'remove-category': mensajeAgregarCategoria(item).includes('Quitar')}">{{mensajeAgregarCategoria(item).replace('Quitar de la categoria: ','').replace('Agregar a la categoria: ','')}}</small>                  </template>
-            <span>{{ mensajeAgregarCategoria(item) }}</span>
-          </v-tooltip>
+      <div class="d-flex" style="justify-content: center;">
+        <v-card class="mt-6" style="width: max-content;">
+          <v-data-table dense :headers="headers" :items="listaJugadores" item-key="dni" :items-per-page="15" :search="search">
+            <template v-slot:[`item.actions`]="{ item }">
+                <v-tooltip bottom v-if="mensajeAgregarCategoria(item) !== ''">
+                  <template v-slot:activator="{ on, attrs }">
+                    <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarJugadorEnSuCategoria(item)]" :class="{'add-category': mensajeAgregarCategoria(item).includes('Agregar'), 'remove-category': mensajeAgregarCategoria(item).includes('Quitar')}">{{mensajeAgregarCategoria(item).replace('Quitar de la categoria: ','').replace('Agregar a la categoria: ','')}}</small>                  </template>
+                  <span>{{ mensajeAgregarCategoria(item) }}</span>
+                </v-tooltip>
 
-          <v-tooltip bottom v-if="!mensajeAgregarCategoriaSuperior(item).includes('No hay una categoria superior')">
-            <template v-slot:activator="{ on, attrs }">
-              <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarJugadorEnLaCategoriaSuperior(item)]" :class="{'add-category': mensajeAgregarCategoriaSuperior(item).includes('Agregar'), 'remove-category': mensajeAgregarCategoriaSuperior(item).includes('Quitar')}">{{mensajeAgregarCategoriaSuperior(item).replace('Quitar de la categoria superior: ','').replace('Agregar en la categoria superior: ','')}}</small>
-            </template>
-            <span>{{ mensajeAgregarCategoriaSuperior(item)}}</span>
-          </v-tooltip>
-        </template>
-    </v-data-table>
+                <v-tooltip bottom v-if="!mensajeAgregarCategoriaSuperior(item).includes('No hay una categoria superior')">
+                  <template v-slot:activator="{ on, attrs }">
+                    <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarJugadorEnLaCategoriaSuperior(item)]" :class="{'add-category': mensajeAgregarCategoriaSuperior(item).includes('Agregar'), 'remove-category': mensajeAgregarCategoriaSuperior(item).includes('Quitar')}">{{mensajeAgregarCategoriaSuperior(item).replace('Quitar de la categoria superior: ','').replace('Agregar en la categoria superior: ','')}}</small>
+                  </template>
+                  <span>{{ mensajeAgregarCategoriaSuperior(item)}}</span>
+                </v-tooltip>
+              </template>
+          </v-data-table>
+        </v-card>
+      </div>
 
+      <div class="mt-6" v-if="busquedaRealizada">
+        <grupos-categorias :categorias="listaCategorias" :listaJugadores="listaJugadores"></grupos-categorias>
 
-    <div v-if="busquedaRealizada">
-      <grupos-categorias :categorias="listaCategorias" :listaJugadores="listaJugadores"></grupos-categorias>
-    <v-btn color="success" dark @click="guardarFecha()">
-      GUARDAR FECHA
-    </v-btn>
-    </div>
-
-   
+        <v-btn class="mt-6" color="primary" dark @click="guardarFecha()">
+          GUARDAR FECHA
+        </v-btn>
+      </div>
 
   </div>
 </template>
@@ -64,16 +66,17 @@ export default {
       jugadoresAnotados: [],
 
       headers: [
-        { text: "Apellido", value: "apellido" },
-        { text: "Nombre", value: "nombre" },
-        { text: "DNI", value: "dni" },
+        { text: "Apellido", value: "apellido", width: '175px' },
+        { text: "Nombre", value: "nombre", width: '175px' },
+        { text: "DNI", value: "dni", width: '175px' },
         {
           text: "Categorias",
           value: "actions",
           sortable: false,
           filterable: false,
+          width: '325px'
         },
-        { text: "Puntos", value: "puntos" },
+        { text: "Puntos", value: "puntos", width: '175px' },
 
         // { text: "Monto", value: "montoPagado" },
       ],

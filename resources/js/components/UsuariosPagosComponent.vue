@@ -1,33 +1,39 @@
 <template>
   <div>
-    <h3 cols="12">Administración de pagos</h3>
-    <v-container>
-      <v-row>
-        <v-col cols="8">
-          <v-autocomplete
-            v-model="usuarioSeleccionado"
-            :items="usuarios"
-            :item-text="nombreCompleto"
-            return-object
-            filled
-            label="Ingrese el nombre del socio"
-          ></v-autocomplete>
-        </v-col>
-      </v-row>
+    <v-container class="pt-0">
+      <div class="d-flex mx-auto" style="justify-content: center;">
+          <h2>Administración de pagos</h2>
+      </div>
 
-      <v-row>
-        <v-col>
-          <v-btn @click="buscarCuotasUsuario" large color="primary">
-            Buscar
+      <div class="d-flex mt-4" style="align-items: center">
+        <div style="width: 300px; ">
+          <v-autocomplete
+                v-model="usuarioSeleccionado"
+                :items="usuarios"
+                :item-text="nombreCompleto"
+                return-object
+                
+                label="Ingrese el nombre del socio"
+          ></v-autocomplete>
+        </div>
+        
+          <v-btn class="mx-4" @click="buscarCuotasUsuario" color="primary">
+              Buscar
           </v-btn>
-        </v-col>
-        <v-col>
-          <v-btn @click="generarCuotasMasivas = true" large color="primary">
+
+          <v-btn class="mx-4" @click="generarCuotasMasivas = true" color="primary">
             Generar cuotas masivamente
           </v-btn>
+      </div>
+      
+      
+      <!-- <v-row class="mt-2">
+        <v-col cols="8">
+          
         </v-col>
+      </v-row> -->
 
-        <v-spacer></v-spacer>
+      <v-row>
         <v-col>
           <div v-show="busco">
             <!-- <v-btn
@@ -45,8 +51,9 @@
       </v-row>
     </v-container>
 
-    <v-container>
+    <v-container class="d-flex" style="justify-content: center;">
       <template>
+        <div style="width: 600px">
         <v-simple-table>
           <template v-slot:default>
             <thead>
@@ -95,6 +102,7 @@
             </tbody>
           </template>
         </v-simple-table>
+        </div>
       </template>
     </v-container>
 

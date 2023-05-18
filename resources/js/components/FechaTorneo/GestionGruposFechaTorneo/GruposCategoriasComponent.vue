@@ -3,7 +3,7 @@
     <div class="text-center">
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn color="primary" dark v-bind="attrs" v-on="on">
+          <v-btn color="success" dark v-bind="attrs" v-on="on">
             CATEGORIAS
           </v-btn>
         </template>

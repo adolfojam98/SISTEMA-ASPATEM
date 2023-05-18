@@ -2,13 +2,9 @@
   <v-container>
     <v-card>
       <v-btn class="primary mt-2 ml-2" @click="$router.go(-1)">Volver</v-btn>
-      <v-card-title class="justify-center">
         <center>
-          <p>
-            <b>{{ fecha_nombre }}</b>
-          </p>
+            <h2 class="mb-3">Fecha: {{ fecha_nombre }}</h2>
         </center>
-      </v-card-title>
       <hr />
       <v-data-table :headers="headers" :items="ranking" :search="search">
         <template v-slot:[`item.puntos`]="{ item }">

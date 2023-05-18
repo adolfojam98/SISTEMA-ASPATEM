@@ -15,14 +15,14 @@
         </template>
       </v-data-table>
     </template>
-    <div v-if="listaJugadores.length > 0">
+    <div class="mt-6" v-if="listaJugadores.length > 0">
       <p class="font-weight-medium">
         Jugadores nuevos: {{ cantidadJugadoresNuevos }}
       </p>
       <p class="font-weight-medium">
         Jugadores existentes: {{ cantidadJugadoresExistentes }}
       </p>
-      <p class="font-weight-medium">Socios: {{ cantidadJugadoresSocios }}</p>
+      <p class="font-weight-medium">Socios activos: {{ cantidadJugadoresSocios }}</p>
     </div>
   </div>
 </template>

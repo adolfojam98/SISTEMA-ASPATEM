@@ -45,7 +45,7 @@ export default {
           this.isLoading = false;
           return response;
         },
-        function (error) {
+        (error) => {
           this.isLoading = false;
           return Promise.reject(error);
         }

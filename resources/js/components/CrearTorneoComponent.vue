@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h3 cols="12">Crear nuevo torneo</h3>
+    <center>
+      <h2 class="ma-3 mt-1">Crear nuevo torneo</h2>
+    </center>
     <v-stepper v-model="e6" vertical>
       <v-stepper-step
         :complete="e6 > 1"

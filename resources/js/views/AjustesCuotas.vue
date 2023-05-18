@@ -187,7 +187,8 @@ export default {
           this.callSnackbar(["Tipo de cuota detalle eliminado", "success"]);
         })
         .catch((error) => {
-          console.log(error);
+          const msj = JSON.parse(error.request.response)?.message
+          this.callSnackbar([msj || 'Error al eliminar.', "error"]);
         });
     },
 
@@ -229,7 +230,6 @@ export default {
   },
   watch: {
     tipoCuotaDetalleSeleccionado() {
-      console.log("hola");
       if (this.tipoCuotaDetalleSeleccionado) {
         this.tipoDescuento = this.tipoCuotaDetalleSeleccionado.porcentaje
           ? "porcentaje"

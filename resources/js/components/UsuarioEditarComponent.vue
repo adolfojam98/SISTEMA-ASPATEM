@@ -1,7 +1,7 @@
 <template>
 <div>
   <v-card> 
-    <h1> <center>Modificar usuario</center></h1>
+    <h2 class="pa-3"> <center>Modificar usuario</center></h2>
 
   <v-form v-model="valid" ref="form" lazy-validation>
     <v-container>
@@ -19,7 +19,7 @@
       <v-switch center="true" v-model="usuario.socio" label="Socio" class="mx-4"></v-switch>
       </v-layout> -->
       
-      <v-btn block large depressed color="primary" :disabled="!valid" @click.prevent="updateUsuario">Guardar cambios</v-btn>
+      <center><v-btn color="primary" :disabled="!valid" @click.prevent="updateUsuario">Guardar cambios</v-btn></center>
     </v-container>
   </v-form>
 
