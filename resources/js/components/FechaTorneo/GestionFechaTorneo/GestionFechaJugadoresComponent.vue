@@ -1,23 +1,23 @@
 
 <template>
-    <div class="ma-9 mt-0">
-        <div class="d-flex mx-auto mb-9" style="justify-content: center;">
-          <h2>Gestion de fechas</h2>
-        </div>
+  <div class="ma-9 mt-0">
+    <div class="d-flex mx-auto mb-9" style="justify-content: center;">
+      <h2>Gestion de fechas</h2>
+    </div>
 
-      <v-row class="align-center">
-        <div class="mr-6" style="width: 300px;">
-          <v-autocomplete return-object :items="torneos" :item-text="nombreTorneo" v-model="torneoSeleccionado"
-            label="Buscar Torneo" @change="getFechas()"></v-autocomplete>
-        </div>
-        <div class="mx-6" style="width: 300px;">
-          <v-autocomplete return-object :items="fechas" :item-text="nombreFecha" v-model="fechaSeleccionada"
-            label="Buscar Fecha"></v-autocomplete>
-        </div>
-        <v-btn class="mx-6" @click="cargarFecha()" color="primary">BUSCAR</v-btn>
-      </v-row>
+    <v-row class="align-center">
+      <div class="mr-6" style="width: 300px;">
+        <v-autocomplete return-object :items="torneos" :item-text="nombreTorneo" v-model="torneoSeleccionado"
+          label="Buscar Torneo" @change="getFechas()"></v-autocomplete>
+      </div>
+      <div class="mx-6" style="width: 300px;">
+        <v-autocomplete return-object :items="fechas" :item-text="nombreFecha" v-model="fechaSeleccionada"
+          label="Buscar Fecha"></v-autocomplete>
+      </div>
+      <v-btn class="mx-6" @click="cargarFecha()" color="primary">BUSCAR</v-btn>
+    </v-row>
 
-      <div class="d-flex" style="justify-content: center;">
+    <div class="d-flex" style="justify-content: center;">
         <v-card class="mt-6" style="width: max-content;">
           <v-data-table dense :headers="headers" :items="listaJugadores" item-key="dni" :items-per-page="15" :search="search">
             <template v-slot:[`item.actions`]="{ item }">
@@ -38,13 +38,33 @@
         </v-card>
       </div>
 
-      <div class="mt-6" v-if="busquedaRealizada">
-        <grupos-categorias :categorias="listaCategorias" :listaJugadores="listaJugadores"></grupos-categorias>
+    <div class="mt-6" v-if="busquedaRealizada">
+      <grupos-categorias :categorias="listaCategorias" :listaJugadores="listaJugadores"></grupos-categorias>
 
-        <v-btn class="mt-6" color="primary" dark @click="guardarFecha()">
-          GUARDAR FECHA
-        </v-btn>
-      </div>
+      <v-btn class="mt-6" color="primary" dark @click="confirmarGuardarFecha = true">
+        GUARDAR FECHA
+      </v-btn>
+    </div>
+
+    <!-- DIALOGS -->
+    <v-dialog persist v-model="confirmarGuardarFecha" max-width="290">
+      <v-card>
+        <v-card-title>
+          Confirmación
+        </v-card-title>
+        <v-card-text>Esta acción no puede volverse atras. </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" text @click="confirmarGuardarFecha = false">
+            CANCELAR
+          </v-btn>
+          <v-btn color="success" text @click="[confirmarGuardarFecha = false, guardarFecha()]">
+            ACEPTAR
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
 
   </div>
 </template>
@@ -64,6 +84,7 @@ export default {
       listaJugadores: [],
       listaCategorias: [],
       jugadoresAnotados: [],
+      confirmarGuardarFecha: false,
 
       headers: [
         { text: "Apellido", value: "apellido", width: '175px' },
@@ -96,33 +117,41 @@ export default {
       this.vaciarVariables();
       if (this.torneoSeleccionado) {
         axios.get(`/torneo/${this.torneoSeleccionado.id}/fechas`).then((res) => {
-          this.fechas = res.data
+          this.fechas = this.filtarFechasCerradas(res.data);
         })
         axios.get(`/torneos/${this.torneoSeleccionado.id}/categorias`).then((res) => {
           this.listaCategorias = res.data;
         })
       }
     },
+    filtarFechasCerradas(fechas){
+      return fechas.filter(fecha => fecha.vigencia == 1);
+    },
     guardarFecha() {
-      try{
-      this.validarGuardarFecha();
-      // axios.post(`fechas/${this.fechaSeleccionada.id}`).then((res) => {
-      //   console.log(res);
-      // }) 
-      }catch(e){
-        this.callSnackbar([e,'error'])
+      try {
+        this.validarGuardarFecha();
+
+        axios.post(`/fechas/${this.fechaSeleccionada.id}`,
+          { "vigencia": false }
+        ).then((res) => {
+          this.vaciarVariables();
+          this.callSnackbar(['Fecha guardada correctamente', 'success']);
+
+        })
+      } catch (e) {
+        this.callSnackbar([e, 'error'])
       }
-      
+
     },
     validarGuardarFecha() {
       this.listaCategorias.forEach(categoria => {
         if (!categoria.jugadoresAnotados || !categoria.jugadoresAnotados.length > 0) {
           return;
         }
-  if(categoria.jugadoresAnotados.length > 0 && categoria.listaGrupos.length === 0 ){
-    console.log('categoria a medio llenar: ',categoria)
-throw `La categoria ${categoria.nombre} tiene jugadores anotados pero le faltan partidos`;
-  }
+        if (categoria.jugadoresAnotados.length > 0 && categoria.listaGrupos.length === 0) {
+          console.log('categoria a medio llenar: ', categoria)
+          throw `La categoria ${categoria.nombre} tiene jugadores anotados pero le faltan partidos`;
+        }
         const isPartidosGruposValid = categoria.listaGrupos.every(grupo => grupo.partidos.every(partido => this.validarPartido(partido)));
 
         console.log(categoria);
@@ -131,26 +160,27 @@ throw `La categoria ${categoria.nombre} tiene jugadores anotados pero le faltan 
         }
 
         //validar partidos llaves
-       const isPartidosLlaveValid = categoria.partidosLlaves.every(partido => this.validarPartido(partido));
-        if(!isPartidosLlaveValid){
+        const isPartidosLlaveValid = categoria.partidosLlaves.every(partido => this.validarPartido(partido));
+        if (!isPartidosLlaveValid) {
           throw `Hay al menos un partido sin cargar o en empate en la llave en la categoria ${categoria.nombre}`;
         }
 
       });
     },
-    validarPartido(partido){
-      if(!partido.jugador1 || !partido.jugador2){
+    validarPartido(partido) {
+      if (!partido.jugador1 || !partido.jugador2) {
         return false;
       }
-      if(!partido.setsJugador1 || !partido.setsJugador2){
+      if (!partido.setsJugador1 || !partido.setsJugador2) {
         return false;
       }
       const setsJugador1 = parseInt(partido.setsJugador1);
       const setsJugador2 = parseInt(partido.setsJugador2);
 
-      return  setsJugador1 !== setsJugador2;
+      return setsJugador1 !== setsJugador2;
     },
     vaciarVariables() {
+      this.fechas = [];
       this.busquedaRealizada = false;
       this.listaJugadores = [];
       this.listaCategorias = [];
@@ -344,8 +374,8 @@ throw `La categoria ${categoria.nombre} tiene jugadores anotados pero le faltan 
       const categoriaJugador = this.getCategoriaJugador(jugador);
       console.log('categoriaJugaodor: ', categoriaJugador);
 
-      if(categoriaJugador.listaGrupos.length > 0){
-        this.callSnackbar(['No se puede realizar el cambio ya que se esta jugando la categoria','error']);
+      if (categoriaJugador.listaGrupos.length > 0) {
+        this.callSnackbar(['No se puede realizar el cambio ya que se esta jugando la categoria', 'error']);
         return;
       }
 
@@ -363,8 +393,8 @@ throw `La categoria ${categoria.nombre} tiene jugadores anotados pero le faltan 
       const estadoJugador = this.getEstadoJugador(jugador);
       const categoriaSuperiorJugador = this.getCategoriaSuperiorJugador(jugador);
 
-      if(categoriaSuperiorJugador.listaGrupos.length > 0){
-        this.callSnackbar(['No se puede realizar el cambio ya que se esta jugando la categoria','error']);
+      if (categoriaSuperiorJugador.listaGrupos.length > 0) {
+        this.callSnackbar(['No se puede realizar el cambio ya que se esta jugando la categoria', 'error']);
         return;
       }
 
