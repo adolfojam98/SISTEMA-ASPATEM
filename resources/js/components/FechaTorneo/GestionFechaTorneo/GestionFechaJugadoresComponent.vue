@@ -99,7 +99,7 @@ export default {
         },
         { text: "Puntos", value: "puntos", width: '175px' },
 
-        // { text: "Monto", value: "montoPagado" },
+        { text: "Monto", value: "monto_pagado" },
       ],
 
     }
@@ -167,6 +167,7 @@ export default {
 
       });
     },
+
     validarPartido(partido) {
       if (!partido.jugador1 || !partido.jugador2) {
         return false;
@@ -196,6 +197,8 @@ export default {
         this.busquedaRealizada = true;
 
         this.listaJugadores = fechaResponse.data.resumen_jugadores.ranking;
+
+        this.listaJugadores = this.listaJugadores.map(jugador => {return {...jugador, monto_pagado: 0}});
         this.listaCategorias = fechaResponse.data.resumen_jugadores.categorias;
         const listaJugadoresAnotados = jugadoresAnotadosResponse.data.body;
 
@@ -291,6 +294,7 @@ export default {
 
           if (categoria.id == jugador.categoria_mayor_id || categoria.id == jugador.categoria_menor_id) {
             const jugadorEncontrado = this.listaJugadores.find(j => j.usuario_id == jugador.usuario_id);
+            jugadorEncontrado.monto_pagado = jugador.monto_pagado;
             categoria.jugadoresAnotados.push(jugadorEncontrado);
           }
         });
