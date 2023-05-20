@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Error;
 use App\Pago;
 use App\Http\Services\BaseService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
@@ -34,7 +35,7 @@ class PagoService extends BaseService
             $newPago = new Pago();
             $newPago->cuota_id = $cuota_id;
             $newPago->monto_total = $monto_total;
-            $newPago->fecha_pago = $fecha_pago;
+            $newPago->fecha_pago = Carbon::parse($fecha_pago);
             $newPago->save();
 
             return $newPago;

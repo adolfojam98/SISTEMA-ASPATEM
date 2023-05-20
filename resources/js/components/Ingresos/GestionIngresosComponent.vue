@@ -287,21 +287,24 @@ export default {
       });
     },
     filtro(simple) {
-      simple
-        ? axios
-            .get(`/ingresos/${this.fechaInicio}/${this.fechaFin}`)
-            .then((res) => {
-              this.transacciones = res.data;
-              this.calcularTotal();
-            })
-        : axios
-            .get(
-              `/ingresos/${this.fechaInicio}/${this.fechaFin}/${this.tipo}/${this.torneoId}/${this.fechaId}`
-            )
-            .then((res) => {
-              this.transacciones = res.data;
-              this.calcularTotal();
-            });
+
+axios.get('/ingresos',{
+  params: {
+    fecha_inicio : this.fechaInicio,
+    fecha_fin : this.fechaFin,
+    tipo : this.tipo,
+    torneo_id : this.torneoId,
+    fecha_id : this.fechaId
+  }
+}).then(res => {
+  console.log(res);
+  this.transacciones =res.data;
+  this.calcularTotal();
+}
+);
+
+return;
+
     },
     resetTorneoFecha() {
       if (this.tipo === "Cuotas" || this.tipo === "Otros") {
