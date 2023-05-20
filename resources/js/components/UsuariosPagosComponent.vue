@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container class="pt-0">
+    <v-container class="pt-0 mx-0">
       <div class="d-flex mx-auto" style="justify-content: center;">
           <h2>Administración de pagos</h2>
       </div>
@@ -52,6 +52,7 @@
     </v-container>
 
     <v-container class="d-flex" style="justify-content: center;">
+      <v-card>
       <template>
         <div style="width: 600px">
         <v-simple-table>
@@ -104,6 +105,7 @@
         </v-simple-table>
         </div>
       </template>
+      </v-card>
     </v-container>
 
     <v-dialog v-model="CrearCuotaModal" max-width="600px">

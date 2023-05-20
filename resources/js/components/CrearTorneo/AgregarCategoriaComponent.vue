@@ -1,8 +1,7 @@
 <template>
     <div>
         <v-card class="mb-0">
-            <v-card-title class="mb-0">Nueva categoria</v-card-title>
-
+            <v-card-title class="mb-0 justify-center" >Nueva categoria</v-card-title>
             <v-divider></v-divider>
             <v-form v-model="valid" ref="form">
                 <v-card-text>

@@ -1,22 +1,17 @@
 <template>
   <div>
-    <v-card>
-      <v-card-title class="justify-center">
-        <p><b>Ingresos/Gastos</b></p>
-      </v-card-title>
-      <v-row>
-        <v-col md="12">
-          <v-card>
-            <v-row>
-              <v-col class="mt-2 ml-5 pl-3 pt-3" cols="12" md="1">
-                <p><b>Desde: </b></p>
-              </v-col>
+      <div class="d-flex justify-center mb-5">
+        <h2>Ingresos</h2>
+      </div>
 
-              <v-col md="3">
+            <v-container>
+            <v-btn class="primary mb-5" @click="nuevoIngreso=true">Nuevo ingreso</v-btn>
+                      <v-row class="ma-0 pa-0 align-end">
+                        <div class="mr-5 mb-1" style="width: 225px">
+                <small>Desde: </small>
                 <v-menu
                   v-model="menuFechaInicio"
                   transition="scale-transition"
-                  offset-y
                   min-width="200px"
                 >
                   <template v-slot:activator="{ on, attrs }">
@@ -25,7 +20,6 @@
                       v-model="fechaInicio"
                       dense
                       append-icon="mdi-calendar"
-                      outlined
                       readonly
                       v-bind="attrs"
                       v-on="on"
@@ -36,15 +30,12 @@
                     @input="menuFechaInicio = false"
                   ></v-date-picker>
                 </v-menu>
-              </v-col>
-              <v-col class="mt-2 ml-5" md="1">
-                <p><b> Hasta: </b></p>
-              </v-col>
-              <v-col md="3" class="pa-0 pt-3">
+              </div>
+              <div class="mr-5 mb-1" style="width: 225px">
+                <small> Hasta: </small>
                 <v-menu
                   v-model="menuFechaFin"
                   transition="scale-transition"
-                  offset-y
                   min-width="200px"
                 >
                   <template v-slot:activator="{ on, attrs }">
@@ -53,7 +44,6 @@
                       v-model="fechaFin"
                       dense
                       append-icon="mdi-calendar"
-                      outlined
                       readonly
                       v-bind="attrs"
                       v-on="on"
@@ -64,85 +54,53 @@
                     @input="menuFechaFin = false"
                   ></v-date-picker>
                 </v-menu>
-              </v-col>
-              <v-col md="2">
-                <v-btn
-                  v-show="!showFiltrosAvanzados"
-                  @click="filtro(true)"
-                  class="primary"
-                  >Filtrar</v-btn
-                >
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col justify="left">
-                <v-expansion-panels flat>
-                  <v-expansion-panel
-                    @click="showFiltrosAvanzados = !showFiltrosAvanzados"
-                  >
-                    <v-expansion-panel-header
-                      ><b>Filtros avanzados</b></v-expansion-panel-header
-                    >
-                    <v-expansion-panel-content class="pa-0 ma-0">
-                      <v-row class="ma-0 pa-0">
-                        <v-col class="pa-0 mr-5">
-                          <p class="mt-3">Tipo de ingreso:</p>
+              </div>
+                        <div class="mr-5 mt-1" style="width: 225px">
                           <v-select
                             v-model="tipo"
                             :items="tipoIngreso"
-                            solo
-                            label="Tipo"
+                            label="Tipo de ingreso"
                             v-on:change="resetTorneoFecha()"
                           ></v-select>
-                        </v-col>
-                        <v-col class="pa-0 mr-5">
-                          <p class="mt-3">Torneo:</p>
+                        </div>
+                        <div v-if="tipo === 'Torneos' || tipo === 'Fechas'" class="mr-5 mt-1" style="width: 225px">
                           <v-select
                             v-model="torneoId"
                             :items="torneos"
                             item-text="nombre"
                             item-value="id"
                             :disabled="tipo === 'Cuotas' || tipo === 'Todos'"
-                            solo
                             label="Torneo"
                             v-on:change="getFechas()"
                           ></v-select>
-                        </v-col>
-                        <v-col class="pa-0">
-                          <p class="mt-3">Fecha:</p>
+                          
+                        </div>
+                        <div v-if="tipo === 'Fechas'" class="mr-5 mt-1" style="width: 225px">
                           <v-select
                             v-model="fechaId"
                             :items="fechas"
                             item-text="nombre"
                             item-value="id"
-                            :disabled="tipo === 'Cuotas' || tipo === 'Torneos' || torneoId === 0 || tipo === 'Todos'"
-                            solo
+                            :disabled="tipo === 'Cuotas' || tipo === 'Torneos' || torneoId === null || tipo === 'Todos'"
                             label="Fecha"
                           ></v-select>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col class="py-0">
+                          
+                        </div>
+                        <v-col class="d-flex align-center mb-2">
                           <v-btn
-                            v-show="showFiltrosAvanzados"
                             @click="filtro(false)"
                             class="primary"
                             >Filtrar</v-btn
                           >
                         </v-col>
-                      </v-row>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-btn class="mt-5 ml-3 primary" @click="nuevoIngreso = true"
-        >Nuevo ingreso o gasto</v-btn>
+                      </v-row>                    
+            </v-container>
+
+
+      
       <v-container>
           <p><b>Total: ${{totalIngresos}}</b></p>
+          <v-card>
         <v-text-field
           class="ma-2"
           v-model="search"
@@ -164,8 +122,9 @@
           <p class="mt-4">${{ item.monto }}</p>
         </template>
         </v-data-table>
+        </v-card>
       </v-container>
-    </v-card>
+
     <v-dialog v-model="nuevoIngreso" max-width="350px">
       <v-card>
         <v-card-title class="justify-center">
@@ -225,19 +184,19 @@ export default {
       showFiltrosAvanzados: false,
       tipo: "Todos",
       tipoIngreso: ["Todos", "Cuotas", "Torneos", "Fechas", "Otros"],
-      torneoId: 0,
+      torneoId: null,
       torneos: [],
-      fechaId: 0,
+      fechaId: null,
       fechas: [],
       transacciones: [],
       search: "",
       sortBy: 'fecha',
       sortDesc: true,
       headers: [
-        { text: "Tipo", value: "tipo" },
-        { text: "Monto", value: "monto" },
-        { text: "Descripción", value: "descripcion" },
-        { text: "Fecha", value: "fecha" },
+        { text: "Tipo", value: "tipo", width: '75px' },
+        { text: "Monto", value: "monto", width: '75px' },
+        { text: "Descripción", value: "descripcion", width: '300px' },
+        { text: "Fecha", value: "fecha", width: '90px' },
       ],
       montoRule: [
         (v) => !!v || "Importe requerido",
@@ -264,13 +223,30 @@ export default {
             monto: this.monto,
             descripcion: this.descripcion,
           })
-          .then(
-            (this.totalIngresos += parseFloat(this.monto)),
-            (this.monto = 0),
-            (this.descripcion = ""),
-            (this.nuevoIngreso = false)
+          .then(() => {
+              this.tipo = "Todos"
+              this.torneoId = null
+              this.fechaId = null
+              this.filtro(false)
+              this.monto = 0
+              this.descripcion = ""
+              this.nuevoIngreso = false
+            }
           );
       }
+    },
+    darFormatoFechaNew(fecha) {
+      if (!fecha || typeof fecha === "undefined") {
+        return null;
+      }
+
+      const date = new Date(fecha);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString();
+      const outputDateString = `${day}/${month}/${year}`;
+
+      return outputDateString;
     },
     darFormatoFecha(fecha) {
       if (!fecha) return null;
@@ -288,7 +264,7 @@ export default {
       });
     },
     getFechas() {
-      if (this.torneoId !== 0) {
+      if (this.torneoId !== null) {
         axios.get(`/torneo/${this.torneoId}/fechas`).then((res) => {
           this.fechas = res.data;
           this.fechas.unshift({
@@ -298,7 +274,7 @@ export default {
         });
       } else {
         this.getAllFechas();
-        this.fechaId = 0;
+        this.fechaId = null;
       }
     },
     getAllFechas() {
@@ -329,11 +305,11 @@ export default {
     },
     resetTorneoFecha() {
       if (this.tipo === "Cuotas" || this.tipo === "Otros") {
-        this.torneoId = 0;
-        this.fechaId = 0;
+        this.torneoId = null;
+        this.fechaId = null;
         this.getAllFechas();
       } else if (this.tipo === "Torneo") {
-        this.fechaId = 0;
+        this.fechaId = null;
         this.getAllFechas();
       }
     },

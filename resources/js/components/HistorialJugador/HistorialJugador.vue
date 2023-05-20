@@ -118,23 +118,19 @@ export default {
         });
     },
 
-    formatDate(date) {
-      let format_date = new Date(date);
-      let date_string =
-        format_date.getFullYear() +
-        "-" +
-        format_date.getMonth() +
-        1 +
-        "-" +
-        format_date.getDate() +
-        " " +
-        format_date.getHours() +
-        ":" +
-        format_date.getMinutes() +
-        ":" +
-        format_date.getSeconds();
-      return date_string;
-    },
+    formatDate(fecha) {
+      if (!fecha || typeof fecha === "undefined") {
+        return null;
+      }
+
+      const date = new Date(fecha);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString();
+      const outputDateString = `${day}/${month}/${year}`;
+
+      return outputDateString;
+    }
   },
 
   created() {
