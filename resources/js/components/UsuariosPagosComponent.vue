@@ -12,7 +12,6 @@
                 :items="usuarios"
                 :item-text="nombreCompleto"
                 return-object
-                
                 label="Ingrese el nombre del socio"
           ></v-autocomplete>
         </div>

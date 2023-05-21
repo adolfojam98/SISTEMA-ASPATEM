@@ -1,94 +1,58 @@
 <template>
   <div>
-    <v-card class="pa-6">
-      <h4>Gestor montos</h4>
-      <v-form v-model="valid" ref="form" lazy-validation>
-        <v-container class="ml-2">
-          <v-text-field
-            v-model="montoCuota"
-            :rules="montoRules"
-            prefix="$"
-            label="Monto de la cuota"
-            required
-          ></v-text-field>
+    <center><h2>Ajustes generales</h2></center>
+    <v-container class="mt-5">
+      <div>
+      <h3>Base de datos</h3>
+      <div class="d-flex mb-7" style="justify-content: space-evenly;">
+        <div>
+        <div class="d-block" style="width: 380px">
+          <v-file-input
+            label="Seleccione un archivo para realizar backup"
+            accept=".sqlite"
+            @change="archivoElegido"
+          ></v-file-input>
+          <v-btn
+          width="100%"
+          @click="guardarBD()"
+          :disabled="archivoDB == null"
+          color="primary"
+          >Guardar
+        </v-btn>
+        </div>
+        
+        </div>
+        
 
-          <v-text-field
-            v-model="montoCuotaDescuento"
-            :rules="montoRules"
-            prefix="$"
-            label="Monto de la cuota con descuento"
-            required
-          ></v-text-field>
+        
 
-          <v-btn class="mt-3"
-            depressed
-            color="primary"
-            :disabled="!valid"
-            @click.prevent="guardarConfiguracion"
-            >Guardar cambios</v-btn
-          >
-        </v-container>
-      </v-form>
-      <v-divider></v-divider>
-      <h4>Gestor socios</h4>
-      <v-form>
-        <v-layout justify-center align-center>
-          <v-switch
-            center="true"
-            v-model="automatizar"
-            :click="automatizarBajasDeSocios()"
-            label="Dar de baja de forma automatica a los socios"
-            class="mx-4"
-          ></v-switch>
-        </v-layout>
-      </v-form>
-      <v-divider></v-divider>
-      <h4>Base de datos</h4>
-      <v-container class="ml-0 mt-2">
-        <v-row>
-          <v-col cols="10">
-            <v-file-input
-              label="Seleccione un archivo para realizar backup de base"
-              accept=".sqlite"
-              @change="archivoElegido"
-            ></v-file-input>
-          </v-col>
-          <v-col>
-            <v-btn
-              @click="guardarBD()"
-              :disabled="archivoDB == null"
-              color="primary"
-              >guardar</v-btn
-            >
-          </v-col>
-        </v-row>
-        <v-col>
+        <div class="d-flex align-center">
           <v-btn class="primary" href="/base/descargar"
-            >DESCARGAR backup base</v-btn
+            >DESCARGAR backup</v-btn
           >
-        </v-col>
-      </v-container>
+        </div>
+      </div>
+      </div>
 
-      <v-divider> </v-divider>
-      <h4>Gestor usuario</h4>
-      <v-container class="ml-3 mt-2">
-        <v-row>
-          <v-col cols="10">
-            <v-btn
-              class="primary"
-              @click="showModalCambioContrasena = !showModalCambioContrasena"
-              >Cambiar contraseña</v-btn
-            >
-          </v-col>
-        </v-row>
-      </v-container>
+  <v-divider></v-divider>
+
+    <div class="mt-7">
+      <h3>Gestor usuario</h3>
+      <div class="d-flex" style="justify-content: space-evenly;">
+        <v-btn
+          class="mt-5 primary"
+          @click="showModalCambioContrasena = !showModalCambioContrasena"
+          >Cambiar contraseña</v-btn
+        >
+      </div>
+      </div>
 
       <modal-cambio-contrasena
         :isOpen="showModalCambioContrasena"
         @cerrado="cerrarModal"
       ></modal-cambio-contrasena>
-    </v-card>
-  </div>
+      </v-container>
+    </div>
 </template>
 
 

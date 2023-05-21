@@ -1,110 +1,124 @@
 <template>
-  <div class="pa-6 flex justify-between">
-    <h1 class="text-2xl font-bold">Ajustes de cuotas</h1>
-    <v-divider> </v-divider>
-    <h2 class="text-2xl font-bold">Tipos de detalles de cuotas</h2>
-    <v-row justify="space-between">
-      <v-col cols="8">
-        <v-select
-          :items="tiposCuotaDetalles"
-          v-model="tipoCuotaDetalleSeleccionado"
-          label="Seleccione el tipo de detalle"
-          return-object
-          item-text="nombre"
-        ></v-select>
-      </v-col>
-      <v-col cols="2">
-        <v-btn
-          @click="iniciarNuevoTipoDetalle()"
-          class="mx-2"
-          fab
-          dark
-          color="success"
-        >
-          <v-icon dark> mdi-plus </v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
+  <div class="pa-6 flex justify-around">
+    <center>
+      <h2>Ajustes de cuotas</h2>
+    </center>
 
-    <v-divider></v-divider>
-    <div v-if="tipoCuotaDetalleSeleccionado">
-      <v-container>
-        <v-row>
-          <v-col cols="8">
-            <v-text-field
-              v-model="tipoCuotaDetalleSeleccionado.nombre"
-              :counter="10"
-              label="Nombre"
-              required
-            ></v-text-field>
-          </v-col>
+    <v-container>
+      <h3>Tipos de detalles de cuotas</h3>
+      <div class="d-flex mt-4 align-center" style="justify-content: around">
+        
+        <div style="width: 300px">
+            <v-select
+              :items="tiposCuotaDetalles"
+              v-model="tipoCuotaDetalleSeleccionado"
+              label="Seleccione el tipo de detalle"
+              return-object
+              item-text="nombre"
+            ></v-select>
+          </div>
+          
+            <v-btn
+              @click="iniciarNuevotipoImporteDR()"
+              class="mx-2"
+              small
+              fab
+              dark
+              color="success"
+            >
+              <v-icon dark> mdi-plus </v-icon>
+            </v-btn>
+          
+      </div>
 
-          <v-col cols="6">
-            <h3>Calculo por:</h3>
-            <v-radio-group v-model="tipoDescuento">
-              <v-radio value="porcentaje" label="porcentaje"
-                >Porcentaje
-              </v-radio>
-              <v-radio value="valor" label="Monto">Monto </v-radio>
-            </v-radio-group>
-          </v-col>
+      <div v-if="tipoCuotaDetalleSeleccionado">
+        <v-divider></v-divider>
+        <v-container>
+          <div class="justify-center" style="display: grid">
+            <div style="width: 300px">
+                <v-text-field
+                  v-model="tipoCuotaDetalleSeleccionado.nombre"
+                  label="Nombre"
+                  required
+                ></v-text-field>
+              </div>
+          <v-row class="mx-0 mt-2" align="end">
+            <div style="width: 150px">
+              <small>Calculo por:</small>
+              <div class="d-flex justify-left">
+                <v-radio-group v-model="tipoUnidad">
+                  <v-radio value="porcentaje" label="Porcentaje" :disabled="tipoCuotaDetalleSeleccionado?.codigo === 'precio_base'">Porcentaje</v-radio>
+                  <v-radio value="valor" label="Monto" :disabled="tipoCuotaDetalleSeleccionado?.codigo === 'precio_base'"> Monto </v-radio>
+                </v-radio-group>
+              </div>
+            </div>
 
-          <v-col cols="6">
-            <h3>Tipo:</h3>
-            <v-radio-group v-model="tipoPorcentaje">
-              <v-radio value="descuento" label="descuento">Recargo </v-radio>
-              <v-radio value="recargo" label="recargo">Recargo </v-radio>
-            </v-radio-group>
-          </v-col>
+            <div style="width: 150px">
+              <small>Tipo:</small>
+              <div class="d-flex" style="justify-content: right">
+                <v-radio-group v-model="tipoImporteDR">
+                  <v-radio value="descuento" label="Descuento" :disabled="tipoCuotaDetalleSeleccionado?.codigo === 'precio_base'">
+                    Descuento
+                  </v-radio>
+                  <v-radio value="recargo" label="Recargo" :disabled="tipoCuotaDetalleSeleccionado?.codigo === 'precio_base'"> Recargo </v-radio>
+                </v-radio-group>
+              </div>
+            </div>
+          </v-row>
 
-          <v-col cols="8">
-            <v-text-field
-              :disabled="tipoDescuento == 'valor'"
-              v-model="tipoCuotaDetalleSeleccionado.porcentaje"
-              suffix="%"
-              type="number"
-              label="ingrese un porcentaje"
-              required
-              min="0"
-              max="100"
-            ></v-text-field>
-          </v-col>
+          <v-row>
+            <v-col v-if="tipoUnidad == 'porcentaje'">
+              <div>
+              <v-text-field
+                :disabled="tipoUnidad == 'valor'"
+                v-model="tipoCuotaDetalleSeleccionado.porcentaje"
+                suffix="%"
+                type="number"
+                label="Ingrese un porcentaje"
+              ></v-text-field>
+              </div>
+            </v-col>
 
-          <v-col cols="8">
-            <v-text-field
-              :disabled="tipoDescuento == 'porcentaje'"
-              v-model="tipoCuotaDetalleSeleccionado.valor"
-              label="monto"
-              required
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-btn
-          v-if="tipoCuotaDetalleEsNuevo"
-          class="mr-4"
-          color="success"
-          @click="agregarTipoCuotaDetalle()"
-        >
-          Generar <v-icon right dark> mdi-plus </v-icon>
-        </v-btn>
-        <v-btn
-          v-if="!tipoCuotaDetalleEsNuevo"
-          class="mr-4"
-          color="primary"
-          @click="actualizarTipoCuotaDetalle()"
-        >
-          Actualizar <v-icon right dark> mdi-update </v-icon>
-        </v-btn>
-        <v-btn
-          v-if="!tipoCuotaDetalleEsNuevo"
-          class="mr-4"
-          color="error"
-          @click="elminarTipoCuotaDetalle()"
-        >
-          Eliminar <v-icon right dark> mdi-delete </v-icon>
-        </v-btn>
-      </v-container>
-    </div>
+            <v-col v-if="tipoUnidad == 'valor'">
+              <div>
+              <v-text-field
+                :disabled="tipoUnidad == 'porcentaje'"
+                v-model="tipoCuotaDetalleSeleccionado.valor"
+                label="Ingrese un monto"
+                required
+              ></v-text-field>
+              </div>
+            </v-col>
+          </v-row>
+
+          <div style="display: grid">
+            <v-btn
+              v-if="tipoCuotaDetalleSeleccionado?.id == undefined"
+              color="primary"
+              @click="agregarTipoCuotaDetalle()"
+            >
+              Generar <v-icon right dark> mdi-plus </v-icon>
+            </v-btn>
+            <v-btn
+              v-if="tipoCuotaDetalleSeleccionado?.id != undefined"
+              color="primary"
+              @click="actualizarTipoCuotaDetalle()"
+            >
+              Actualizar <v-icon right dark> mdi-update </v-icon>
+            </v-btn>
+            <v-btn
+              class="mt-2"
+              v-if="tipoCuotaDetalleSeleccionado?.id != undefined"
+              color="error"
+              @click="elminarTipoCuotaDetalle()"
+            >
+              Eliminar <v-icon right dark> mdi-delete </v-icon>
+            </v-btn>
+          </div>
+          </div>
+        </v-container>
+      </div>
+    </v-container>
   </div>
 </template>
 
@@ -119,8 +133,8 @@ export default {
     return {
       tiposCuotaDetalles: [],
       tipoCuotaDetalleSeleccionado: null,
-      tipoDescuento: "",
-      tipoPorcentaje: "",
+      tipoUnidad: "",
+      tipoImporteDR: "",
       tipoCuotaDetalleEsNuevo: false,
     };
   },
@@ -132,33 +146,36 @@ export default {
     async getTiposCuotaDetalles() {
       const response = await axios.get("/cuota/detalle/tipo");
       this.tiposCuotaDetalles = response.data.body;
-      this.parsearPorcentajesCuotaTipoDetalles();
+      this.parsearPorcentajesCuotatipoImporteDRs();
     },
-    parsearPorcentajesCuotaTipoDetalles() {
+    parsearPorcentajesCuotatipoImporteDRs() {
       this.tiposCuotaDetalles.forEach((tipoCuotaDetalle) => {
         if (tipoCuotaDetalle.porcentaje) {
           tipoCuotaDetalle.porcentaje = tipoCuotaDetalle.porcentaje * 100;
         }
       });
     },
-    iniciarNuevoTipoDetalle() {
+    iniciarNuevotipoImporteDR() {
       this.tipoCuotaDetalleEsNuevo = true;
       this.tipoCuotaDetalleSeleccionado = {
         nombre: "",
-        porcentaje: 0,
-        valor: 0,
+        porcentaje: null,
+        valor: null,
         tipo: "",
       };
     },
     agregarTipoCuotaDetalle() {
       axios
-        .post("/cuota/detalle/tipo", this.tipoCuotaDetalleSeleccionado)
+        .post("/cuota/detalle/tipo", this.getCuotaActualizar())
         .then((response) => {
           this.getTiposCuotaDetalles();
           this.tipoCuotaDetalleEsNuevo = false;
           this.tipoCuotaDetalleSeleccionado = null;
-
-          this.callSnackbar(["Tipo de cuota detalle agregado", "success"]);
+          this.callSnackbar(["Tipo de cuota detalle agregada", "success"]);
+        })
+        .catch((error) => {
+          const msj = JSON.parse(error.request.response)?.message;
+          this.callSnackbar([msj || "Error al agregar.", "error"]);
         });
     },
 
@@ -172,10 +189,10 @@ export default {
           console.log("holii");
           this.getTiposCuotaDetalles();
           this.getTipoCuotaDetalles(this.tipoCuotaDetalleSeleccionado.id);
-          this.callSnackbar(["Tipo de cuota detalle actualizado", "success"]);
+          this.callSnackbar(["Tipo de cuota detalle actualizada", "success"]);
         })
         .catch((error) => {
-          console.log(error);
+          this.callSnackbar([msj || "Error al agregar.", "error"]);
         });
     },
     elminarTipoCuotaDetalle() {
@@ -184,63 +201,68 @@ export default {
         .then((response) => {
           this.getTiposCuotaDetalles();
           this.tipoCuotaDetalleSeleccionado = null;
-          this.callSnackbar(["Tipo de cuota detalle eliminado", "success"]);
+          this.callSnackbar(["Tipo de cuota detalle eliminada", "success"]);
         })
         .catch((error) => {
-          const msj = JSON.parse(error.request.response)?.message
-          this.callSnackbar([msj || 'Error al eliminar.', "error"]);
+          const msj = JSON.parse(error.request.response)?.message;
+          this.callSnackbar([msj || "Error al eliminar", "error"]);
         });
     },
 
     getTipoCuotaDetalles(id) {
-      console.log(id);
       axios
         .get(`/cuota/detalle/tipo/${id}`)
         .then((response) => {
           console.log(response.data.body);
           this.tipoCuotaDetalleSeleccionado = response.data.body;
-          this.tipoCuotaDetalleSeleccionado.porcentaje =
-            this.tipoCuotaDetalleSeleccionado.porcentaje * 100;
+          if(this.tipoCuotaDetalleSeleccionado.porcentaje !== null) {
+            this.tipoCuotaDetalleSeleccionado.porcentaje = this.tipoCuotaDetalleSeleccionado.porcentaje * 100;
+          }
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => {});
     },
 
     getCuotaActualizar() {
       let cuotaActualizada = {
         id: this.tipoCuotaDetalleSeleccionado.id,
         nombre: this.tipoCuotaDetalleSeleccionado.nombre,
-        porcentaje: this.tipoCuotaDetalleSeleccionado.porcentaje,
-        valor: this.tipoCuotaDetalleSeleccionado.valor,
+        // porcentaje: this.tipoCuotaDetalleSeleccionado.porcentaje,
+        // valor: this.tipoCuotaDetalleSeleccionado.valor,
       };
 
-      this.tipoDescuento == "porcentaje"
-        ? (cuotaActualizada.valor = null)
-        : (cuotaActualizada.porcentaje = null);
+      this.tipoUnidad == "porcentaje"
+        ? (cuotaActualizada.porcentaje = parseInt(this.tipoCuotaDetalleSeleccionado.porcentaje) )
+        : (cuotaActualizada.valor = parseInt(this.tipoCuotaDetalleSeleccionado.valor));
 
-      if (this.tipoDescuento == "porcentaje") {
+      if (this.tipoUnidad == "porcentaje") {
         cuotaActualizada.porcentaje = cuotaActualizada.porcentaje / 100;
       }
-      if (this.tipoPorcentaje == "descuento") {
-        cuotaActualizada.valor = cuotaActualizada.valor * -1;
+
+      if (this.tipoImporteDR == "descuento") {
+        cuotaActualizada.valor = cuotaActualizada.valor > 0 ? cuotaActualizada.valor * -1 : cuotaActualizada.valor;
+        cuotaActualizada.porcentaje = cuotaActualizada.porcentaje > 0 ? cuotaActualizada.porcentaje * -1 : cuotaActualizada.porcentaje;
+      } else {
+        cuotaActualizada.valor = cuotaActualizada.valor < 0 ? cuotaActualizada.valor * -1 : cuotaActualizada.valor;
+        cuotaActualizada.porcentaje = cuotaActualizada.porcentaje < 0 ? cuotaActualizada.porcentaje * -1 : cuotaActualizada.porcentaje;
       }
+
+       this.tipoUnidad == "porcentaje"
+        ? (cuotaActualizada.valor = null )
+        : (cuotaActualizada.porcentaje = null);
+
       return cuotaActualizada;
     },
   },
   watch: {
     tipoCuotaDetalleSeleccionado() {
       if (this.tipoCuotaDetalleSeleccionado) {
-        this.tipoDescuento = this.tipoCuotaDetalleSeleccionado.porcentaje
+        this.tipoUnidad = this.tipoCuotaDetalleSeleccionado.porcentaje != null
           ? "porcentaje"
           : "valor";
 
-        if (this.tipoDescuento == "porcentaje") {
-          this.tipoPorcentaje =
-            this.tipoCuotaDetalleSeleccionado.porcentaje > 0
-              ? "descuento"
-              : "recargo";
-        }
+        this.tipoImporteDR = (this.tipoCuotaDetalleSeleccionado?.porcentaje && parseInt(this.tipoCuotaDetalleSeleccionado?.porcentaje) > 0)
+            ? "recargo"
+            : "descuento";
       }
     },
   },

@@ -1,5 +1,5 @@
 <template>
-  <div class="ma-9 mt-0">
+  <v-container fluid>
     <div class="d-flex mx-auto mb-9" style="justify-content: center">
       <h2 v-if="isListaSocios">Lista socios</h2>
       <h2 v-else>Listado de Jugadores Externos</h2>
@@ -27,7 +27,7 @@
               <v-icon
                 v-bind="attrs"
                 v-on="on"
-                class="mr-2"
+                class="mr-1"
                 @click="editItem(item)"
                 color="success"
                 >mdi-pencil</v-icon
@@ -40,6 +40,7 @@
               <v-icon
                 v-bind="attrs"
                 v-on="on"
+                class="mr-4"
                 right
                 @click="gestionarRelaciones(item)"
                 color="primary"
@@ -49,7 +50,7 @@
             <span>Relaciones</span>
           </v-tooltip>
           <v-btn
-            class="ml-6"
+            class=""
             color="primary"
             small
             @click="mostrarDetalleCuotasAdeudadas(item)"
@@ -133,7 +134,7 @@
         <relaciones-usuario :usuario="usuarioRelaciones"></relaciones-usuario>
       </v-dialog>
     </v-card>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -152,9 +153,9 @@ export default {
       usuariosFiltrados: [],
       search: "",
       headers: [
-        { text: "Apellido", value: "apellido" },
-        { text: "Nombre", value: "nombre" },
-        { text: "DNI", value: "dni" },
+        { text: "Apellido", value: "apellido", width: '100px' },
+        { text: "Nombre", value: "nombre", width: '100px' },
+        { text: "DNI", value: "dni", width: '100px' },
         { text: "Mail", value: "mail", sortable: true, filterable: false },
         {
           text: "Telefono",
@@ -167,6 +168,7 @@ export default {
           value: "fechaAlta",
           sortable: true,
           filterable: false,
+          width: '130px'
         },
         {
           text: "Cuotas adeudadas",
@@ -175,12 +177,14 @@ export default {
           sort: (a, b) => {
             return a - b;
           },
+          width: '160px'
         },
         {
           text: "Socio",
           value: "isSocio",
           sortable: false,
           filterable: false,
+          width: '100px'
         },
         {
           text: "Acciones",
