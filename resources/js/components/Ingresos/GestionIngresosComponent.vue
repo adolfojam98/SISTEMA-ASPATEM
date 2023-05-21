@@ -1,129 +1,71 @@
 <template>
   <div>
-      <div class="d-flex justify-center mb-5">
-        <h2>Ingresos</h2>
-      </div>
+    <div class="d-flex justify-center mb-5">
+      <h2>Ingresos</h2>
+    </div>
 
-            <v-container>
-            <v-btn class="primary mb-5" @click="nuevoIngreso=true">Nuevo ingreso</v-btn>
-                      <v-row class="ma-0 pa-0 align-end">
-                        <div class="mr-5 mb-1" style="width: 225px">
-                <small>Desde: </small>
-                <v-menu
-                  v-model="menuFechaInicio"
-                  transition="scale-transition"
-                  min-width="200px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      style="width: 150px"
-                      v-model="fechaInicio"
-                      dense
-                      append-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="fechaInicio"
-                    @input="menuFechaInicio = false"
-                  ></v-date-picker>
-                </v-menu>
-              </div>
-              <div class="mr-5 mb-1" style="width: 225px">
-                <small> Hasta: </small>
-                <v-menu
-                  v-model="menuFechaFin"
-                  transition="scale-transition"
-                  min-width="200px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      style="width: 150px"
-                      v-model="fechaFin"
-                      dense
-                      append-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="fechaFin"
-                    @input="menuFechaFin = false"
-                  ></v-date-picker>
-                </v-menu>
-              </div>
-                        <div class="mr-5 mt-1" style="width: 225px">
-                          <v-select
-                            v-model="tipo"
-                            :items="tipoIngreso"
-                            label="Tipo de ingreso"
-                            v-on:change="resetTorneoFecha()"
-                          ></v-select>
-                        </div>
-                        <div v-if="tipo === 'Torneos' || tipo === 'Fechas'" class="mr-5 mt-1" style="width: 225px">
-                          <v-select
-                            v-model="torneoId"
-                            :items="torneos"
-                            item-text="nombre"
-                            item-value="id"
-                            :disabled="tipo === 'Cuotas' || tipo === 'Todos'"
-                            label="Torneo"
-                            v-on:change="getFechas()"
-                          ></v-select>
-                          
-                        </div>
-                        <div v-if="tipo === 'Fechas'" class="mr-5 mt-1" style="width: 225px">
-                          <v-select
-                            v-model="fechaId"
-                            :items="fechas"
-                            item-text="nombre"
-                            item-value="id"
-                            :disabled="tipo === 'Cuotas' || tipo === 'Torneos' || torneoId === null || tipo === 'Todos'"
-                            label="Fecha"
-                          ></v-select>
-                          
-                        </div>
-                        <v-col class="d-flex align-center mb-2">
-                          <v-btn
-                            @click="filtro(false)"
-                            class="primary"
-                            >Filtrar</v-btn
-                          >
-                        </v-col>
-                      </v-row>                    
-            </v-container>
+    <v-container>
+      <v-btn class="primary mb-5" @click="nuevoIngreso = true">Nuevo ingreso</v-btn>
+      <v-row class="ma-0 pa-0 align-end">
+        <div class="mr-5 mb-1" style="width: 225px">
+          <small>Desde: </small>
+          <v-menu v-model="menuFechaInicio" transition="scale-transition" min-width="200px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field style="width: 150px" v-model="fechaInicioFormateada" dense append-icon="mdi-calendar" readonly
+                v-bind="attrs" v-on="on" @blur="fechaInicio = parsearFecha(fechaInicioFormateada)"></v-text-field>
+            </template>
+            <v-date-picker v-model="fechaInicio" @input="menuFechaInicio = false"></v-date-picker>
+          </v-menu>
+        </div>
+        <div class="mr-5 mb-1" style="width: 225px">
+          <small> Hasta: </small>
+          <v-menu v-model="menuFechaFin" transition="scale-transition" min-width="200px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field style="width: 150px" v-model="fechaFinFormateada" dense append-icon="mdi-calendar" readonly
+                v-bind="attrs" v-on="on" @blur="fechaFin = parsearFecha(fechaFinFormateada)"></v-text-field>
+            </template>
+            <v-date-picker v-model="fechaFin" @input="menuFechaFin = false"></v-date-picker>
+          </v-menu>
+        </div>
+        <div class="mr-5 mt-1" style="width: 225px">
+          <v-select v-model="tipo" :items="tipoIngreso" label="Tipo de ingreso"
+            v-on:change="resetTorneoFecha()"></v-select>
+        </div>
+        <div v-if="tipo === 'Torneos' || tipo === 'Fechas'" class="mr-5 mt-1" style="width: 225px">
+          <v-select v-model="torneoId" :items="torneos" item-text="nombre" item-value="id"
+            :disabled="tipo === 'Cuotas' || tipo === 'Todos'" label="Torneo" v-on:change="getFechas()"></v-select>
+
+        </div>
+        <div v-if="tipo === 'Fechas'" class="mr-5 mt-1" style="width: 225px">
+          <v-select v-model="fechaId" :items="fechas" item-text="nombre" item-value="id"
+            :disabled="tipo === 'Cuotas' || tipo === 'Torneos' || torneoId === null || tipo === 'Todos'"
+            label="Fecha"></v-select>
+
+        </div>
+        <v-col class="d-flex align-center mb-2">
+          <v-btn @click="filtro(false)" class="primary">Filtrar</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
 
 
-      
-      <v-container>
-          <p><b>Total: ${{totalIngresos}}</b></p>
-          <v-card>
-        <v-text-field
-          class="ma-2"
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Buscar"
-          :items="torneos"
-          single-line
-          hide-details
-        ></v-text-field>
-        <v-data-table
-          :headers="headers"
-          :items="transacciones"
-          :search="search"
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="sortDesc"
-          item-key="id+tipo"
-        >
+
+    <v-container>
+      <p><b>Total: ${{ totalIngresos }}</b></p>
+      <v-card>
+        <v-text-field class="ma-2" v-model="search" append-icon="mdi-magnify" label="Buscar" :items="torneos" single-line
+          hide-details></v-text-field>
+        <v-data-table :headers="headers" :items="transacciones" :search="search" :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc" item-key="id+tipo">
           <template v-slot:[`item.monto`]="{ item }">
-          <p class="mt-4">${{ item.monto }}</p>
+            <p class="mt-4">${{ item.monto }}</p>
+          </template>
+          <template v-slot:[`item.fecha`]="{ item }">
+          <p class="mt-4">{{ darFormatoFecha(item.fecha) }}</p>
         </template>
         </v-data-table>
-        </v-card>
-      </v-container>
+      </v-card>
+    </v-container>
 
     <v-dialog v-model="nuevoIngreso" max-width="350px">
       <v-card>
@@ -131,31 +73,11 @@
           <p><b>Nuevo ingreso/gasto</b></p>
         </v-card-title>
         <v-form class="mr-3 ml-3 pa-3">
-          <v-text-field
-            prefix="$"
-            min="-99999999"
-            max="99999999"
-            oninput="validity.valid||(value='');"
-            single-line
-            dense
-            v-model="monto"
-            :rules="montoRule"
-            label="Monto"
-            required
-          />
-          <v-textarea
-            v-model="descripcion"
-            :counter="100"
-            rows="3"
-            label="Descripción"
-            required
-          />
+          <v-text-field prefix="$" min="-99999999" max="99999999" oninput="validity.valid||(value='');" single-line dense
+            v-model="monto" :rules="montoRule" label="Monto" required />
+          <v-textarea v-model="descripcion" :counter="100" rows="3" label="Descripción" required />
           <center class="mt-3">
-            <v-btn
-              class="mr-4"
-              @click="[(nuevoIngreso = false), (monto = 0), (descripcion = '')]"
-              >Cancelar</v-btn
-            >
+            <v-btn class="mr-4" @click="[(nuevoIngreso = false), (monto = 0), (descripcion = '')]">Cancelar</v-btn>
             <v-btn class="primary" @click="[setNuevoIngreso()]">Guardar</v-btn>
           </center>
         </v-form>
@@ -172,9 +94,12 @@ export default {
       fechaInicio: new Date(new Date().getFullYear(), 0, 1)
         .toISOString()
         .substr(0, 10),
-      formatoFecha: this.darFormatoFecha(
+      fechaFinFormateada: this.darFormatoFecha(
         new Date().toISOString().substr(0, 10)
       ),
+      fechaInicioFormateada: this.darFormatoFecha(new Date(new Date().getFullYear(), 0, 1)
+        .toISOString()
+        .substr(0, 10)),
       totalIngresos: 0,
       menuFechaInicio: false,
       menuFechaFin: false,
@@ -206,15 +131,15 @@ export default {
   },
 
   methods: {
-    calcularTotal(){
-        if(this.transacciones) {
-            let montoTotal = 0;
-            this.transacciones.forEach(transaccion => {
-                montoTotal += parseFloat(transaccion.monto);
-            });
-            return this.totalIngresos = montoTotal;
-        }
-        else return this.totalIngresos = 0;
+    calcularTotal() {
+      if (this.transacciones) {
+        let montoTotal = 0;
+        this.transacciones.forEach(transaccion => {
+          montoTotal += parseFloat(transaccion.monto);
+        });
+        return this.totalIngresos = montoTotal;
+      }
+      else return this.totalIngresos = 0;
     },
     setNuevoIngreso() {
       if (this.monto !== 0 && this.descripcion !== "") {
@@ -224,35 +149,27 @@ export default {
             descripcion: this.descripcion,
           })
           .then(() => {
-              this.tipo = "Todos"
-              this.torneoId = null
-              this.fechaId = null
-              this.filtro(false)
-              this.monto = 0
-              this.descripcion = ""
-              this.nuevoIngreso = false
-            }
+            this.tipo = "Todos"
+            this.torneoId = null
+            this.fechaId = null
+            this.filtro(false)
+            this.monto = 0
+            this.descripcion = ""
+            this.nuevoIngreso = false
+          }
           );
       }
-    },
-    darFormatoFechaNew(fecha) {
-      if (!fecha || typeof fecha === "undefined") {
-        return null;
-      }
-
-      const date = new Date(fecha);
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const year = date.getFullYear().toString();
-      const outputDateString = `${day}/${month}/${year}`;
-
-      return outputDateString;
     },
     darFormatoFecha(fecha) {
       if (!fecha) return null;
       console.log(fecha);
       const [anio, mes, dia] = fecha.split("-");
       return `${dia}/${mes}/${anio}`;
+    },
+    parsearFecha(date) {
+      if (!date) return null
+      const [day, month, year] = date.split('/')
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
     getTorneos() {
       axios.get("/torneos").then((e) => {
@@ -287,21 +204,24 @@ export default {
       });
     },
     filtro(simple) {
-      simple
-        ? axios
-            .get(`/ingresos/${this.fechaInicio}/${this.fechaFin}`)
-            .then((res) => {
-              this.transacciones = res.data;
-              this.calcularTotal();
-            })
-        : axios
-            .get(
-              `/ingresos/${this.fechaInicio}/${this.fechaFin}/${this.tipo}/${this.torneoId}/${this.fechaId}`
-            )
-            .then((res) => {
-              this.transacciones = res.data;
-              this.calcularTotal();
-            });
+
+      axios.get('/ingresos', {
+        params: {
+          fecha_inicio: this.fechaInicio,
+          fecha_fin: this.fechaFin,
+          tipo: this.tipo,
+          torneo_id: this.torneoId,
+          fecha_id: this.fechaId
+        }
+      }).then(res => {
+        console.log(res);
+        this.transacciones = res.data;
+        this.calcularTotal();
+      }
+      );
+
+      return;
+
     },
     resetTorneoFecha() {
       if (this.tipo === "Cuotas" || this.tipo === "Otros") {
@@ -317,11 +237,20 @@ export default {
 
   watch: {
     fechaInicio(val) {
-      this.formatoFecha = this.darFormatoFecha(this.fechaInicio);
+      this.fechaInicioFormateada = this.darFormatoFecha(this.fechaInicio);
     },
     fechaFin(val) {
-      this.formatoFecha = this.darFormatoFecha(this.fechaFin);
+      this.fechaFinFormateada = this.darFormatoFecha(this.fechaFin);
     },
+  },
+
+  computed: {
+    fechaFinComputada() {
+      return this.darFormatoFecha(this.fechaFin);
+    },
+    fechaInicioComputada() {
+      return this.darFormatoFecha(this.fechaInicio);
+    }
   },
 
   created() {

@@ -96,7 +96,7 @@ Route::group(['prefix' => '/base', 'as' => 'base.', 'middleware' => ['auth']], f
 
 Route::group(['prefix' => '/ingresos', 'as' => 'ingresos.', 'middleware' => ['auth']], function () {
     Route::post('/setMonto', 'IngresosExternosController@store')->name('store');
-    Route::get('/{fecha_inicio?}/{fecha_fin?}/{tipo?}/{torneo_id?}/{fecha_id?}', 'IngresosExternosController@create')->name('create');
+    Route::get('/', 'IngresosExternosController@create')->name('create');
 });
 
 Route::group(['prefix' => '/fechas', 'as' => 'fechas.', 'middleware' => []], function () {

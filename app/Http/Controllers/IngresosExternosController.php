@@ -13,6 +13,7 @@ use App\Pago;
 use App\Cuota;
 use App\Fecha;
 use App\Torneo;
+use Carbon\Carbon;
 
 class IngresosExternosController extends Controller
 {
@@ -32,88 +33,108 @@ class IngresosExternosController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request) //TIPO-MONTO-DESCRIPCION-FECHA
-    {   
-        $informe = [];
-        //Cuotas
-        if(!$request->tipo || $request->tipo === 'Cuotas' || $request->tipo === 'Todos') {
-            $query_cuotas = Pago::all();
-            
-            if($request->fecha_inicio) {
-                $query_cuotas = $query_cuotas->where('fecha_pago','>=',$request->fecha_inicio);
-            }
-            if($request->fecha_fin) {
-                $query_cuotas = $query_cuotas->where('fecha_pago','<=',$request->fecha_fin.' 23:59:59');
-            }
-            //return(CuotaResources::collection($query_cuotas));
-            $cuotas = $query_cuotas;
+    {
 
+        $fecha_inicio = $request->fecha_inicio;
+        $fecha_fin = $request->fecha_fin;
+        $tipo = $request->tipo;
+        $torneo_id = $request->torneo_id;
+        $fecha_id = $request->fecha_id;
+        $fecha_inicio = Carbon::parse($fecha_inicio);
+        $fecha_fin = Carbon::parse($fecha_fin);
+        $informe = [];
+
+
+        //Cuotas
+        if (!$tipo || $tipo === 'Cuotas' || $tipo === 'Todos') {
+            $query_cuotas = Pago::query();
+            if ($fecha_inicio) {
+               
+                $query_cuotas = $query_cuotas->where('fecha_pago', '>=', $fecha_inicio);
+            }
+            if ($fecha_fin) {
+
+                $query_cuotas = $query_cuotas->where('fecha_pago', '<=', $fecha_fin);
+            }
+
+            $cuotas = $query_cuotas->get();
             foreach ($cuotas as $key => $cuota) {
                 $cuota_xd = (object)[
                     'id' => $cuota->id,
                     'tipo' => 'Cuota',
                     'monto' => (float) $cuota->monto_total,
                     'descripcion' => 'Cuota Pagada',
-                    'fecha' => date("Y-m-d",strtotime($cuota->fecha_pago))
+                    'fecha' => date("Y-m-d", strtotime($cuota->fecha_pago))
                 ];
-                array_push($informe,$cuota_xd);
+                array_push($informe, $cuota_xd);
             }
         }
         //Torneo
-        if(!$request->tipo || $request->tipo === 'Torneos' || $request->tipo === 'Todos') {
-            $query_torneos = Torneo::all();
+        if (!$tipo || $tipo === 'Torneos' || $tipo === 'Todos') {
+            if ($tipo === 'Todos') {
+                $query_torneos = Torneo::all();
+            } else {
+                $query_torneos = Torneo::query();
 
-            if($request->torneo_id && $request->torneo_id !== 0) {
-                $query_torneos = $query_torneos->where('id',$request->torneo_id);
+                if ($torneo_id && $torneo_id !== 0) {
+                    $query_torneos = $query_torneos->where('id', $torneo_id);
+                }
+                if ($fecha_inicio) {
+                    $query_torneos = $query_torneos->where('created_at', '>=', $fecha_inicio);
+                }
+                if ($fecha_fin) {
+                    $query_torneos = $query_torneos->where('created_at', '<=', $fecha_fin);
+                }
+
+                $query_torneos = $query_torneos->get();
             }
-            if($request->fecha_inicio) {
-                $query_torneos = $query_torneos->where('created_at','>=',$request->fecha_inicio);
-            }
-            if($request->fecha_fin) {
-                $query_torneos = $query_torneos->where('created_at','<=',$request->fecha_fin.' 23:59:59');
-            }
+
             //return (TorneoResources::collection($query_torneos));
             $torneos = TorneoResources::collection($query_torneos);
             foreach ($torneos as $key => $torneo) {
-                array_push($informe,$torneo);
+                array_push($informe, $torneo);
             }
-            
         }
         //Fecha
-        if($request->tipo && $request->tipo === 'Fechas') {//solo si tipo es igual a fecha, porque las ganancias ya estan en torneo
-            $query_fechas = Fecha::all();
-            
-            if($request->torneo_id && $request->torneo_id !== 0) {
-                $query_fechas = $query_fechas->where('torneo_id',$request->torneo_id);
+        if ($tipo && $tipo === 'Fechas') { //solo si tipo es igual a fecha, porque las ganancias ya estan en torneo
+            $query_fechas = Fecha::query();
+
+            if ($fecha_id && $fecha_id !== 0) {
+                $query_fechas = $query_fechas->where('id', $fecha_id);
             }
-            if($request->fecha_inicio) {
-                $query_fechas = $query_fechas->where('created_at','>=',$request->fecha_inicio);
+
+            if ($torneo_id && $torneo_id !== 0) {
+                $query_fechas = $query_fechas->where('torneo_id', $torneo_id);
             }
-            if($request->fecha_fin) {
-                $query_fechas = $query_fechas->where('created_at','<=',$request->fecha_fin.' 23:59:59');
+
+            if ($fecha_inicio) {
+                $query_fechas = $query_fechas->where('created_at', '>=', $fecha_inicio);
             }
+            if ($fecha_fin) {
+                $query_fechas = $query_fechas->where('created_at', '<=', $fecha_fin);
+            }
+
             //return (FechaResources::collection($query_fechas));
-            $fechas = FechaResources::collection($query_fechas);
+            $fechas = FechaResources::collection($query_fechas->get());
             foreach ($fechas as $key => $fecha) {
-                array_push($informe,$fecha);
+                array_push($informe, $fecha);
             }
-            
         }
         //Otros
-        if(!$request->tipo || $request->tipo === 'Todos' || $request->tipo === 'Otros') {
-            $query_otros = IngresosExternos::all();
+        if (!$tipo || $tipo === 'Todos' || $tipo === 'Otros') {
+            $query_otros = IngresosExternos::query();
 
-            if($request->fecha_inicio) {
-                $query_otros = $query_otros->where('created_at','>=',$request->fecha_inicio);
+            if ($fecha_inicio) {
+                $query_otros = $query_otros->where('created_at', '>=', $fecha_inicio);
             }
-            if($request->fecha_fin) {
-                $query_otros = $query_otros->where('created_at','<=',$request->fecha_fin.' 23:59:59');
+            if ($fecha_fin) {
+                $query_otros = $query_otros->where('created_at', '<=', $fecha_fin . ' 23:59:59');
             }
             //return IngresosExternosResources::collection($query_otros);
-            $otros = IngresosExternosResources::collection($query_otros);
+            $otros = IngresosExternosResources::collection($query_otros->get());
             foreach ($otros as $key => $otro) {
-                array_push($informe,$otro);
+                array_push($informe, $otro);
             }
-            
         }
 
         return $informe;
@@ -130,7 +151,7 @@ class IngresosExternosController extends Controller
         $ingresoExterno = new IngresosExternos();
         $ingresoExterno->monto = $request->monto;
         $ingresoExterno->descripcion = $request->descripcion;
-        $ingresoExterno->save(); 
+        $ingresoExterno->save();
     }
 
     /**
