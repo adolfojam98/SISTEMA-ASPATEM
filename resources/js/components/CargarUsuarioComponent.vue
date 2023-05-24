@@ -89,37 +89,41 @@ export default {
   }),
   methods: {
     ...mapActions(["callSnackbar"]),
-    cargarUsuario() {
+    async cargarUsuario() {
       if (this.validarFormulario()) {
-        axios
-          .post("/usuario", {
-            nombre: this.nombre,
-            apellido: this.apellido,
-            mail: this.email,
-            telefono: this.telefono,
-            socio: this.es_socio,
-            dni: this.dni,
-          })
-          .then((response) => {
-            this.callSnackbar([response.data.message, "success"]);
-            this.id_usuario = response.data.id;
+        try {
+          const response = await axios
+            .post("/usuario", {
+              nombre: this.nombre,
+              apellido: this.apellido,
+              mail: this.email,
+              telefono: this.telefono,
+              socio: this.es_socio,
+              dni: this.dni,
+            });
+          this.callSnackbar([response.data.message, "success"]);
+          this.id_usuario = response.data.id;
 
-            if (this.es_socio && this.id_usuario != null) {
-              this.generarCuota();
-            }
-            console.log("la mama del gonza");
-            this.$router.push({ path: "/usuarios/lista", replace: true });
-          })
-          .catch((error) => {
-            console.log(error);
-            const errores = error.response.data.errors;
-            if (errores["nombre"])
-              this.callSnackbar([errores["nombre"][0], "error"]);
-            if (errores["apellido"])
-              this.callSnackbar([errores["apellido"][0], "error"]);
-            if (errores["dni"]) this.callSnackbar([errores["dni"][0], "error"]);
-            console.log(errores.response);
-          });
+          if (this.es_socio && this.id_usuario != null) {
+           await this.generarCuota();
+          }
+          console.log("la mama del gonza");
+          this.$router.push({ path: "/usuarios/lista", replace: true });
+
+        } catch (error) {
+          console.log(error);
+          const errores = error.response.data.errors;
+          if (errores["nombre"])
+            this.callSnackbar([errores["nombre"][0], "error"]);
+          if (errores["apellido"])
+            this.callSnackbar([errores["apellido"][0], "error"]);
+          if (errores["dni"]) this.callSnackbar([errores["dni"][0], "error"]);
+          console.log(errores.response);
+
+        }
+
+
+
       }
     },
     validarFormulario() {
@@ -130,25 +134,24 @@ export default {
       if (!this.importe || this.importe == "" || this.importe < 0) {
         this.importe = 0;
       }
-      axios
-        .post(`/cuota/ingreso/${this.id_usuario}`, {
-          importe: this.importe,
-        })
-        .then((response) => {
-          this.id_cuota = response.data.body.id;
-          this.pagarCuota();
-        })
-        .catch(function (error) {
-          this.callSnackbar(["Error al guardar cuota", "error"]);
-        });
 
+      try {
+        const response = await axios.post(`/cuota/ingreso/${this.id_usuario}`, {
+          importe: this.importe,
+        });
+        this.id_cuota = response.data.body.id;
+       await this.pagarCuota();
+      } catch (error) {
+        this.callSnackbar(["Error al guardar cuota", "error"]);
+      }
       this.resetearFormulario();
     },
+
     resetearFormulario() {
       this.$refs.form.reset();
     },
-    pagarCuota() {
-      axios.post(`/pago/store/${this.id_cuota}`);
+   async pagarCuota() {
+     await axios.post(`/pago/store/${this.id_cuota}`);
     },
   },
 };
