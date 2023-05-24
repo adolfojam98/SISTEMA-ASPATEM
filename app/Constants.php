@@ -9,7 +9,8 @@
             'Relaciones' => 'relaciones',
             'Moroso Bajo' => 'moroso_bajo',
             'Moroso Medio' => 'moroso_medio',
-            'Moroso Alto' => 'moroso_alto'
+            'Moroso Alto' => 'moroso_alto',
+            'Ingreso' => 'ingreso'
         ];
 
         //estos serian los no visibles para el frontend
