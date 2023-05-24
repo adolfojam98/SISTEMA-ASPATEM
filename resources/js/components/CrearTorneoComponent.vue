@@ -61,6 +61,7 @@ export default {
     StepListaJugadoresTorneoComponent,
   },
   data: () => ({
+    e6 : 1,
     valid: true,
     nombreTorneoRules: [
       (v) => !!v || "El nombre del torneo es requerido.",
@@ -75,7 +76,6 @@ export default {
       return this.$store.state;
     },
     ...mapState("CrearTorneo", [
-      "e6",
       "nombreTorneo",
       "gestionPuntos",
       "listaJugadores",
@@ -86,9 +86,10 @@ export default {
 
   methods: {
     ...mapMutations("CrearTorneo", ["getTorneos"]),
-    ...mapActions("CrearTorneo",["setStep"]),
     ...mapActions(["callSnackbar"]),
-
+    setStep(n){
+      this.e6 = n
+    },
     async generarTorneo() {
       if (this.existeNombreTorneo(this.nombreTorneo)) {
         this.callSnackbar(["El nombre del torneo ya esta en uso", "error"]);

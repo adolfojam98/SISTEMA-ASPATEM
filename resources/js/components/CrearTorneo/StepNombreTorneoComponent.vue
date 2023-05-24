@@ -21,12 +21,13 @@ import { mapMutations, mapState } from "vuex";
 export default {
   data() {
     return {
+      valid: true,
       nombreTorneoRules: [
         (v) => !!v || "Nombre requerido",
         (v) =>
           /^([A-Za-z]([A-Za-z0-9]*[ \t\n\r\f]?[A-Za-z0-9])*)+$/.test(v) ||
           "Nombre invalido",
-        (v) => v.length <= 30 || "Demasiado largo",
+        (v) => v && v.length <= 30 || "Demasiado largo",
       ],
     };
   },
