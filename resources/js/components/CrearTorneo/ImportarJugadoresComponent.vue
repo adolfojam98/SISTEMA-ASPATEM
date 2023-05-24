@@ -1,26 +1,16 @@
 <template>
   <div>
     <div>
-      <input
-        id="file-excel"
-        type="file"
-        ref="input"
-        @change="excelExport"
-        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        style="display: none"
-      />
+      <input id="file-excel" type="file" ref="input" @change="excelExport"
+        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="display: none" />
 
-      <label
-        for="file-excel"
-        class="
+      <label for="file-excel" class="
           subir
           text-button
           v-btn v-btn--block v-btn--contained
           theme--dark
           v-size--default
-        "
-        style="background-color: rgb(33, 33, 33); border-color: rgb(33, 33, 33)"
-      >
+        " style="background-color: rgb(33, 33, 33); border-color: rgb(33, 33, 33)">
         Importar jugadores
       </label>
     </div>
@@ -174,7 +164,14 @@ export default {
           if (Array.isArray(resp.data) && resp.data.length) {
             jugador = { ...resp.data[0], puntos: jugador.puntos };
           }
-          this.pushJugadorTorneo(jugador);
+          //este try catch es porque pushJugadorTorneo lazan una excepcion
+          //y esto hace que la ignore
+          try {
+            this.pushJugadorTorneo(jugador);
+          } catch (e) {
+
+          }
+
         }
       }
     },

@@ -32,6 +32,10 @@ export default {
             state.e6 = data;
         },
         pushJugadorTorneo(state, data) {
+            const playerExists = state.listaJugadores.some(jugador => jugador.dni === data.dni);
+            if(playerExists){
+                throw "Ya estiste el jugador en la lista";
+            }
             state.listaJugadores.push(data);
         },
         eliminarJugador(state, jugador) {
