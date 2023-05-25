@@ -162,6 +162,16 @@ class CuotaDetalleTipoController extends ApiController
     {
         try
         {
+            $defaultsdetallesTipos = Constants::CuotaDetalleTipos;
+            $isntADefaultType = CuotaDetalleTipo::whereId($cuotaDetalleTipoId)
+            ->whereNotIn('codigo', array_values($defaultsdetallesTipos))
+            ->first();
+
+            if(!$isntADefaultType)
+            {
+                return $this->sendError('Los tipos de detalle defaults no se pueden eliminar.');
+            }
+
             $cuotaDetalleTipo = CuotaDetalleTipo::find($cuotaDetalleTipoId)->exists();
 
             if ($cuotaDetalleTipo)
@@ -173,7 +183,7 @@ class CuotaDetalleTipoController extends ApiController
                     return $this->sendServiceError($service->getLastError());
                 }
                 
-                return $this->sendResponse(null, 'Tipo de detalle eliminado con exito'); 
+                return $this->sendResponse(null, 'Tipo de detalle eliminado con exito');
             }
             else
             {
