@@ -347,6 +347,7 @@ export default {
 
     actualizarEstadoJugador(estadoJugador) {
       const jugador = this.listaJugadores.find(j => j.usuario_id == estadoJugador.usuario_id);
+      jugador.monto_pagado = estadoJugador.monto_pagado;
       const categoriaSuperior = this.getCategoriaSuperiorJugador(jugador);
       const categoriaMenor = this.getCategoriaJugador(jugador);
 
