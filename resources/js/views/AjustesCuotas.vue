@@ -134,7 +134,7 @@ export default {
       tiposCuotaDetalles: [],
       tipoCuotaDetalleSeleccionado: null,
       tipoUnidad: "",
-      tipoImporteDR: "",
+      tipoImporteDR: "recargo",
       tipoCuotaDetalleEsNuevo: false,
     };
   },
@@ -254,15 +254,28 @@ export default {
     },
   },
   watch: {
+    tipoImporteDR() {
+      console.log(this.tipoImporteDR)
+    },
     tipoCuotaDetalleSeleccionado() {
       if (this.tipoCuotaDetalleSeleccionado) {
         this.tipoUnidad = this.tipoCuotaDetalleSeleccionado.porcentaje != null
           ? "porcentaje"
           : "valor";
 
-        this.tipoImporteDR = (this.tipoCuotaDetalleSeleccionado?.porcentaje && parseInt(this.tipoCuotaDetalleSeleccionado?.porcentaje) > 0)
+        if(this.tipoUnidad == "porcentaje") {
+          this.tipoImporteDR = parseInt(this.tipoCuotaDetalleSeleccionado?.porcentaje) > 0
             ? "recargo"
             : "descuento";
+        } else {
+          this.tipoImporteDR = parseInt(this.tipoCuotaDetalleSeleccionado?.valor) > 0
+            ? "recargo"
+            : "descuento";
+        }
+
+        if(this.tipoCuotaDetalleSeleccionado?.codigo === 'precio_base') {
+          this.tipoImporteDR = 'recargo'
+        }
       }
     },
   },
