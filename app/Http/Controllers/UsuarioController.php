@@ -261,7 +261,7 @@ class UsuarioController extends ApiController
 
             // $query = $query->Leftjoin('pagos', 'pagos.cuota_id', 'cuotas.id');
 
-            $cuotas =  Cuota::with('pago')->where('usuario_id', $id)->get();
+            $cuotas = Cuota::with('pago')->where('usuario_id', $id)->orderBy('periodo', 'desc')->get();
 
             // $cuotas = $query->get();
 

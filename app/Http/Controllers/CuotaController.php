@@ -89,7 +89,7 @@ class CuotaController extends ApiController
             $usuario = Usuario::findOrFail($usuario_id);
 
             //datos para la cuota y detalle tipo
-            $periodo = date("Y-m-d H:i:s", strtotime(date("Y-m-d")));
+            $periodo = date("Y-m-d H:i:s", strtotime(date("Y-m-1")));
             $importe = $request->get('importe');
             $cuotaDetalleTipoIngreso = CuotaDetalleTipo::where('codigo', 'ingreso')->first();
 
