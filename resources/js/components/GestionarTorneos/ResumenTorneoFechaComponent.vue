@@ -2,13 +2,14 @@
   <v-container>
     <v-card>
       <v-btn class="primary mt-2 ml-2" @click="$router.go(-1)">Volver</v-btn>
-        <center>
-            <h2 class="mb-3">Fecha: {{ fecha_nombre }}</h2>
-        </center>
+      <center>
+        <h2 class="mb-3">Fecha: {{ fecha_nombre }}</h2>
+      </center>
       <hr />
       <v-data-table :headers="headers" :items="ranking" :search="search">
         <template v-slot:[`item.puntos`]="{ item }">
-          <p class="mt-4">{{ item.puntos + item.puntos_ganados }} ({{ item.puntos_ganados && item.puntos_ganados > 0 ? '+'+item.puntos_ganados : item.puntos_ganados }})</p>
+          <p class="mt-4">{{ sumarPuntos(item) }} ({{ item.puntos_ganados && item.puntos_ganados > 0 ?
+            '+' + item.puntos_ganados : item.puntos_ganados }})</p>
         </template>
       </v-data-table>
     </v-card>
@@ -44,12 +45,17 @@ export default {
       });
     },
     getFechaExcel() {
-        window.open(`/export-fecha/${this.fechaId}`,"_self");
+      window.open(`/export-fecha/${this.fechaId}`, "_self");
+    }
+    , sumarPuntos(item) {
+      return parseInt(item.puntos) + parseInt(item.puntos_ganados);
     }
   },
+
 
   created() {
     this.getFecha();
   },
 };
 </script>
+
