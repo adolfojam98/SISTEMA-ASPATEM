@@ -22,12 +22,12 @@ class Fecha extends Model
         $ranking_hasta_esta_fecha = [];
         $categorias = $this->torneo->categorias;
         $torneo_usuarios = $this->torneo->jugadores;
-
         foreach ($torneo_usuarios as $key => $torneo_usuario) {
+
             $fechas_usuarios = $this->torneo->fechas()
             ->join('fecha_usuario', 'fecha_usuario.fecha_id', '=', 'fechas.id')
             ->where('fechas.created_at', '<', $this->created_at) //traigo todas las fechas anteriores
-            ->where('fecha_usuario.usuario_id', $torneo_usuario->usuario_id)
+            ->where('fecha_usuario.usuario_id', $torneo_usuario->id)
             ->get();
 
             foreach ($fechas_usuarios as $key => $fecha_usuario) {
@@ -39,7 +39,7 @@ class Fecha extends Model
                 "dni" => $torneo_usuario->dni,
                 "nombre" => $torneo_usuario->nombre,
                 "apellido" => $torneo_usuario->apellido,
-                "puntos" => $torneo_usuario->pivot->puntos,
+                "puntos" => $torneo_usuario->pivot->puntos + $torneo_usuario->puntos,
                 "puntos_ultima_fecha" => $this->fecha_usuario($torneo_usuario->pivot->usuario_id)->first()->puntos ?? 0, //si tengo una fecha abierta aqui se van a mostrar los puntos actuales, se deben ignorar por parte del front
                 "categoria" => $this->calcularCategoria($categorias, $torneo_usuario->pivot->puntos)
             ];

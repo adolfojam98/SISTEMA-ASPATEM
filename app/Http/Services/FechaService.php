@@ -66,8 +66,7 @@ class FechaService extends BaseService
         // siempre LIMPIAR errores al iniciar un proceso de servicio
         $this->clearErrors();
 
-        $fecha = Fecha::find($fecha_id)->first();
-
+        $fecha = Fecha::whereId($fecha_id)->first();
         if($nombre)
             $fecha->nombre = $nombre;
 
@@ -79,7 +78,6 @@ class FechaService extends BaseService
                 $this->setError("FEC0002");
             }
         }
-
         if(isset($monto_no_socios_dos_categorias))
             $fecha->monto_no_socios_dos_categorias = $monto_no_socios_dos_categorias;
 
@@ -141,7 +139,7 @@ class FechaService extends BaseService
         return false;
     }
 
-    function calculateMonto($fechaId, $usuarioId, $numCategorias)
+    function calculateMonto($fecha_id, $usuarioId, $numCategorias)
     {
         // siempre LIMPIAR errores al iniciar un proceso de servicio
         $this->clearErrors();
@@ -149,7 +147,7 @@ class FechaService extends BaseService
         if ($numCategorias == 0)
             return 0;
 
-        $fecha = Fecha::find($fechaId)->first();
+        $fecha = Fecha::whereId($fecha_id)->first();
         $statusSocio = Usuario::find($usuarioId)->socio();
 
         if ($statusSocio->activo) {
@@ -170,7 +168,7 @@ class FechaService extends BaseService
         $this->resetPuntosFecha($fecha_id);
 
         //fecha, de la fecha vamos a tomar algunos datos del modelo
-        $fecha = Fecha::find($fecha_id)->first();
+        $fecha = Fecha::whereId($fecha_id)->first();
 
         //del torneo vamos a tomar los puntos que se ganan/pierden para cada caso
         $torneo = $fecha->torneo()->first();
