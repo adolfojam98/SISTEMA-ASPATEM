@@ -48,7 +48,7 @@ export default {
       window.open(`/export-fecha/${this.fechaId}`, "_self");
     }
     , sumarPuntos(item) {
-      return parseInt(item.puntos) + parseInt(item.puntos_ganados);
+      return parseInt(item.puntos) // + parseInt(item.puntos_ganados);
     }
   },
 

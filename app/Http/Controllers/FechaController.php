@@ -226,8 +226,8 @@ class FechaController extends ApiController
             $categorias = Categoria::where('torneo_id',$fecha->torneo_id)->get();
            
             foreach ($torneo_usuarios as $key => $torneo_usuario) {
-                $fechas_usuarios = Fecha::where('fechas.id',$fecha->torneo_id)
-                ->where('fechas.created_at','=<',$fecha->created_at) //TODO voy a traer todas las fechas anteriores y esta
+                $fechas_usuarios = Fecha::where('fechas.torneo_id',$fecha->torneo_id)
+                ->where('fechas.created_at','<=',$fecha->created_at) //TODO voy a traer todas las fechas anteriores y esta
                 ->where('fecha_usuario.usuario_id',$torneo_usuario->usuario_id)
                 ->join('fecha_usuario','fecha_usuario.fecha_id','=','fechas.id')
                 ->get();
