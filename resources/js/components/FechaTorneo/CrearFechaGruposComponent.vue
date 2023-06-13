@@ -34,7 +34,7 @@
                   </p>
                   <v-switch
                     v-model="item.gruposConEliminatoria"
-                    label="Fase de grupos con eliminatoria"
+                    label="Con llaves de ajuste"
                     class="ml-2 mt-0"
                   ></v-switch>
 

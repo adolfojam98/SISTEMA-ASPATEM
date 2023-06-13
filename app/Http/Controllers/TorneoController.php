@@ -168,6 +168,7 @@ class TorneoController extends Controller
 
                 if($fecha_usuario){
                     $jugador->pivot->puntos += $fecha_usuario->puntos;
+                    $jugador->montoPagado += $fecha_usuario->monto_pagado;
                 }
             }
 

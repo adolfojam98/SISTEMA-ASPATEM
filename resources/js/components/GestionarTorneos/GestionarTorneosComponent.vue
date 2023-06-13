@@ -251,6 +251,11 @@
 
               <p />
             </template>
+            <template v-slot:[`item.date`]="{ item }">
+              <p class="mt-4">{{ item.vigencia == 0 ? 'vigente' : 'no vigente'}}</p>
+
+              <p />
+            </template>
           </v-data-table>
         </v-card>
       </v-col>
@@ -291,7 +296,7 @@ export default {
         { text: "Nombre", value: "nombre" },
         { text: "Cantidad de participantes", value: "participantes" },
         { text: "Ingresos", value: "ingresos" },
-        { text: "Cerrada", value: "date" },
+        { text: "Vigencia", value: "date" },
       ],
       renderComponent: true,
     };

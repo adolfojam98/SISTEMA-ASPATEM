@@ -14,7 +14,7 @@
             v-if="categoria.cantidadGrupos && categoria.cantidadGrupos % 1 == 0">
             Cantidad minima de jugadores: {{ categoria.cantidadGrupos * 3 }}
           </p>
-          <v-switch v-model="categoria.gruposConEliminatoria" label="Fase de grupos con eliminatoria"
+          <v-switch v-model="categoria.gruposConEliminatoria" label="Con llaves de ajuste"
             class="ml-2 mt-0"></v-switch>
           <v-btn class="ml-2 mr-4" dark :disabled="!valid" @click="[generarGrupos()]" color="primary">Generar
             grupos</v-btn>

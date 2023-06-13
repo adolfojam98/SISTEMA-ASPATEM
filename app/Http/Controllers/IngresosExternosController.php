@@ -42,6 +42,7 @@ class IngresosExternosController extends Controller
         $fecha_id = $request->fecha_id;
         $fecha_inicio = Carbon::parse($fecha_inicio);
         $fecha_fin = Carbon::parse($fecha_fin);
+        $fecha_fin = $fecha_fin->setTime(23, 59, 59);
         $informe = [];
 
 
@@ -128,7 +129,7 @@ class IngresosExternosController extends Controller
                 $query_otros = $query_otros->where('created_at', '>=', $fecha_inicio);
             }
             if ($fecha_fin) {
-                $query_otros = $query_otros->where('created_at', '<=', $fecha_fin . ' 23:59:59');
+                $query_otros = $query_otros->where('created_at', '<=', $fecha_fin);
             }
             //return IngresosExternosResources::collection($query_otros);
             $otros = IngresosExternosResources::collection($query_otros->get());
