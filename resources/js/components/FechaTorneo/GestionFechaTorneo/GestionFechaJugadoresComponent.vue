@@ -52,13 +52,13 @@
         <v-card-title>
           Confirmación
         </v-card-title>
-        <v-card-text>Esta acción no puede volverse atras. </v-card-text>
+        <v-card-text>Se guardará la fecha y no se podra modificar los partidos jugados.</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="confirmarGuardarFecha = false">
+          <v-btn class="error" @click="confirmarGuardarFecha = false">
             CANCELAR
           </v-btn>
-          <v-btn color="success" text @click="[confirmarGuardarFecha = false, guardarFecha()]">
+          <v-btn class="success" @click="[confirmarGuardarFecha = false, guardarFecha()]">
             ACEPTAR
           </v-btn>
         </v-card-actions>
@@ -136,6 +136,7 @@ export default {
         ).then((res) => {
           this.vaciarVariables();
           this.callSnackbar(['Fecha guardada correctamente', 'success']);
+          this.getFechas();
 
         })
       } catch (e) {

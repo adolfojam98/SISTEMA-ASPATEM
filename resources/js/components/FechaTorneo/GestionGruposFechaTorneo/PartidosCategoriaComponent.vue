@@ -48,13 +48,13 @@
         <v-card-title>
           Confirmación
         </v-card-title>
-        <v-card-text>Esta acción no puede volverse atras. </v-card-text>
+        <v-card-text>Esta acción no puede revertirse. </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="confirmModalDeshacerLlaves = false">
+          <v-btn color="error" @click="confirmModalDeshacerLlaves = false">
             CANCELAR
           </v-btn>
-          <v-btn color="success" text @click="[confirmModalDeshacerLlaves = false, deshacerLlaves()]">
+          <v-btn color="primary" @click="[confirmModalDeshacerLlaves = false, deshacerLlaves()]">
             ACEPTAR
           </v-btn>
         </v-card-actions>
@@ -67,13 +67,13 @@
         <v-card-title>
           Confirmación
         </v-card-title>
-        <v-card-text>Esta acción no puede volverse atras. </v-card-text>
+        <v-card-text>Esta acción no puede revertirse. </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="confirmModalDeshacerGrupos = false">
+          <v-btn color="error"  @click="confirmModalDeshacerGrupos = false">
             CANCELAR
           </v-btn>
-          <v-btn color="success" text @click="[confirmModalDeshacerGrupos = false, deshacerGrupos()]">
+          <v-btn color="primary"  @click="[confirmModalDeshacerGrupos = false, deshacerGrupos()]">
             ACEPTAR
           </v-btn>
         </v-card-actions>
@@ -228,7 +228,7 @@ export default {
       axios.post(`/fechas/${this.categoria.fecha_id}/categoria/${this.categoria.id}`, {
         'partidos': partidosRequest
       }).then(res => {
-        this.callSnackbar(["categoria guardada correctamente", "success"])
+        this.callSnackbar(["categoria guardada correctamente", "success"]);
       });
     },
 
