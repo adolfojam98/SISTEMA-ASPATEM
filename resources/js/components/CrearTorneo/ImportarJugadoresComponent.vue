@@ -31,10 +31,8 @@ export default {
     };
   },
   computed: {
-    ...mapState("CrearTorneo", ["importacionJugadores"]),
   },
   methods: {
-    ...mapMutations("CrearTorneo", ["pushJugadorTorneo"]),
     ...mapActions(["callSnackbar"]),
     exportarExcelEjemplo() {
       const jsonData = [
@@ -154,6 +152,7 @@ export default {
       );
     },
     async validarJugadoresImportados(json) {
+      let jugadores = [];
       for (let jugador of json) {
         if (this.esDniValido(jugador.dni)) {
           const resp = await axios.get("/usuario", {
@@ -167,13 +166,14 @@ export default {
           //este try catch es porque pushJugadorTorneo lazan una excepcion
           //y esto hace que la ignore
           try {
-            this.pushJugadorTorneo(jugador);
+            jugadores.push(jugador);
           } catch (e) {
 
           }
 
         }
       }
+      this.$emit("cargar-jugadores", jugadores);
     },
     esDniValido(dni) {
       const reg = new RegExp("^[0-9,$]{7,8}$");
