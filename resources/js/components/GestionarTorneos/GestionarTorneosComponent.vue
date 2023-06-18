@@ -8,31 +8,38 @@
     <v-card elevation="0">
       <center><h2>Gestión de torneos</h2></center>
 
-      <div class="d-flex" style="align-items: center">
-        <div class="ma-4" style="width: 300px">
-          <v-select
-            :value="torneoSeleccionado"
-            @input="setTorneoSeleccionado"
-            :items="torneos"
-            item-text="nombre"
-            return-object
-            label="Seleccione un torneo"
-            class="subheading font-weight-bold"
-            v-on:change="getFechas(), getInfoGraficasCategorias()"
-          ></v-select>
-        </div>
+      <div class="d-flex align-center">
+  <div class="mr-8">
+    <v-select
+      :value="torneoSeleccionado"
+      @input="setTorneoSeleccionado"
+      :items="torneos"
+      item-text="nombre"
+      return-object
+      label="Seleccione un torneo"
+      class="subheading font-weight-bold"
+      v-on:change="getFechas(), getInfoGraficasCategorias()"
+    ></v-select>
+  </div>
 
-        <div v-if="torneoSeleccionado">
-          <v-btn
-            @click="[(editPuntos = true)]"
-            :disabled="!torneoSeleccionado"
-            color="primary"
-            class="white--text"
-          >
-            Configuración de puntos
-          </v-btn>
-        </div>
-      </div>
+  <div v-if="torneoSeleccionado" class="mr-8">
+    <v-btn
+      @click="[(editPuntos = true)]"
+      :disabled="!torneoSeleccionado"
+      color="primary"
+      class="white--text"
+    >
+      Configuración de puntos
+    </v-btn>
+  </div>
+
+  <div v-if="torneoSeleccionado"> 
+    <agregar-jugador-torneo-fecha-modal
+      @agregar-jugador="agregarNuevoJugadorTorneo"
+    ></agregar-jugador-torneo-fecha-modal>
+  </div>
+</div>
+
 
       <v-dialog
         content-class="dialog-w-max-content"
@@ -345,6 +352,21 @@ export default {
       this.$nextTick(() => {
         this.renderComponent = true;
       });
+    },
+    async agregarNuevoJugadorTorneo(jugador) {
+      try {
+        const jugadores = await axios.post("/jugador", {
+          id_torneo: this.torneoSeleccionado.id,
+          jugadores: [jugador]
+        });
+        this.callSnackbar(['jugador se anotó correctamente', 'success']);
+        this.notificarJugadorNuevo();
+      } catch (error) {
+        this.callSnackbar([error.response.data.message, 'error'])
+      }
+    },
+    notificarJugadorNuevo(){
+      this.setTorneoSeleccionado({ ...this.torneoSeleccionado }); 
     },
 
     async getInfoGraficasCategorias() {
