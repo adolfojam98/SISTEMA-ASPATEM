@@ -16,7 +16,7 @@
       </div>
       <v-btn class="mx-6" @click="cargarFecha()" color="primary">BUSCAR</v-btn>
       <agregar-jugador-torneo-fecha-modal
-        @agregar-jugador="agregarNuevoJugadorTorneo"></agregar-jugador-torneo-fecha-modal>
+        @agregar-jugador="agregarNuevoJugadorTorneo" v-if="busquedaRealizada"></agregar-jugador-torneo-fecha-modal>
     </v-row>
 
     <div class="d-flex" style="justify-content: center;">

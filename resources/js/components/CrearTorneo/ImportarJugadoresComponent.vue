@@ -1,20 +1,29 @@
 <template>
   <div>
-    <div>
-      <input id="file-excel" type="file" ref="input" @change="excelExport"
-        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="display: none" />
+    <v-row>
+      <v-col>
+        <div>
+          <input id="file-excel" type="file" ref="input" @change="excelExport"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="display: none" />
 
-      <label for="file-excel" class="
+          <label for="file-excel" class="
           subir
           text-button
           v-btn v-btn--block v-btn--contained
           theme--dark
           v-size--default
         " style="background-color: rgb(33, 33, 33); border-color: rgb(33, 33, 33)">
-        Importar jugadores
-      </label>
-    </div>
-    <v-btn @click="exportarExcelEjemplo()" block>Ejemplo excel</v-btn>
+            Importar jugadores
+          </label>
+        </div>
+      </v-col>
+      <v-col>
+        <v-btn @click="exportarExcelEjemplo()" block>Ejemplo excel</v-btn>
+      </v-col>
+    </v-row>
+
+
+
   </div>
 </template>
 

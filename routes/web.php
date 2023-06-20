@@ -116,6 +116,7 @@ Route::get('/export-fecha/{id}', 'ExcelController@getFechaRankingExcel')->middle
 
 Route::post('/categorias', 'CategoriaController@storeCategorias')->middleware('auth');
 Route::post('/jugadores', 'TorneoController@storeJugadores')->middleware('auth');
+Route::post('/jugador', 'TorneoController@storeJugador')->middleware('auth');
 //relacionado con torneo -- SUELTOS
 
 //relacionado con otros (email y home(????)) -- SUELTOS

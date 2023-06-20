@@ -1,13 +1,13 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-model="dialog"  max-width="600px">
       <template v-slot:activator="{ on, attrs }">
         <v-btn color="success" v-bind="attrs" v-on="on">
           Agregar nuevo jugador
         </v-btn>
       </template>
       <v-card>
-        <v-card-title>Agregar nuevo Jugador</v-card-title>
+        <h2 class="pa-3"> <center>Agregar nuevo Jugador</center></h2>
         <v-form v-model="valid" ref="form">
           <v-text-field class="ml-2 mr-2" v-model="apellidoJugador" :rules="aynRules" label="Apellido del jugador"
             required></v-text-field>
@@ -21,10 +21,10 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn class="error" @click="dialog = false">
+          <v-btn @click="dialog = false">
             CANCELAR
           </v-btn>
-          <v-btn :disabled="!valid" class="success" @click="[ guardarJugador()]">
+          <v-btn :disabled="!valid" class="success" @click="[ guardarJugador(), dialog = false]">
             AGREGAR
           </v-btn>
         </v-card-actions>
