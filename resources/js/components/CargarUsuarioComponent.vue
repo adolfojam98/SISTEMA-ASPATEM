@@ -77,8 +77,8 @@ export default {
     dni: "",
     dniRules: [
       (v) => !!v || "DNI requerido",
-      (v) => v >= 10000000 || "El DNI debe tener 8 caracteres",
-      (v) => v < 100000000 || "El DNI debe tener 8 caracteres",
+      (v) => v >= 999999 || "El DNI debe ser valido",
+      (v) => v < 100000000 || "El DNI debe ser valido",
     ],
 
     email: "",
