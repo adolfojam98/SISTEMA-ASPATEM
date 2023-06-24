@@ -50,22 +50,22 @@ class IngresosExternosController extends Controller
         if (!$tipo || $tipo === 'Cuotas' || $tipo === 'Todos') {
             $query_cuotas = Pago::query();
             if ($fecha_inicio) {
-               
                 $query_cuotas = $query_cuotas->where('fecha_pago', '>=', $fecha_inicio);
             }
             if ($fecha_fin) {
-
                 $query_cuotas = $query_cuotas->where('fecha_pago', '<=', $fecha_fin);
             }
 
-            $cuotas = $query_cuotas->get();
-            foreach ($cuotas as $key => $cuota) {
+            $pagos = $query_cuotas->get();
+            foreach ($pagos as $key => $pago) {
+               $socio = $pago->cuota->usuario;
+               $nombreApellidoSocio = "{$socio->nombre} {$socio->apellido} - {$socio->dni}";
                 $cuota_xd = (object)[
-                    'id' => $cuota->id,
+                    'id' => $pago->id,
                     'tipo' => 'Cuota',
-                    'monto' => (float) $cuota->monto_total,
-                    'descripcion' => 'Cuota Pagada',
-                    'fecha' => date("Y-m-d", strtotime($cuota->fecha_pago))
+                    'monto' => (float) $pago->monto_total,
+                    'descripcion' => "Cuota de: {$nombreApellidoSocio}",
+                    'fecha' => date("Y-m-d", strtotime($pago->fecha_pago))
                 ];
                 array_push($informe, $cuota_xd);
             }
@@ -89,8 +89,6 @@ class IngresosExternosController extends Controller
 
                 $query_torneos = $query_torneos->get();
             }
-
-            //return (TorneoResources::collection($query_torneos));
             $torneos = TorneoResources::collection($query_torneos);
             foreach ($torneos as $key => $torneo) {
                 array_push($informe, $torneo);

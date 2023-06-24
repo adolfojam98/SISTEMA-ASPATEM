@@ -18,7 +18,7 @@ class Torneo extends JsonResource
             'id' => $this->id,
             'tipo' => 'Torneo',
             'monto' => $this->calcularIngresos(),
-            'descripcion' => $this->vigencia ? 'Torneo vigente' : 'Torneo cerrado',
+            'descripcion' => $this->vigencia ? "Torneo vigente: {$this->nombre}" : "Torneo cerrado: {$this->nombre}",
             'fecha' => substr($this->created_at,0,10),
         ];
     }
