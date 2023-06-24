@@ -14,8 +14,7 @@
             v-if="categoria.cantidadGrupos && categoria.cantidadGrupos % 1 == 0">
             Cantidad minima de jugadores: {{ categoria.cantidadGrupos * 3 }}
           </p>
-          <v-switch v-model="categoria.gruposConEliminatoria" label="Con llaves de ajuste"
-            class="ml-2 mt-0"></v-switch>
+
           <v-btn class="ml-2 mr-4" dark :disabled="!valid" @click="[generarGrupos()]" color="primary">Generar
             grupos</v-btn>
         </v-col>
@@ -24,7 +23,7 @@
       <div v-if="gruposGenerados && !llavesGeneradas" class="mt-3">
         <v-btn class='ml-7' @click="[confirmModalDeshacerGrupos = true]" color="primary">Deshacer
           grupos</v-btn>
-
+          
         <partidos-fase-grupos :categoria="categoria" @generar-llaves="generarLLavess"></partidos-fase-grupos>
 
 
