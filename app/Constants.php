@@ -18,7 +18,11 @@
             // 'Ingreso' => 'ingreso'
         ];
 
-
+        //No cambiar el orden, es importante, se usa en el modelo de usuario y el codigo se forma por el nombre, que se usa en el front :D
+        const CONFIGURACIONES_DEFAULT = [
+            'Baja Socios Por Cuotas Adeudadas' => true,
+            'Cantidad Cuotas Adeudadas Para Baja Socio' => 4
+        ];
 
     }
 ?>

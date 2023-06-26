@@ -66,6 +66,7 @@ Route::group(['prefix' => '/configuraciones', 'as' => 'configuraciones.', 'middl
     Route::get('/', 'ConfiguracionController@show')->name('show');
     Route::put('/', 'ConfiguracionController@update')->name('update');
 
+    Route::get('/', 'ConfiguracionController@index')->name('index');
     Route::put('/automatizacion', 'ConfiguracionController@modificarAutomatizacion')->name('modificarAutomatizacion');
     Route::post('/cambiarEmail', 'ConfiguracionController@modificarMail')->name('modificarMail');
     Route::post('/traerEmail', 'ConfiguracionController@traerMail')->name('traerMail');

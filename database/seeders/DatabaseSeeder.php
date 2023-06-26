@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CuotaDetalleTipoSeeder::class);
         $this->call(CuotaSeeder::class);
         $this->call(TorneoSeeder::class);
+        $this->call(ConfiguracionSeeder::class);
     }
 }

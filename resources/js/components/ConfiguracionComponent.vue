@@ -106,30 +106,6 @@ export default {
         this.callSnackbar(["Error al guardar base: " + e, "error"]);
       }
     },
-
-    guardarConfiguracion() {
-      axios
-        .put("/configuraciones", {
-          montoCuota: this.montoCuota,
-          montoCuotaDescuento: this.montoCuotaDescuento,
-        })
-        .then(
-          this.cargarConfiguracion(),
-          this.callSnackbar(["Configuraciones guardadas", "primary"])
-        )
-        .catch((e) => {
-          this.callSnackbar(
-            "No se pudo guardar las configuraciones. " + e,
-            "error"
-          );
-        });
-    },
-
-    automatizarBajasDeSocios() {
-      axios.put("/configuraciones/automatizacion", {
-        automatizarBajasSocios: this.automatizar,
-      });
-    },
   },
 
   mounted() {
