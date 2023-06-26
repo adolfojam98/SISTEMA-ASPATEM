@@ -77,8 +77,8 @@ export default {
     dni: "",
     dniRules: [
       (v) => !!v || "DNI requerido",
-      (v) => v >= 10000000 || "El DNI debe tener 8 caracteres",
-      (v) => v < 100000000 || "El DNI debe tener 8 caracteres",
+      (v) => v >= 999999 || "El DNI debe ser valido",
+      (v) => v < 100000000 || "El DNI debe ser valido",
     ],
 
     email: "",
@@ -105,14 +105,18 @@ export default {
           this.id_usuario = response.data.id;
 
           if (this.es_socio && this.id_usuario != null) {
-           await this.generarCuota();
+            await this.generarCuota();
           }
           console.log("la mama del gonza");
           this.$router.push({ path: "/usuarios/lista", replace: true });
 
         } catch (error) {
-          console.log(error);
+
           const errores = error.response.data.errors;
+          if (!errores) {
+            this.callSnackbar([error.response.data.message, "error"]);
+            return;
+          }
           if (errores["nombre"])
             this.callSnackbar([errores["nombre"][0], "error"]);
           if (errores["apellido"])
@@ -140,7 +144,7 @@ export default {
           importe: this.importe,
         });
         this.id_cuota = response.data.body.id;
-       await this.pagarCuota();
+        await this.pagarCuota();
       } catch (error) {
         this.callSnackbar(["Error al guardar cuota", "error"]);
       }
@@ -150,8 +154,8 @@ export default {
     resetearFormulario() {
       this.$refs.form.reset();
     },
-   async pagarCuota() {
-     await axios.post(`/pago/store/${this.id_cuota}`);
+    async pagarCuota() {
+      await axios.post(`/pago/store/${this.id_cuota}`);
     },
   },
 };

@@ -9,7 +9,7 @@
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
       </div>
 
-      <v-data-table :headers="headers" :items="usuariosFiltrados" :search="search">
+      <v-data-table :headers="headers" :items="usuariosFiltrados" :search="search" :sort-by="['fechaAlta']" sort-desc>
         <!-- :custom-filter="filtrarPorSocio" -->
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>

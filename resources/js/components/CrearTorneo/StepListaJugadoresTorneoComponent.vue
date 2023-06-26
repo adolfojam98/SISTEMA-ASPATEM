@@ -7,6 +7,8 @@
                 <agregar-jugador-torneo-component></agregar-jugador-torneo-component>
                         <importar-jugadores
                             @nuevosJugadores="nuevosJugadores = $event"
+                            @cargar-jugadores="cargarJugadoresImportados"
+
                         ></importar-jugadores>
                        
                     </v-container>
@@ -33,10 +35,15 @@ export default {
   components: { AgregarJugadorTorneoComponent, TablaJugadoresTorneoComponent },
   
   computed: {
-      ...mapState('CrerTorneo',['listaJugadores'])
+      ...mapState('CrerTorneo',['listaJugadores']),
   },
   methods: {
-      ...mapMutations('CrearTorneo',['setStep'])
+      ...mapMutations('CrearTorneo',['setStep',"pushJugadorTorneo"]),
+      cargarJugadoresImportados(jugadores){
+        for (const jugador of jugadores) {
+            this.pushJugadorTorneo(jugador);
+        }
+      }
   },
    watch: {
         nuevosJugadores: function() {

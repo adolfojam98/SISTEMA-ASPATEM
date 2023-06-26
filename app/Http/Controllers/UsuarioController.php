@@ -85,9 +85,8 @@ class UsuarioController extends ApiController
                 'id' => $usuario->id
             ]);
         } else {
-            return response()->json([
-                'message' => 'Ya existe un usuario con este DNI',
-            ]);
+            return $this->sendError('El usuario ya existe', ['El usuario ya existe'], 400 );
+
         }
 
         //Esta función guardará las tareas que enviaremos mediante vuejs

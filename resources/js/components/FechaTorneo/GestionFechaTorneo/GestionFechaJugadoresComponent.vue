@@ -15,6 +15,8 @@
           label="Buscar Fecha"></v-autocomplete>
       </div>
       <v-btn class="mx-6" @click="cargarFecha()" color="primary">BUSCAR</v-btn>
+      <agregar-jugador-torneo-fecha-modal
+        @agregar-jugador="agregarNuevoJugadorTorneo" v-if="busquedaRealizada"></agregar-jugador-torneo-fecha-modal>
     </v-row>
 
     <div class="d-flex" style="justify-content: center;">
@@ -64,8 +66,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-
   </div>
 </template>
 
@@ -85,6 +85,7 @@ export default {
       listaCategorias: [],
       jugadoresAnotados: [],
       confirmarGuardarFecha: false,
+      agregarNuevoJugadorModel: false,
 
       headers: [
         { text: "Apellido", value: "apellido", width: '175px' },
@@ -124,7 +125,7 @@ export default {
         })
       }
     },
-    filtarFechasCerradas(fechas){
+    filtarFechasCerradas(fechas) {
       return fechas.filter(fecha => fecha.vigencia == 1);
     },
     guardarFecha() {
@@ -188,9 +189,21 @@ export default {
       this.listaCategorias = [];
       this.jugadoresAnotados = [];
     },
+    async agregarNuevoJugadorTorneo(jugador) {
+      try {
+        const jugadores = await axios.post("/jugador", {
+          id_torneo: this.torneoSeleccionado.id,
+          jugadores: [jugador]
+        });
+        this.callSnackbar(['jugador se anotó correctamente', 'success']);
+        this.cargarFecha();
+      } catch (error) {
+        this.callSnackbar([error.response.data.message, 'error'])
+      }
+    },
+
     async cargarFecha() {
       try {
-
         const [fechaResponse, jugadoresAnotadosResponse] = await Promise.all([
           axios.get(`/fechas/${this.fechaSeleccionada.id}`),
           axios.get(`/fechas/${this.fechaSeleccionada.id}/usuarios`)
@@ -199,7 +212,7 @@ export default {
 
         this.listaJugadores = fechaResponse.data.resumen_jugadores.ranking;
 
-        this.listaJugadores = this.listaJugadores.map(jugador => {return {...jugador, monto_pagado: 0}});
+        this.listaJugadores = this.listaJugadores.map(jugador => { return { ...jugador, monto_pagado: 0 } });
         this.listaCategorias = fechaResponse.data.resumen_jugadores.categorias;
         const listaJugadoresAnotados = jugadoresAnotadosResponse.data.body;
 
@@ -434,7 +447,8 @@ export default {
     estaAnotadoEnCategoria(categoria, jugador) {
 
       return categoria.jugadoresAnotados.some((elemento) => elemento.usuario_id == jugador.usuario_id);
-    }
+    },
+
   }
 }
 </script>
