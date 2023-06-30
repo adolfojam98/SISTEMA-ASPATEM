@@ -414,8 +414,6 @@ class CuotaController extends ApiController
         }
     }
 
-
-
     public function pagar(Request $request)
     {
         $cuota = Cuota::find($request->id);
@@ -435,5 +433,52 @@ class CuotaController extends ApiController
         $usuario = Usuario::where('id', $cuota->usuario_id)->first();
         $usuario->socio = true;
         $usuario->save();
+    }
+
+    public function cancelar(Request $request, $id) { 
+        try
+        {
+            $request->validate([
+                'descripcion' => 'string|nullable',
+            ]);
+            
+            $fechaPago = carbon::now();
+            $cuota = Cuota::whereId($id)->first();
+            $service = new CuotaService();
+
+            $montoTotal = $cuota->montoTotal();
+            $descripcion = $request->get('descripcion') ? $request->get('descripcion') : 'Cuota cancelada.';
+
+            //calculamos la dif
+            $dif = -$montoTotal;
+
+            //creamos un nuevo detalle tipo Otros con la dif y la descripcion
+            // dd(CuotaDetalleTipo::All());
+            $cuotaDetalleTipoOtros = CuotaDetalleTipo::where('codigo', 'precio_base')->first();
+            $service->createCuotaDetalle($cuota->id, $cuotaDetalleTipoOtros->id, $dif, $descripcion);
+
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            //luego el montoTotal pasa a ser = 0
+            $montoTotal = 0;
+
+            //ahora creamos el pago desde el service
+            $service = new PagoService();
+            //el montoTotal es lo que se guarda en pago
+            $newPago = $service->createPago($id, $montoTotal, $fechaPago);
+
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+            
+            return $this->sendResponse(new PagoResource($newPago), 'Cuota cancelada con exito.');
+            
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
     }
 }

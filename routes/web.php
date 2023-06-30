@@ -60,6 +60,7 @@ Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middlewafre' => ['auth']
 Route::post('/cuotas', 'CuotaController@generarCuotasFaltantes')->middleware('auth')->name('generarCuotasFaltantes');
 Route::post('/generarCuota', 'CuotaController@generarCuota')->middleware('auth')->name('generarCuota');
 Route::put('/pagarCuota', 'CuotaController@pagar')->middleware('auth')->name('pagar');
+Route::post('/cuotas/{id}/cancelar', 'CuotaController@cancelar')->name('cuota.cancelar');
 //relacionado con cuotas -- SUELTOS
 
 Route::group(['prefix' => '/configuraciones', 'as' => 'configuraciones.', 'middleware' => ['auth']], function () {

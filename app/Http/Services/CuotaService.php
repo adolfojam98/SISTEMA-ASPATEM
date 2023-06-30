@@ -64,7 +64,7 @@ class CuotaService extends BaseService
             $cuotaDetalle->monto = $monto;
             $cuotaDetalle->descripcion = $descripcion;
             $cuotaDetalle->save();
-            
+
             return $cuotaDetalle;
 
         }      
