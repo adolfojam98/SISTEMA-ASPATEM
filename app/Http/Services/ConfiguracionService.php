@@ -27,7 +27,7 @@ class ConfiguracionService extends BaseService
         $configuracion = Configuracion::where('codigo', $codigo)->first();
 
         if($configuracion) {
-            $this->setError("PAGO0002");
+            $this->setError("CON0002");
             return false;
         }
         
@@ -41,7 +41,7 @@ class ConfiguracionService extends BaseService
             return $newConfiguracion;
 
         } else {
-            $this->setError("PAGO0001");
+            $this->setError("CON0001");
         }
 
         return false;

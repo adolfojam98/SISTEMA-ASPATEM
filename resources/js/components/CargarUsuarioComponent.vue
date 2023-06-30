@@ -16,7 +16,7 @@
             <v-text-field v-model="apellido" :rules="apellidoRules" :counter="20" label="Apellido*" required>
             </v-text-field>
             <v-text-field v-model="dni" :rules="dniRules" label="DNI*" type="number" required></v-text-field>
-            <v-text-field v-model="email" :rules="emailRules" label="E-mail"></v-text-field>
+            <v-text-field v-model="email" :rules="emailRules" label="E-mail" type="email" ></v-text-field>
             <v-text-field v-model="telefono" label="Telefono" type="number"></v-text-field>
             <div v-if="es_socio">
               <v-text-field v-model="importe" label="Importe del corriente mes" :rules="importeRules" prefix="$"
@@ -83,8 +83,7 @@ export default {
 
     email: "",
     emailRules: [
-      //v => !!v || "E-mail requerido",
-      //v => /.+@.+[.].+/.test(v) || "E-mail no valido"
+      v => (!v || (v && /.+@.+[.].+/.test(v))) || "E-mail no valido"
     ],
   }),
   methods: {

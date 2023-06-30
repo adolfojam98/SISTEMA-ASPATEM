@@ -14,22 +14,24 @@
 /* img {
     display: block;
 } */
-.container {
-  width: 100vw; 
-  height: 100vh; 
-  overflow: hidden; 
+img.logo {
+  height: calc(100vh - 132px);
+  width: 100%;
 }
 
-.container img {
-  width: 100%;
-  height: 85%;
-  object-fit: contain; 
+.content-logo {
+  width: auto;
+  min-height: calc(100vh - 132px);
+}
+
+.container {
+  padding: 0;
 }
 
 </style>
 <template>
-    <div class="center container">
+    <div class="content-logo">
         <!-- <h1>ASPATEM</h1> -->
-       <img class="scroll-off" v-bind:src="require('../../../public/images/logo.jpg')" alt="imagen-logo-aspatem">
+       <img class="logo" v-bind:src="require('../../../public/images/logo.jpg')" alt="imagen-logo-aspatem">
     </div>
 </template>#inspire > div > main > div > div > div.center.container > img

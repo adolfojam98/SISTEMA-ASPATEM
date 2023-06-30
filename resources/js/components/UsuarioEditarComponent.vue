@@ -99,8 +99,9 @@ export default {
           'dni':this.usuario.dni,
         })
         .then(response => {
-           this.callSnackbar(['Usuario modificado corectamente'])
-           this.$emit("reFiltrar");
+           this.callSnackbar(['Usuario modificado corectamente', 'success'])
+          //  this.$emit("reFiltrar"); //lo quite porque al actualizar aparecen dos duplicados más, ahora recargo y ya esta
+          location.reload()
           })
         .catch(function (error) {
                     console.log(error);

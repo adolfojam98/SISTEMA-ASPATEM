@@ -2,7 +2,7 @@
   <v-container fluid>
     <div class="d-flex mx-auto mb-9" style="justify-content: center">
       <h2 v-if="isListaSocios">Lista socios</h2>
-      <h2 v-else>Listado de Jugadores Externos</h2>
+      <h2 v-else>Listado de todos los jugadores</h2>
     </div>
     <v-card>
       <div class="mx-2">

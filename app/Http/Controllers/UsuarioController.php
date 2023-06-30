@@ -131,7 +131,7 @@ class UsuarioController extends ApiController
         $usuario->apellido = $request->apellido;
         $usuario->mail = $request->mail;
         $usuario->telefono = $request->telefono;
-        $usuario->socio = $request->socio;
+        // $usuario->socio = $request->socio;
         $usuario->dni = $request->dni;
 
         $usuario->save();
