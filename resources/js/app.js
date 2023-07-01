@@ -38,16 +38,17 @@ Vue.use(TiptapVuetifyPlugin, {
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('app',                                require('./components/AppComponent.vue').default);
-Vue.component('cargar-usuario',                     require('./components/CargarUsuarioComponent.vue').default);
-Vue.component('mostrar-usuarios',                   require('./components/ListaUsuariosComponent.vue').default);
-Vue.component('editar-usuario',                     require('./components/UsuarioEditarComponent.vue').default);
-Vue.component('relaciones-usuario',                 require('./components/UsuarioRelacionesComponent.vue').default);
-Vue.component('relaciones-usuario-lista',           require('./components/UsuarioRelacionesListaComponent.vue').default);
+Vue.component('cargar-usuario',                     require('./components/Jugadores/CargarUsuarioComponent.vue').default);
+Vue.component('mostrar-usuarios',                   require('./components/Jugadores/ListaUsuariosComponent.vue').default);
+Vue.component('editar-usuario',                     require('./components/Jugadores/UsuarioEditarComponent.vue').default);
+Vue.component('relaciones-usuario',                 require('./components/Jugadores/UsuarioRelacionesComponent.vue').default);
+Vue.component('relaciones-usuario-lista',           require('./components/Jugadores/UsuarioRelacionesListaComponent.vue').default);
 Vue.component('configuraciones',                    require('./components/ConfiguracionComponent.vue').default);
-Vue.component('crear-cuota',                        require('./components/CrearCuotaComponent.vue').default);
-Vue.component('info-cuota-paga',                    require('./components/infoCuotaPagaComponent.vue').default);
-Vue.component('pago-cuota',                         require('./components/pagoCuotaComponent.vue').default);
-Vue.component('usuarios-pagos',                     require('./components/UsuariosPagosComponent.vue').default);
+Vue.component('crear-cuota',                        require('./components/Jugadores/CrearCuotaComponent.vue').default);
+Vue.component('info-cuota-paga',                    require('./components/Jugadores/infoCuotaPagaComponent.vue').default);
+Vue.component('pago-cuota',                         require('./components/Jugadores/pagoCuotaComponent.vue').default);
+Vue.component('anular-cuotas',                      require('./components/Jugadores/anularCuotasComponent.vue').default);
+Vue.component('usuarios-pagos',                     require('./components/Jugadores/UsuariosPagosComponent.vue').default);
 Vue.component('crear-torneo',                       require('./components/CrearTorneoComponent.vue').default);
 Vue.component('step-nombre-torneo',                 require('./components/CrearTorneo/StepNombreTorneoComponent.vue').default);
 Vue.component('step-cateogorias-torneo',            require('./components/CrearTorneo/StepCategoriasTorneoComponent.vue').default);
