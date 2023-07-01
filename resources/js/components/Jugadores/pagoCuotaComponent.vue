@@ -98,6 +98,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+//TODO ver el tema de que cuando queda el monto total menor a 0
 export default {
   props: ["cuota", "usuario"],
   data() {
@@ -171,6 +172,7 @@ export default {
 
     pagarCuota() {
       this.cuota.montoTotal = this.montoTotal;
+      console.log(this.cuota.cuota_detalle);
       axios
         .post(`/pago/store/${this.cuota.id}`, {
           cuotaDetalles: JSON.stringify(this.cuota.cuota_detalle),

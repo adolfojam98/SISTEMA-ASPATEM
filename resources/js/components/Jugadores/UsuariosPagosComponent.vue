@@ -23,6 +23,8 @@
           <v-btn class="mx-4" @click="generarCuotasMasivas = true" color="primary">
             Generar cuotas masivamente
           </v-btn>
+
+          <anular-cuotas @anularTodasLasCuotas="anularTodasLasCuotas"></anular-cuotas>
       </div>
       
       
@@ -93,11 +95,13 @@
                 <td>{{ new Date(cuota.periodo).getFullYear().toString() }}</td>
                 <td>${{ cuota.monto_total }}</td>
                 <td></td>
+               
                 <td>
                   <div class="text-center">
                     <v-chip color="error" dark> Pagar </v-chip>
                   </div>
                 </td>
+                
               </tr>
             </tbody>
           </template>
@@ -137,6 +141,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   data() {
@@ -212,6 +217,7 @@ export default {
           importe: this.calcularImporte(cuota),
           fechaPago: this.calcularFechaPago(cuota),
           detalles: cuota.cuota_detalle,
+          seleccionada: false,
         });
       });
     },
@@ -245,6 +251,14 @@ export default {
     },
     filtrarUsuariosNoSocios() {
       this.usuarios = this.usuarios.filter((usuario) => usuario.socio.socio);
+    },
+    anularTodasLasCuotas(){
+      this.cuotasUsuario.forEach(cuota => {
+         if(cuota?.pago?.fecha_pago == null){
+          axios.post(`/cuotas/${cuota.id}/cancelar`)
+      }
+      });
+     
     },
   },
 
