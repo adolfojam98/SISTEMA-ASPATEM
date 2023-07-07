@@ -185,7 +185,10 @@ export default {
       console.log("anular");
       axios.post(`/cuotas/${this.cuotaActual.id}/cancelar`).then((res) => {
         this.callSnackbar(["Cuota Anulada correctamente", "success"]);
-      }).catch((error) => { this.callSnackbar(["No se pudo anular la cuota", "error"]) })
+        this.buscarCuotasUsuario();
+      }).catch((error) => { 
+        console.log(error);
+        this.callSnackbar(["No se pudo anular la cuota", "error"]) })
     },
     ...mapActions(["callSnackbar"]),
     ...mapMutations("cuotas", ["setTipoCuotasDetalles"]),
