@@ -57,6 +57,7 @@ class CuotaSeeder extends Seeder
                 $cuotaDetalle->save();
 
                 $pago = new Pago();
+                $pago->fecha_pago = Carbon::now();
                 $pago->monto_total = 123;
                 $pago->cuota_id = $cuota->id;
                 $pago->save();
