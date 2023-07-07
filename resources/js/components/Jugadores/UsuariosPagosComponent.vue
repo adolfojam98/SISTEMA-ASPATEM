@@ -183,7 +183,9 @@ export default {
   methods: {
     anularCuota() {
       console.log("anular");
-      axios.post(`/cuotas/${this.cuotaActual.id}/cancelar`).then((res) => {
+      axios.post(`/cuotas/${this.cuotaActual.id}/cancelar`, {
+        "descripcion" : this.observacion
+      }).then((res) => {
         this.callSnackbar(["Cuota Anulada correctamente", "success"]);
         this.buscarCuotasUsuario();
       }).catch((error) => { 
@@ -266,11 +268,14 @@ export default {
     filtrarUsuariosNoSocios() {
       this.usuarios = this.usuarios.filter((usuario) => usuario.socio.socio);
     },
-    anularTodasLasCuotas() {
+    anularTodasLasCuotas(descripcion) {
       this.cuotasUsuario.forEach(cuota => {
         if (cuota?.pago?.fecha_pago == null) {
-          axios.post(`/cuotas/${cuota.id}/cancelar`).then(() => {
+          axios.post(`/cuotas/${cuota.id}/cancelar`, {
+            'descripcion' : descripcion
+          }).then(() => {
             this.callSnackbar(["Cuotas anuladas correctamente", "success"]);
+            this.buscarCuotasUsuario();
           }).catch(e => this.callSnackbar(["Hubo un error en cancelar cuotas", "error"]));
         }
       });

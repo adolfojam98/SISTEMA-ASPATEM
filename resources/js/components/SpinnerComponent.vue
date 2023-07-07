@@ -26,7 +26,7 @@ export default {
     enableInterceptor() {
       this.axiosInterceptor = window.axios.interceptors.request.use(
         (config) => {
-          if (!config.url == this.URL_STATUS) {
+          if (!(config.url === this.URL_STATUS)) {
             setTimeout(() => {
               this.isLoading = true;
             }, 2000);
