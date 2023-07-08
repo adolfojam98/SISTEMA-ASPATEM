@@ -1,65 +1,38 @@
 <template>
-  <div>
+  <v-container fluid>
+    <div class="d-flex mx-auto mb-9" style="justify-content: center">
+      <h2 v-if="isListaSocios">Lista socios</h2>
+      <h2 v-else>Listado de todos los jugadores</h2>
+    </div>
     <v-card>
-      <v-card-title>
-        <h3 v-if="isListaSocios" cols="12">Lista socios</h3>
-        <h3 v-else>Listado de Jugadores Externos</h3>
-        <v-spacer></v-spacer>
+      <div class="mx-2">
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
+      </div>
 
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Buscar"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card-title>
-
-      <v-data-table
-        :headers="headers"
-        :items="usuariosFiltrados"
-        :search="search"
-      >
+      <v-data-table :headers="headers" :items="usuariosFiltrados" :search="search" :sort-by="['fechaAlta']" sort-desc>
         <!-- :custom-filter="filtrarPorSocio" -->
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="editItem(item)"
-                color="success"
-                >mdi-pencil</v-icon
-              >
+              <v-icon v-bind="attrs" v-on="on" class="mr-1" @click="editItem(item)" color="success">mdi-pencil</v-icon>
             </template>
             <span>Editar</span>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                right
-                @click="gestionarRelaciones(item)"
-                color="primary"
-                >mdi-account-group</v-icon
-              >
+              <v-icon v-bind="attrs" v-on="on" class="mr-4" right @click="gestionarRelaciones(item)"
+                color="primary">mdi-account-group</v-icon>
             </template>
             <span>Relaciones</span>
           </v-tooltip>
-          <v-btn color="success" @click="mostrarDetalleCuotasAdeudadas(item)"
-            >ver cuotas</v-btn
-          >
+          <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
         </template>
 
         <template v-slot:[`header.isSocio`]="{ header }">
           {{ header.text }}
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon style="margin-top: 0px" v-bind="attrs" v-on="on"
-                >mdi-help-circle-outline</v-icon
-              >
+              <v-icon style="margin-top: 0px" v-bind="attrs" v-on="on">mdi-help-circle-outline</v-icon>
             </template>
             <span>
               <v-icon color="blue"> mdi-star </v-icon> Socio
@@ -79,57 +52,40 @@
           {{ item.cuotasAdeudadas }}
         </template>
       </v-data-table>
+
+      <!-- dialogs -->
+      <v-dialog v-model="detalleCuotasAdeudadasModal">
+        <detalle-cuotas-usuario :usuario="usuarioVerDetalleCuotas"></detalle-cuotas-usuario>
+      </v-dialog>
+
+      <v-dialog v-model="editarUsuarioModal" max-width="600px">
+        <editar-usuario :usuario="usuarioEditar" @reFiltrar="reFiltrar = $event"></editar-usuario>
+      </v-dialog>
+
+      <v-dialog v-model="eliminarUsuarioModal" max-width="400">
+        <v-card>
+          <v-card-title class="headline">Desea borrar el usuario?</v-card-title>
+          <v-card-text>Este usuario no podra participar de ningun torneo, no saldrá en el
+            ranking pero seguirá quedando registro de sus participaciones en
+            torneos. ¿Desea continuar?.</v-card-text>
+          <v-container>
+            <v-textarea outlined v-model="motivoBaja" label="Motivo de baja" hint="Debe especificar el motivo de baja"
+              counter></v-textarea>
+          </v-container>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" outlined @click="[(eliminarUsuarioModal = false)]">CANCELAR</v-btn>
+            <v-btn color="error" @click="[deleteItem()]">BORRAR</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="usuarioRelacionesModal" id="adddd" max-width="700px">
+        <relaciones-usuario :usuario="usuarioRelaciones"></relaciones-usuario>
+      </v-dialog>
     </v-card>
-
-    <!-- dialogs -->
-    <v-dialog v-model="detalleCuotasAdeudadasModal">
-      <detalle-cuotas-usuario
-        :usuario="usuarioVerDetalleCuotas"
-      ></detalle-cuotas-usuario>
-    </v-dialog>
-
-    <v-dialog v-model="editarUsuarioModal" max-width="600px">
-      <editar-usuario
-        :usuario="usuarioEditar"
-        @reFiltrar="reFiltrar = $event"
-      ></editar-usuario>
-    </v-dialog>
-
-    <v-dialog v-model="eliminarUsuarioModal" max-width="400">
-      <v-card>
-        <v-card-title class="headline">Desea borrar el usuario?</v-card-title>
-        <v-card-text
-          >Este usuario no podra participar de ningun torneo, no saldrá en el
-          ranking pero seguirá quedando registro de sus participaciones en
-          torneos. ¿Desea continuar?.</v-card-text
-        >
-        <v-container>
-          <v-textarea
-            outlined
-            v-model="motivoBaja"
-            label="Motivo de baja"
-            hint="Debe especificar el motivo de baja"
-            counter
-          ></v-textarea>
-        </v-container>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="green darken-1"
-            outlined
-            @click="[(eliminarUsuarioModal = false)]"
-            >CANCELAR</v-btn
-          >
-          <v-btn color="error" @click="[deleteItem()]">BORRAR</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="usuarioRelacionesModal" id="adddd" max-width="700px">
-      <relaciones-usuario :usuario="usuarioRelaciones"></relaciones-usuario>
-    </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -148,9 +104,9 @@ export default {
       usuariosFiltrados: [],
       search: "",
       headers: [
-        { text: "Apellido", value: "apellido" },
-        { text: "Nombre", value: "nombre" },
-        { text: "DNI", value: "dni" },
+        { text: "Apellido", value: "apellido", width: '100px' },
+        { text: "Nombre", value: "nombre", width: '100px' },
+        { text: "DNI", value: "dni", width: '100px' },
         { text: "Mail", value: "mail", sortable: true, filterable: false },
         {
           text: "Telefono",
@@ -163,6 +119,7 @@ export default {
           value: "fechaAlta",
           sortable: true,
           filterable: false,
+          width: '130px'
         },
         {
           text: "Cuotas adeudadas",
@@ -171,12 +128,14 @@ export default {
           sort: (a, b) => {
             return a - b;
           },
+          width: '160px'
         },
         {
           text: "Socio",
           value: "isSocio",
           sortable: false,
           filterable: false,
+          width: '100px'
         },
         {
           text: "Acciones",
@@ -257,9 +216,14 @@ export default {
       if (item.cuotas == null || item.cuotas.length < 1) {
         return 0;
       }
-      //  console.log(item.cuotas);
-      return item.cuotas
-        .slice(item.cuotas.findLastIndex((cuota) => cuota.pago != null))
+
+      const cuotasOrdenadas = item.cuotas.sort((a, b) => {
+        const dateA = new Date(a.periodo);
+        const dateB = new Date(b.periodo);
+        return dateA - dateB;
+      });
+      return cuotasOrdenadas
+        .slice(cuotasOrdenadas.findLastIndex((cuota) => cuota.pago != null))
         .filter((cuota) => cuota.pago == null).length;
     },
 

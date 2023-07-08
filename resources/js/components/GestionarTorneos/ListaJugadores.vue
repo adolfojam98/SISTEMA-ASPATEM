@@ -35,6 +35,10 @@
           </span>
         </v-tooltip>
       </template>
+
+      <template v-slot:[`item.montoPagado`]="{ item }">
+     ${{ item.montoPagado }}
+      </template>
       <!-- <template v-slot:[`item.ingresos`]="{ item }">
         <p class="mt-4">${{ item.ingresos }}</p>
 

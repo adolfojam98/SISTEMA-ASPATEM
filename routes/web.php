@@ -32,7 +32,7 @@ Route::group(['prefix' => '/usuario', 'as' => 'usuario.'/*, 'middleware' => ['au
     });
 });
 
-Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middleware' => ['auth']*/], function () {
+Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middlewafre' => ['auth']*/], function () {
     Route::post('/store/{cuota_id}', 'PagoController@store')->name('store');
 });
 
@@ -60,12 +60,14 @@ Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middleware' => ['auth']*
 Route::post('/cuotas', 'CuotaController@generarCuotasFaltantes')->middleware('auth')->name('generarCuotasFaltantes');
 Route::post('/generarCuota', 'CuotaController@generarCuota')->middleware('auth')->name('generarCuota');
 Route::put('/pagarCuota', 'CuotaController@pagar')->middleware('auth')->name('pagar');
+Route::post('/cuotas/{id}/cancelar', 'CuotaController@cancelar')->name('cuota.cancelar');
 //relacionado con cuotas -- SUELTOS
 
 Route::group(['prefix' => '/configuraciones', 'as' => 'configuraciones.', 'middleware' => ['auth']], function () {
     Route::get('/', 'ConfiguracionController@show')->name('show');
     Route::put('/', 'ConfiguracionController@update')->name('update');
 
+    Route::get('/', 'ConfiguracionController@index')->name('index');
     Route::put('/automatizacion', 'ConfiguracionController@modificarAutomatizacion')->name('modificarAutomatizacion');
     Route::post('/cambiarEmail', 'ConfiguracionController@modificarMail')->name('modificarMail');
     Route::post('/traerEmail', 'ConfiguracionController@traerMail')->name('traerMail');
@@ -73,7 +75,6 @@ Route::group(['prefix' => '/configuraciones', 'as' => 'configuraciones.', 'middl
 
 Route::group(['prefix' => '/torneo', 'as' => 'torneo.', 'middleware' => ['auth']], function () {
     Route::post('/', 'TorneoController@store')->name('store');
-
     Route::post('/fecha/guardar', 'FechaController@guardarFecha')->name('guardarFecha');
     Route::post('/puntos', 'TorneoController@updatePuntos')->name('updatePuntos');
     Route::post('/{torneo_id}/usuario/{usuario_id}', 'TorneoController@editPuntos')->name('editPuntos');
@@ -97,7 +98,18 @@ Route::group(['prefix' => '/base', 'as' => 'base.', 'middleware' => ['auth']], f
 
 Route::group(['prefix' => '/ingresos', 'as' => 'ingresos.', 'middleware' => ['auth']], function () {
     Route::post('/setMonto', 'IngresosExternosController@store')->name('store');
-    Route::get('/{fecha_inicio?}/{fecha_fin?}/{tipo?}/{torneo_id?}/{fecha_id?}', 'IngresosExternosController@create')->name('create');
+    Route::get('/', 'IngresosExternosController@create')->name('create');
+});
+
+Route::group(['prefix' => '/fechas', 'as' => 'fechas.', 'middleware' => []], function () {
+    Route::post('/', 'FechaController@store')->name('guardarFecha');
+    Route::get('/{id}', 'FechaController@getFechaById')->name('fechas.getFechaById');
+    Route::post('/{id}/usuarios/{usuario_id}', 'FechaController@storeUsuario')->name('guardarFechaUsuario');
+    Route::get('/{id}/usuarios', 'FechaController@getUsuariosAnotados')->name('fechas.getUsuariosAnotados');
+    Route::post('/{id}/categoria/{categoria_id}', 'FechaController@storeCategoriaPartidos')->name('fechas.storeCategoriaPartidos');
+    Route::get('/{id}/categoria/{categoria_id}/partidos', 'FechaController@getPartidos')->name('fecha.getPartidos');
+    Route::post('/{id}', 'FechaController@update')->name('fecha.update');
+
 });
 
 //relacionado con torneo -- SUELTOS
@@ -106,6 +118,7 @@ Route::get('/export-fecha/{id}', 'ExcelController@getFechaRankingExcel')->middle
 
 Route::post('/categorias', 'CategoriaController@storeCategorias')->middleware('auth');
 Route::post('/jugadores', 'TorneoController@storeJugadores')->middleware('auth');
+Route::post('/jugador', 'TorneoController@storeJugador')->middleware('auth');
 //relacionado con torneo -- SUELTOS
 
 //relacionado con otros (email y home(????)) -- SUELTOS

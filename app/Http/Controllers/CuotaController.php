@@ -89,7 +89,7 @@ class CuotaController extends ApiController
             $usuario = Usuario::findOrFail($usuario_id);
 
             //datos para la cuota y detalle tipo
-            $periodo = date("Y-m-d H:i:s", strtotime(date("Y-m-d")));
+            $periodo = date("Y-m-d H:i:s", strtotime(date("Y-m-1")));
             $importe = $request->get('importe');
             $cuotaDetalleTipoIngreso = CuotaDetalleTipo::where('codigo', 'ingreso')->first();
 
@@ -136,6 +136,16 @@ class CuotaController extends ApiController
                     $query->orWhereRaw('usuario_id not in (select usuario_id from cuotas where periodo = ? )', [$fecha]);
                 })->distinct()
                 ->get('usuarios.id');
+
+            $sociosActivos = [];
+            //filtramos ya por socios, ahora por aquellos activos
+            foreach($usuarios as $key => $usuario) {
+                if(Usuario::whereId($usuario->id)->first()->socio()->activo) {
+                    array_push($sociosActivos, $usuario);
+                }
+            }
+            //ahora pisamos los usuarios con este ultimo filtro de activos
+            $usuarios = $sociosActivos;
 
             $cuotaDetalleTipoPrecioBase = CuotaDetalleTipo::where('codigo', 'precio_base')->first();
 
@@ -299,56 +309,56 @@ class CuotaController extends ApiController
             ]);
         }
 
-        if ($configuracion->automatizarBajasSocios) {
+        // if ($configuracion->automatizarBajasSocios) {//esto se calcula con la funcion del modelo de usuario->socio()
 
-            $fechaActual = carbon::now();
-            $fechaMesSiguiente = carbon::now();
-            $fechaUnMesAntes = carbon::now();
-            $fechaDosMesesAntes = carbon::now();
-            $fechaTresMesesAntes = carbon::now();
+        //     $fechaActual = carbon::now();
+        //     $fechaMesSiguiente = carbon::now();
+        //     $fechaUnMesAntes = carbon::now();
+        //     $fechaDosMesesAntes = carbon::now();
+        //     $fechaTresMesesAntes = carbon::now();
 
-            $fechaMesSiguiente->addMonth(1);
-            $fechaUnMesAntes->subMonth(1);
-            $fechaDosMesesAntes->subMonth(2);
-            $fechaTresMesesAntes->subMonth(3);
+        //     $fechaMesSiguiente->addMonth(1);
+        //     $fechaUnMesAntes->subMonth(1);
+        //     $fechaDosMesesAntes->subMonth(2);
+        //     $fechaTresMesesAntes->subMonth(3);
 
-            $socios = Usuario::where('socio', true)->get();
+        //     $socios = Usuario::where('socio', true)->get();
 
 
-            foreach ($socios as $socio) {
+        //     foreach ($socios as $socio) {
 
-                $cuotas = Cuota::where('mes', $fechaActual->month)
-                    ->where('anio', $fechaActual->year)
-                    ->where('usuario_id', $socio->id)
-                    ->where('fechaPago', '<>', '')
+        //         $cuotas = Cuota::where('mes', $fechaActual->month)
+        //             ->where('anio', $fechaActual->year)
+        //             ->where('usuario_id', $socio->id)
+        //             ->where('fechaPago', '<>', '')
 
-                    ->orWhere('mes', $fechaUnMesAntes->month)
-                    ->where('anio', $fechaUnMesAntes->year)
-                    ->where('usuario_id', $socio->id)
-                    ->where('fechaPago', '<>', '')
+        //             ->orWhere('mes', $fechaUnMesAntes->month)
+        //             ->where('anio', $fechaUnMesAntes->year)
+        //             ->where('usuario_id', $socio->id)
+        //             ->where('fechaPago', '<>', '')
 
-                    ->orWhere('mes', $fechaDosMesesAntes->month)
-                    ->where('anio', $fechaDosMesesAntes->year)
-                    ->where('usuario_id', $socio->id)
-                    ->where('fechaPago', '<>', '')
+        //             ->orWhere('mes', $fechaDosMesesAntes->month)
+        //             ->where('anio', $fechaDosMesesAntes->year)
+        //             ->where('usuario_id', $socio->id)
+        //             ->where('fechaPago', '<>', '')
 
-                    ->orWhere('mes', $fechaTresMesesAntes->month)
-                    ->where('anio', $fechaTresMesesAntes->year)
-                    ->where('usuario_id', $socio->id)
-                    ->where('fechaPago', '<>', '')
+        //             ->orWhere('mes', $fechaTresMesesAntes->month)
+        //             ->where('anio', $fechaTresMesesAntes->year)
+        //             ->where('usuario_id', $socio->id)
+        //             ->where('fechaPago', '<>', '')
 
-                    ->orWhere('mes', $fechaMesSiguiente->month)
-                    ->where('anio', $fechaMesSiguiente->year)
-                    ->where('usuario_id', $socio->id)
-                    ->where('fechaPago', '<>', '')->get();
+        //             ->orWhere('mes', $fechaMesSiguiente->month)
+        //             ->where('anio', $fechaMesSiguiente->year)
+        //             ->where('usuario_id', $socio->id)
+        //             ->where('fechaPago', '<>', '')->get();
 
-                if ($cuotas == '[]') {
+        //         if ($cuotas == '[]') {
 
-                    $socio->socio = false;
-                    $socio->save();
-                }
-            }
-        }
+        //             $socio->socio = false;
+        //             $socio->save();
+        //         }
+        //     }
+        // }
         //aqui termina el calculo de si es socio
 
 
@@ -368,10 +378,9 @@ class CuotaController extends ApiController
             $relaciones = $usuario->relaciones;
 
 
-
             foreach ($relaciones as $relacion) {
                 foreach ($relacion->usuarios as $usuario) {
-                    if ($usuario->socio = true && $usuario->id != $request->usuario_id) {
+                    if ($usuario->socio()->activo == true && $usuario->id != $request->usuario_id) {
 
                         $cuota->descuento = true;
                         $cuota->observacion = 'Se aplico el descuento de Familiar/Amigo';
@@ -405,8 +414,6 @@ class CuotaController extends ApiController
         }
     }
 
-
-
     public function pagar(Request $request)
     {
         $cuota = Cuota::find($request->id);
@@ -426,5 +433,52 @@ class CuotaController extends ApiController
         $usuario = Usuario::where('id', $cuota->usuario_id)->first();
         $usuario->socio = true;
         $usuario->save();
+    }
+
+    public function cancelar(Request $request, $id) { 
+        try
+        {
+            $request->validate([
+                'descripcion' => 'string|nullable',
+            ]);
+            
+            $fechaPago = carbon::now();
+            $cuota = Cuota::whereId($id)->first();
+            $service = new CuotaService();
+
+            $montoTotal = $cuota->montoTotal();
+            $descripcion = $request->get('descripcion') ? $request->get('descripcion') : 'Cuota cancelada.';
+
+            //calculamos la dif
+            $dif = -$montoTotal;
+
+            //creamos un nuevo detalle tipo Otros con la dif y la descripcion
+            // dd(CuotaDetalleTipo::All());
+            $cuotaDetalleTipoOtros = CuotaDetalleTipo::where('codigo', 'precio_base')->first();
+            $service->createCuotaDetalle($cuota->id, $cuotaDetalleTipoOtros->id, $dif, $descripcion);
+
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            //luego el montoTotal pasa a ser = 0
+            $montoTotal = 0;
+
+            //ahora creamos el pago desde el service
+            $service = new PagoService();
+            //el montoTotal es lo que se guarda en pago
+            $newPago = $service->createPago($id, $montoTotal, $fechaPago);
+
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+            
+            return $this->sendResponse(new PagoResource($newPago), 'Cuota cancelada con exito.');
+            
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
     }
 }

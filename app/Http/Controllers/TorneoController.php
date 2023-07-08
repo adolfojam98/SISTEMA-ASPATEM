@@ -12,7 +12,7 @@ use App\Http\Services\TorneoService;
 
 use Illuminate\Http\Request;
 
-class TorneoController extends Controller
+class TorneoController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -109,33 +109,13 @@ class TorneoController extends Controller
     }
 
     public function storeJugadores(Request $request){
-
+        $service = new TorneoService();
         $jugadores = $request->jugadores;
+
 
         foreach ($jugadores as $key => $jugador) {
 
-            $usuario = Usuario::where('dni','=',$jugador['dni'])->first();
-
-            if(empty($usuario)){
-                
-                $nuevoUsuario = new Usuario();
-
-                $nuevoUsuario->nombre =     $jugador['nombre'];                
-                $nuevoUsuario->apellido =   $jugador['apellido'];
-                $nuevoUsuario->dni =        $jugador['dni'];
-                $nuevoUsuario->socio = 0;
-                $nuevoUsuario->save();
-                $usuario = $nuevoUsuario;
-            }
-            if (array_key_exists('puntos', $jugador) && $jugador['puntos'] != null) {
-                $usuario->torneos()->attach($request->id_torneo, ['puntos' => $jugador['puntos']]);
-            }
-            
-            if(array_key_exists('pivot', $jugador) && $jugador['pivot']['puntos'] != null){
-                $usuario->torneos()->attach($request->id_torneo, ['puntos' => $jugador['pivot']['puntos']]);
-            }
-
-        $usuario->save();
+            $usuario = $service->agregarJugadorATorneo($jugador,$request->id_torneo);
 
         $torneo_usuario = DB::table('torneo_usuario')
             ->where('torneo_id', $request->id_torneo)
@@ -151,6 +131,33 @@ class TorneoController extends Controller
         return $jugadores;
 
     }
+
+    public function storeJugador(Request $request){
+        $service = new TorneoService();
+        $jugadores = $request->jugadores;
+
+
+        foreach ($jugadores as $key => $jugador) {
+
+            $usuario = $service->agregarJugadorATorneo($jugador,$request->id_torneo);
+            if($service->hasErrors()){
+                return $this->sendServiceError($service->getLastError());
+            }
+        $torneo_usuario = DB::table('torneo_usuario')
+            ->where('torneo_id', $request->id_torneo)
+            ->where('usuario_id', $usuario->id)->first();
+
+        $usuario->pivot = $torneo_usuario;
+        $usuario->montoPagado = 0;
+
+        $jugadores[$key] = $usuario;
+            
+        }        
+       
+        return $jugadores;
+
+    }
+
 
     public function getJugadores(Request $request){
        
@@ -168,6 +175,7 @@ class TorneoController extends Controller
 
                 if($fecha_usuario){
                     $jugador->pivot->puntos += $fecha_usuario->puntos;
+                    $jugador->montoPagado += $fecha_usuario->monto_pagado;
                 }
             }
 

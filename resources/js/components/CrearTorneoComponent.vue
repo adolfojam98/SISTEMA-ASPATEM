@@ -1,20 +1,17 @@
 <template>
   <div>
-    <h3 cols="12">Crear nuevo torneo</h3>
+    <center>
+      <h2 class="ma-3 mt-1">Crear nuevo torneo</h2>
+    </center>
     <v-stepper v-model="e6" vertical>
-      <v-stepper-step
-        :complete="e6 > 1"
-        editable
-        step="1"
-        @click="setStep(1)"
-      >
+      <v-stepper-step :complete="e6 > 1" editable step="1" @click="setStep(1)" :rules="[() => isvalid.stepNombreTorneo]">
         Nombre del torneo
       </v-stepper-step>
       <v-stepper-content step="1">
         <step-nombre-torneo></step-nombre-torneo>
         <v-btn color="primary" @click="setStep(2)"> Continuar </v-btn>
       </v-stepper-content>
-      <v-stepper-step :complete="e6 > 2" editable step="2" @click="setStep(2)">
+      <v-stepper-step :complete="e6 > 2" editable step="2" @click="setStep(2)" :rules="[() => isvalid.stepCategoria]">
         Categorías
       </v-stepper-step>
       <v-stepper-content step="2">
@@ -22,7 +19,7 @@
         <v-btn color="primary" @click="setStep(3)"> Continuar </v-btn>
       </v-stepper-content>
 
-      <v-stepper-step :complete="e6 > 3" editable step="3" @click="setStep(3)">
+      <v-stepper-step :complete="e6 > 3" editable step="3" @click="setStep(3)" :rules="[() => isvalid.stepListaJugadores]">
         <!-- TODO ver de crear un excel de ejemplo para carga masiva de jugadores -->
         Lista de Jugadores
       </v-stepper-step>
@@ -31,7 +28,7 @@
         <v-btn color="primary" @click="setStep(4)"> Continuar </v-btn>
       </v-stepper-content>
 
-      <v-stepper-step step="4" editable>
+      <v-stepper-step step="4" editable :rules="[() => isvalid.stepConfiguracionPuntos]">
         Configuracion de puntos
       </v-stepper-step>
       <v-stepper-content step="4">
@@ -59,6 +56,14 @@ export default {
     StepListaJugadoresTorneoComponent,
   },
   data: () => ({
+    isvalid: {
+      stepConfiguracionPuntos: true,
+      stepListaJugadores: true,
+      stepCategoria: true,
+      stepNombreTorneo: true
+    }
+    ,
+    e6: 1,
     valid: true,
     nombreTorneoRules: [
       (v) => !!v || "El nombre del torneo es requerido.",
@@ -73,7 +78,6 @@ export default {
       return this.$store.state;
     },
     ...mapState("CrearTorneo", [
-      "e6",
       "nombreTorneo",
       "gestionPuntos",
       "listaJugadores",
@@ -83,15 +87,16 @@ export default {
   },
 
   methods: {
+    validarStep(res) {
+      console.log(res);
+      return true;
+    },
     ...mapMutations("CrearTorneo", ["getTorneos"]),
-    ...mapActions("CrearTorneo",["setStep"]),
     ...mapActions(["callSnackbar"]),
-
+    setStep(n) {
+      this.e6 = n
+    },
     async generarTorneo() {
-      if (this.existeNombreTorneo(this.nombreTorneo)) {
-        this.callSnackbar(["El nombre del torneo ya esta en uso", "error"]);
-        return;
-      }
       if (!this.datosCargadosCorrectamente()) {
         return;
       }
@@ -113,51 +118,51 @@ export default {
       } catch (e) {
         this.callSnackbar([
           "No se ha podido generar el torneo,verifique los datos ingresados. " +
-            e,
+          e,
           "error",
         ]);
       }
     },
     verificarNombreTorneo() {
+      this.isvalid.stepNombreTorneo = false;
+      if (this.existeNombreTorneo(this.nombreTorneo)) {
+        throw "El nombre del torneo ya esta en uso";
+      }
+
       if (this.nombreTorneo == null || this.nombreTorneo.trim() == "") {
-        this.callSnackbar(["El nombre del torneo es requerido.", "error"]);
-        return false;
+        throw "El nombre del torneo es requerido.";
       }
       if (
         !/^([A-Za-z]([A-Za-z0-9]*[ \t\n\r\f]?[A-Za-z0-9])*)+$/.test(
           this.nombreTorneo
         )
       ) {
-        this.callSnackbar(
-          "El nombre del torneo tiene caracteres no permitidos.",
-          "error"
-        );
-        return false;
+        throw "El nombre del torneo tiene caracteres no permitidos.";
       }
       if (this.nombreTorneo.length >= 30) {
-        this.callSnackbar([
-          "El nombre del torneo es demasiado largo.",
-          "error",
-        ]);
-        return false;
+        throw "El nombre del torneo es demasiado largo."
       }
+      this.isvalid.stepNombreTorneo = true;
       return true;
     },
     verificarCategorias() {
+      this.isvalid.stepCategoria = false;
       if (this.arrayCategorias.length < 1) {
-        this.callSnackbar(["Debe cargar al menos una categoria", "error"]);
-        return false;
+        throw "Debe cargar al menos una categoria";
       }
+      this.isvalid.stepCategoria = true;
       return true;
     },
     verificarJugadores() {
+      this.isvalid.stepListaJugadores = false;
       if (this.listaJugadores.length < 5) {
-        this.callSnackbar(["Debe cargar al menos 5 jugadores", "error"]);
-        return false;
+        throw "Debe cargar al menos 5 jugadores";
       }
+      this.isvalid.stepListaJugadores = true;
       return true;
     },
     verificarConfiguracionPuntos() {
+      this.isvalid.stepConfiguracionPuntos = false;
       if (
         this.gestionPuntos.mismaCat_MayorNivel_Ganador == null ||
         this.gestionPuntos.mismaCat_MayorNivel_Perdedor == null ||
@@ -168,22 +173,30 @@ export default {
         this.gestionPuntos.diferenteCat_MenorNivel_Ganador == null ||
         this.gestionPuntos.diferenteCat_MenorNivel_Perdedor == null
       ) {
-        this.callSnackbar([
-          "Debe cargar la configuracion de los puntos de los torneos.",
-          "error",
-        ]);
-        return false;
+        throw "Debe cargar la configuracion de los puntos de los torneos";
       }
+      this.isvalid.stepConfiguracionPuntos = true;
       return true;
     },
     datosCargadosCorrectamente() {
-      return (
-        this.verificarNombreTorneo() &&
-        this.verificarCategorias() &&
-        this.verificarJugadores() &&
-        this.verificarConfiguracionPuntos()
-      );
+      this.reiniciarValidaciones();
+      try {
+          this.verificarNombreTorneo() ;
+          this.verificarCategorias() ;
+          this.verificarJugadores() ;
+          this.verificarConfiguracionPuntos();
+          return true;
+      } catch (error) {
+        this.callSnackbar([error, "error"]);
+        return false;
+      }
     },
+    reiniciarValidaciones(){
+      this.isvalid.stepCategoria = true;
+      this.isvalid.stepConfiguracionPuntos = true;
+      this.isvalid.stepListaJugadores = true;
+      this.isvalid.stepNombreTorneo = true;
+    }
   },
   created() {
     this.getTorneos();

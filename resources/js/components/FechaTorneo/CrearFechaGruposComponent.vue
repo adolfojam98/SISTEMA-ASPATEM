@@ -34,7 +34,7 @@
                   </p>
                   <v-switch
                     v-model="item.gruposConEliminatoria"
-                    label="Fase de grupos con eliminatoria"
+                    label="Con llaves de ajuste"
                     class="ml-2 mt-0"
                   ></v-switch>
 
@@ -194,143 +194,25 @@
                 </v-row>
               </div>
 
-              <!-- <v-row class="mt-6">
-                <v-card
-                  v-for="grupo in item.listaGrupos"
-                  :key="grupo.nombre"
-                  flat
-                  class="rounded-0"
-                >
-                  <v-col cols="12">
-                    <v-card class="mt-6 mb-6 ml-12 mr-12">
-                      <center>
-                        <h1>{{ grupo.nombre }}</h1>
-                      </center>
-                      <v-divider></v-divider>
-
-                      <v-container
-                        v-for="partido in grupo.partidos"
-                        :key="partido.id"
-                      >
-                        <v-row>
-                          <v-col>
-                            <v-row>
-                              <v-tooltip bottom>
-                                <template v-slot:activator="{ on, attrs }">
-                                  <h4 class="mt-2 ml-2">
-                                    {{ partido.jugador1.apellido }}
-                                    <v-icon
-                                      class="mb-1"
-                                      v-bind="attrs"
-                                      v-on="on"
-                                      >mdi-account-question</v-icon
-                                    >
-                                  </h4>
-                                </template>
-                                <span
-                                  >{{ partido.jugador1.nombre }}
-                                  -
-                                  {{ partido.jugador1.dni }}</span
-                                >
-                              </v-tooltip>
-
-                              <v-select
-                                class="ml-4 mr-2"
-                                :items="cantidadSets"
-                                v-model="partido.setsJugador1"
-                                align="rigth"
-                                solo
-                                dense
-                                style="width: 40px"
-                              ></v-select>
-
-                              <v-select
-                                class="ml-2 mr-2"
-                                align="left"
-                                :items="cantidadSets"
-                                v-model="partido.setsJugador2"
-                                dense
-                                solo
-                                style="width: 40px"
-                              ></v-select>
-
-                              <v-tooltip bottom right>
-                                <template v-slot:activator="{ on, attrs }">
-                                  <h4 class="mt-2 ml-2">
-                                    {{ partido.jugador2.apellido }}
-                                    <v-icon
-                                      class="mb-1 mr-2"
-                                      v-bind="attrs"
-                                      v-on="on"
-                                      >mdi-account-question</v-icon
-                                    >
-                                  </h4>
-                                </template>
-                                <span
-                                  >{{ partido.jugador2.nombre }}
-                                  -
-                                  {{ partido.jugador2.dni }}</span
-                                >
-                              </v-tooltip>
-                            </v-row>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card>
-                  </v-col>
-                        </div>
-
-                        <div v-if="!item.llavesGeneradas">
-                        <center>
-                            <v-btn
-                                class="center mb-6"
-                                dark
-                                @click= validarPartidos(item)
-                                color="blue"
-                            >
-                                Generar llaves
-                            </v-btn>
-                        </center>
-                        </div>
-
-                        <div v-else>
-                            <v-btn
-                            class="ml-6 mt-6 mt-6"
-                            dark
-                            @click="deshacerLlaves(item)"
-                            color="blue"
-                            >Deshacer llaves</v-btn
-                        >
-                        </div>
-
-                        <generar-llaves
-                            v-if="item.llavesGeneradas"
-                            :categoria="item"
-                        ></generar-llaves>
-                    </div>
-                </v-card>
-              </v-row> -->
             </div>
 
             <div v-if="!item.llavesGeneradas">
-              <center>
                 <v-btn
                   class="center mb-6 mt-4"
-                  dark
+
                   @click="validarPartidos(item)"
-                  color="blue"
+                  color="primary"
                 >
                   Generar llaves
                 </v-btn>
-              </center>
+
             </div>
 
             <div v-else>
               <v-btn
-                class="ml-6 mt-6 mt-6 mb-6"
                 dark
                 @click="deshacerLlaves(item)"
-                color="blue"
+                color="red"
                 >Deshacer llaves</v-btn
               >
 
@@ -346,6 +228,22 @@
         </v-card>
       </v-tab-item>
     </v-tabs-items>
+
+<!-- DIALOGS -->
+<v-dialog v-model="confirmModalDeshacerLlaves" max-width="500px">
+      <v-card>
+        <v-card-title class="headline">Confirmación</v-card-title>
+        <v-card-text>¿Estás seguro de que deseas realizar esta acción?</v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="performAction">Confirmar</v-btn>
+          <v-btn color="error" @click="confirmModalDeshacerLlaves = false">Cancelar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+
+
   </div>
 </template>
 

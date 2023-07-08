@@ -14,7 +14,8 @@ class ConfiguracionController extends Controller
      */
     public function index()
     {
-        //
+        $configuracion = Configuracion::all();
+        return $configuracion;
     }
 
     /**
@@ -70,21 +71,26 @@ class ConfiguracionController extends Controller
      */
     public function update(Request $request)
     {
-        $configuracion = Configuracion::first();
+        try {
+                $request->validate([
+                    'codigo' => 'required|string',
+                    'valor' => 'required'
+                ]);
 
-        if ($configuracion != null) {
-            $configuracion->montoCuota = $request->montoCuota;
-            $configuracion->montoCuotaDescuento = $request->montoCuotaDescuento;
-            $configuracion->save();
-            return $configuracion;
-        } else {
-            $configuracion = new Configuracion();
-            $configuracion->montoCuota = $request->montoCuota;
-            $configuracion->montoCuotaDescuento = $request->montoCuotaDescuento;
-            $configuracion->save();
-            return response()->json([
-                'message' => 'Creada y guardada'
-            ]);
+                $configuracion = Configuracion::where('codigo', $request->codigo)->first();
+
+                if (!$configuracion) {
+                    return $this->sendError("No existe una configuracion con el codigo ".$request->codigo);
+                }
+
+                $configuracion->valor = $request->valor;
+                $configuracion->save();
+
+                return $configuracion;
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
         }
     }
 

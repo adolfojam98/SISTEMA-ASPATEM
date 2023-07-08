@@ -54,10 +54,32 @@
               <v-list-item-title>Torneos</v-list-item-title>
             </template>
 
+            <v-list-item link :to="{ name: 'crear-torneos' }">
+              <v-list-item-title>Nuevo torneo</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon small>mdi-trophy</v-icon>
+                <v-icon small>mdi-plus</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+
             <v-list-item link :to="{ name: 'gestion-torneos' }">
               <v-list-item-title>Gestion torneos</v-list-item-title>
               <v-list-item-icon>
                 <v-icon>mdi-trophy</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+
+            <v-list-item link :to="{ name: 'crear-fecha' }">
+              <v-list-item-title>Nueva fecha</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>mdi-plus</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+
+            <v-list-item link :to="{ name: 'gestion-fechas' }">
+              <v-list-item-title>Gestion fechas</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>mdi-plus</v-icon>
               </v-list-item-icon>
             </v-list-item>
 
@@ -72,21 +94,6 @@
               <v-list-item-title>Lista jugadores externos</v-list-item-title>
               <v-list-item-icon>
                 <v-icon>mdi-account-group</v-icon>
-              </v-list-item-icon>
-            </v-list-item>
-
-            <v-list-item link :to="{ name: 'crear-torneos' }">
-              <v-list-item-title>Nuevo torneo</v-list-item-title>
-              <v-list-item-icon>
-                <v-icon small>mdi-trophy</v-icon>
-                <v-icon small>mdi-plus</v-icon>
-              </v-list-item-icon>
-            </v-list-item>
-
-            <v-list-item link :to="{ name: 'crear-fecha' }">
-              <v-list-item-title>Nueva fecha</v-list-item-title>
-              <v-list-item-icon>
-                <v-icon>mdi-plus</v-icon>
               </v-list-item-icon>
             </v-list-item>
           </v-list-group>
@@ -153,7 +160,7 @@
         <v-container fluid>
           <router-view :key="$route.fullPath"></router-view>
           <snackbar></snackbar>
-           <spinner></spinner>
+          <spinner></spinner>
         </v-container>
       </v-main>
 
@@ -173,9 +180,7 @@
         :getSessionStatus="getSessionStatus"
       />
     </v-app>
-   
   </div>
-
 </template>
 
 <script>

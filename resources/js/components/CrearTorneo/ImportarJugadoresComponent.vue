@@ -1,30 +1,29 @@
 <template>
   <div>
-    <div>
-      <input
-        id="file-excel"
-        type="file"
-        ref="input"
-        @change="excelExport"
-        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        style="display: none"
-      />
+    <v-row>
+      <v-col>
+        <div>
+          <input id="file-excel" type="file" ref="input" @change="excelExport"
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="display: none" />
 
-      <label
-        for="file-excel"
-        class="
+          <label for="file-excel" class="
           subir
           text-button
           v-btn v-btn--block v-btn--contained
           theme--dark
           v-size--default
-        "
-        style="background-color: rgb(33, 33, 33); border-color: rgb(33, 33, 33)"
-      >
-        Importar jugadores
-      </label>
-    </div>
-    <v-btn @click="exportarExcelEjemplo()" block>Ejemplo excel</v-btn>
+        " style="background-color: rgb(33, 33, 33); border-color: rgb(33, 33, 33)">
+            Importar jugadores
+          </label>
+        </div>
+      </v-col>
+      <v-col>
+        <v-btn @click="exportarExcelEjemplo()" block>Ejemplo excel</v-btn>
+      </v-col>
+    </v-row>
+
+
+
   </div>
 </template>
 
@@ -41,10 +40,8 @@ export default {
     };
   },
   computed: {
-    ...mapState("CrearTorneo", ["importacionJugadores"]),
   },
   methods: {
-    ...mapMutations("CrearTorneo", ["pushJugadorTorneo"]),
     ...mapActions(["callSnackbar"]),
     exportarExcelEjemplo() {
       const jsonData = [
@@ -164,7 +161,8 @@ export default {
       );
     },
     async validarJugadoresImportados(json) {
-      for (const jugador of json) {
+      let jugadores = [];
+      for (let jugador of json) {
         if (this.esDniValido(jugador.dni)) {
           const resp = await axios.get("/usuario", {
             params: {
@@ -174,9 +172,17 @@ export default {
           if (Array.isArray(resp.data) && resp.data.length) {
             jugador = { ...resp.data[0], puntos: jugador.puntos };
           }
-          this.pushJugadorTorneo(jugador);
+          //este try catch es porque pushJugadorTorneo lazan una excepcion
+          //y esto hace que la ignore
+          try {
+            jugadores.push(jugador);
+          } catch (e) {
+
+          }
+
         }
       }
+      this.$emit("cargar-jugadores", jugadores);
     },
     esDniValido(dni) {
       const reg = new RegExp("^[0-9,$]{7,8}$");

@@ -2,7 +2,9 @@
   <div>
     <v-card>
       <div class="pa-2" outlined style="background-color: lightgrey" tile>
-        <h1 style="color: blue"><center>ASPATEM</center></h1>
+        <h1 style="color: blue">
+          <center>ASPATEM</center>
+        </h1>
       </div>
 
       <div class="ml-3 mt-3">
@@ -14,7 +16,8 @@
         <v-divider class="mt-3"></v-divider>
 
         <div class="text-h6">Mes al que corresponde</div>
-        <div class="ml-1 text-body-1">{{ cuota.mes }} del {{ cuota.anio }}</div>
+        <div class="ml-1 text-body-1">{{ fecha && monthNames && monthNames[new Date(fecha).getMonth()] }} del {{ new
+          Date(fecha).getFullYear() }}</div>
 
         <v-divider class="mt-3"></v-divider>
 
@@ -28,62 +31,32 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="detalle in cuota.cuota_detalle"
-              :key="detalle.cuota_detalle_tipo[0].id"
-            >
-              <td
-                v-for="detalleTipo in detalle.cuota_detalle_tipo"
-                :key="detalleTipo.id"
-              >
+            <tr v-for="detalle in cuota.cuota_detalle" :key="detalle.cuota_detalle_tipo[0].id">
+              <td v-for="detalleTipo in detalle.cuota_detalle_tipo" :key="detalleTipo.id">
                 {{ detalleTipo.nombre }}
               </td>
               <td>{{ detalle.descripcion }}</td>
               <td>${{ detalle.monto }}</td>
-              <td v-if="!detalle.id">
-                <v-btn
-                  @click="quitarDetalleCuota(detalle)"
-                  class="mx-2"
-                  fab
-                  dark
-                  small
-                  color="error"
-                >
+              <td v-if="detalleEsBorrable(detalle)">
+                <v-btn @click="quitarDetalleCuota(detalle)" class="mx-2" fab dark small color="error">
                   <v-icon dark> mdi-minus </v-icon>
                 </v-btn>
               </td>
             </tr>
             <tr>
               <td>
-                <v-select
-                  v-model="detalleSeleccionado"
-                  :return-object="true"
-                  :items="tipoCuotasDetallesFaltantes"
-                  item-text="nombre"
-                  label="Tipo de detalle"
-                  required
-                ></v-select>
+                <v-select v-model="detalleSeleccionado" :return-object="true" :items="tipoCuotasDetallesFaltantes"
+                  item-text="nombre" label="Tipo de detalle" required></v-select>
               </td>
               <td>
-                <v-text-field
-                  v-model="descripcion"
-                  label="Ingrese una descripcion"
-                  required
-                ></v-text-field>
+                <v-text-field v-model="descripcion" label="Ingrese una descripcion" required></v-text-field>
               </td>
               <td v-if="detalleSeleccionado">
                 ${{ montoDetalleSeleccionado }}
               </td>
               <td>
-                <v-btn
-                  :disabled="!detalleSeleccionado"
-                  @click="agregarDetalleCuota"
-                  class="mx-2"
-                  fab
-                  dark
-                  small
-                  color="success"
-                >
+                <v-btn :disabled="!detalleSeleccionado" @click="agregarDetalleCuota" class="mx-2" fab dark small
+                  color="success">
                   <v-icon dark> mdi-plus </v-icon>
                 </v-btn>
               </td>
@@ -104,27 +77,12 @@
 
         <v-row no-gutters>
           <v-col dense cols="7">
-            <v-menu
-              v-model="menuFecha"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
+            <v-menu v-model="menuFecha" transition="scale-transition" offset-y min-width="290px">
               <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  v-model="formatoFecha"
-                  dense
-                  append-icon="mdi-calendar"
-                  outlined
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
+                <v-text-field v-model="formatoFecha" dense append-icon="mdi-calendar" outlined readonly v-bind="attrs"
+                  v-on="on"></v-text-field>
               </template>
-              <v-date-picker
-                v-model="fecha"
-                @input="menuFecha = false"
-              ></v-date-picker>
+              <v-date-picker v-model="fecha" @input="menuFecha = false"></v-date-picker>
             </v-menu>
           </v-col>
         </v-row>
@@ -140,6 +98,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+//TODO ver el tema de que cuando queda el monto total menor a 0
 export default {
   props: ["cuota", "usuario"],
   data() {
@@ -159,6 +118,20 @@ export default {
       observacion: null,
       detalleSeleccionado: null,
       descripcion: null,
+      monthNames: [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+      ]
     };
   },
   watch: {
@@ -199,6 +172,7 @@ export default {
 
     pagarCuota() {
       this.cuota.montoTotal = this.montoTotal;
+      console.log(this.cuota.cuota_detalle);
       axios
         .post(`/pago/store/${this.cuota.id}`, {
           cuotaDetalles: JSON.stringify(this.cuota.cuota_detalle),
@@ -219,11 +193,24 @@ export default {
     },
 
     darFormatoFecha(fecha) {
-      if (!fecha) return null;
-      console.log(fecha);
-      const [anio, mes, dia] = fecha.split("-");
-      return `${dia}/${mes}/${anio}`;
+      if (!fecha || typeof fecha === "undefined") {
+        return null;
+      }
+
+      const date = new Date(fecha);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString();
+      const outputDateString = `${day}/${month}/${year}`;
+
+      return outputDateString;
     },
+    detalleEsBorrable(detalle) {
+      if (detalle.cuota_detalle_tipo[0].codigo === 'precio_base') {
+        return false;
+      }
+      return true;
+    }
   },
   computed: {
     ...mapState("cuotas", ["tipoCuotasDetalles"]),

@@ -1,24 +1,22 @@
 <template>
   <div>
     <v-card>
-      <h2><center>Generar cuotas masivas</center></h2>
+      <h2 class="pt-3"><center>Generar cuotas masivas</center></h2>
       <br />
       <v-form v-model="valid" ref="form" lazy-validation>
-        <v-col>
+        <div class="px-9 pb-5">
           <v-select
             v-model="mes"
             :items="meses"
             item-text="nombre"
             item-value="id"
-            filled
             label="Mes"
           ></v-select>
 
-          <v-select v-model="anio" :items="anios" filled label="Año"></v-select>
+          <v-select v-model="anio" :items="anios" label="Año"></v-select>
           <div class="d-flex justify-space-between">
             <v-btn
               depressed
-              color="error"
               :disabled="!valid"
               @click.prevent="cerrarDialog"
               >Cancelar
@@ -31,7 +29,7 @@
               >Generar cuota
             </v-btn>
           </div>
-        </v-col>
+        </div>
       </v-form>
     </v-card>
   </div>

@@ -25,6 +25,8 @@ class CuotaService extends BaseService
         $this->errorDefinitions[] = new Error("CUOTA0003", "Un nuevo tipo de detalle necesita un porcentaje o valor", "Unespected", 500);
         $this->errorDefinitions[] = new Error("CUOTA0004", "Los tipos de detalles defaults aun no se han configurado", "Unespected", 500);
         $this->errorDefinitions[] = new Error("CUOTA0005", "No puede eliminar un tipo de detalle que ya esta en uso", "Unespected", 500);
+        $this->errorDefinitions[] = new Error("CUOTA0006", "Ya existe un tipo de detalle con el nombre ingresado", "Unespected", 500);
+
     }
 
     public function createCuota($usuario_id, $periodo)
@@ -62,7 +64,7 @@ class CuotaService extends BaseService
             $cuotaDetalle->monto = $monto;
             $cuotaDetalle->descripcion = $descripcion;
             $cuotaDetalle->save();
-            
+
             return $cuotaDetalle;
 
         }      
@@ -76,7 +78,14 @@ class CuotaService extends BaseService
         // siempre LIMPIAR errores al iniciar un proceso de servicio
         $this->clearErrors();
 
+        
+
         if(trim($nombre)) {
+            if(CuotaDetalleTipo::where('nombre', $nombre)->first()) {
+                $this->setError("CUOTA0006");
+                return false;
+            }
+
             $cuotaDetalleTipo = new CuotaDetalleTipo();
             $cuotaDetalleTipo->nombre = $nombre;
             $cuotaDetalleTipo->codigo = Str::slug($nombre, '_');
@@ -85,16 +94,22 @@ class CuotaService extends BaseService
             $detallesTiposDefault = Constants::CuotaDetalleTipos;
             $isDefult = in_array($cuotaDetalleTipo->codigo, $detallesTiposDefault);
 
-            if($porcentaje)
+            if(isset($porcentaje)) {
                 $cuotaDetalleTipo->porcentaje = $porcentaje;
+                $cuotaDetalleTipo->valor = null;
+            }
 
-            if($valor)
+            if(isset($valor)) {
                 $cuotaDetalleTipo->valor = $valor;
+                $cuotaDetalleTipo->porcentaje = null;
+            }
 
-            if(!$isDefult)
-                if((!$porcentaje && !$valor) || ($porcentaje && $valor)) {
+            if(!$isDefult) {
+                if((!isset($porcentaje) && !isset($valor)) || (isset($porcentaje) && isset($valor))) {
                     $this->setError("CUOTA0003");
+                    return false;
                 }
+            }
 
             $cuotaDetalleTipo->save();
 
@@ -116,19 +131,29 @@ class CuotaService extends BaseService
 
         if($cuota_detalle_tipo_id && $cuotaDetalleTipo) {
 
-            if($nombre) {
+            if(trim($nombre)) {
+                if($cuotaDetalleTipo->nombre !== $nombre && CuotaDetalleTipo::where('nombre', $nombre)->first()) {
+                    $this->setError("CUOTA0006");
+                    return false;
+                }
+
                 $cuotaDetalleTipo->nombre = $nombre;
                 $cuotaDetalleTipo->codigo = Str::slug($nombre, '_');
             }
 
-            if($porcentaje)
+            if(isset($porcentaje)) {
                 $cuotaDetalleTipo->porcentaje = $porcentaje;
+                $cuotaDetalleTipo->valor = null;
+            }
 
-            if($valor)
+            if(isset($valor)) {
                 $cuotaDetalleTipo->valor = $valor;
+                $cuotaDetalleTipo->porcentaje = null;
+            }
 
-            if((!$porcentaje && !$valor) || ($porcentaje && $valor)) {
+            if((!isset($porcentaje) && !isset($valor)) || (isset($porcentaje) && isset($valor))) {
                 $this->setError("CUOTA0003");
+                return false;
             }
 
             $cuotaDetalleTipo->update();

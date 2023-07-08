@@ -85,9 +85,8 @@ class UsuarioController extends ApiController
                 'id' => $usuario->id
             ]);
         } else {
-            return response()->json([
-                'message' => 'Ya existe un usuario con este DNI',
-            ]);
+            return $this->sendError('El usuario ya existe', ['El usuario ya existe'], 400 );
+
         }
 
         //Esta función guardará las tareas que enviaremos mediante vuejs
@@ -132,7 +131,7 @@ class UsuarioController extends ApiController
         $usuario->apellido = $request->apellido;
         $usuario->mail = $request->mail;
         $usuario->telefono = $request->telefono;
-        $usuario->socio = $request->socio;
+        // $usuario->socio = $request->socio;
         $usuario->dni = $request->dni;
 
         $usuario->save();
@@ -261,7 +260,7 @@ class UsuarioController extends ApiController
 
             // $query = $query->Leftjoin('pagos', 'pagos.cuota_id', 'cuotas.id');
 
-            $cuotas =  Cuota::with('pago')->where('usuario_id', $id)->get();
+            $cuotas = Cuota::with('pago')->where('usuario_id', $id)->orderBy('periodo', 'desc')->get();
 
             // $cuotas = $query->get();
 

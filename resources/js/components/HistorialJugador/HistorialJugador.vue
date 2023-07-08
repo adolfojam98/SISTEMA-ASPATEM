@@ -1,7 +1,9 @@
 <template>
   <div>
-    <v-card>
-        <h3 cols="12">Historial de jugadores</h3>
+    <center>
+      <h2 cols="12">Historial de jugadores</h2>
+    </center>
+    <div class="ma-4" style="width: 300px">
       <v-select
         @input="setjugadorSeleccionado"
         :value="jugadorSeleccionado"
@@ -9,18 +11,17 @@
         :items="jugadores"
         @change="getHistory"
         return-object
-        filled
         label="Seleccione un jugador"
         class="subheading font-weight-bold"
         v-on:change="[]"
       ></v-select>
-    </v-card>
+    </div>
 
     <v-toolbar v-if="history">
       <v-tabs v-model="tab" align-with-title>
         <v-tabs-slider color="yellow"></v-tabs-slider>
         <v-tab v-for="torneo in history" :key="torneo.id">
-            {{ torneo.nombre }}
+          {{ torneo.nombre }}
         </v-tab>
       </v-tabs>
     </v-toolbar>
@@ -41,9 +42,13 @@
                 <tbody>
                   <tr v-for="fecha in torneo.fechas" :key="fecha.created_at">
                     <th class="text-left">{{ fecha.nombre }}</th>
-                    <th class="text-left">{{ formatDate(fecha.created_at) }}</th>
-                    <th class="text-left" v-if="fecha.monto_pagado !== '-' ">${{ fecha.monto_pagado }}</th>
-                    <th class="text-left" v-else> - </th>
+                    <th class="text-left">
+                      {{ formatDate(fecha.created_at) }}
+                    </th>
+                    <th class="text-left" v-if="fecha.monto_pagado !== '-'">
+                      ${{ fecha.monto_pagado }}
+                    </th>
+                    <th class="text-left" v-else>-</th>
                     <th class="text-left">
                       {{ fecha.puntos_totales }}({{ fecha.nuevos_puntos }})
                     </th>
@@ -51,7 +56,12 @@
                 </tbody>
               </template>
             </v-simple-table>
-            <center v-else><h1 class="mt-5">Aún no has jugado ninguna fecha: Puntos actuales {{torneo.puntos_base}}</h1></center>
+            <center v-else>
+              <h4 class="mt-5">
+                Aún no has jugado ninguna fecha: Puntos actuales
+                {{ torneo.puntos_base }}
+              </h4>
+            </center>
           </v-container>
         </v-card>
       </v-tab-item>
@@ -108,10 +118,18 @@ export default {
         });
     },
 
-    formatDate(date) {
-        let format_date = new Date(date)
-        let date_string = format_date.getFullYear() +'-'+ format_date.getMonth()+1 +'-'+ format_date.getDate() +' '+ format_date.getHours() +':'+ format_date.getMinutes() +':'+ format_date.getSeconds();
-        return date_string
+    formatDate(fecha) {
+      if (!fecha || typeof fecha === "undefined") {
+        return null;
+      }
+
+      const date = new Date(fecha);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString();
+      const outputDateString = `${day}/${month}/${year}`;
+
+      return outputDateString;
     }
   },
 

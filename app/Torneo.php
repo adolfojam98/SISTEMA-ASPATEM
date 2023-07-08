@@ -14,9 +14,13 @@ class Torneo extends Model
     public function categorias(){
         return $this->hasMany(Categoria::class);
     }
-
+    
     public function jugadores(){
         return $this->belongsToMany(Usuario::class)->withPivot('puntos')->withTimestamps();
+    }
+
+    public function fechas(){
+        return $this->hasMany(Fecha::class);
     }
     
     public function calcularIngresos(){

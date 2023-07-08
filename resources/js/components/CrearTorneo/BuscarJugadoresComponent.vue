@@ -14,7 +14,7 @@
       <v-col cols="2">
         <v-text-field v-model='puntos' type="number" label="Puntos"></v-text-field>
       </v-col>
-      <v-col>
+      <v-col class="d-flex" style="align-items: center;">
         <v-btn
           class="mb-2"
           color="primary"
@@ -65,7 +65,7 @@ export default {
   },
 
   computed: {
-    ...mapState("CrearTorneo", ["listaJugadores"]),
-  },
+    ...mapState("CrearTorneo", ["listaJugadores"])
+  }
 };
 </script>

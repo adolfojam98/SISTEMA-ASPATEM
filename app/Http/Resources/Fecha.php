@@ -18,7 +18,7 @@ class Fecha extends JsonResource
             'id' => $this->id,
             'tipo' => 'Fecha',
             'monto' => $this->calcularIngresos(),
-            'descripcion' => 'Torneo al que pertenece: '.$this->getTorneoNombre(),
+            'descripcion' => "Fecha: {$this->nombre} - Torneo: {$this->getTorneoNombre()}",
             'fecha' => substr($this->created_at,0,10),
         ];
     }

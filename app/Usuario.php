@@ -4,8 +4,12 @@ namespace App;
 use App\Relacion;
 use App\Cuota;
 use App\Torneo;
+use App\Configuracion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
+use App\Constants;
+
 class Usuario extends Model
 {
     use SoftDeletes;
@@ -18,13 +22,14 @@ class Usuario extends Model
     }
 
     public function hasRelacionesWithSocios(){
-        $usuario = Usuario::with('relaciones.usuarios')->find(1);
-        $relaciones = $usuario->relaciones;
-
+        $usuario = Usuario::with('relaciones.usuarios')->find($this->id);
+        $relaciones = $usuario->relaciones()->get();
+        
         $hasRelacionesWithSocios = false;
         foreach ($relaciones as $relacion) {
             $relacion->usuario = $relacion->usuarios->firstWhere('id', '!=', $this->id);
-            if($relacion->usuario->socio == 1){
+
+            if($relacion->usuario->socio()->activo){
                 $hasRelacionesWithSocios = true;
             }
         }
@@ -41,6 +46,12 @@ class Usuario extends Model
         return $this->belongsToMany(Partido::class)->withPivot('sets');
     }
 
+    public function getPartidosByFechaId($fecha_id)
+    {
+        return $this->partidos()->where('fecha_id', $fecha_id);
+    }
+
+
     public function fechas()
     {
         return $this->belongsToMany(Fecha::class)->withPivot('puntos','monto_pagado');
@@ -51,25 +62,17 @@ class Usuario extends Model
     }
 
     public function socio(){
-/*
-//TODO quitar accion eliminar de lista socio
-//TODO mostras socios activos e inactivos
-//TODO swuitch de socio activo/inactivo en editar socio
-
-
-
-Socio activo
-        1) Si socio true
-        2) Si tiene cuotas
-Socio inactivo
-        1) Si socio false
-        2 Si tiene cuota
- Externo
-        1) Si socio false
-        2) Si no tiene cuota     
-*/
-
-
+        /*
+        Socio activo
+                1) Si socio true
+                2) Si tiene cuotas
+        Socio inactivo
+                1) Si socio false
+                2 Si tiene cuota
+        Externo
+                1) Si socio false
+                2) Si no tiene cuota     
+        */
 
         /* casos: 
             1) no socio: socio == false y no tiene cuotas generadas; 
@@ -84,17 +87,42 @@ Socio inactivo
         //cantidad de cuotas generadas
         $hasLeastOneCuota = Cuota::Where('usuario_id', $this->id)->get()->count();
 
-        //obtenemos las ultimas 4 cuotas
-        $lastFourCuotas = Cuota::Where('usuario_id', $this->id)->latest()->take(4)->get();
+        //obtenemos los datos de configuracion: para corregir la performance, esto no deberia estar aca
+        $defaultConfiguraciones = Constants::CONFIGURACIONES_DEFAULT;
+        $keys = array_keys($defaultConfiguraciones);
 
-        //si tiene alguna de las ultimas 4 cuotas pagas no es moroso
-        $moroso = true;
-        foreach ($lastFourCuotas as $key => $cuota) {
-            if($cuota->pago) {
-                $moroso = false;
+        $bajaPorCuotasNoPagas = Configuracion::Where('nombre', $keys[0])->first();
+        $cantidadDeCuotasAdeudadasParaDarDeBaja = Configuracion::Where('nombre', $keys[1])->first();
+
+        if($bajaPorCuotasNoPagas->valor) {
+            //obtenemos las cuotas pasadas (la cantidad depende de la configuracion)
+            $lastXCuotas = Cuota::Where('usuario_id', $this->id)
+            ->where('periodo', '<=', new Carbon())
+            ->latest()->take($cantidadDeCuotasAdeudadasParaDarDeBaja->valor)->get();
+
+            //obtenemos las cuotas futuras, por si pago por adelantado
+            $futureCuotas = Cuota::Where('usuario_id', $this->id)
+            ->where('periodo', '>', new Carbon())->get();
+
+            //si tiene alguna de las ultimas cuotas pagas no es moroso
+            $moroso = true;
+            foreach ($lastXCuotas as $key => $cuota) {
+                if($cuota->pago) {
+                    $moroso = false;
+                }
             }
+
+            //si pago alguna cuota futura, tampoco es moroso
+            foreach ($futureCuotas as $key => $cuota) {
+                if($cuota->pago) {
+                    $moroso = false;
+                }
+            }
+        } else {
+            //más que moroso yo diria que no esta activo, pero ya no se entiende nada esto...
+            $moroso = false;
         }
-        
+
         //caso 1
         if(!$this->socio && !$hasLeastOneCuota) {
             $state->socio = false;

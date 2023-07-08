@@ -55,6 +55,11 @@ export default new Router({
 			component: require('./views/TorneoCrearFecha').default
 		},
 		{
+			path: '/torneos/gestionFechas',
+			name: 'gestion-fechas',
+			component: require('./views/GestionFechas').default
+		},
+		{
 			path: '/torneos/gestion',
 			name: 'gestion-torneos',
 			component: require('./views/TorneoGestion').default

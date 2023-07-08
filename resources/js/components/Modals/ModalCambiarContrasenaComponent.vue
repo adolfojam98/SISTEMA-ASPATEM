@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-dialog v-model="abierto" width="500" persistent>
+    <v-dialog v-model="abierto" width="400">
       <v-card>
-        <v-card-title class="text-h5 grey lighten-2">
+        <v-card-title class="headline" style="justify-content: center">
           Cambiar Contraseña
         </v-card-title>
 <v-form  ref="formulario">
@@ -49,8 +49,8 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="cerrarDialog()"> cancelar </v-btn>
-          <v-btn color="primary" text @click="guardarNuevaContrasena()">
+          <v-btn color="default" @click="cerrarDialog()"> cancelar </v-btn>
+          <v-btn color="primary" @click="guardarNuevaContrasena()">
             aceptar
           </v-btn>
         </v-card-actions>

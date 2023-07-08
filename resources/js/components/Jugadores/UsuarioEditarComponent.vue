@@ -1,7 +1,7 @@
 <template>
 <div>
   <v-card> 
-    <h1> <center>Modificar usuario</center></h1>
+    <h2 class="pa-3"> <center>Modificar usuario</center></h2>
 
   <v-form v-model="valid" ref="form" lazy-validation>
     <v-container>
@@ -19,7 +19,7 @@
       <v-switch center="true" v-model="usuario.socio" label="Socio" class="mx-4"></v-switch>
       </v-layout> -->
       
-      <v-btn block large depressed color="primary" :disabled="!valid" @click.prevent="updateUsuario">Guardar cambios</v-btn>
+      <center><v-btn color="primary" :disabled="!valid" @click.prevent="updateUsuario">Guardar cambios</v-btn></center>
     </v-container>
   </v-form>
 
@@ -70,8 +70,8 @@ export default {
     dni: "",
         dniRules:[
             v => !!v || "Importe requerido",
-            v => v >= 10000000 || "El DNI debe tener 8 caracteres",
-            v => v < 100000000 || "El DNI debe tener 8 caracteres"
+            (v) => v >= 999999 || "El DNI debe ser valido",
+            (v) => v < 100000000 || "El DNI debe ser valido",
         ],
 
         email: "",
@@ -99,8 +99,9 @@ export default {
           'dni':this.usuario.dni,
         })
         .then(response => {
-           this.callSnackbar(['Usuario modificado corectamente'])
-           this.$emit("reFiltrar");
+           this.callSnackbar(['Usuario modificado corectamente', 'success'])
+          //  this.$emit("reFiltrar"); //lo quite porque al actualizar aparecen dos duplicados más, ahora recargo y ya esta
+          location.reload()
           })
         .catch(function (error) {
                     console.log(error);

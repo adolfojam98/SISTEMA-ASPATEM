@@ -9,9 +9,14 @@ use App\Torneo;
 use App\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Services\FechaService;
+use App\Http\Services\PartidoService;
+use App\Http\Resources\FechaUsuario as FechaUsuarioResource;
+use App\Http\Resources\FechaPartido as FechaPartidosResource;
 
-class FechaController extends Controller
+class FechaController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -41,7 +46,7 @@ class FechaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return crearNuevaFecha($request);
     }
 
     /**
@@ -73,9 +78,40 @@ class FechaController extends Controller
      * @param  \App\Fecha  $fecha
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Fecha $fecha)
+    public function update(Request $request, $fecha_id)
     {
-        //
+        try
+            {
+                $request->validate([
+                    "nombre" => 'string|nullable',
+                    "vigencia" => 'boolean|nullable',
+                    "monto_no_socios_dos_categorias" => 'numeric|nullable',
+                    "monto_no_socios_una_categoria" => 'numeric|nullable',
+                    "monto_socios_dos_categorias" => 'numeric|nullable',
+                    "monto_socios_una_categoria" => 'numeric|nullable'
+                ]);
+                
+                $service = new FechaService();
+                $fecha = $service->update(
+                    $fecha_id,
+                    $request->get('nombre'),
+                    $request->get('vigencia'),
+                    $request->get('monto_no_socios_dos_categorias'), 
+                    $request->get('monto_no_socios_una_categoria'),
+                    $request->get('monto_socios_dos_categorias'),
+                    $request->get('monto_socios_una_categoria')
+                );
+                
+                if ($service->hasErrors()) {
+                    return $this->sendServiceError($service->getLastError());
+                } 
+
+                return $fecha;
+            }
+        catch(Exception $e)
+            {
+                return $this->sendError($e->errorInfo[2]);
+            }
     }
 
     /**
@@ -89,20 +125,94 @@ class FechaController extends Controller
         //
     }
 
+    public function getFechaById($id) {
+        $fecha = Fecha::find($id);
+        $resumen_jugadores = $fecha->resumen_jugadores();
+
+        //TODO hacer el resource
+        return [
+            "fecha" => $fecha,
+            "resumen_jugadores" => $resumen_jugadores
+        ];
+    }
+
 
     public function guardarFecha(Request $request)
     {
-        $fecha = crearNuevaFecha($request);
-        $categorias = $request->categorias;
+       return crearNuevaFecha($request);
+        // $categorias = $request->categorias;
 
-        crearRelacionFechaJugador($fecha, $categorias, $request->jugadores);
+        // crearRelacionFechaJugador($fecha, $categorias, $request->jugadores);
 
-        foreach ($categorias as $categoria) {
+        // foreach ($categorias as $categoria) {
 
-            guardarCategoriaFecha($categoria, $fecha->id);
-        }
-        return;
+        //     guardarCategoriaFecha($categoria, $fecha->id);
+        // }
+        // return;
     }
+
+    public function storeUsuario(Request $request, $id, $usuario_id)
+    {
+        try
+        {
+            $request->validate([
+                'categoria_mayor_id' => ['nullable'],
+                'categoria_menor_id' => ['nullable'],
+                // 'monto_pagado' => ['nullable'],
+                // 'puntos' => ['nullable']
+            ]);
+
+            $service = new FechaService();
+            $fecha_usuario = $service->updateFechaUsuario($id, $usuario_id, $request->get('categoria_mayor_id'), $request->get('categoria_menor_id'), $request->get('monto_pagado'), $request->get('puntos'));
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
+
+            return $this->sendResponse(new FechaUsuarioResource($fecha_usuario), 'Jugador modificado con exito.');
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
+    }
+
+    public function getUsuariosAnotados($id)
+    {
+        try
+        {
+            $fecha_usuarios = Fecha::find($id)->jugadores()->get();
+           
+            foreach($fecha_usuarios as $key => $fecha_usuario) {
+                $fecha_usuario->info_socio = $fecha_usuario->socio();
+            }
+            
+            return $this->sendResponse(FechaUsuarioResource::collection($fecha_usuarios), 'Success');
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
+
+    }
+
+    public function getPartidos($id, $categoria_id)
+    {
+        try
+        {
+            $fecha_partidos = Fecha::find($id)
+            ->partidos()
+            ->where('categoria_id', $categoria_id)
+            ->with('fase', 'grupo', 'jugadores')
+            ->get();
+
+            return $this->sendResponse(FechaPartidosResource::collection($fecha_partidos), 'Success');
+        }
+        catch(Exception $e)
+        {
+            return $this->sendError($e->errorInfo[2]);
+        }
+    }
+    
 
     public function getFecha(Request $request){
         $fecha = Fecha::whereId($request->id)->first();
@@ -116,8 +226,8 @@ class FechaController extends Controller
             $categorias = Categoria::where('torneo_id',$fecha->torneo_id)->get();
            
             foreach ($torneo_usuarios as $key => $torneo_usuario) {
-                $fechas_usuarios = Fecha::where('fechas.id',$fecha->torneo_id)
-                ->where('fechas.created_at','=<',$fecha->created_at) //TODO voy a traer todas las fechas anteriores y esta
+                $fechas_usuarios = Fecha::where('fechas.torneo_id',$fecha->torneo_id)
+                ->where('fechas.created_at','<=',$fecha->created_at) //TODO voy a traer todas las fechas anteriores y esta
                 ->where('fecha_usuario.usuario_id',$torneo_usuario->usuario_id)
                 ->join('fecha_usuario','fecha_usuario.fecha_id','=','fechas.id')
                 ->get();
@@ -148,8 +258,79 @@ class FechaController extends Controller
         
         return $data;
     }
-}
 
+    public function storeCategoriaPartidos(Request $request, $id, $categoria_id) 
+    {
+        try
+            {
+                $request->validate([
+                    'partidos' => 'required|array',
+                    'partidos.*' => 'required',
+                    'partidos.*.fase' => 'required | string',
+                    // 'partidos.*.id_jugador1' => 'required',
+                    // 'partidos.*.id_jugador2' => 'required',
+                    // 'partidos.*.set_jugador1' => 'required',
+                    // 'partidos.*.set_jugador2' => 'required | different:partidos.*.set_jugador1'
+                ]);
+
+                $servicePartido = new PartidoService();
+                $partidosCreados = [];
+                
+                //borramos los partidos de esta fecha-categoria por si ya se había guardado antes
+                $servicePartido->deletePartidos($id, $categoria_id);
+
+                foreach ($request->get('partidos') as $key => $partido) {
+                    $partido = (object) $partido;
+
+                    if($partido->fase === "grupos") {
+                        if(!$partido->grupo_nombre) {
+                            return $this->sendError('Los partiods en fase "grupos" requieren de un nombre de grupo.');
+                        }
+                    } else {
+                        if($partido->fase !== "final" && !$partido->sig_partido_id) {
+                            return $this->sendError('Los partiods en fase "llaves" requieren de un id de partido padre.');  
+                        }
+                    }
+
+                    $partido_info = (object) [
+                        "id_partido" => $partido->id ?? null,
+                        "id_jugador1" => $partido->id_jugador1 ?? null,
+                        "id_jugador2" => $partido->id_jugador2 ?? null,
+                        "set_jugador1" => $partido->set_jugador1 ?? null,
+                        "set_jugador2" => $partido->set_jugador2 ?? null
+                    ];
+
+                    $partidoNuevo = $servicePartido->createPartido($id, $categoria_id, $partido->fase, $partido->grupo_nombre ?? null, $partido_info);
+                    $partidoNuevo->fake_id = $partido->id ?? null;
+                    $partidoNuevo->fake_padre_id = $partido->sig_partido_id ?? null;
+                    array_push($partidosCreados, $partidoNuevo);
+                
+                }
+                $servicePartido->asociarPartidoPadre($partidosCreados);
+                if ($servicePartido->hasErrors()) {
+                    return $this->sendServiceError($servicePartido->getLastError());
+                }
+
+
+                $serviceFecha = new FechaService();
+                $serviceFecha->updatePuntos($id);
+
+                if ($serviceFecha->hasErrors()) {
+                    return $this->sendServiceError($serviceFecha->getLastError());
+                }
+
+                return $this->sendOK();
+            }
+            catch(Exception $e)
+            {
+                return $this->sendError($e->errorInfo[2]);
+            }
+        }
+    }
+
+
+
+//????????????????
 function calcularCategoria($categorias, $puntos){
     foreach ($categorias as $key => $categoria) {
         if ($puntos >= $categoria->puntos_minimos && $puntos <= $categoria->puntos_maximos) 
@@ -388,14 +569,14 @@ function crearRelacionFechaJugador($fecha, $categorias, $jugadores) {
 
 function crearNuevaFecha(Request $request)
 {
-
     $fecha                                  = new Fecha();
     $fecha->nombre                          = $request->nombreFecha;
-    $fecha->monto_socios_una_categoria      = $request->montos['montoSociosUnaCategoria'];
-    $fecha->monto_socios_dos_categorias     = $request->montos['montoSociosDosCategorias'];
-    $fecha->monto_no_socios_una_categoria   = $request->montos['montoNoSociosUnaCategoria'];
-    $fecha->monto_no_socios_dos_categorias  = $request->montos['montoNoSociosDosCategorias'];
-    $fecha->torneo_id                       = $request->categorias[0]['torneo_id'];
+    $fecha->monto_socios_una_categoria      = $request->montoSociosUnaCategoria;
+    $fecha->monto_socios_dos_categorias     = $request->montoSociosDosCategorias;
+    $fecha->monto_no_socios_una_categoria   = $request->montoNoSociosUnaCategoria;
+    $fecha->monto_no_socios_dos_categorias  = $request->montoNoSociosDosCategorias;
+    $fecha->torneo_id                       = $request->torneoId;
+    $fecha->vigencia                        = true;
     $fecha->save();
     return $fecha;
 

@@ -27,7 +27,7 @@ export default {
     components: { AgregarCategoriaComponent, TablaCategoriasComponent },
     data() {
         return {
-           
+            valid: true,
             //RULES
             nombreCategoriaRules: [
                 v => !!v || "Nombre requerido",
