@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Http\Services\CuotaService;
 use App\Pago;
 use App\Usuario;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Cuota as CuotaResource;
+use Illuminate\Support\Facades\URL;
+
 
 class UsuarioController extends ApiController
 {
@@ -24,17 +27,28 @@ class UsuarioController extends ApiController
     public function index(Request $request)
     {
         $dni = $request->dni;
-        $usuarios = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
-                $query->where('dni', $dni);
-            })->get();
+        $perPage = $request->perPage ?? 10; // Número de elementos por página
+    
+        $query = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
+            $query->where('dni', $dni);
+        });
+    
+        // Aplica la paginación
+        $usuarios = $query->paginate($perPage);
+    
+        // Carga relaciones adicionales
         foreach ($usuarios as $key => $usuario) {
             $usuario->socio = $usuario->socio();
             foreach ($usuario->cuotas as $k => $cuota) {
                 $cuota->pago;
             }
         }
-        return $usuarios;
+    
+        return [
+            'usuarios' => $usuarios
+        ];
     }
+    
 
     /**
      * Show the form for creating a new resource.
