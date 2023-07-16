@@ -33,32 +33,37 @@ class UsuarioController extends ApiController
         $orderBy = $request->orderBy ?? 'created_at'; // Campo por el que deseas ordenar
         $orderByDesc = filter_var($request->orderByDesc, FILTER_VALIDATE_BOOLEAN) ?? false;
         $socio = filter_var($request->socio, FILTER_VALIDATE_BOOLEAN) ?? false;
-    
+
         $query = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
             $query->where('dni', $dni);
         });
-        if($socio){
+        if ($socio) {
             $query->where('socio', true);
-        }     
+        }
         if ($search && strlen($search) >= 3) {
             $query->where(function ($query) use ($search) {
                 $query->where('nombre', 'like', '%' . $search . '%')
-                      ->orWhere('apellido', 'like', '%' . $search . '%')
-                      ->orWhere('dni', 'like', '%' . $search . '%');
+                    ->orWhere('apellido', 'like', '%' . $search . '%')
+                    ->orWhere('dni', 'like', '%' . $search . '%');
             });
         }
         $query->orderBy($orderBy, $orderByDesc ? 'desc' : 'asc');
 
         $usuarios = $query->paginate($perPage, ['*'], 'page', $page);
-    
+
         // Carga relaciones adicionales
-   
-    
+        foreach ($usuarios as $key => $usuario) {
+            $usuario->socio = $usuario->socio();
+            foreach ($usuario->cuotas as $k => $cuota) {
+                $cuota->pago;
+            }
+        }
+
         return [
             'usuarios' => $usuarios
         ];
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -109,8 +114,7 @@ class UsuarioController extends ApiController
                 'id' => $usuario->id
             ]);
         } else {
-            return $this->sendError('El usuario ya existe', ['El usuario ya existe'], 400 );
-
+            return $this->sendError('El usuario ya existe', ['El usuario ya existe'], 400);
         }
 
         //Esta función guardará las tareas que enviaremos mediante vuejs
