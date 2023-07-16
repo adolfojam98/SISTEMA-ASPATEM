@@ -29,9 +29,9 @@ class UsuarioController extends ApiController
         $dni = $request->dni;
         $perPage = $request->perPage ?? 10; // Número de elementos por página
         $page = $request->page ?? 1;
-        $orderBy = $request->orderBy ?? 'id'; // Campo por el que deseas ordenar
-        $orderByDesc = $request->orderByDesc;
-        $socio = $request->socio ?? false;
+        $orderBy = $request->orderBy ?? 'created_at'; // Campo por el que deseas ordenar
+        $orderByDesc = filter_var($request->orderByDesc, FILTER_VALIDATE_BOOLEAN) ?? false;
+        $socio = filter_var($request->socio, FILTER_VALIDATE_BOOLEAN) ?? false;
     
         $query = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
             $query->where('dni', $dni);
@@ -39,12 +39,8 @@ class UsuarioController extends ApiController
         if($socio){
             $query->where('socio', true);
         }
+        $query->orderBy($orderBy, $orderByDesc ? 'desc' : 'asc');
 
-        $query->orderBy($orderBy);
-        if($orderByDesc){
-            $query->orderByDesc($orderByDesc);
-        }
-        // Aplica la paginación
         $usuarios = $query->paginate($perPage, ['*'], 'page', $page);
     
         // Carga relaciones adicionales

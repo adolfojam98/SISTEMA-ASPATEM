@@ -9,7 +9,7 @@
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
       </div>
 
-      <v-data-table :headers="headers" :items="usuariosFiltrados" 
+      <v-data-table :headers="headers" :items="usuarios" 
       :options.sync="options"
       :server-items-length="totalUsuarios" 
       :search="search"
@@ -165,13 +165,13 @@ export default {
 
   methods: {
     async getUsuarios() {
-      const params = new URLSearchParams([['perPage', this.options.itemsPerPage]]);
+      const params = this.crearParametrosPaginado();
 
       await axios
         .get("/usuario", {params})
         .then((res) => {
           this.usuarios = res.data.usuarios.data;
-          this.totalUsuarios = parseInt(res.data.usuarios.per_page);
+          this.totalUsuarios = parseInt(res.data.usuarios.total);
           this.usuarios.forEach((usuario) => {
             usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
             usuario.cuotasAdeudadas = this.calcularCuotasAdeudadas(usuario);
@@ -185,7 +185,18 @@ export default {
           }
         })
         .catch((error) => console.log(error));
-      this.filtrar();
+    },
+    crearParametrosPaginado(){
+      return  new URLSearchParams(
+        [
+          ['perPage', this.options.itemsPerPage],
+          ['page', this.options.page],
+          ['socio', this.isListaSocios],
+          ['orderBy', this.options.sortBy],
+          ['orderByDesc', this.options.sortDesc],
+          
+        ]
+        );
     },
     //TODO hay que arreglar el tema de las cuotas
     ...mapActions(["callSnackbar"]),
@@ -264,16 +275,16 @@ export default {
       const [anio, mes, dia] = fecha.split("-");
       return `${dia}/${mes}/${anio}`;
     },
-    filtrar() {
-      this.usuariosFiltrados = [];
-      this.usuarios.forEach((usuario) => {
-        if (!this.isListaSocios) {
-          this.usuariosFiltrados.push(usuario);
-        } else if (usuario.socio.socio) {
-          this.usuariosFiltrados.push(usuario);
-        }
-      });
-    },
+    // filtrar() {
+    //   this.usuariosFiltrados = [];
+    //   this.usuarios.forEach((usuario) => {
+    //     if (!this.isListaSocios) {
+    //       this.usuariosFiltrados.push(usuario);
+    //     } else if (usuario.socio.socio) {
+    //       this.usuariosFiltrados.push(usuario);
+    //     }
+    //   });
+    // },
   },
 
   watch: {
