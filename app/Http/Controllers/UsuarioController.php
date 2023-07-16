@@ -26,6 +26,7 @@ class UsuarioController extends ApiController
      */
     public function index(Request $request)
     {
+        $search = $request->input('search');
         $dni = $request->dni;
         $perPage = $request->perPage ?? 10; // Número de elementos por página
         $page = $request->page ?? 1;
@@ -38,18 +39,20 @@ class UsuarioController extends ApiController
         });
         if($socio){
             $query->where('socio', true);
+        }     
+        if ($search && strlen($search) >= 3) {
+            $query->where(function ($query) use ($search) {
+                $query->where('nombre', 'like', '%' . $search . '%')
+                      ->orWhere('apellido', 'like', '%' . $search . '%')
+                      ->orWhere('dni', 'like', '%' . $search . '%');
+            });
         }
         $query->orderBy($orderBy, $orderByDesc ? 'desc' : 'asc');
 
         $usuarios = $query->paginate($perPage, ['*'], 'page', $page);
     
         // Carga relaciones adicionales
-        foreach ($usuarios as $key => $usuario) {
-            $usuario->socio = $usuario->socio();
-            foreach ($usuario->cuotas as $k => $cuota) {
-                $cuota->pago;
-            }
-        }
+   
     
         return [
             'usuarios' => $usuarios

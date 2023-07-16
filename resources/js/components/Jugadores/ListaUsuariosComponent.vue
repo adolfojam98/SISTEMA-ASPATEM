@@ -186,18 +186,21 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    crearParametrosPaginado(){
-      return  new URLSearchParams(
-        [
-          ['perPage', this.options.itemsPerPage],
-          ['page', this.options.page],
-          ['socio', this.isListaSocios],
-          ['orderBy', this.options.sortBy],
-          ['orderByDesc', this.options.sortDesc],
-          
-        ]
-        );
-    },
+    crearParametrosPaginado() {
+  const params = new URLSearchParams([
+    ['perPage', this.options.itemsPerPage],
+    ['page', this.options.page],
+    ['socio', this.isListaSocios],
+    ['orderBy', this.options.sortBy],
+    ['orderByDesc', this.options.sortDesc],
+  ]);
+
+  if (this.search && this.search.length >= 3) {
+    params.append("search", this.search);
+  }
+
+  return params;
+},
     //TODO hay que arreglar el tema de las cuotas
     ...mapActions(["callSnackbar"]),
     async deleteItem() {
@@ -299,6 +302,13 @@ export default {
         },
         deep: true,
       },
+      search: {
+    handler() {
+      this.options.page = 1;
+      this.getUsuarios();
+    },
+    deep: true,
+  },
   },
 
 };
