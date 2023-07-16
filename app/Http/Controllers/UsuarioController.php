@@ -28,13 +28,24 @@ class UsuarioController extends ApiController
     {
         $dni = $request->dni;
         $perPage = $request->perPage ?? 10; // Número de elementos por página
+        $page = $request->page ?? 1;
+        $orderBy = $request->orderBy ?? 'id'; // Campo por el que deseas ordenar
+        $orderByDesc = $request->orderByDesc;
+        $socio = $request->socio ?? false;
     
         $query = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
             $query->where('dni', $dni);
         });
-    
+        if($socio){
+            $query->where('socio', true);
+        }
+
+        $query->orderBy($orderBy);
+        if($orderByDesc){
+            $query->orderByDesc($orderByDesc);
+        }
         // Aplica la paginación
-        $usuarios = $query->paginate($perPage);
+        $usuarios = $query->paginate($perPage, ['*'], 'page', $page);
     
         // Carga relaciones adicionales
         foreach ($usuarios as $key => $usuario) {
