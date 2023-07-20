@@ -51,10 +51,6 @@
             {{ elegirIcono(item) }}
           </v-icon>
         </template>
-
-        <template v-slot:[`item.cuotasAdeudadas`]="{ item }">
-          {{ item.cuotasAdeudadas }}
-        </template>
       </v-data-table>
 
       <!-- dialogs -->
@@ -174,7 +170,7 @@ export default {
           this.totalUsuarios = parseInt(res.data.usuarios.total);
           this.usuarios.forEach((usuario) => {
             usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
-            usuario.cuotasAdeudadas = this.calcularCuotasAdeudadas(usuario);
+            usuario.cuotasAdeudadas = usuario.cuotas_adeudadas;
           });
           if (this.isListaSocios) {
             this.verSocios = true;
