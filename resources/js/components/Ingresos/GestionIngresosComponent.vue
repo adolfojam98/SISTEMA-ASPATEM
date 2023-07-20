@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex justify-center mb-5">
-      <h2>Ingresos</h2>
+      <h2 class="pa-1">Ingresos</h2>
     </div>
 
     <v-container>

@@ -1,6 +1,9 @@
 <template>
   <div>
     <v-container grid-list-xs>
+      <center>
+        <h2 class="pa-1">Avisos</h2>
+      </center>
       <v-form ref="form" lazy-validation v-model="valid">
         <v-container>
           <v-text-field
