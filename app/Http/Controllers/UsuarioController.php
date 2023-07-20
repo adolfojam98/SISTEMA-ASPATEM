@@ -24,11 +24,15 @@ class UsuarioController extends ApiController
     public function index(Request $request)
     {
         $dni = $request->dni;
-        $usuarios = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
+        $usuarios = Usuario::with('cuotas')
+            ->when($dni, function ($query, $dni) {
                 $query->where('dni', $dni);
             })->get();
+
         foreach ($usuarios as $key => $usuario) {
             $usuario->socio = $usuario->socio();
+            $usuario->cuotas_adeudadas = $usuario->cuotasAdeudadas();
+
             foreach ($usuario->cuotas as $k => $cuota) {
                 $cuota->pago;
             }

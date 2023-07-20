@@ -223,7 +223,6 @@ export default {
         return dateA - dateB;
       });
       return cuotasOrdenadas
-        .slice(cuotasOrdenadas.findLastIndex((cuota) => cuota.pago != null))
         .filter((cuota) => cuota.pago == null).length;
     },
 

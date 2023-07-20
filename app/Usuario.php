@@ -61,6 +61,15 @@ class Usuario extends Model
         return $this->hasMany(Cuota::class)->orderByDesc('id');
     }
 
+    public function cuotasAdeudadas(){
+        $totalCuotasNoPagas = Cuota::Where('usuario_id', $this->id)
+            ->where('periodo', '<=', new Carbon())
+            ->whereDoesntHave('pago')
+            ->count();
+
+            return $totalCuotasNoPagas;
+    }
+
     public function socio(){
         /*
         Socio activo
@@ -76,8 +85,8 @@ class Usuario extends Model
 
         /* casos: 
             1) no socio: socio == false y no tiene cuotas generadas; 
-            2) inactivo: (socio == false y tiene cuotas generadas) || (socio == true y ultimas 4 cuotas no pagas);
-            3) socio: socio == true y al menos una de las ultimas 4 cuotas pagada
+            2) inactivo: (socio == false y tiene cuotas generadas) || (socio == true y X(configurables) cuotas no pagas);
+            3) socio: socio == true y no debe X(configurables) cuotas
         */
         $state = (object) [
             'socio' => null,
@@ -95,29 +104,17 @@ class Usuario extends Model
         $cantidadDeCuotasAdeudadasParaDarDeBaja = Configuracion::Where('nombre', $keys[1])->first();
 
         if($bajaPorCuotasNoPagas->valor) {
-            //obtenemos las cuotas pasadas (la cantidad depende de la configuracion)
-            $lastXCuotas = Cuota::Where('usuario_id', $this->id)
+            $totalCuotasNoPagas = Cuota::Where('usuario_id', $this->id)
             ->where('periodo', '<=', new Carbon())
-            ->latest()->take($cantidadDeCuotasAdeudadasParaDarDeBaja->valor)->get();
+            ->whereDoesntHave('pago')
+            ->count();
 
-            //obtenemos las cuotas futuras, por si pago por adelantado
-            $futureCuotas = Cuota::Where('usuario_id', $this->id)
-            ->where('periodo', '>', new Carbon())->get();
-
-            //si tiene alguna de las ultimas cuotas pagas no es moroso
             $moroso = true;
-            foreach ($lastXCuotas as $key => $cuota) {
-                if($cuota->pago) {
-                    $moroso = false;
-                }
+            
+            if($totalCuotasNoPagas < $cantidadDeCuotasAdeudadasParaDarDeBaja->valor) {
+                $moroso = false;
             }
 
-            //si pago alguna cuota futura, tampoco es moroso
-            foreach ($futureCuotas as $key => $cuota) {
-                if($cuota->pago) {
-                    $moroso = false;
-                }
-            }
         } else {
             //más que moroso yo diria que no esta activo, pero ya no se entiende nada esto...
             $moroso = false;
