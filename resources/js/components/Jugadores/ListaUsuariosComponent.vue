@@ -16,20 +16,26 @@
       >
         <!-- :custom-filter="filtrarPorSocio" -->
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" class="mr-1" @click="editItem(item)" color="success">mdi-pencil</v-icon>
-            </template>
-            <span>Editar</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" class="mr-4" right @click="gestionarRelaciones(item)"
-                color="primary">mdi-account-group</v-icon>
-            </template>
-            <span>Relaciones</span>
-          </v-tooltip>
-          <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
+          <div v-if="isListaSocios">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" v-on="on" class="mr-1" @click="editItem(item)" color="success">mdi-pencil</v-icon>
+              </template>
+              <span>Editar</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" v-on="on" class="mr-4" right @click="gestionarRelaciones(item)"
+                  color="primary">mdi-account-group</v-icon>
+              </template>
+              <span>Relaciones</span>
+            </v-tooltip>
+            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
+          </div>
+          <div v-else>
+            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">Edit?</v-btn>
+            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">Ver ultima fecha jugada quizas?</v-btn>
+          </div>
         </template>
 
         <template v-slot:[`header.isSocio`]="{ header }">
@@ -107,46 +113,27 @@ export default {
       usuariosFiltrados: [],
       search: "",
       headers: [
-        { text: "Apellido", value: "apellido", width: '100px' },
-        { text: "Nombre", value: "nombre", width: '100px' },
+        { text: "Apellido", value: "apellido", width: '150px' },
+        { text: "Nombre", value: "nombre", width: '150px' },
         { text: "DNI", value: "dni", width: '100px' },
-        { text: "Mail", value: "mail", sortable: true, filterable: false },
-        {
-          text: "Telefono",
-          value: "telefono",
-          sortable: false,
-          filterable: false,
-        },
-        {
-          text: "Fecha de alta",
-          value: "fechaAlta",
-          sortable: true,
-          filterable: false,
-          width: '130px'
-        },
-        {
-          text: "Cuotas adeudadas",
-          value: "cuotasAdeudadas",
-          sortable: true,
-          sort: (a, b) => {
-            return a - b;
-          },
-          width: '160px'
-        },
-        {
-          text: "Socio",
-          value: "isSocio",
-          sortable: false,
-          filterable: false,
-          width: '100px'
-        },
-        {
-          text: "Acciones",
-          value: "actions",
-          sortable: false,
-          filterable: false,
-        },
-      ],
+        { text: "Mail", value: "mail", sortable: true, filterable: false, width: this.isListaSocios ? '' : '200px' },
+        { text: "Telefono", value: "telefono", sortable: false, filterable: false, width: this.isListaSocios ? '' : '150px' },
+        { text: "Fecha de alta", value: "fechaAlta", sortable: true, filterable: false, width: '130px' }
+      ].concat(
+        this.isListaSocios ? 
+        [
+          { text: "Cuotas adeudadas", value: "cuotasAdeudadas", sortable: true, width: '160px', sort: (a, b) => { return a - b; } },
+          { text: "Socio", value: "isSocio", sortable: false, filterable: false, width: '100px' },
+          { text: "Acciones", value: "actions", sortable: false, filterable: false },
+        ]
+
+      : 
+
+        [
+          { text: "Total torneos anotados", value: "totalTorneos", width: '100px' },
+          { text: "Total fechas jugadas", value: "totalFechas", width: '100px' },
+        ]),
+
       usuarioEditar: [],
       usuarioVerDetalleCuotas: null,
       editarUsuarioModal: false,
@@ -171,6 +158,8 @@ export default {
           this.usuarios.forEach((usuario) => {
             usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
             usuario.cuotasAdeudadas = usuario.cuotas_adeudadas;
+            usuario.totalTorneos = usuario.torneos?.length
+            usuario.totalFechas = usuario.fechas?.length
           });
           if (this.isListaSocios) {
             this.verSocios = true;

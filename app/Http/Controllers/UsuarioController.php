@@ -56,6 +56,8 @@ class UsuarioController extends ApiController
         foreach ($usuarios as $key => $usuario) {
             $usuario->socio = $usuario->socio();
             $usuario->cuotas_adeudadas = $usuario->cuotasAdeudadas();
+            $usuario->torneos = $usuario->torneos()->get();
+            $usuario->fechas = $usuario->fechas()->get();
 
             foreach ($usuario->cuotas as $k => $cuota) {
                 $cuota->pago;
