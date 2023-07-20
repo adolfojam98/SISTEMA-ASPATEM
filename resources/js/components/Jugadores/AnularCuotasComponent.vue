@@ -30,15 +30,15 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-              color="error"
               @click="dialog = false"
             >
               Cancelar
             </v-btn>
             <v-btn
+              color="error"
               @click="[dialog = false, anularTodasLasCuotas()]"
             >
-              ANULAR
+              APLICAR
             </v-btn>
           </v-card-actions>
         </v-card>
