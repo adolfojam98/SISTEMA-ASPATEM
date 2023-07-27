@@ -8,7 +8,16 @@
       <div class="d-flex mt-4" style="align-items: center">
         <div style="width: 300px; ">
           <v-autocomplete v-model="usuarioSeleccionado" :items="usuarios" :item-text="nombreCompleto" return-object
-            label="Ingrese el nombre del socio"></v-autocomplete>
+            label="Ingrese el nombre del socio" :search-input.sync="search" :loading="isLoading">
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-title>
+                  Busque por nombre/apellido o DNI
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-autocomplete>
+
         </div>
 
         <v-btn class="mx-4" @click="buscarCuotasUsuario" color="primary">
@@ -88,7 +97,8 @@
                     <td>
                       <div class="text-center">
                         <v-chip class="mr-2" color="error" dark> Pagar </v-chip>
-                        <v-chip color="error" dark @click.stop="[modalAnularCuota = true, , (cuotaActual = cuota)]"> Anular </v-chip>
+                        <v-chip color="error" dark @click.stop="[modalAnularCuota = true, , (cuotaActual = cuota)]">
+                          Anular </v-chip>
                       </div>
                     </td>
 
@@ -118,28 +128,28 @@
     </v-dialog>
 
     <v-dialog v-model="modalAnularCuota" max-width="600">
-            <v-card>
-            <template v-slot:activator="{ on, attrs }">
+      <v-card>
+        <template v-slot:activator="{ on, attrs }">
 
-            </template>
-            <h2 class="pa-3">
-                <center>Desea anular esta cuota?</center>
-            </h2>
-            <v-card-text>
-                <v-textarea name="input-7-1" label="Observación" v-model="observacion" rows="2"></v-textarea>
+        </template>
+        <h2 class="pa-3">
+          <center>Desea anular esta cuota?</center>
+        </h2>
+        <v-card-text>
+          <v-textarea name="input-7-1" label="Observación" v-model="observacion" rows="2"></v-textarea>
 
-            </v-card-text>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="error" @click="modalAnularCuota = false">
-                    Cancelar
-                </v-btn>
-                <v-btn @click="[modalAnularCuota = false, anularCuota()]">
-                    ANULAR
-                </v-btn>
-            </v-card-actions>
-            </v-card>
-        </v-dialog>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" @click="modalAnularCuota = false">
+            Cancelar
+          </v-btn>
+          <v-btn @click="[modalAnularCuota = false, anularCuota()]">
+            ANULAR
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -149,6 +159,8 @@ import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   data() {
     return {
+      search: null,
+      isLoading: false,
       cuotaActual: "",
       usuarioSeleccionado: "",
       usuarios: [],
@@ -160,7 +172,7 @@ export default {
       recargarCuotas: false,
       generarCuotasMasivas: false,
       modalAnularCuota: false,
-      observacion : "",
+      observacion: "",
       monthNames: [
         "Enero",
         "Febrero",
@@ -184,13 +196,14 @@ export default {
     anularCuota() {
       console.log("anular");
       axios.post(`/cuotas/${this.cuotaActual.id}/cancelar`, {
-        "descripcion" : this.observacion
+        "descripcion": this.observacion
       }).then((res) => {
         this.callSnackbar(["Cuota Anulada correctamente", "success"]);
         this.buscarCuotasUsuario();
-      }).catch((error) => { 
+      }).catch((error) => {
         console.log(error);
-        this.callSnackbar(["No se pudo anular la cuota", "error"]) })
+        this.callSnackbar(["No se pudo anular la cuota", "error"])
+      })
     },
     ...mapActions(["callSnackbar"]),
     ...mapMutations("cuotas", ["setTipoCuotasDetalles"]),
@@ -272,13 +285,29 @@ export default {
       this.cuotasUsuario.forEach(cuota => {
         if (cuota?.pago?.fecha_pago == null) {
           axios.post(`/cuotas/${cuota.id}/cancelar`, {
-            'descripcion' : descripcion
+            'descripcion': descripcion
           }).then(() => {
             this.callSnackbar(["Cuotas anuladas correctamente", "success"]);
             this.buscarCuotasUsuario();
           }).catch(e => this.callSnackbar(["Hubo un error en cancelar cuotas", "error"]));
         }
       });
+    },
+    async getJugadores(idUsuario) {
+      this.isLoading = true;
+      const responseUsuarios = await axios.get("/usuario", { params: { search: this.search, socio: true, id: idUsuario } });
+      this.usuarios = responseUsuarios.data.usuarios.data;
+      console.log('->usuarios: ', this.usuarios);
+      if (idUsuario) {
+        this.usuarioSeleccionado = this.usuarios[0];
+        if (this.usuarioSeleccionado) {
+          this.buscarCuotasUsuario();
+        }
+      }
+      setTimeout(() => {
+          this.isLoading = false;
+      }, 20);
+
     },
   },
 
@@ -288,28 +317,27 @@ export default {
       this.pagoCuota = false;
       this.recargarCuotas = false;
     },
+    async search(val) {
+
+      if (!val || val.length < 1) return;
+      console.log(val);
+      // Items have already been requested
+      if (this.isLoading) return;
+      this.getJugadores();
+
+    },
   },
   async created() {
     console.log("parametros usuarios pagos component:", this.$route.query);
     const idUsuario = this.$route.query.usuario;
-
-    const responseUsuarios = await axios.get("/usuario");
-    this.usuarios = responseUsuarios.data;
-    console.log('->usuarios: ', this.usuarios);
-    this.filtrarUsuariosNoSocios();
+    if (idUsuario) {
+      this.getJugadores(idUsuario);
+    }
 
     const resp = await axios.get("/tipo-detalles");
     console.log("->tipo_cuota: ", resp.data);
     this.setTipoCuotasDetalles(resp.data.body);
-
-    if (idUsuario) {
-      this.usuarioSeleccionado = this.usuarios.find(
-        (usuario) => usuario.id == idUsuario
-      );
-      if (this.usuarioSeleccionado) {
-        this.buscarCuotasUsuario();
-      }
-    }
   },
+
 };
 </script>
