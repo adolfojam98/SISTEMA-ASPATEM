@@ -26,6 +26,7 @@ class UsuarioController extends ApiController
      */
     public function index(Request $request)
     {
+        $id = $request->id;
         $search = $request->input('search');
         $dni = $request->dni;
         $perPage = $request->perPage ?? 10; // Número de elementos por página
@@ -37,6 +38,9 @@ class UsuarioController extends ApiController
         $query = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
             $query->where('dni', $dni);
         });
+        if($id){
+            $query->where('id', $id);
+        }
         if ($socio) {
             $query->where('socio', true);
         }
