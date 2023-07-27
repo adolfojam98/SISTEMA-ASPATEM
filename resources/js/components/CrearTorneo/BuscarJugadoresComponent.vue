@@ -2,14 +2,18 @@
   <div>
     <v-row>
       <v-col cols="6">
-        <v-autocomplete
-          return-object
-          v-model="jugadorSeleccionado"
-          :items="jugadores"
-          label="Buscar jugador"
-          :item-text="nombreCompleto"
-        >
-        </v-autocomplete>
+        <v-autocomplete :loading="isLoading" v-model="jugadorSeleccionado"
+        :item-text="nombreCompleto" :items="jugadores" :search-input.sync="search" return-object
+        label="Buscar jugador" class="subheading font-weight-bold"> <template v-slot:no-data>
+          <v-list-item>
+            <v-list-item-title>
+              Busque por nombre/apellido o DNI
+            </v-list-item-title>
+          </v-list-item>
+        </template>
+
+      </v-autocomplete>
+
       </v-col>
       <v-col cols="2">
         <v-text-field v-model='puntos' type="number" label="Puntos"></v-text-field>
@@ -33,14 +37,11 @@ export default {
       jugadorSeleccionado: null,
       jugadores: [],
       puntos : null,
+      isLoading: false,
+      search: null,
     };
   },
-  created() {
-    axios.get("/usuario").then((response) => {
-      console.log(response);
-      this.jugadores = response.data;
-    });
-  },
+
   methods: {
     ...mapMutations("CrearTorneo", ["pushJugadorTorneo"]),
     ...mapActions(["callSnackbar"]),
@@ -61,11 +62,30 @@ export default {
     resetearFormulario(){
       this.jugadorSeleccionado = null;
       this.puntos = null;
-    }
+    },
+    async getJugadores() {
+      this.isLoading = true
+      const res = await axios.get("/usuario", { params: { search: this.search } });
+
+      this.jugadores = res.data.usuarios.data;
+      this.isLoading = false;
+    },
+  },
+   watch: {
+    search(val) {
+
+      if (!val || val.length < 1) return;
+      console.log(val);
+      // Items have already been requested
+      if (this.isLoading) return
+      this.getJugadores();
+
+    },
   },
 
   computed: {
     ...mapState("CrearTorneo", ["listaJugadores"])
-  }
+  },
+  
 };
 </script>

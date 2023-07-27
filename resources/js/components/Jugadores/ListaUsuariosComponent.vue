@@ -173,7 +173,7 @@ export default {
     },
     crearParametrosPaginado() {
   const params = new URLSearchParams([
-    ['perPage', this.options.itemsPerPage],
+    ['perPage', this.options.itemsPerPage == -1 ? this.totalUsuarios : this.options.itemsPerPage],
     ['page', this.options.page],
     ['socio', this.isListaSocios],
     ['orderBy', this.options.sortBy],
@@ -288,8 +288,11 @@ export default {
       },
       search: {
     handler() {
-      this.options.page = 1;
+      if(this.search.length >= 3){
+              this.options.page = 1;
       this.getUsuarios();
+      }
+
     },
     deep: true,
   },

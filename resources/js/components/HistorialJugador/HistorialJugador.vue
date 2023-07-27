@@ -4,17 +4,20 @@
       <h2 cols="12">Historial de jugadores</h2>
     </center>
     <div class="ma-4" style="width: 300px">
-      <v-select
-        @input="setjugadorSeleccionado"
-        :value="jugadorSeleccionado"
-        :item-text="nombreCompleto"
-        :items="jugadores"
-        @change="getHistory"
-        return-object
-        label="Seleccione un jugador"
-        class="subheading font-weight-bold"
-        v-on:change="[]"
-      ></v-select>
+
+      <v-autocomplete :loading="isLoading" @input="setjugadorSeleccionado" :value="jugadorSeleccionado"
+        :item-text="nombreCompleto" :items="jugadores" @change="getHistory" :search-input.sync="search" return-object
+        label="Seleccione un jugador" class="subheading font-weight-bold"> <template v-slot:no-data>
+          <v-list-item>
+            <v-list-item-title>
+              Busque por nombre/apellido o DNI
+            </v-list-item-title>
+          </v-list-item>
+        </template>
+
+      </v-autocomplete>
+
+
     </div>
 
     <v-toolbar v-if="history">
@@ -74,6 +77,7 @@ import { mapMutations, mapState } from "vuex";
 export default {
   data() {
     return {
+      isLoading: false,
       tab: null,
       search: "",
       headers: [
@@ -102,12 +106,14 @@ export default {
       "setHistory",
     ]),
 
-    nombreCompleto: (item) => item.apellido + " " + item.nombre,
+    nombreCompleto: (item) => item.apellido + " " + item.nombre + " " + item.dni,
 
-    getJugadores() {
-      axios.get("/usuario").then((res) => {
-        this.setjugadores(res.data);
-      });
+    async getJugadores() {
+      this.isLoading = true
+      const res = await axios.get("/usuario", { params: { search: this.search } });
+
+      this.setjugadores(res.data.usuarios.data);
+      this.isLoading = false;
     },
 
     getHistory() {
@@ -133,8 +139,17 @@ export default {
     }
   },
 
-  created() {
-    this.getJugadores();
+  watch: {
+    async search(val) {
+
+      if (!val || val.length < 1) return;
+      console.log(val);
+      // Items have already been requested
+      if (this.isLoading) return
+      this.getJugadores();
+
+    },
   },
+
 };
 </script>
