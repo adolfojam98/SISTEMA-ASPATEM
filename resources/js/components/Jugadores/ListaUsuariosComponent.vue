@@ -188,7 +188,7 @@ export default {
     },
     crearParametrosPaginado() {
   const params = new URLSearchParams([
-    ['perPage', this.options.itemsPerPage],
+    ['perPage', this.options.itemsPerPage == -1 ? this.totalUsuarios : this.options.itemsPerPage],
     ['page', this.options.page],
     ['socio', this.isListaSocios],
     ['orderBy', this.options.sortBy],
