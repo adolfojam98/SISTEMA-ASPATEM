@@ -13,13 +13,13 @@
   </div>
 </template>
 
-
 <script>
 export default {
   data() {
     return {
       isLoading: false,
       URL_STATUS: "/session/status",
+      requestTimer: null,
     };
   },
   methods: {
@@ -27,25 +27,32 @@ export default {
       this.axiosInterceptor = window.axios.interceptors.request.use(
         (config) => {
           if (!(config.url === this.URL_STATUS)) {
-            setTimeout(() => {
+            // Iniciar el timer al hacer la petición
+            this.requestTimer = setTimeout(() => {
               this.isLoading = true;
-            }, 2000);
+            }, 500);
           }
 
           return config;
         },
         (error) => {
           this.isLoading = false;
+          // Limpiar el timer en caso de error
+          clearTimeout(this.requestTimer);
           return Promise.reject(error);
         }
       );
 
       window.axios.interceptors.response.use(
         (response) => {
+          // Limpiar el timer al recibir la respuesta
+          clearTimeout(this.requestTimer);
           this.isLoading = false;
           return response;
         },
         (error) => {
+          // Limpiar el timer en caso de error
+          clearTimeout(this.requestTimer);
           this.isLoading = false;
           return Promise.reject(error);
         }
