@@ -142,7 +142,7 @@ export default {
   watch: {
     async search(val) {
 
-      if (!val || val.length < 3) return;
+      if (!val || val.length < 1) return;
       console.log(val);
       // Items have already been requested
       if (this.isLoading) return
