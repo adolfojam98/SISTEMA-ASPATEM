@@ -180,7 +180,7 @@ export default {
     ['orderByDesc', this.options.sortDesc],
   ]);
 
-  if (this.search && this.search.length >= 3) {
+  if (this.search) {
     params.append("search", this.search);
   }
 
@@ -288,10 +288,8 @@ export default {
       },
       search: {
     handler() {
-      if(this.search.length >= 3){
-              this.options.page = 1;
+      this.options.page = 1;
       this.getUsuarios();
-      }
 
     },
     deep: true,

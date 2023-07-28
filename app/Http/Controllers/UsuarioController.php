@@ -45,7 +45,7 @@ class UsuarioController extends ApiController
         if ($socio) {
             $query->where('socio', true);
         }
-        if ($search && strlen($search) >= 3) {
+        if ($search && strlen($search) > 0) {
             $query->where(function ($query) use ($search) {
                 $query->where('nombre', 'like', '%' . $search . '%')
                     ->orWhere('apellido', 'like', '%' . $search . '%')
