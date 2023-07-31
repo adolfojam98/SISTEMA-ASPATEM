@@ -52,7 +52,7 @@ export default {
         (v) =>
           /^([A-Za-z][A-Za-z]*([ \t\n\r\f]?[A-Za-z])*)+$/.test(v) ||
           "Nombre invalido",
-        (v) => v.length <= 30 || "Demasiado largo",
+        (v) => (!v || v.length <= 30) || "Demasiado largo",
       ],
       dniRules: [
         (v) => !!v || "Campo obligatorio",

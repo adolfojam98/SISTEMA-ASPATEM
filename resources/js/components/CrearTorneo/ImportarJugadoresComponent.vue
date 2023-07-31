@@ -169,8 +169,10 @@ export default {
               dni: jugador.dni,
             },
           });
-          if (Array.isArray(resp.data) && resp.data.length) {
-            jugador = { ...resp.data[0], puntos: jugador.puntos };
+          const jugadorResponse = resp.data.usuarios.data;
+
+          if (Array.isArray(jugadorResponse) && jugadorResponse.length) {
+            jugador = { ...jugadorResponse[0], puntos: jugador.puntos };
           }
           //este try catch es porque pushJugadorTorneo lazan una excepcion
           //y esto hace que la ignore

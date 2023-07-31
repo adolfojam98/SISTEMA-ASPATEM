@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Http\Services\CuotaService;
 use App\Pago;
 use App\Usuario;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Cuota as CuotaResource;
+use Illuminate\Support\Facades\URL;
+
 
 class UsuarioController extends ApiController
 {
@@ -23,18 +26,53 @@ class UsuarioController extends ApiController
      */
     public function index(Request $request)
     {
+        $id = $request->id;
+        $search = $request->input('search');
         $dni = $request->dni;
-        $usuarios = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
-                $query->where('dni', $dni);
-            })->get();
+
+        $perPage = $request->perPage ?? 10; // Número de elementos por página
+        $page = $request->page ?? 1;
+        $orderBy = $request->orderBy ?? 'created_at'; // Campo por el que deseas ordenar
+        $orderByDesc = filter_var($request->orderByDesc, FILTER_VALIDATE_BOOLEAN) ?? false;
+        $socio = filter_var($request->socio, FILTER_VALIDATE_BOOLEAN) ?? false;
+
+        $query = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
+            $query->where('dni', $dni);
+        });
+        if($id){
+            $query->where('id', $id);
+        }
+        if ($socio) {
+            $query->where('socio', true);
+        }
+        if ($search && strlen($search) > 0) {
+            $query->where(function ($query) use ($search) {
+                $query->where('nombre', 'like', '%' . $search . '%')
+                    ->orWhere('apellido', 'like', '%' . $search . '%')
+                    ->orWhere('dni', 'like', '%' . $search . '%');
+            });
+        }
+        $query->orderBy($orderBy, $orderByDesc ? 'desc' : 'asc');
+
+        $usuarios = $query->paginate($perPage, ['*'], 'page', $page);
+
+        // Carga relaciones adicionales
         foreach ($usuarios as $key => $usuario) {
             $usuario->socio = $usuario->socio();
+            $usuario->cuotas_adeudadas = $usuario->cuotasAdeudadas();
+            $usuario->torneos = $usuario->torneos()->get();
+            $usuario->fechas = $usuario->fechas()->get();
+
             foreach ($usuario->cuotas as $k => $cuota) {
                 $cuota->pago;
             }
         }
-        return $usuarios;
+
+        return [
+            'usuarios' => $usuarios
+        ];
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -85,8 +123,7 @@ class UsuarioController extends ApiController
                 'id' => $usuario->id
             ]);
         } else {
-            return $this->sendError('El usuario ya existe', ['El usuario ya existe'], 400 );
-
+            return $this->sendError('El usuario ya existe', ['El usuario ya existe'], 400);
         }
 
         //Esta función guardará las tareas que enviaremos mediante vuejs

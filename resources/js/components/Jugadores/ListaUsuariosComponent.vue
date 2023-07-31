@@ -9,23 +9,33 @@
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
       </div>
 
-      <v-data-table :headers="headers" :items="usuariosFiltrados" :search="search" :sort-by="['fechaAlta']" sort-desc>
+      <v-data-table :headers="headers" :items="usuarios" 
+      :options.sync="options"
+      :server-items-length="totalUsuarios" 
+      :search="search"
+      >
         <!-- :custom-filter="filtrarPorSocio" -->
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" class="mr-1" @click="editItem(item)" color="success">mdi-pencil</v-icon>
-            </template>
-            <span>Editar</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" class="mr-4" right @click="gestionarRelaciones(item)"
-                color="primary">mdi-account-group</v-icon>
-            </template>
-            <span>Relaciones</span>
-          </v-tooltip>
-          <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
+          <div v-if="isListaSocios">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" v-on="on" class="mr-1" @click="editItem(item)" color="success">mdi-pencil</v-icon>
+              </template>
+              <span>Editar</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" v-on="on" class="mr-4" right @click="gestionarRelaciones(item)"
+                  color="primary">mdi-account-group</v-icon>
+              </template>
+              <span>Relaciones</span>
+            </v-tooltip>
+            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
+          </div>
+          <div v-else>
+            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">Edit?</v-btn>
+            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">Ver ultima fecha jugada quizas?</v-btn>
+          </div>
         </template>
 
         <template v-slot:[`header.isSocio`]="{ header }">
@@ -46,10 +56,6 @@
           <v-icon :color="elegirColorIcono(item)">
             {{ elegirIcono(item) }}
           </v-icon>
-        </template>
-
-        <template v-slot:[`item.cuotasAdeudadas`]="{ item }">
-          {{ item.cuotasAdeudadas }}
         </template>
       </v-data-table>
 
@@ -97,6 +103,9 @@ export default {
   name: "vm",
   data() {
     return {
+    //data-table
+      options: {},
+      totalUsuarios: 0,
       reFiltrar: false,
       verSocios: true,
       verNoSocios: false,
@@ -104,46 +113,27 @@ export default {
       usuariosFiltrados: [],
       search: "",
       headers: [
-        { text: "Apellido", value: "apellido", width: '100px' },
-        { text: "Nombre", value: "nombre", width: '100px' },
+        { text: "Apellido", value: "apellido", width: '150px' },
+        { text: "Nombre", value: "nombre", width: '150px' },
         { text: "DNI", value: "dni", width: '100px' },
-        { text: "Mail", value: "mail", sortable: true, filterable: false },
-        {
-          text: "Telefono",
-          value: "telefono",
-          sortable: false,
-          filterable: false,
-        },
-        {
-          text: "Fecha de alta",
-          value: "fechaAlta",
-          sortable: true,
-          filterable: false,
-          width: '130px'
-        },
-        {
-          text: "Cuotas adeudadas",
-          value: "cuotasAdeudadas",
-          sortable: true,
-          sort: (a, b) => {
-            return a - b;
-          },
-          width: '160px'
-        },
-        {
-          text: "Socio",
-          value: "isSocio",
-          sortable: false,
-          filterable: false,
-          width: '100px'
-        },
-        {
-          text: "Acciones",
-          value: "actions",
-          sortable: false,
-          filterable: false,
-        },
-      ],
+        { text: "Mail", value: "mail", sortable: true, filterable: false, width: this.isListaSocios ? '' : '200px' },
+        { text: "Telefono", value: "telefono", sortable: false, filterable: false, width: this.isListaSocios ? '' : '150px' },
+        { text: "Fecha de alta", value: "fechaAlta", sortable: true, filterable: false, width: '130px' }
+      ].concat(
+        this.isListaSocios ? 
+        [
+          { text: "Cuotas adeudadas", value: "cuotasAdeudadas", sortable: true, width: '160px', sort: (a, b) => { return a - b; } },
+          { text: "Socio", value: "isSocio", sortable: false, filterable: false, width: '100px' },
+          { text: "Acciones", value: "actions", sortable: false, filterable: false },
+        ]
+
+      : 
+
+        [
+          { text: "Total torneos anotados", value: "totalTorneos", width: '100px' },
+          { text: "Total fechas jugadas", value: "totalFechas", width: '100px' },
+        ]),
+
       usuarioEditar: [],
       usuarioVerDetalleCuotas: null,
       editarUsuarioModal: false,
@@ -157,6 +147,45 @@ export default {
   },
 
   methods: {
+    async getUsuarios() {
+      const params = this.crearParametrosPaginado();
+
+      await axios
+        .get("/usuario", {params})
+        .then((res) => {
+          this.usuarios = res.data.usuarios.data;
+          this.totalUsuarios = parseInt(res.data.usuarios.total);
+          this.usuarios.forEach((usuario) => {
+            usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
+            usuario.cuotasAdeudadas = usuario.cuotas_adeudadas;
+            usuario.totalTorneos = usuario.torneos?.length
+            usuario.totalFechas = usuario.fechas?.length
+          });
+          if (this.isListaSocios) {
+            this.verSocios = true;
+            this.verNoSocios = false;
+          } else {
+            this.verSocios = false;
+            this.verNoSocios = true;
+          }
+        })
+        .catch((error) => console.log(error));
+    },
+    crearParametrosPaginado() {
+  const params = new URLSearchParams([
+    ['perPage', this.options.itemsPerPage == -1 ? this.totalUsuarios : this.options.itemsPerPage],
+    ['page', this.options.page],
+    ['socio', this.isListaSocios],
+    ['orderBy', this.options.sortBy],
+    ['orderByDesc', this.options.sortDesc],
+  ]);
+
+  if (this.search) {
+    params.append("search", this.search);
+  }
+
+  return params;
+},
     //TODO hay que arreglar el tema de las cuotas
     ...mapActions(["callSnackbar"]),
     async deleteItem() {
@@ -223,66 +252,26 @@ export default {
         return dateA - dateB;
       });
       return cuotasOrdenadas
-        .slice(cuotasOrdenadas.findLastIndex((cuota) => cuota.pago != null))
         .filter((cuota) => cuota.pago == null).length;
     },
 
-    async created() {
-      await axios
-        .get("/usuario")
-        .then((res) => {
-          this.usuarios = res.data;
-          this.usuarios.forEach((usuario) => {
-            usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
-            usuario.cuotasAdeudadas = this.calcularCuotasAdeudadas(usuario);
-          });
-          if (this.isListaSocios) {
-            this.verSocios = true;
-            this.verNoSocios = false;
-          } else {
-            this.verSocios = false;
-            this.verNoSocios = true;
-          }
-        })
-        .catch((error) => console.log(error));
-      this.filtrar();
-    },
+
     darFormatoFecha(fecha) {
       if (!fecha) return null;
       fecha = fecha.substr(0, 10);
       const [anio, mes, dia] = fecha.split("-");
       return `${dia}/${mes}/${anio}`;
     },
-
-    /*filtrarPorSocio(value, search, items) {
-      
-      let inName = RegExp(search,'i').test(items.nombre);
-      let inLastname = RegExp(search,'i').test(items.apellido);
-
-      //if (items.socio==false && this.verNoSocios==true ||items.socio==true && this.verSocios==true){condiciones_socio_noSocio.push(this,items);}
-      if (items.socio==false && this.verNoSocios==true ||items.socio==true && this.verSocios==true){return true;}
-      else return false;
-
-      /*let condiciones_socio_noSocio = items.filter(unItem => {
-          if (unItem.socio==false && this.verNoSocios==true || unItem.socio==true && this.verSocios==true) {
-            return true;}
-          else return false;
-        });
-        
-       console.log();
-
-      return inName || inLastname;
-    },*/
-
-    filtrar() {
-      this.usuarios.forEach((usuario) => {
-        if (!this.isListaSocios) {
-          this.usuariosFiltrados.push(usuario);
-        } else if (usuario.socio.socio) {
-          this.usuariosFiltrados.push(usuario);
-        }
-      });
-    },
+    // filtrar() {
+    //   this.usuariosFiltrados = [];
+    //   this.usuarios.forEach((usuario) => {
+    //     if (!this.isListaSocios) {
+    //       this.usuariosFiltrados.push(usuario);
+    //     } else if (usuario.socio.socio) {
+    //       this.usuariosFiltrados.push(usuario);
+    //     }
+    //   });
+    // },
   },
 
   watch: {
@@ -290,11 +279,23 @@ export default {
       this.filtrar();
       this.reFiltrar = false;
     },
+    options: {
+        handler () {
+          console.log('optionas:', this.options);
+          this.getUsuarios();
+        },
+        deep: true,
+      },
+      search: {
+    handler() {
+      this.options.page = 1;
+      this.getUsuarios();
+
+    },
+    deep: true,
+  },
   },
 
-  mounted() {
-    this.created();
-  },
 };
 </script>
 <!-- Comment -->
