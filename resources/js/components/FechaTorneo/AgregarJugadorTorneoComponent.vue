@@ -1,3 +1,4 @@
+
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog"  max-width="600px">
@@ -15,7 +16,9 @@
             required></v-text-field>
           <v-text-field class="ml-2 mr-2" v-model="dniJugador" :rules="dniRules" label="DNI del jugador"
             required></v-text-field>
-          <v-text-field class="ml-2 mr-2" v-model="puntosJugador" label="Puntos del jugador" :rules="puntosRules"
+            <v-select label="Seleccione una categoria" :items="arrayCategorias" item-text="nombre" v-model="categoriaJugadorSeleccionada" return-object></v-select>
+
+          <v-text-field class="ml-2 mr-2" v-model="categoriaJugador" label="Puntos del jugador" :rules="puntosRules"
             required></v-text-field>
         </v-form>
 
@@ -34,6 +37,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
 
   data() {
@@ -45,6 +49,7 @@ export default {
       apellidoJugador: "",
       dniJugador: null,
       puntosJugador: null,
+      categoriaJugadorSeleccionada: null,
 
       //RULES
       aynRules: [
@@ -68,12 +73,15 @@ export default {
     };
   },
   methods: {
+    ...mapState("CrearTorneo", [
+      "arrayCategorias",
+    ]),
     guardarJugador() {      
       this.$emit('agregar-jugador', {
         nombre: this.nombreJugador,
         apellido: this.apellidoJugador,
         dni: this.dniJugador,
-        puntos: this.puntosJugador
+        puntos: this.categoriaJugadorSeleccionada.puntosBase,
       });      
       this.$refs.form.reset();
     },

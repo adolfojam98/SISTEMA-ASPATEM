@@ -9,8 +9,9 @@
           required></v-text-field>
         <v-text-field class="ml-2 mr-2" v-model="dniJugador" :rules="dniRules" label="DNI del jugador"
           required></v-text-field>
-        <v-text-field class="ml-2 mr-2" v-model="puntosJugador" label="Puntos del jugador" :rules="puntosRules" required
-          v-on:keyup.enter="[agregarJugador(), resetValidate()]"></v-text-field>
+        <!-- <v-text-field class="ml-2 mr-2" v-model="puntosJugador" label="Puntos del jugadorr" :rules="puntosRules" required
+          v-on:keyup.enter="[agregarJugador(), resetValidate()]"></v-text-field> -->
+          <v-select class="ml-2 mr-2" label="Seleccione una categoria" :items="arrayCategorias" item-text="nombre" v-model="categoriaJugadorSeleccionada" return-object></v-select>
 
         <v-btn block class="mb-2" color="primary" :disabled="!valid"
           @click="[agregarJugador(), resetValidate()]">Agregar</v-btn>
@@ -24,6 +25,7 @@ import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   data() {
     return {
+      categoriaJugadorSeleccionada: null,
       resetForm: false,
       valid: false,
       nombreJugador: "",
@@ -56,20 +58,21 @@ export default {
     ...mapActions(["callSnackbar"]),
     ...mapMutations("CrearTorneo", ["pushJugadorTorneo"]),
     async agregarJugador() {
-      if (!(this.apellidoJugador && this.nombreJugador && this.dniJugador && this.puntosJugador)) {
-        this.callSnackbar(["Debe completar todos los campos para poder agregar un jugador"]);
+      if (!(this.apellidoJugador && this.nombreJugador && this.dniJugador && this.categoriaJugadorSeleccionada)) {
+        this.callSnackbar(["Debe completar todos los campos para poder agregar un jugador", "error"]);
         return;
       }
       let jugador = {
         apellido: this.apellidoJugador,
         nombre: this.nombreJugador,
         dni: this.dniJugador,
-        puntos: this.puntosJugador,
+        puntos: this.categoriaJugadorSeleccionada.puntosBase,
       };
       this.apellidoJugador = "";
       this.nombreJugador = "";
       this.dniJugador = null;
       this.puntosJugador = null;
+      this.categoriaJugadorSeleccionada = null;
 
       //verifica si esta en la base y si esta corrige datos
       const resp = await axios.get("/usuario", {
@@ -77,8 +80,9 @@ export default {
           dni: jugador.dni,
         },
       });
+      console.log(this.categoriaJugadorSeleccionada);
       if (Array.isArray(resp.data) && resp.data.length) {
-        jugador = { ...resp.data[0], puntos: jugador.puntos };
+        jugador = { ...resp.data[0], puntos: this.categoriaJugadorSeleccionada.puntosBase };
       }
 
       console.log(jugador);
@@ -95,7 +99,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("CrearTorneo", ["listaJugadores"]),
+    ...mapState("CrearTorneo", ["listaJugadores", "arrayCategorias"]),
   },
 };
 </script>

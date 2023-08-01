@@ -1,14 +1,17 @@
+
 <template>
     <div>
         <v-card class="mb-0">
-            <v-card-title class="mb-0 justify-center" >Nueva categoria</v-card-title>
+            <v-card-title class="mb-0 justify-center">Nueva categoria</v-card-title>
             <v-divider></v-divider>
             <v-form v-model="valid" ref="form">
                 <v-card-text>
                     <v-text-field v-model="nombreNuevaCategoria" :rules="nombreCategoriaRules"
                         label="Nombre de la Categoria" required></v-text-field>
                     <v-text-field v-model="puntosMinimos" :rules="puntosRules" label="Puntos Minimos de la Categoria"
-                        required v-on:keyup.enter="[agregarCategoria(), resetValidate()]"></v-text-field>
+                        required v-on:keyup.enter="[resetValidate()]"></v-text-field>
+                    <v-text-field v-model="puntosBase" :rules="puntosRules" label="Puntos base de la Categoria" required
+                        v-on:keyup.enter="[agregarCategoria(), resetValidate()]"></v-text-field>
                 </v-card-text>
 
                 <v-btn block class="mb-0" color="primary" @click="[agregarCategoria(), resetValidate()]"
@@ -26,6 +29,7 @@ export default {
             valid: false,
             nombreNuevaCategoria: "",
             puntosMinimos: null,
+            puntosBase: null,
 
             //RULES
             nombreCategoriaRules: [
@@ -55,9 +59,10 @@ export default {
                 (categoria) => categoria.nombre === this.nombreNuevaCategoria
             );
         },
-        resetearFormulario(){
+        resetearFormulario() {
             this.nombreNuevaCategoria = "";
             this.puntosMinimos = null;
+            this.puntosBase = null;
         },
         agregarCategoria() {
             if (this.existeNombreCategoria()) {
@@ -68,6 +73,7 @@ export default {
                 nombre: this.nombreNuevaCategoria,
                 puntosMinimo: parseInt(this.puntosMinimos),
                 puntosMaximo: 9999999,
+                puntosBase: this.puntosBase
             };
 
             if (this.arrayCategorias.length === 0) {
@@ -134,7 +140,7 @@ export default {
                     break;
                 }
             }
-         this.resetearFormulario();
+            this.resetearFormulario();
         },
     },
 };
