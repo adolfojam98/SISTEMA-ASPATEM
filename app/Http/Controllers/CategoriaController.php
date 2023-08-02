@@ -90,6 +90,7 @@ class CategoriaController extends Controller
             $categoria->nombre = $categoriaActual['nombre'];
             $categoria->puntos_minimos = $categoriaActual['puntosMinimo'];
             $categoria->puntos_maximos = $categoriaActual['puntosMaximo'];
+            $categoria->puntos_base = $categoriaActual['puntosBase'];
             $categoria->torneo_id = $request->id_torneo;
             $categoria->save();
         }

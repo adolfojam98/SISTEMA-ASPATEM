@@ -18,6 +18,7 @@ class CreateCategoriasTable extends Migration
             $table->string('nombre');
             $table->integer('puntos_minimos');
             $table->integer('puntos_maximos');
+            $table->integer('puntos_base');
 
             $table->BigInteger('torneo_id')->unsigned();
 
