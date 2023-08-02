@@ -14,7 +14,7 @@
         <div class="mr-8">
           <v-select :value="torneoSeleccionado" @input="setTorneoSeleccionado" :items="torneos" item-text="nombre"
             return-object label="Seleccione un torneo" class="subheading font-weight-bold"
-            v-on:change="getFechas(), getInfoGraficasCategorias()"></v-select>
+            v-on:change="getFechas(), getInfoGraficasCategorias(), getCategorias()"></v-select>
         </div>
 
         <div v-if="torneoSeleccionado" class="mr-8">
@@ -32,6 +32,7 @@
         <div v-if="torneoSeleccionado">
           <importar-jugadores
                             @cargar-jugadores="cargarJugadoresImportados"
+                            :categorias="categorias"
                         ></importar-jugadores>
         </div>
       </div>
@@ -204,6 +205,7 @@ export default {
 
   data() {
     return {
+      categorias : [],
       editPuntos: false,
       verFechaModal: false,
       search: "",
@@ -233,6 +235,9 @@ export default {
       "setFechas",
       "setInfoGraficas",
     ]),
+    getCategorias(){
+    axios.get(`/torneos/${this.torneoSeleccionado.id}/categorias`).then(res => this.categorias = res.data);
+    },
 
     guardarPuntosTorneo() {
       axios
