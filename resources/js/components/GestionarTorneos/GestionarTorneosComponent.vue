@@ -25,7 +25,7 @@
 
         <div v-if="torneoSeleccionado" class="mr-8">
           <agregar-jugador-torneo-fecha-modal
-            @agregar-jugador="agregarNuevoJugadorTorneo"></agregar-jugador-torneo-fecha-modal>
+            @agregar-jugador="agregarNuevoJugadorTorneo" :categorias="categorias"></agregar-jugador-torneo-fecha-modal>
         </div>
 
         

@@ -16,7 +16,7 @@
             required></v-text-field>
           <v-text-field class="ml-2 mr-2" v-model="dniJugador" :rules="dniRules" label="DNI del jugador"
             required></v-text-field>
-            <v-select label="Seleccione una categoria" :items="arrayCategorias" item-text="nombre" v-model="categoriaJugadorSeleccionada" return-object></v-select>
+            <v-select label="Seleccione una categoria" :items="categorias" item-text="nombre" v-model="categoriaJugadorSeleccionada" return-object></v-select>
 
           <v-text-field class="ml-2 mr-2" v-model="categoriaJugador" label="Puntos del jugador" :rules="puntosRules"
             required></v-text-field>
@@ -39,7 +39,7 @@
 <script>
 import { mapState } from 'vuex';
 export default {
-
+  props: ['categorias'],
   data() {
     return {
       dialog: false,
@@ -73,9 +73,6 @@ export default {
     };
   },
   methods: {
-    ...mapState("CrearTorneo", [
-      "arrayCategorias",
-    ]),
     guardarJugador() {      
       this.$emit('agregar-jugador', {
         nombre: this.nombreJugador,
