@@ -8,6 +8,7 @@
               <tr>
                 <th class="text-center">Categoria</th>
                 <th class="text-center">Rango de puntos</th>
+                <th class="text-center">Puntos base</th>
                 <th class="text-center">Eliminar</th>
               </tr>
             </thead>
@@ -29,8 +30,12 @@
                     {{ arrayCategorias[indice + 1].puntosMinimo - 1 }}
                   </center>
                 </td>
+
                 <td v-if="arrayCategorias[indice + 1] == null">
                   <center>{{ categoria.puntosMinimo }} - ∞</center>
+                </td>
+                <td>
+                  <center>{{categoria.puntosBase}} </center>
                 </td>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
