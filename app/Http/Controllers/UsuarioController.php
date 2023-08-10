@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Cuota as CuotaResource;
+use App\Partido;
 use Illuminate\Support\Facades\URL;
 
 
@@ -258,7 +259,10 @@ class UsuarioController extends ApiController
                     'puntos_totales' => $jugador_puntos,
                     'nuevos_puntos' => $fecha_usuario ? $fecha_usuario->puntos : '-',
                     'monto_pagado' => $fecha_usuario ? $fecha_usuario->monto_pagado : '-',
-                    'created_at' => $fecha->created_at
+                    'created_at' => $fecha->created_at,
+                    'partidos' => Partido::whereHas('jugadores', function ($query) use ($id) {
+                        $query->where('usuario_id', $id);
+                    })->where('fecha_id', $fecha->id)->with('jugadores')->get()
                 ];
                 array_push($fechas_data, $fecha_data);
             }
