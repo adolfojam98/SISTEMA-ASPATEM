@@ -43,7 +43,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="fecha in torneo.fechas" :key="fecha.created_at">
+                  <tr v-for="fecha in torneo.fechas" :key="fecha.created_at" @click="mostrarFecha(fecha)" style="cursor: pointer;">
                     <th class="text-left">{{ fecha.nombre }}</th>
                     <th class="text-left">
                       {{ formatDate(fecha.created_at) }}
@@ -69,6 +69,7 @@
         </v-card>
       </v-tab-item>
     </v-tabs-items>
+    <historial-fecha-jugador :fecha="fechaSeleccionada"></historial-fecha-jugador>
   </div>
 </template>
 
@@ -80,6 +81,7 @@ export default {
       isLoading: false,
       tab: null,
       search: "",
+      fechaSeleccionada : null,
       headers: [
         { text: "Nombre", value: "nombre" },
         { text: "Apellido", value: "apellido" },
@@ -89,6 +91,7 @@ export default {
         { text: "Pago", value: "Pago" },
         { text: "Cerrada", value: "date" },
       ],
+
     };
   },
 
@@ -136,6 +139,10 @@ export default {
       const outputDateString = `${day}/${month}/${year}`;
 
       return outputDateString;
+    },
+    mostrarFecha(fecha){
+      this.fechaSeleccionada = fecha;
+      console.log("mostrando fecha",fecha);
     }
   },
 

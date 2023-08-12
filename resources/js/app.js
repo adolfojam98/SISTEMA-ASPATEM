@@ -82,6 +82,7 @@ Vue.component('torneo-fecha',                       require('./components/Gestio
 Vue.component('gestion-ingresos',                   require('./components/Ingresos/GestionIngresosComponent').default);
 Vue.component('avisos',                             require('./components/Avisos/AvisosComponent').default);
 Vue.component('historial-jugador',                  require('./components/HistorialJugador/HistorialJugador').default);
+Vue.component('historial-fecha-jugador',            require('./components/HistorialJugador/HistorialFechaJugador').default);
 Vue.component('grafico-donut',                      require('./components/GestionarTorneos/GraficoDonut').default);
 Vue.component('login',                              require('./components/LoginComponent').default);
 Vue.component('modal-login',                        require('./components/Modals/ModalLoginComponent').default);
