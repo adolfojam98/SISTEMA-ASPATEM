@@ -17,7 +17,7 @@
 
       </v-autocomplete>
 
-
+      <exportar-historial-jugador :history="history"></exportar-historial-jugador>
     </div>
 
     <v-toolbar v-if="history">

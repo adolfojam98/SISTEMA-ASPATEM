@@ -83,6 +83,7 @@ Vue.component('gestion-ingresos',                   require('./components/Ingres
 Vue.component('avisos',                             require('./components/Avisos/AvisosComponent').default);
 Vue.component('historial-jugador',                  require('./components/HistorialJugador/HistorialJugador').default);
 Vue.component('historial-fecha-jugador',            require('./components/HistorialJugador/HistorialFechaJugador').default);
+Vue.component('exportar-historial-jugador',         require('./components/HistorialJugador/ExportarHistorialJugadorComponent').default);
 Vue.component('grafico-donut',                      require('./components/GestionarTorneos/GraficoDonut').default);
 Vue.component('login',                              require('./components/LoginComponent').default);
 Vue.component('modal-login',                        require('./components/Modals/ModalLoginComponent').default);
