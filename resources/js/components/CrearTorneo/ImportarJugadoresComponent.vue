@@ -29,7 +29,7 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
-import XLSX from "xlsx";
+import * as XLSX from 'xlsx';
 import FileSaver from "file-saver";
 export default {
   props: ['categorias'],
