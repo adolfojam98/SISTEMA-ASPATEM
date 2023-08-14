@@ -61,6 +61,7 @@ export default {
   watch: {
     fecha: function () {
       if(this.fecha?.partidos?.length < 1) {
+        this.dialog = false;
         this.callSnackbar(["El jugador no participó de la fecha","warning"]);
         return;
       }
