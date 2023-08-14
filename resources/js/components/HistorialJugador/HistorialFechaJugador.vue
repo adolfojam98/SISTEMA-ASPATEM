@@ -1,8 +1,11 @@
+
 <template>
   <div>
     <v-dialog v-model="dialog" width="500">
-      <div v-if="fecha">
+      <v-card>
+        <h2 class="pa-3"> <center>Fecha: {{ fecha?.nombre }}</center></h2>
 
+      <div v-if="fecha">
         <v-simple-table>
           <template v-slot:default>
             <thead>
@@ -38,11 +41,13 @@
         </v-simple-table>
 
       </div>
+    </v-card>
     </v-dialog>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default {
   props: ["fecha"],
   data() {
@@ -50,8 +55,15 @@ export default {
       dialog: false,
     }
   },
+  methods: {
+    ...mapActions(["callSnackbar"]),
+  },
   watch: {
     fecha: function () {
+      if(this.fecha?.partidos?.length < 1) {
+        this.callSnackbar(["El jugador no participó de la fecha","warning"]);
+        return;
+      }
       this.dialog = true;
       console.log("fecha cambiada");
     }
