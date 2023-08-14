@@ -3,11 +3,11 @@
     <center>
       <h2 cols="12">Historial de jugadores</h2>
     </center>
-    <div class="ma-4" style="width: 300px">
+    <div class="d-inline-flex ml-4" >
 
       <v-autocomplete :loading="isLoading" @input="setjugadorSeleccionado" :value="jugadorSeleccionado"
         :item-text="nombreCompleto" :items="jugadores" @change="getHistory" :search-input.sync="search" return-object
-        label="Seleccione un jugador" class="subheading font-weight-bold"> <template v-slot:no-data>
+        label="Seleccione un jugador" class="subheading font-weight-bold mr-4"> <template v-slot:no-data>
           <v-list-item>
             <v-list-item-title>
               Busque por nombre/apellido o DNI
@@ -17,7 +17,10 @@
 
       </v-autocomplete>
 
+      <div class="align-self-center" v-if="jugadorSeleccionado">
       <exportar-historial-jugador :history="history"></exportar-historial-jugador>
+      </div>
+
     </div>
 
     <v-toolbar v-if="history">

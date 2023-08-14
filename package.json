@@ -33,6 +33,6 @@
         "vue-apexcharts": "^1.6.2",
         "vuetify": "^2.6.10",
         "vuex": "^3.6.2",
-        "xlsx": "^0.18.5"
+        "xlsx-js-style": "^1.2.0"
     }
 }
