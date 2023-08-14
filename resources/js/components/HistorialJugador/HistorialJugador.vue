@@ -144,7 +144,11 @@ export default {
       return outputDateString;
     },
     mostrarFecha(fecha){
-      this.fechaSeleccionada = fecha;
+      this.fechaSeleccionada = null;
+      setTimeout(() => {
+            this.fechaSeleccionada = fecha;  
+      }, 0);
+
       console.log("mostrando fecha",fecha);
     }
   },
