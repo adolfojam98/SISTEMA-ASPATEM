@@ -29,7 +29,7 @@
       </v-stepper-content>
 
       <v-stepper-step step="4" editable :rules="[() => isvalid.stepConfiguracionPuntos]">
-        Configuracion de puntos
+        Configuración de puntos
       </v-stepper-step>
       <v-stepper-content step="4">
         <step-configuracion-puntos-torneo></step-configuracion-puntos-torneo>

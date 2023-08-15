@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog"  max-width="600px">
       <template v-slot:activator="{ on, attrs }">
         <v-btn color="success" v-bind="attrs" v-on="on">
-          Agregar nuevo jugador
+          Nuevo jugador
         </v-btn>
       </template>
       <v-card>
