@@ -3,8 +3,8 @@
     <v-row>
       <v-col cols="6">
         <v-autocomplete :loading="isLoading" v-model="jugadorSeleccionado" :item-text="nombreCompleto" :items="jugadores"
-          :search-input.sync="search" return-object label="Buscar jugador" class="subheading font-weight-bold"> <template
-            v-slot:no-data>
+          :search-input.sync="search" return-object label="Buscar jugador" class="subheading font-weight-bold">
+          <template v-slot:no-data>
             <v-list-item>
               <v-list-item-title>
                 Busque por nombre/apellido o DNI
@@ -12,6 +12,16 @@
             </v-list-item>
           </template>
 
+          <template v-slot:item="data">
+            <v-btn color="success" fab x-small class="mr-2" @click.stop="verHistorialJugador(data.item)">
+              <v-icon>
+                mdi-minus
+              </v-icon>
+            </v-btn>
+            <v-list-item-content>{{ nombreCompleto(data.item) }}</v-list-item-content>
+
+
+          </template>
         </v-autocomplete>
 
       </v-col>
@@ -33,6 +43,9 @@
         <v-btn class="mt-2" color="primary" @click="agregarJugador()">Agregar</v-btn>
       </v-col>
     </v-row>
+    <v-dialog v-model="dialog" width="500">
+      <historial-jugador :jugadorTorneo="jugadorSeleccionadoHistorial" />
+    </v-dialog>
   </div>
 </template>
 
@@ -41,12 +54,14 @@ import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   data() {
     return {
+      dialog: false,
       jugadorSeleccionado: null,
       jugadores: [],
       puntos: null,
       isLoading: false,
       search: null,
       categoriaJugadorSeleccionada: null,
+      jugadorSeleccionadoHistorial: null
     };
   },
 
@@ -66,6 +81,14 @@ export default {
       this.resetearFormulario();
       this.callSnackbar(['Jugador agregado', 'success']);
 
+    },
+    verHistorialJugador(jugador) {
+      this.jugadorSeleccionado = null;
+      setTimeout(() => {
+        this.jugadorSeleccionadoHistorial = jugador;
+      }, 0);
+      console.log("jugador seleccionado....", jugador);
+      this.dialog = true;
     },
 
     resetearFormulario() {

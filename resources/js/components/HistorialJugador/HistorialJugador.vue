@@ -1,77 +1,88 @@
 <template>
   <div>
-    <center>
-      <h2 cols="12">Historial de jugadores</h2>
-    </center>
-    <div class="d-inline-flex ml-4" >
+    <v-card>
+      <center>
+        <h2 cols="12">Historial de jugadores</h2>
+      </center>
+      <div class="d-inline-flex ml-4" v-if="!jugadorTorneo">
 
-      <v-autocomplete :loading="isLoading" @input="setjugadorSeleccionado" :value="jugadorSeleccionado"
-        :item-text="nombreCompleto" :items="jugadores" @change="getHistory" :search-input.sync="search" return-object
-        label="Seleccione un jugador" class="subheading font-weight-bold mr-4"> <template v-slot:no-data>
-          <v-list-item>
-            <v-list-item-title>
-              Busque por nombre/apellido o DNI
-            </v-list-item-title>
-          </v-list-item>
-        </template>
+        <v-autocomplete :loading="isLoading" @input="setjugadorSeleccionado" :value="jugadorSeleccionado"
+          :item-text="nombreCompleto" :items="jugadores" @change="getHistory" :search-input.sync="search" return-object
+          label="Seleccione un jugador" class="subheading font-weight-bold mr-4"> <template v-slot:no-data>
+            <v-list-item>
+              <v-list-item-title>
+                Busque por nombre/apellido o DNI
+              </v-list-item-title>
+            </v-list-item>
+          </template>
 
-      </v-autocomplete>
+        </v-autocomplete>
 
-      <div class="align-self-center" v-if="jugadorSeleccionado">
-      <exportar-historial-jugador :history="history"></exportar-historial-jugador>
+        <div class="align-self-center" v-if="jugadorSeleccionado">
+          <exportar-historial-jugador :history="history"></exportar-historial-jugador>
+        </div>
+
+      </div>
+      <div v-if="!history.length">
+        <h4 class="mt-5">
+          <center>Esta persona aun no ha jugado ningun torneo </center>
+        </h4>
+      </div>
+      <div v-if="history">
+        <v-toolbar>
+          <v-tabs v-model="tab" align-with-title>
+            <v-tabs-slider color="yellow"></v-tabs-slider>
+            <v-tab v-for="torneo in history" :key="torneo.id">
+              {{ torneo.nombre }}
+            </v-tab>
+          </v-tabs>
+        </v-toolbar>
+        <v-tabs-items v-model="tab">
+          <v-tab-item v-for="torneo in history" :key="torneo.id">
+            <v-card flat class="rounded-0">
+              <v-container>
+                <v-simple-table v-if="torneo.fechas.length">
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Nombre de la fecha</th>
+                        <th class="text-left">Fecha jugada</th>
+                        <th class="text-left">Monto pagado</th>
+                        <th class="text-left">Puntos</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="fecha in torneo.fechas" :key="fecha.created_at" @click="mostrarFecha(fecha)"
+                        style="cursor: pointer;">
+                        <th class="text-left">{{ fecha.nombre }}</th>
+                        <th class="text-left">
+                          {{ formatDate(fecha.created_at) }}
+                        </th>
+                        <th class="text-left" v-if="fecha.monto_pagado !== '-'">
+                          ${{ fecha.monto_pagado }}
+                        </th>
+                        <th class="text-left" v-else>-</th>
+                        <th class="text-left">
+                          {{ fecha.puntos_totales }}({{ fecha.nuevos_puntos }})
+                        </th>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+                <center v-else>
+                  <h4 class="mt-5">
+                    Aún no has jugado ninguna fecha: Puntos actuales
+                    {{ torneo.puntos_base }}
+                  </h4>
+                </center>
+              </v-container>
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
       </div>
 
-    </div>
 
-    <v-toolbar v-if="history">
-      <v-tabs v-model="tab" align-with-title>
-        <v-tabs-slider color="yellow"></v-tabs-slider>
-        <v-tab v-for="torneo in history" :key="torneo.id">
-          {{ torneo.nombre }}
-        </v-tab>
-      </v-tabs>
-    </v-toolbar>
-    <v-tabs-items v-model="tab">
-      <v-tab-item v-for="torneo in history" :key="torneo.id">
-        <v-card flat class="rounded-0">
-          <v-container>
-            <v-simple-table v-if="torneo.fechas.length">
-              <template v-slot:default>
-                <thead>
-                  <tr>
-                    <th class="text-left">Nombre de la fecha</th>
-                    <th class="text-left">Fecha jugada</th>
-                    <th class="text-left">Monto pagado</th>
-                    <th class="text-left">Puntos</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="fecha in torneo.fechas" :key="fecha.created_at" @click="mostrarFecha(fecha)" style="cursor: pointer;">
-                    <th class="text-left">{{ fecha.nombre }}</th>
-                    <th class="text-left">
-                      {{ formatDate(fecha.created_at) }}
-                    </th>
-                    <th class="text-left" v-if="fecha.monto_pagado !== '-'">
-                      ${{ fecha.monto_pagado }}
-                    </th>
-                    <th class="text-left" v-else>-</th>
-                    <th class="text-left">
-                      {{ fecha.puntos_totales }}({{ fecha.nuevos_puntos }})
-                    </th>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-            <center v-else>
-              <h4 class="mt-5">
-                Aún no has jugado ninguna fecha: Puntos actuales
-                {{ torneo.puntos_base }}
-              </h4>
-            </center>
-          </v-container>
-        </v-card>
-      </v-tab-item>
-    </v-tabs-items>
+    </v-card>
     <historial-fecha-jugador :fecha="fechaSeleccionada"></historial-fecha-jugador>
   </div>
 </template>
@@ -79,12 +90,13 @@
 <script>
 import { mapMutations, mapState } from "vuex";
 export default {
+  props: ["jugadorTorneo"],
   data() {
     return {
       isLoading: false,
       tab: null,
       search: "",
-      fechaSeleccionada : null,
+      fechaSeleccionada: null,
       headers: [
         { text: "Nombre", value: "nombre" },
         { text: "Apellido", value: "apellido" },
@@ -143,13 +155,13 @@ export default {
 
       return outputDateString;
     },
-    mostrarFecha(fecha){
+    mostrarFecha(fecha) {
       this.fechaSeleccionada = null;
       setTimeout(() => {
-            this.fechaSeleccionada = fecha;  
+        this.fechaSeleccionada = fecha;
       }, 0);
 
-      console.log("mostrando fecha",fecha);
+      console.log("mostrando fecha", fecha);
     }
   },
 
@@ -163,7 +175,14 @@ export default {
       this.getJugadores();
 
     },
+    jugadorTorneo: function () {
+      console.log('cambia el jugador');
+      this.setjugadorSeleccionado(this.jugadorTorneo);
+      this.getHistory();
+
+    }
   },
+
 
 };
 </script>
