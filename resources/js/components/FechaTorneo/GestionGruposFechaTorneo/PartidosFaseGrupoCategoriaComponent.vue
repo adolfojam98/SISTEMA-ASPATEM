@@ -1,13 +1,14 @@
 <template>
   <div>
     <v-card elevation="0">
-      <v-card-title>Fase de grupos</v-card-title>
+      <center>
+        <h2>Fase de grupos</h2>
+      </center>
       <v-card-text>
-        <v-container>
           <v-row v-for="grupo in categoria.listaGrupos" :key="grupo.nombre">
             <v-col>
               <h3>Grupo {{ grupo.nombre }}</h3>
-              <v-row cols="12">
+              <v-row cols="12" class="d-flex justify-space-between">
                 <v-col v-for="partido in grupo.partidos" :key="partido.id" md="3" sm="4">
                   <partido :partido="partido"></partido>
                 </v-col>
@@ -15,7 +16,6 @@
             </v-col>
 
           </v-row>
-        </v-container>
         <v-switch v-model="categoria.gruposConEliminatoria" label="Pasan todos a las llaves" class="ml-2 mt-0"></v-switch>
         <v-btn class="ml-2 mr-4" @click="[generarLlaves()]" color="primary">Generar
           llaves</v-btn>

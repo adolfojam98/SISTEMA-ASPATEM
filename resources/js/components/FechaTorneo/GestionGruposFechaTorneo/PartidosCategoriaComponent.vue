@@ -21,7 +21,7 @@
       </v-form>
 
       <div v-if="gruposGenerados && !llavesGeneradas" class="mt-3">
-        <v-btn class='ml-7' @click="[confirmModalDeshacerGrupos = true]" color="primary">Deshacer
+        <v-btn class='ml-4' @click="[confirmModalDeshacerGrupos = true]" color="primary">Deshacer
           grupos</v-btn>
           
         <partidos-fase-grupos :categoria="categoria" @generar-llaves="generarLLavess"></partidos-fase-grupos>
@@ -37,7 +37,7 @@
       </div>
       <br>
 
-         <v-btn  class="ma-3" color="success" @click='guardarFecha()'>Guardar partidos</v-btn>
+         <v-btn  class="mx-6" color="success" @click='guardarFecha()'>Guardar partidos</v-btn>
     </div>
 
     <!-- DIALOGS -->

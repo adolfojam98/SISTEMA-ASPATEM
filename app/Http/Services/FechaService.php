@@ -210,7 +210,9 @@ class FechaService extends BaseService
 
                 //asigno los puntos en funcion de lo anterior y del ganador y perdedor
                 $puntosObtenidosPorJugador = $this->calcularPuntosJugadoresPartidos($torneo, $mismaCategoria, $jugadorUnoMasPuntos, $jugadorUnoGano);
-
+                if(!$puntosObtenidosPorJugador) {
+                    dd($torneo, $mismaCategoria, $jugadorUnoMasPuntos, $jugadorUnoGano);
+                }
                 $this->updateFechaUsuario($fecha_id, $jugadores_partido[0]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorUno); //se van sumando los puntos
                 $this->updateFechaUsuario($fecha_id, $jugadores_partido[1]->id, false, false, null, $puntosObtenidosPorJugador->puntosJugadorDos); //se van sumando los puntos
             }
@@ -266,6 +268,12 @@ class FechaService extends BaseService
         if (!$mismaCategoria && !$jugadorUnoMasPuntos && $jugadorUnoGano) {
             $puntos->puntosJugadorUno += $torneo->menor_categoria_ganador;
             $puntos->puntosJugadorDos -= $torneo->mayor_categoria_perdedor;
+            return $puntos;
+        }
+
+        if (!$mismaCategoria && !$jugadorUnoMasPuntos && !$jugadorUnoGano) {
+            $puntos->puntosJugadorUno -= $torneo->menor_categoria_ganador;
+            $puntos->puntosJugadorDos += $torneo->mayor_categoria_perdedor;
             return $puntos;
         }
     }

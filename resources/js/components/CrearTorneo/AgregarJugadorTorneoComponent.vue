@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card elevation="4">
-      <v-card-title>Agregar nuevo Jugador</v-card-title>
+      <v-card-title>Nuevo Jugador</v-card-title>
       <v-form v-model="valid" ref="form">
         <v-text-field class="ml-2 mr-2" v-model="apellidoJugador" :rules="aynRules" label="Apellido del jugador"
           required></v-text-field>

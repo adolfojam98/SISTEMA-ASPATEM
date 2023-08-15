@@ -24,6 +24,12 @@
         </div>
 
         <div v-if="torneoSeleccionado" class="mr-8">
+          <v-btn @click="[(nuevaFecha = true)]" @close="[(nuevaFecha = false)]" :disabled="!torneoSeleccionado" color="blue" class="white--text">
+              Nueva Fecha
+          </v-btn>
+        </div>
+
+        <div v-if="torneoSeleccionado" class="mr-8">
           <agregar-jugador-torneo-fecha-modal
             @agregar-jugador="agregarNuevoJugadorTorneo" :categorias="categorias"></agregar-jugador-torneo-fecha-modal>
         </div>
@@ -37,6 +43,14 @@
         </div>
       </div>
 
+    <v-dialog v-model="nuevaFecha" max-width="500px" v-if="torneoSeleccionado">
+          <v-card class="elevation-0" >
+            <v-card-title class="headline" style="justify-content: center">
+              Crear nueva fecha
+            </v-card-title>
+            <crear-fecha @close="nuevaFecha = !nuevaFecha"></crear-fecha>
+          </v-card>
+      </v-dialog>
 
       <v-dialog content-class="dialog-w-max-content" v-model="editPuntos" v-if="torneoSeleccionado"
         :style="{ width: 'max-content' }">
@@ -176,6 +190,15 @@
 
               <p />
             </template>
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn class="ml-4" v-bind="attrs" v-on="on" @click.stop="[$router.push({path: `/torneos/gestionFechas`, query: { torneoId: torneoSeleccionado.id, fechaId: item.id }})]"
+                    color="success">Ver</v-btn>
+                </template>
+                <span>Eliminar</span>
+              </v-tooltip>
+            </template>
           </v-data-table>
         </v-card>
       </v-col>
@@ -205,6 +228,7 @@ export default {
 
   data() {
     return {
+      nuevaFecha: false,
       categorias : [],
       editPuntos: false,
       verFechaModal: false,
@@ -214,6 +238,12 @@ export default {
         { text: "Cantidad de participantes", value: "participantes" },
         { text: "Ingresos", value: "ingresos" },
         { text: "Vigencia", value: "date" },
+        {
+          text: "",
+          value: "actions",
+          sortable: false,
+          filterable: false,
+        },
       ],
       renderComponent: true,
     };
