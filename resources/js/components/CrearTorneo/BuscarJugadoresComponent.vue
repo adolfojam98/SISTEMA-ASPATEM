@@ -15,7 +15,7 @@
           <template v-slot:item="data">
             <v-btn color="success" fab x-small class="mr-2" @click.stop="verHistorialJugador(data.item)">
               <v-icon>
-                mdi-minus
+                mdi-account-circle
               </v-icon>
             </v-btn>
             <v-list-item-content>{{ nombreCompleto(data.item) }}</v-list-item-content>
