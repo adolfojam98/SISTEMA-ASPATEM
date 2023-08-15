@@ -145,7 +145,7 @@
             Cancelar
           </v-btn>
           <v-btn @click="[modalAnularCuota = false, anularCuota()]">
-            ANULAR
+            APLICAR
           </v-btn>
         </v-card-actions>
       </v-card>

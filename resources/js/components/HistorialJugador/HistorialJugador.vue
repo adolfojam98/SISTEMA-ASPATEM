@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card>
+    <v-card elevation="0">
       <center>
         <h2 cols="12">Historial de jugadores</h2>
       </center>
@@ -23,7 +23,7 @@
         </div>
 
       </div>
-      <div v-if="!history.length">
+      <div v-if="!history?.length && jugadorSeleccionado">
         <h4 class="mt-5">
           <center>Esta persona aun no ha jugado ningun torneo </center>
         </h4>
@@ -41,7 +41,7 @@
           <v-tab-item v-for="torneo in history" :key="torneo.id">
             <v-card flat class="rounded-0">
               <v-container>
-                <v-simple-table v-if="torneo.fechas.length">
+                <v-simple-table v-if="torneo.fechas?.length">
                   <template v-slot:default>
                     <thead>
                       <tr>
