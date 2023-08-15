@@ -9,47 +9,121 @@
                         </v-col>
                     </v-row>
                     <div v-for="partido in categoria.partidosLlaves" :key="partido.id">
-
-                        <!-- NODOS HOJAS -->
                         <div class="ma-2" v-if="partido.fase == fase">
+                            <v-card outlined flat max-width="374">
+                                <div class="d-flex container-group_player">
+                                    <div v-if="partido?.jugador1?.posicionGrupo" class="my-auto mr-1 container-group_position">
+                                        <span> {{partido?.jugador1?.posicionGrupo}}: </span>
+                                    </div>
 
-                            <v-card outlined flat>
-                                <div>
-                                    <v-card-text>
-                                        <v-row>
-                                            <v-col>
-                                                <v-autocomplete :disabled="tienePartidoAnterior(partido, 1)"
-                                                    :items="jugadoresDisponibles(partido.jugador1)"
-                                                    :item-text="nombreCompletoJugador" return-object clearable
-                                                    v-model="partido.jugador1"></v-autocomplete>
-                                                    <v-autocomplete :disabled="tienePartidoAnterior(partido, 2)"
-                                                    :items="jugadoresDisponibles(partido.jugador2)"
-                                                    :item-text="nombreCompletoJugador" return-object clearable
-                                                    v-model="partido.jugador2"></v-autocomplete>
-                                                
-                                            </v-col>
-                                            <v-col>
-                                                <v-text-field label="Sets" v-model="partido.setsJugador1"
-                                                    @change="asingarGanadorASiguientePartido(partido)"
-                                                    type="number"></v-text-field>
-                                                <v-text-field label="Sets" v-model="partido.setsJugador2"
-                                                    @change="asingarGanadorASiguientePartido(partido)"
-                                                    type="number"></v-text-field>
-                                            </v-col>
-                                        </v-row>
-                                    </v-card-text>
+                                    <div class="justify-space-between my-auto container-group_player_info">
+                                        <v-autocomplete
+                                        :disabled="tienePartidoAnterior(partido, 2)"
+                                        :items="jugadoresDisponibles(partido.jugador1)"
+                                        :item-text="nombreCompletoJugador"
+                                        return-object
+                                        clearable
+                                        v-model="partido.jugador1"
+                                        ></v-autocomplete>
+                                    </div>
+
+                                    <div class="my-auto ml-2">
+                                        <v-text-field
+                                        label="Sets"
+                                        v-model="partido.setsJugador1"
+                                        @change="asingarGanadorASiguientePartido(partido)"
+                                        type="number"
+                                        style="width: 36px"
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex container-group_player">
+                                     <div v-if="partido?.jugador2?.posicionGrupo" class="my-auto container-group_position">
+                                        <span> {{partido?.jugador2?.posicionGrupo}}: </span>
+                                    </div>
+
+                                    <div class="justify-space-between my-auto container-group_player_info">
+                                        <v-autocomplete
+                                        :disabled="
+                                            tienePartidoAnterior(partido, 1) ||
+                                            tienePartidoAnterior(partido, 2)
+                                        "
+                                        :items="jugadoresDisponibles(partido.jugador2)"
+                                        :item-text="nombreCompletoJugador"
+                                        return-object
+                                        clearable
+                                        v-model="partido.jugador2"
+                                        ></v-autocomplete>
+                                    </div>
+
+                                    <div class="my-auto ml-2">
+                                        <v-text-field
+                                        label="Sets"
+                                        v-model="partido.setsJugador2"
+                                        @change="asingarGanadorASiguientePartido(partido)"
+                                        type="number"
+                                        style="width: 36px"
+                                        ></v-text-field>
+                                    </div>
                                 </div>
                             </v-card>
                         </div>
-
                     </div>
                 </v-col>
             </div>
-
         </div>
-
     </div>
 </template>
+
+<style scoped>
+    .text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    }
+
+    .align-center {
+    align-items: center;
+    }
+
+    .my-auto {
+    margin: auto 0;
+    }
+
+    .mb-none {
+    margin-bottom: 0;
+    }
+
+    .container-group_player {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 16px;
+    margin-left: 16px;
+    }
+
+    .container-group_player .container-group_player_info {
+    text-overflow: ellipsis;
+    max-width: 80%;
+    }
+
+    .container-group_player .input-sets {
+    width: 36px;
+    }
+
+    .container-group_position {
+    width: 55px;
+    padding-bottom: 6px;
+    }
+
+    .v-text-field__details {
+    display: none;
+    }
+
+    .max-w-80 {
+    max-width: 80%;
+    }
+</style>
 
 
 <script>
@@ -248,7 +322,7 @@ export default {
             let direccionA = false
             let posicion = arr.length -1
 
-            while(posicion > 1) {console.log('entra')
+            while(posicion > 1) {
                 if(direccionA) {
                     B.push(arr[posicion])
                     A.push(arr[posicion-1])
@@ -280,7 +354,8 @@ export default {
                     const grupo = gruposConJugadoresOrdenados[i];
                     
                     if(grupo.jugadoresOrdenados.length > j) {
-                        const jugador = grupo.jugadoresOrdenados[j]
+                        let jugador = grupo.jugadoresOrdenados[j]
+                        jugador.posicionGrupo = grupo.nombre + '' + (j+1) //{grupo} {posicion}
                         jugadoresOrdenados.push(jugador)
                     }
                 }

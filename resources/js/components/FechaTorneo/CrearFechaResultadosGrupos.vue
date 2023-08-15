@@ -1,7 +1,7 @@
 <template>
   <div class="body">
-    <div class="container">
-      <v-row class="fill-height" align="center" justify="center">
+    <div class="container mt-2">
+      <v-row class="fill-height justify-content-space-evenly" align="center">
         <v-card
           flat
           class="lista-grupos rounded-0"
@@ -25,8 +25,9 @@
                     <li>
                       {{ jugador.nombre }}
                       {{ jugador.apellido }}
+                    </li>
 
-                      <v-tooltip bottom>
+                    <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-icon
                             v-if="jugador.dni"
@@ -41,7 +42,6 @@
                           {{ partidosGanados(grupo, jugador) }}</span
                         >
                       </v-tooltip>
-                    </li>
                   </div>
                 </ol>
               </div>
@@ -52,6 +52,18 @@
     </div>
   </div>
 </template>
+<style>
+  .justify-content-space-evenly {
+    justify-content: space-evenly;
+  }
+
+  .lista-jugadores {
+    display: flex;
+    min-width: 80px;
+    justify-content: space-between;
+  }
+
+</style>
 
 <script>
 import { mapState } from "vuex";
