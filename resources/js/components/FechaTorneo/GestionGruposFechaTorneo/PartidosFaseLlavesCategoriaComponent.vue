@@ -221,65 +221,92 @@ export default {
         organizarPartidosLlaves(partidosLlaves) {
             let gruposConJugadoresOrdenados = [];
 
+            //ordenamos cada grupo
             this.categoria.listaGrupos.forEach(grupo => {
                 gruposConJugadoresOrdenados.push({ ...grupo, jugadoresOrdenados: this.getJugadoresOrdenadosPorGrupo(grupo) });
             });
 
+            //ordenamos todos los grupos juntos
             const todosLosJugadoresOrdenados = this.getJugadoresOrdenadosFromGrupos(gruposConJugadoresOrdenados);
-            const nroJugadoresLlavesPerfectas = Math.pow(2, Math.floor(Math.log2(todosLosJugadoresOrdenados.length)));
-            const nroJugadoresLlavesAjustes = (todosLosJugadoresOrdenados.length - nroJugadoresLlavesPerfectas) * 2
 
-            let jugadoresParaLlavesSinSerpenteo = []
-            let jugadoresParaLlavesConSerpenteo = todosLosJugadoresOrdenados
-            let jugadoresParaLlavesDeAjuste = []
+            const nroJugadores = todosLosJugadoresOrdenados.length;
+            const nroJugadoresLlavesPerfectas = Math.pow(2, Math.floor(Math.log2(nroJugadores)));
+            const nroPartidosLlavesAjustes = nroJugadores - nroJugadoresLlavesPerfectas;
+            const nroJugadoresLlavesAjustes = nroPartidosLlavesAjustes * 2;
+
+            let jugadoresParaLlavesPrimeraFase = [];
+            let jugadoresParaLlavesDeAjuste = [];
 
             if(nroJugadoresLlavesAjustes && this.categoria.gruposConEliminatoria) {
-                // separamos a los jugadores entre los que hay que serpenear, los que no y los de ajuste
-                jugadoresParaLlavesSinSerpenteo = todosLosJugadoresOrdenados.slice(0, nroJugadoresLlavesAjustes / 2); // esto siempre va a ser par (son los que van solos debido a que tienen que esperar un partido de ajuste)
-                jugadoresParaLlavesConSerpenteo = todosLosJugadoresOrdenados.slice(nroJugadoresLlavesAjustes / 2, todosLosJugadoresOrdenados.length - nroJugadoresLlavesAjustes) //esto son lo otros que no van solo ni en ajuste
-                jugadoresParaLlavesDeAjuste = todosLosJugadoresOrdenados.slice(todosLosJugadoresOrdenados.length - nroJugadoresLlavesAjustes, todosLosJugadoresOrdenados.length) //estos son los que van en la llave de ajustes (tambien serpenteados pero por separado)
+                jugadoresParaLlavesPrimeraFase = todosLosJugadoresOrdenados.slice(0, nroJugadores - nroJugadoresLlavesAjustes)
+                jugadoresParaLlavesDeAjuste = todosLosJugadoresOrdenados.slice(nroJugadores - nroJugadoresLlavesAjustes, nroJugadores)
+                //serpenteamos los de ajuste
+                jugadoresParaLlavesDeAjuste = this.serpenteoArray(jugadoresParaLlavesDeAjuste).reverse()
             } else {
-                jugadoresParaLlavesConSerpenteo = todosLosJugadoresOrdenados.slice(0, nroJugadoresLlavesPerfectas)
+                jugadoresParaLlavesPrimeraFase = todosLosJugadoresOrdenados.slice(0, nroJugadoresLlavesPerfectas)
             }
 
-            //serpenteamos...
-            jugadoresParaLlavesConSerpenteo = this.serpenteoArray(jugadoresParaLlavesConSerpenteo)
-            jugadoresParaLlavesDeAjuste = this.serpenteoArray(jugadoresParaLlavesDeAjuste).reverse()
-
             // obtenemos las rondas y asignamos los partidos 
-            const rondas = this.calcularNumeroDeRondas(todosLosJugadoresOrdenados.length);
-            const partidosAsignados = this.asignarJugadoresPartidos(partidosLlaves, jugadoresParaLlavesSinSerpenteo, jugadoresParaLlavesConSerpenteo, jugadoresParaLlavesDeAjuste, rondas)
+            const rondas = this.calcularNumeroDeRondas(nroJugadores);
+            const partidosAsignados = this.asignarJugadoresPartidos(partidosLlaves, jugadoresParaLlavesPrimeraFase, jugadoresParaLlavesDeAjuste, rondas)
 
             return partidosAsignados;
         },
 
-        asignarJugadoresPartidos(partidosLlaves, jugadoresParaLlavesSinSerpenteo, jugadoresParaLlavesConSerpenteo, jugadoresParaLlavesDeAjuste, rondas) {
-            const primeraFase = this.FASES[rondas]
-            const faseDeAjuste = this.FASES[rondas+1]
+        asignarJugadoresPartidos(partidosLlaves, jugadoresParaLlavesPrimeraFase, jugadoresParaLlavesDeAjuste, rondas) {
+            const primeraFase = this.FASES[rondas];
+            const faseDeAjuste = this.FASES[rondas+1];
 
-            while(jugadoresParaLlavesSinSerpenteo.length > 0) {
-                let jugadorSinSerpenteo = jugadoresParaLlavesSinSerpenteo.shift()
-                let partidoPrimeraFase = this.getPrimerPartidoDisponible(partidosLlaves, primeraFase)
-                partidoPrimeraFase.jugador1 = jugadorSinSerpenteo
+            let indexPartidosPrimeraFase = 0;
+            let direccionPositiva = true;
 
-                //ahora modificamos el partido de ajuste que apunta a este
-                let jugadorConSerpenteo1 = jugadoresParaLlavesDeAjuste.shift()
-                let jugadorConSerpenteo2 = jugadoresParaLlavesDeAjuste.shift()
-                let partido = this.getPrimerPartidoDisponible(partidosLlaves, faseDeAjuste); //primero se intenta meter en el de ajuste
+            while(jugadoresParaLlavesPrimeraFase.length) {
+                if(indexPartidosPrimeraFase == partidosLlaves[primeraFase].length) {
+                    direccionPositiva = false;
+                    indexPartidosPrimeraFase--
+                }
 
-                partido.jugador1 = jugadorConSerpenteo1
-                partido.jugador2 = jugadorConSerpenteo2
-                partido.idPartidoPadre = partidoPrimeraFase.id
+                partidosLlaves[primeraFase] = this.ordenarPartidosParaAsignacion(partidosLlaves[primeraFase])
+                let partido = partidosLlaves[primeraFase][indexPartidosPrimeraFase]
+                partidosLlaves[primeraFase] = this.ordenarPartidosParaAsignacion(partidosLlaves[primeraFase])
+
+                let jugador = jugadoresParaLlavesPrimeraFase.shift();
+
+                if(partido) { //si falla por algun motivo, que no se rompa
+                    if(direccionPositiva) {
+                        partido.jugador1 = jugador;
+
+                        if(jugadoresParaLlavesDeAjuste?.length > 1) {
+                            let partidoAjuste = this.getPrimerPartidoDisponible(partidosLlaves, faseDeAjuste);
+
+                            if(partidoAjuste) {
+                                let jugador1 = jugadoresParaLlavesDeAjuste.shift();
+                                let jugador2 = jugadoresParaLlavesDeAjuste.shift();
+
+                                partidoAjuste.jugador1 = jugador1;
+                                partidoAjuste.jugador2 = jugador2;
+                                partidoAjuste.idPartidoPadre = partido.id;
+                            }
+                        }
+                    }
+                    else {
+                        partido.jugador2 = jugador;
+                    }
+                }
+
+                indexPartidosPrimeraFase += direccionPositiva ? 1 : -1;
             }
 
-            while(jugadoresParaLlavesConSerpenteo.length > 0) {
-                let jugadorConSerpenteo1 = jugadoresParaLlavesConSerpenteo.shift()
-                let jugadorConSerpenteo2 = jugadoresParaLlavesConSerpenteo.shift()
+            while(jugadoresParaLlavesDeAjuste?.length > 1) {
+                let partidoAjuste = this.getPrimerPartidoDisponible(partidosLlaves, faseDeAjuste);
 
-                let partido = partido = this.getPrimerPartidoDisponible(partidosLlaves, primeraFase);
+                if(partidoAjuste) {
+                    let jugador1 = jugadoresParaLlavesDeAjuste.shift();
+                    let jugador2 = jugadoresParaLlavesDeAjuste.shift();
 
-                partido.jugador1 = jugadorConSerpenteo1
-                partido.jugador2 = jugadorConSerpenteo2
+                    partidoAjuste.jugador1 = jugador1;
+                    partidoAjuste.jugador2 = jugador2;
+                }
             }
 
             return partidosLlaves;
@@ -335,7 +362,13 @@ export default {
                 posicion = posicion-2
             }
 
-            return [...A, ...B.reverse()]
+            return this.eliminarDuplicados([...A, ...B.reverse()])
+        },
+
+        eliminarDuplicados(arr) {
+            return arr.filter((objeto, index, self) =>
+                index === self.findIndex(item => item.id === objeto.id)
+            );
         },
 
         getJugadoresOrdenadosFromGrupos(gruposConJugadoresOrdenados) {
