@@ -300,117 +300,82 @@ class CuotaController extends ApiController
     {
 
 
-        //antes de generar la cuota hace un control de quienes son socios para que aplique el descuento solo si es debido
-        $configuracion = Configuracion::first();
-
-        if ($configuracion == NULL) {
-            return response()->json([
-                'message' => 'Las configuraciones aun no existen'
+        try {
+            $request->validate([
+                'fecha' => 'required|date'
             ]);
-        }
 
-        // if ($configuracion->automatizarBajasSocios) {//esto se calcula con la funcion del modelo de usuario->socio()
+            $fecha = $request->get('fecha');
+            $fecha = date("Y-m-d H:i:s", strtotime($fecha));
 
-        //     $fechaActual = carbon::now();
-        //     $fechaMesSiguiente = carbon::now();
-        //     $fechaUnMesAntes = carbon::now();
-        //     $fechaDosMesesAntes = carbon::now();
-        //     $fechaTresMesesAntes = carbon::now();
+            $usuarios = Usuario::leftJoin('cuotas', 'usuario_id', 'usuarios.id')
+                ->where('socio', 1)
+                ->where('usuarios.id',$request->id)
+                ->where(function ($query) use ($fecha) {
+                    $query->whereNull('cuotas.id');
+                    $query->orWhereRaw('usuario_id not in (select usuario_id from cuotas where periodo = ? )', [$fecha]);
+                })->distinct()
+                ->get('usuarios.id');
 
-        //     $fechaMesSiguiente->addMonth(1);
-        //     $fechaUnMesAntes->subMonth(1);
-        //     $fechaDosMesesAntes->subMonth(2);
-        //     $fechaTresMesesAntes->subMonth(3);
+            $sociosActivos = [];
+            //filtramos ya por socios, ahora por aquellos activos
+            foreach($usuarios as $key => $usuario) {
+                if(Usuario::whereId($usuario->id)->first()->socio()->activo) {
+                    array_push($sociosActivos, $usuario);
+                }
+            }
+            //ahora pisamos los usuarios con este ultimo filtro de activos
+            $usuarios = $sociosActivos;
 
-        //     $socios = Usuario::where('socio', true)->get();
+            $cuotaDetalleTipoPrecioBase = CuotaDetalleTipo::where('codigo', 'precio_base')->first();
 
+            if (!$cuotaDetalleTipoPrecioBase) {
+                return $this->sendError("No existe un detalle de cuota 'Precio Base'");
+            }
 
-        //     foreach ($socios as $socio) {
+            if (!count($usuarios))  {
+                return $this->sendError("No se encontraron cuotas para generar en el periodo", "No se encontraron cuotas para generar en el periodo");
+            }
 
-        //         $cuotas = Cuota::where('mes', $fechaActual->month)
-        //             ->where('anio', $fechaActual->year)
-        //             ->where('usuario_id', $socio->id)
-        //             ->where('fechaPago', '<>', '')
+            $service = new CuotaService();
+            $service->validateCuotaDetalleTiposDefaults();
+            //$service->updateLatePayment(); //TODO: hora se esta usando en los getters y el crone esta, pero molesta la consola saliendo cada min asi que lo saque
 
-        //             ->orWhere('mes', $fechaUnMesAntes->month)
-        //             ->where('anio', $fechaUnMesAntes->year)
-        //             ->where('usuario_id', $socio->id)
-        //             ->where('fechaPago', '<>', '')
+            if ($service->hasErrors()) {
+                return $this->sendServiceError($service->getLastError());
+            }
 
-        //             ->orWhere('mes', $fechaDosMesesAntes->month)
-        //             ->where('anio', $fechaDosMesesAntes->year)
-        //             ->where('usuario_id', $socio->id)
-        //             ->where('fechaPago', '<>', '')
+            foreach ($usuarios as $usuario) {
+                //creamos la cuota
+                $cuota = $service->createCuota($usuario->id, $fecha);
+                if ($service->hasErrors()) {
+                    return $this->sendServiceError($service->getLastError());
+                }
 
-        //             ->orWhere('mes', $fechaTresMesesAntes->month)
-        //             ->where('anio', $fechaTresMesesAntes->year)
-        //             ->where('usuario_id', $socio->id)
-        //             ->where('fechaPago', '<>', '')
+                //creamos el detalle precio base
+                $service->createCuotaDetalle($cuota->id, $cuotaDetalleTipoPrecioBase->id, $cuotaDetalleTipoPrecioBase->valor);
+                if ($service->hasErrors()) {
+                    return $this->sendServiceError($service->getLastError());
+                }
 
-        //             ->orWhere('mes', $fechaMesSiguiente->month)
-        //             ->where('anio', $fechaMesSiguiente->year)
-        //             ->where('usuario_id', $socio->id)
-        //             ->where('fechaPago', '<>', '')->get();
+                //creamos el detalle de relacion si corresponde
+                if($usuario->hasRelacionesWithSocios()) {
+                    $cuotaDetalleTipoRelaciones = CuotaDetalleTipo::where('codigo', 'relaciones')->first();
+                    if (!$cuotaDetalleTipoRelaciones) {
+                        return $this->sendError("No existe un detalle de cuota 'Relaciones'");
+                    }
 
-        //         if ($cuotas == '[]') {
-
-        //             $socio->socio = false;
-        //             $socio->save();
-        //         }
-        //     }
-        // }
-        //aqui termina el calculo de si es socio
-
-
-
-        $ExisteEstaCuota = Cuota::where('mes', $request->mes)
-            ->where('anio', $request->anio)
-            ->where('usuario_id', $request->usuario_id)->first();
-
-
-        if ($ExisteEstaCuota == null) {
-            $cuota = new Cuota();
-            $cuota->mes = $request->mes;
-            $cuota->anio = $request->anio;
-            $cuota->usuario_id = $request->usuario_id;
-
-            $usuario = Usuario::find($request->usuario_id);
-            $relaciones = $usuario->relaciones;
-
-
-            foreach ($relaciones as $relacion) {
-                foreach ($relacion->usuarios as $usuario) {
-                    if ($usuario->socio()->activo == true && $usuario->id != $request->usuario_id) {
-
-                        $cuota->descuento = true;
-                        $cuota->observacion = 'Se aplico el descuento de Familiar/Amigo';
+                    $service->createCuotaDetalle($cuota->id, $cuotaDetalleTipoRelaciones->id, $cuotaDetalleTipoRelaciones->valor ?: $cuotaDetalleTipoPrecioBase->valor * $cuotaDetalleTipoRelaciones->porcentaje);
+                    if ($service->hasErrors()) {
+                        return $this->sendServiceError($service->getLastError());
                     }
                 }
             }
 
+            return $this->sendResponse(null, 'Cuotas generadas correctamente');
 
-            if ($configuracion->montoCuota != NULL && $configuracion->montoCuotaDescuento != NULL) {
-                if ($cuota->descuento) {
-                    $cuota->importe = $configuracion->montoCuotaDescuento;
-                } else {
-                    $cuota->importe = $configuracion->montoCuota;
-                }
-            } else {
-                return response()->json([
-                    'message' => 'Primero debe establecer los montos desde configuracion'
-                ]);
-            }
-
-
-            $cuota->save();
-
-            return response()->json([
-                'message' => 'Cuota creada'
-            ]);
-        } else {
-            return response()->json([
-                'message' => 'Esta cuota ya existe'
-            ]);
+        } catch (Exception $e) {
+            return $this->sendError($e->errorInfo[2]);
         }
     }
 

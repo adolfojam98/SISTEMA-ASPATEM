@@ -89,6 +89,7 @@ Vue.component('login',                              require('./components/LoginC
 Vue.component('modal-login',                        require('./components/Modals/ModalLoginComponent').default);
 Vue.component('modal-cambio-contrasena',            require('./components/Modals/ModalCambiarContrasenaComponent').default);
 Vue.component('generar-cuotas-masivas',             require('./components/Pagos/GenerarCuotasMasivasComponent').default);
+Vue.component('generar-cuota-socio',                require('./components/Pagos/GenerarCuotaSocioComponent').default);
 Vue.component('ajustes-cuotas',                     require('./components/Ajustes/AjustesCuotasComponent').default);
 Vue.component('spinner',                            require('./components/SpinnerComponent').default);
 Vue.component('torneo-lista-jugadores',             require('./components/GestionarTorneos/ListaJugadores').default);
