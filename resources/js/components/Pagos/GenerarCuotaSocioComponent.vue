@@ -6,8 +6,7 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            color="red lighten-2"
-            dark
+            color="primary"
             v-bind="attrs"
             v-on="on"
           >
@@ -107,6 +106,8 @@
           this.cerrarDialog();
           console.log("->nueva cuota: ", nuevaCuota);
           this.callSnackbar([nuevaCuota.data.message, "success"]);
+          this.$emit("recargarCuotas", true);
+          this.dialog = false;
         } catch (e) {
           this.callSnackbar([e.response.data.message, "error"]);
         }

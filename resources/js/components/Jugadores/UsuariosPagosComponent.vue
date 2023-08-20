@@ -31,7 +31,7 @@
           <anular-cuotas @anularTodasLasCuotas="anularTodasLasCuotas"></anular-cuotas>
         </div>
         <div v-if="busco">
-          <generar-cuota-socio :usuario="usuarioSeleccionado"></generar-cuota-socio>
+          <generar-cuota-socio :usuario="usuarioSeleccionado" @recargarCuotas="recargarCuotas = $event"></generar-cuota-socio>
         </div>
 
       </div>
