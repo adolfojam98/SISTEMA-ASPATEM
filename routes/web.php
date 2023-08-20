@@ -22,6 +22,7 @@ Route::group(['prefix' => '/usuario', 'as' => 'usuario.'/*, 'middleware' => ['au
 
     Route::get('/{id}/relacionables', 'UsuarioController@show_dif_id')->name('show_dif_id');
     Route::delete('/{id}', 'UsuarioController@destroy')->name('destroy');
+    Route::post('/{id}/restaurar', 'UsuarioController@restore')->name('restaurar');
     Route::get('/{id}/history', 'UsuarioController@getHistory')->name('getHistory');
     Route::get('/{id}/relaciones', 'UsuarioController@showRelacionesExitentes')->name('showRelacionesExitentes');
 
