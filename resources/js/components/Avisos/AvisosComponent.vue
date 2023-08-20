@@ -6,29 +6,17 @@
       </center>
       <v-form ref="form" lazy-validation v-model="valid">
         <v-container>
-          <v-text-field
-            :value="asunto"
-            @input="setAsunto"
-            label="Asunto"
-            required
-            :rules="ruleRequired"
-          ></v-text-field>
+          <v-row cols="12" justify="center">
+            <v-col cols="6">
+              <v-text-field :value="asunto" @input="setAsunto" label="Asunto" required
+                :rules="ruleRequired"></v-text-field>
 
-          <v-text-field
-            :value="titulo"
-            @input="setTitulo"
-            label="Titulo"
-            required
-            :rules="ruleRequired"
-          ></v-text-field>
+              <v-text-field :value="titulo" @input="setTitulo" label="Titulo" required
+                :rules="ruleRequired"></v-text-field>
 
-          <v-text-field
-            :value="subtitulo"
-            @input="setSubtitulo"
-            label="Subtitulo (Opcional)"
-          ></v-text-field>
+              <v-text-field :value="subtitulo" @input="setSubtitulo" label="Subtitulo (Opcional)"></v-text-field>
 
-          <!-- <v-textarea
+              <!-- <v-textarea
             type="text"
             :value="mensaje"
             @input="setMensaje"
@@ -37,25 +25,17 @@
             :rules="ruleRequired"
           ></v-textarea> -->
 
-          <tiptap-vuetify
-            class="mb-5"
-            placeholder="Mensaje…"
-            :value="mensaje"
-            :extensions="extensions"
-            @input="setMensaje"
-            required
-            :rules="ruleRequired"
-            :toolbar-attributes="{ color: 'grey lighten-4' }"
-          />
+              <tiptap-vuetify class="mb-5" placeholder="Mensaje…" :value="mensaje" :extensions="extensions"
+                @input="setMensaje" required :rules="ruleRequired" :toolbar-attributes="{ color: 'grey lighten-4' }"
+                :card-props="{ 'min-height': '300px' }" />
+              <center>
+                <v-btn @click.prevent="sendEmail()" large depressed color="primary">Enviar</v-btn>
+              </center>
 
-          <v-btn
-            @click.prevent="sendEmail()"
-            block
-            large
-            depressed
-            color="primary"
-            >Enviar</v-btn
-          >
+
+            </v-col>
+          </v-row>
+
         </v-container>
       </v-form>
     </v-container>
