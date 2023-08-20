@@ -36,8 +36,8 @@ Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middlewafre' => ['auth']
     Route::post('/store/{cuota_id}', 'PagoController@store')->name('store');
 });
 
-    Route::group(['prefix' => '/cuota', 'as' => 'cuota.', /*'middleware' => ['auth']*/], function () {
-    Route::get('/', 'CuotaController@index')->name('index');    
+Route::group(['prefix' => '/cuota', 'as' => 'cuota.', /*'middleware' => ['auth']*/], function () {
+    Route::get('/', 'CuotaController@index')->name('index');
     Route::post('/', 'CuotaController@store')->name('store');
     Route::put('/', 'CuotaController@update')->name('update');
     Route::post('/generarCuotasMasivas', 'CuotaController@generarCuotasMasivas')->name('generarCuotasMasivas');
@@ -58,7 +58,7 @@ Route::group(['prefix' => '/pago', 'as' => 'cuota.', /*'middlewafre' => ['auth']
 
 //relacionado con cuotas -- SUELTOS
 Route::post('/cuotas', 'CuotaController@generarCuotasFaltantes')->middleware('auth')->name('generarCuotasFaltantes');
-Route::post('/generarCuota', 'CuotaController@generarCuota')->middleware('auth')->name('generarCuota');
+Route::post('/generarCuota/{id}', 'CuotaController@generarCuota')->middleware('auth')->name('generarCuota');
 Route::put('/pagarCuota', 'CuotaController@pagar')->middleware('auth')->name('pagar');
 Route::post('/cuotas/{id}/cancelar', 'CuotaController@cancelar')->name('cuota.cancelar');
 //relacionado con cuotas -- SUELTOS
@@ -109,7 +109,6 @@ Route::group(['prefix' => '/fechas', 'as' => 'fechas.', 'middleware' => []], fun
     Route::post('/{id}/categoria/{categoria_id}', 'FechaController@storeCategoriaPartidos')->name('fechas.storeCategoriaPartidos');
     Route::get('/{id}/categoria/{categoria_id}/partidos', 'FechaController@getPartidos')->name('fecha.getPartidos');
     Route::post('/{id}', 'FechaController@update')->name('fecha.update');
-
 });
 
 //relacionado con torneo -- SUELTOS
@@ -133,7 +132,7 @@ Auth::routes();
 
 //TODO Tipos de cuotaDetalles -- SUELTOS revisar gonza
 
-Route::get('/tipo-detalles','CuotaDetalleTipoController@create')->middleware('auth');
+Route::get('/tipo-detalles', 'CuotaDetalleTipoController@create')->middleware('auth');
 
 
 
