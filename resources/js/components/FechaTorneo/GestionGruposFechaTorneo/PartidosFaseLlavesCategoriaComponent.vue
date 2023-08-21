@@ -348,35 +348,38 @@ export default {
                 }
             }
 
-            // recorremos todos los partidos de primera fase y asignamos bien los padres
-            let indexPartidoAjuste = 0;
-            partidosLlaves[primeraFase] = this.ordenarPartidosParaAsignacion(partidosLlaves[primeraFase])
-            partidosLlaves[faseDeAjuste] = this.ordenarPartidosParaAsignacion(partidosLlaves[faseDeAjuste])
+            if(partidosLlaves[faseDeAjuste]) {
+                // recorremos todos los partidos de primera fase y asignamos bien los padres
+                let indexPartidoAjuste = 0;
+                partidosLlaves[primeraFase] = this.ordenarPartidosParaAsignacion(partidosLlaves[primeraFase])
+                partidosLlaves[faseDeAjuste] = this.ordenarPartidosParaAsignacion(partidosLlaves[faseDeAjuste])
 
-            for (let index = 0; index < partidosLlaves[primeraFase].length; index++) {
-                if(indexPartidoAjuste < partidosLlaves[faseDeAjuste].length) {
-                    const partidoPrimeraFase = partidosLlaves[primeraFase][index]
-                    let partidoAjuste1 = partidosLlaves[faseDeAjuste][indexPartidoAjuste]
-                    let partidoAjuste2 = partidosLlaves[faseDeAjuste][indexPartidoAjuste+1]
+                for (let index = 0; index < partidosLlaves[primeraFase].length; index++) {
+                    if(indexPartidoAjuste < partidosLlaves[faseDeAjuste].length) {
+                        const partidoPrimeraFase = partidosLlaves[primeraFase][index]
+                        let partidoAjuste1 = partidosLlaves[faseDeAjuste][indexPartidoAjuste]
+                        let partidoAjuste2 = partidosLlaves[faseDeAjuste][indexPartidoAjuste+1]
 
-                    if(partidoPrimeraFase.jugador1) {
-                        if(partidoPrimeraFase) {
+                        if(partidoPrimeraFase.jugador1) {
+                            if(partidoPrimeraFase) {
+                                partidoAjuste1.idPartidoPadre = partidoPrimeraFase.id
+                                indexPartidoAjuste += 1
+                            }
+                        }
+                        else if(partidoPrimeraFase) {
                             partidoAjuste1.idPartidoPadre = partidoPrimeraFase.id
-                            indexPartidoAjuste += 1
+                            partidoAjuste2.idPartidoPadre = partidoPrimeraFase.id
+                            indexPartidoAjuste += 2
                         }
                     }
-                    else if(partidoPrimeraFase) {
-                        partidoAjuste1.idPartidoPadre = partidoPrimeraFase.id
-                        partidoAjuste2.idPartidoPadre = partidoPrimeraFase.id
-                        indexPartidoAjuste += 2
-                    }
                 }
+
+                partidosLlaves[primeraFase] = this.ordenarPartidosParaAsignacion(partidosLlaves[primeraFase])
+                partidosLlaves[faseDeAjuste] = this.ordenarPartidosParaAsignacion(partidosLlaves[faseDeAjuste])
             }
 
-            partidosLlaves[primeraFase] = this.ordenarPartidosParaAsignacion(partidosLlaves[primeraFase])
-            partidosLlaves[faseDeAjuste] = this.ordenarPartidosParaAsignacion(partidosLlaves[faseDeAjuste])
-
             return partidosLlaves;
+            
         },
 
         obtenerElementosRepetidos(arr) {

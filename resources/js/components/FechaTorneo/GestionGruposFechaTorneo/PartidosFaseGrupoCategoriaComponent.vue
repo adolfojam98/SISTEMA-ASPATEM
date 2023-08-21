@@ -8,9 +8,11 @@
           <v-row v-for="grupo in categoria.listaGrupos" :key="grupo.nombre">
             <v-col>
               <h3>Grupo {{ grupo.nombre }}</h3>
-              <v-row cols="12" class="d-flex justify-space-between">
-                <v-col v-for="partido in grupo.partidos" :key="partido.id" md="3" sm="4">
-                  <partido :partido="partido"></partido>
+              <v-row cols="12" class="d-flex">
+                <v-col v-for="partido in grupo.partidos" :key="partido.id" md="auto">
+                  <div style="min-width: 200px">
+                    <partido :partido="partido"></partido>
+                  </div>
                 </v-col>
               </v-row>
             </v-col>

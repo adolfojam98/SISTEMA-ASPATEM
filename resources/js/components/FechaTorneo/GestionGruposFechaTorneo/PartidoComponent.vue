@@ -70,7 +70,7 @@ export default {
 
 .container-group_player .container-group_player_info {
   text-overflow: ellipsis;
-  max-width: 80%;
+  width: 80%;
 }
 
 .container-group_player .input-sets {
