@@ -334,7 +334,7 @@ class CuotaController extends ApiController
             }
 
             if (!count($usuarios))  {
-                return $this->sendError("No se encontraron cuotas para generar en el periodo", "No se encontraron cuotas para generar en el periodo");
+                return $this->sendError("La cuota de este periodo ya fue generada", "La cuota de este periodo ya fue generada");
             }
 
             $service = new CuotaService();
