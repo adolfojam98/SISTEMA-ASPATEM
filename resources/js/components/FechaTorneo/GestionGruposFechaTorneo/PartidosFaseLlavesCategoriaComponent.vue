@@ -277,7 +277,9 @@ export default {
                         partido.jugador1 = jugador;
 
                         if(jugadoresParaLlavesDeAjuste?.length > 1) {
+                            partidosLlaves[faseDeAjuste] = this.ordenarPartidosParaAsignacion(partidosLlaves[faseDeAjuste])
                             let partidoAjuste = this.getPrimerPartidoDisponible(partidosLlaves, faseDeAjuste);
+                            partidosLlaves[faseDeAjuste] = this.ordenarPartidosParaAsignacion(partidosLlaves[faseDeAjuste])
 
                             if(partidoAjuste) {
                                 let jugador1 = jugadoresParaLlavesDeAjuste.shift();
@@ -285,7 +287,44 @@ export default {
 
                                 partidoAjuste.jugador1 = jugador1;
                                 partidoAjuste.jugador2 = jugador2;
-                                partidoAjuste.idPartidoPadre = partido.id;
+                            }
+                        }
+                    }
+                    else {
+                        partido.jugador2 = jugador;
+                    }
+                }
+
+                indexPartidosPrimeraFase += direccionPositiva ? 1 : -1;
+            }
+
+            while(jugadoresParaLlavesPrimeraFase.length) {
+                if(indexPartidosPrimeraFase == partidosLlaves[primeraFase].length) {
+                    direccionPositiva = false;
+                    indexPartidosPrimeraFase--
+                }
+
+                partidosLlaves[primeraFase] = this.ordenarPartidosParaAsignacion(partidosLlaves[primeraFase])
+                let partido = partidosLlaves[primeraFase][indexPartidosPrimeraFase]
+                partidosLlaves[primeraFase] = this.ordenarPartidosParaAsignacion(partidosLlaves[primeraFase])
+
+                let jugador = jugadoresParaLlavesPrimeraFase.shift();
+
+                if(partido) { //si falla por algun motivo, que no se rompa
+                    if(direccionPositiva) {
+                        partido.jugador1 = jugador;
+
+                        if(jugadoresParaLlavesDeAjuste?.length > 1) {
+                            partidosLlaves[faseDeAjuste] = this.ordenarPartidosParaAsignacion(partidosLlaves[faseDeAjuste])
+                            let partidoAjuste = this.getPrimerPartidoDisponible(partidosLlaves, faseDeAjuste);
+                            partidosLlaves[faseDeAjuste] = this.ordenarPartidosParaAsignacion(partidosLlaves[faseDeAjuste])
+
+                            if(partidoAjuste) {
+                                let jugador1 = jugadoresParaLlavesDeAjuste.shift();
+                                let jugador2 = jugadoresParaLlavesDeAjuste.shift();
+
+                                partidoAjuste.jugador1 = jugador1;
+                                partidoAjuste.jugador2 = jugador2;
                             }
                         }
                     }
@@ -309,6 +348,34 @@ export default {
                 }
             }
 
+            // recorremos todos los partidos de primera fase y asignamos bien los padres
+            let indexPartidoAjuste = 0;
+            partidosLlaves[primeraFase] = this.ordenarPartidosParaAsignacion(partidosLlaves[primeraFase])
+            partidosLlaves[faseDeAjuste] = this.ordenarPartidosParaAsignacion(partidosLlaves[faseDeAjuste])
+
+            for (let index = 0; index < partidosLlaves[primeraFase].length; index++) {
+                if(indexPartidoAjuste < partidosLlaves[faseDeAjuste].length) {
+                    const partidoPrimeraFase = partidosLlaves[primeraFase][index]
+                    let partidoAjuste1 = partidosLlaves[faseDeAjuste][indexPartidoAjuste]
+                    let partidoAjuste2 = partidosLlaves[faseDeAjuste][indexPartidoAjuste+1]
+
+                    if(partidoPrimeraFase.jugador1) {
+                        if(partidoPrimeraFase) {
+                            partidoAjuste1.idPartidoPadre = partidoPrimeraFase.id
+                            indexPartidoAjuste += 1
+                        }
+                    }
+                    else if(partidoPrimeraFase) {
+                        partidoAjuste1.idPartidoPadre = partidoPrimeraFase.id
+                        partidoAjuste2.idPartidoPadre = partidoPrimeraFase.id
+                        indexPartidoAjuste += 2
+                    }
+                }
+            }
+
+            partidosLlaves[primeraFase] = this.ordenarPartidosParaAsignacion(partidosLlaves[primeraFase])
+            partidosLlaves[faseDeAjuste] = this.ordenarPartidosParaAsignacion(partidosLlaves[faseDeAjuste])
+
             return partidosLlaves;
         },
 
@@ -320,6 +387,10 @@ export default {
             partidosLlaves[fase] = this.ordenarPartidosParaAsignacion(partidosLlaves[fase])
             const partido = partidosLlaves[fase]?.find((partido) => !partido.jugador1 && !partido.jugador2);
             partidosLlaves[fase] = this.ordenarPartidosParaAsignacion(partidosLlaves[fase])
+
+            if(partido == undefined) {
+                return null
+            }
 
             return partido
         },
@@ -510,6 +581,7 @@ export default {
                     partidosLlaves[this.FASES[ronda]].push(nuevoPartido2);
                     idPartidoActual++;
                 });
+                console.log(this.FASES[ronda])
             }
             if (this.categoria.gruposConEliminatoria) {
                 partidosLlaves[this.FASES[rondas + 1]] = [];
@@ -530,7 +602,7 @@ export default {
                                 jugador2: null,
                                 setsJugador1: null,
                                 setsJugador2: null,
-                                idPartidoPadre: partidoAnterior.id,
+                                idPartidoPadre: null, //partidoAnterior.id
                                 fase: this.FASES[rondas + 1]
                             };
                             partidosLlaves[this.FASES[rondas + 1]].push(nuevoPartido);
