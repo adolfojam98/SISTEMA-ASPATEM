@@ -29,9 +29,10 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
-import XLSX from "xlsx";
+import * as XLSX from 'xlsx';
 import FileSaver from "file-saver";
 export default {
+  props: ['categorias'],
   data() {
     return {
       excelData: [],
@@ -164,6 +165,7 @@ export default {
       let jugadores = [];
       for (let jugador of json) {
         if (this.esDniValido(jugador.dni)) {
+          jugador.puntos = this.calcularPuntosBaseSegunCategoria(jugador.puntos);
           const resp = await axios.get("/usuario", {
             params: {
               dni: jugador.dni,
@@ -185,6 +187,9 @@ export default {
         }
       }
       this.$emit("cargar-jugadores", jugadores);
+    },
+    calcularPuntosBaseSegunCategoria(puntos){
+    return this.categorias.find((categoria) =>  categoria.puntosMinimo <= puntos && categoria.puntosMaximo >= puntos)?.puntosBase?? puntos;
     },
     esDniValido(dni) {
       const reg = new RegExp("^[0-9,$]{7,8}$");

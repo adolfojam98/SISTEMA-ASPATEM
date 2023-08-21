@@ -57,7 +57,7 @@
     },
     methods: {
           anularTodasLasCuotas () {
-            this.$emit('anularTodasLasCuotas')
+            this.$emit('anularTodasLasCuotas',this.observacion);
           }
         }
   }

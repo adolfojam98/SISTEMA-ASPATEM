@@ -1,17 +1,12 @@
 import { mapActions } from 'vuex';
 <template>
   <div>
-    <v-row>
-      <v-col md="8" offset="2">
-        <center>
-          <h2 class="pa-3">Crear nueva fecha</h2>
-        </center>
         <v-card elevation="0" class="rounded-sm">
           <div class="pa-5">
             <v-form ref="form" v-model="formularioValido" lazy-validation>
 
               <v-row justify="center">
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="8">
                   <v-select
                     v-model="torneoSeleccionado"
                     :items="torneos"
@@ -61,21 +56,23 @@ import { mapActions } from 'vuex';
                     prefix="$"
                   ></v-text-field>
 
-                  <div class="py-5">
+                </v-col>
+              </v-row>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                    <v-btn @click="[cerrarDialog()]">
+                      CANCELAR
+                    </v-btn>
                     <v-btn
                       :disabled="!formularioValido"
                       @click="guardarFecha"
                       color="primary"
                       >Guardar</v-btn
                     >
-                  </div>
-                </v-col>
-              </v-row>
+              </v-card-actions>
             </v-form>
           </div>
         </v-card>
-      </v-col>
-    </v-row>
   </div>
 </template>
 
@@ -119,6 +116,9 @@ export default {
   },
   methods: {
     ...mapActions(["callSnackbar"]),
+    cerrarDialog() {      
+      this.$emit('close');
+    },
     guardarFecha() {
       if (!this.validarFormulario()) {
         return;

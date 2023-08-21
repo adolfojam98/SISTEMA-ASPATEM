@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Cuota as CuotaResource;
+use App\Partido;
 use Illuminate\Support\Facades\URL;
 
 
@@ -29,22 +30,26 @@ class UsuarioController extends ApiController
         $id = $request->id;
         $search = $request->input('search');
         $dni = $request->dni;
-
+    
         $perPage = $request->perPage ?? 10; // Número de elementos por página
         $page = $request->page ?? 1;
         $orderBy = $request->orderBy ?? 'created_at'; // Campo por el que deseas ordenar
         $orderByDesc = filter_var($request->orderByDesc, FILTER_VALIDATE_BOOLEAN) ?? false;
         $socio = filter_var($request->socio, FILTER_VALIDATE_BOOLEAN) ?? false;
-
+        $includeDeleted = filter_var($request->includeDeleted, FILTER_VALIDATE_BOOLEAN) ?? false;
+    
         $query = Usuario::with('cuotas')->when($dni, function ($query, $dni) {
             $query->where('dni', $dni);
         });
-        if($id){
+    
+        if ($id) {
             $query->where('id', $id);
         }
+    
         if ($socio) {
             $query->where('socio', true);
         }
+    
         if ($search && strlen($search) > 0) {
             $query->where(function ($query) use ($search) {
                 $query->where('nombre', 'like', '%' . $search . '%')
@@ -52,26 +57,34 @@ class UsuarioController extends ApiController
                     ->orWhere('dni', 'like', '%' . $search . '%');
             });
         }
+    
         $query->orderBy($orderBy, $orderByDesc ? 'desc' : 'asc');
-
+    
+        if ($includeDeleted) {
+            $query->onlyTrashed(); // Incluye elementos eliminados
+        } else {
+            $query->whereNull('deleted_at'); // Excluye elementos no eliminados
+        }
+    
         $usuarios = $query->paginate($perPage, ['*'], 'page', $page);
-
+    
         // Carga relaciones adicionales
         foreach ($usuarios as $key => $usuario) {
             $usuario->socio = $usuario->socio();
             $usuario->cuotas_adeudadas = $usuario->cuotasAdeudadas();
             $usuario->torneos = $usuario->torneos()->get();
             $usuario->fechas = $usuario->fechas()->get();
-
+    
             foreach ($usuario->cuotas as $k => $cuota) {
                 $cuota->pago;
             }
         }
-
+    
         return [
             'usuarios' => $usuarios
         ];
     }
+    
 
 
     /**
@@ -191,10 +204,20 @@ class UsuarioController extends ApiController
         $usuario->motivo_baja = $motivo;
         $usuario->update();
         $usuario->delete();
-
+        return response()->json(['message' => 'Usuario eliminado correctamente']);
         //Esta función obtendra el id de la tarea que hayamos seleccionado y la borrará de nuestra BD
 
     }
+
+    public function restore(Request $request)
+{
+    $usuario = Usuario::onlyTrashed()->findOrFail($request->id);
+
+    $usuario->motivo_baja = null;
+    $usuario->restore(); // Restaurar el usuario
+
+    return response()->json(['message' => 'Usuario restaurado exitosamente']);
+}
 
     public function show_dif_id(Request $request)
     {
@@ -258,7 +281,10 @@ class UsuarioController extends ApiController
                     'puntos_totales' => $jugador_puntos,
                     'nuevos_puntos' => $fecha_usuario ? $fecha_usuario->puntos : '-',
                     'monto_pagado' => $fecha_usuario ? $fecha_usuario->monto_pagado : '-',
-                    'created_at' => $fecha->created_at
+                    'created_at' => $fecha->created_at,
+                    'partidos' => Partido::whereHas('jugadores', function ($query) use ($id) {
+                        $query->where('usuario_id', $id);
+                    })->where('fecha_id', $fecha->id)->with('jugadores')->get()
                 ];
                 array_push($fechas_data, $fecha_data);
             }

@@ -59,25 +59,22 @@ function crearTorneoSeed($nombre)
             $categoria->puntos_minimos = $puntosMinimos;
             $categoria->puntos_maximos = $puntosMinimos + (rand(5,15)*10)-1;
             $puntosMinimos = $categoria->puntos_maximos + 1;
-           $categoria->torneo_id = $torneo->id;
+            $categoria->torneo_id = $torneo->id;
+            $categoria->puntos_base = round($categoria->puntos_minimos + ($categoria->puntos_maximos - $categoria->puntos_minimos) / 2, 0); // Redondear a 2 decimales           $categoria->torneo_id = $torneo->id;
            $categoria->save(); 
            $nroCategoria++;
-            
-
-       }
-      
+       }  
        $categoria = new Categoria();
        $categoria->nombre = "Categoría"  .$nroCategoria . " " .$torneo->nombre ;
        $categoria->puntos_minimos = $puntosMinimos;
        $categoria->puntos_maximos = 9999;
+       $categoria->torneo_id = $torneo->id;
+       $categoria->puntos_base = $categoria->puntos_minimos + 100;
     
       $categoria->torneo_id = $torneo->id;
       $categoria->save(); 
-      
-       
-
-
     }
+
     function crearTorneoReal(){
         $torneo = new Torneo();
         $torneo = new Torneo();

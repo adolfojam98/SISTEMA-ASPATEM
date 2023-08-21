@@ -1,9 +1,10 @@
+
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog"  max-width="600px">
       <template v-slot:activator="{ on, attrs }">
         <v-btn color="success" v-bind="attrs" v-on="on">
-          Agregar nuevo jugador
+          Nuevo jugador
         </v-btn>
       </template>
       <v-card>
@@ -15,7 +16,9 @@
             required></v-text-field>
           <v-text-field class="ml-2 mr-2" v-model="dniJugador" :rules="dniRules" label="DNI del jugador"
             required></v-text-field>
-          <v-text-field class="ml-2 mr-2" v-model="puntosJugador" label="Puntos del jugador" :rules="puntosRules"
+            <v-select label="Seleccione una categoria" :items="categorias" item-text="nombre" v-model="categoriaJugadorSeleccionada" return-object></v-select>
+
+          <v-text-field class="ml-2 mr-2" v-model="categoriaJugador" label="Puntos del jugador" :rules="puntosRules"
             required></v-text-field>
         </v-form>
 
@@ -34,8 +37,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
-
+  props: ['categorias'],
   data() {
     return {
       dialog: false,
@@ -45,6 +49,7 @@ export default {
       apellidoJugador: "",
       dniJugador: null,
       puntosJugador: null,
+      categoriaJugadorSeleccionada: null,
 
       //RULES
       aynRules: [
@@ -73,7 +78,7 @@ export default {
         nombre: this.nombreJugador,
         apellido: this.apellidoJugador,
         dni: this.dniJugador,
-        puntos: this.puntosJugador
+        puntos: this.categoriaJugadorSeleccionada.puntosBase,
       });      
       this.$refs.form.reset();
     },
