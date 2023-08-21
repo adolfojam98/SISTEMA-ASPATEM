@@ -69,79 +69,74 @@ export default {
                 this.callSnackbar(["Ya existe una categoria con este nombre", "error"]);
                 return;
             }
-            const categoria = {
+
+
+
+            const nuevaCategoria = {
                 nombre: this.nombreNuevaCategoria,
                 puntosMinimo: parseInt(this.puntosMinimos),
                 puntosMaximo: 9999999,
                 puntosBase: this.puntosBase
             };
 
-            if (this.arrayCategorias.length === 0) {
-                this.arrayCategorias.push(categoria);
-                this.resetearFormulario();
+            try {
+                this.insertarCategoriaOrdenada(nuevaCategoria);
+            } catch (error) {
+                this.callSnackbar([error.message, "error"]);
                 return;
             }
 
-            for (let i = 0; i < this.arrayCategorias.length; i++) {
-                if (
-                    parseInt(this.arrayCategorias[i].puntosMinimo) ==
-                    parseInt(this.puntosMinimos)
-                ) {
-                    this.callSnackbar([
-                        "Ya existe una categoria con estos puntos minimos",
-                        "error",
-                    ]);
-                    break;
-                }
-
-                if (
-                    parseInt(this.arrayCategorias[i].puntosMinimo) >
-                    parseInt(this.puntosMinimos) &&
-                    i == 0
-                ) {
-                    categoria.puntosMaximo =
-                        parseInt(this.arrayCategorias[i].puntosMinimo) - 1;
-                    this.arrayCategorias.splice(i, 0, categoria);
-                    break;
-                } else {
-                    if (
-                        parseInt(this.arrayCategorias[i].puntosMinimo) >
-                        parseInt(this.puntosMinimos)
-                    ) {
-                        if (this.arrayCategorias.length > i) {
-                            if (this.arrayCategorias.length > 1) {
-                                this.arrayCategorias[--i].puntosMaximo =
-                                    parseInt(this.puntosMinimos) - 1;
-                                i++;
-                            }
-                            categoria.puntosMaximo =
-                                parseInt(this.arrayCategorias[i].puntosMinimo) - 1;
-                        }
-
-                        if (i + 1 == this.arrayCategorias.length) {
-                            this.arrayCategorias[i].puntosMaximo = 9999999;
-                        }
-
-                        this.arrayCategorias.splice(i, 0, categoria);
-                        break;
-                    }
-                }
-
-                if (
-                    parseInt(this.arrayCategorias[i].puntosMinimo) <
-                    parseInt(this.puntosMinimos) &&
-                    this.arrayCategorias.length === i + 1
-                ) {
-                    this.arrayCategorias[i--].puntosMaximo =
-                        parseInt(this.puntosMinimos) - 1;
-                    i++;
-
-                    this.arrayCategorias.push(categoria);
-                    break;
-                }
-            }
             this.resetearFormulario();
         },
+        validarPuntosCategorias(categoria){
+            if(categoria.puntosMinimo > this.puntosBase){
+                throw new Error("No se permite poner puntos base menor a puntos minimos")
+            }
+            if (categoria.puntosBase < categoria.puntosMinimo || categoria.puntosBase > categoria.puntosMaximo) {
+                throw new Error("Los punto base no estan dentro del intervalo permitido");
+            }
+
+            for (const categoriaActual of this.arrayCategorias) {
+        if (
+            categoria.puntosMinimo <= categoriaActual.puntosBase &&
+            categoria.puntosMaximo >= categoriaActual.puntosBase
+        ) {
+            throw new Error("Ya existe una categoría con puntos base dentro del intervalo.");
+        }
+    }
+        },
+
+        insertarCategoriaOrdenada(nuevaCategoria) {
+
+            this.validarPuntosCategorias(nuevaCategoria);
+            let insertIndex = 0;
+            for (let i = 0; i < this.arrayCategorias.length; i++) {
+                const categoriaActual = this.arrayCategorias[i];
+
+                if (categoriaActual.puntosMinimo === nuevaCategoria.puntosMinimo) {
+                    throw new Error("Ya existe una categoria con estos puntos minimos");
+                }
+
+                if (categoriaActual.puntosMinimo > nuevaCategoria.puntosMinimo) {
+                    nuevaCategoria.puntosMaximo = categoriaActual.puntosMinimo - 1;
+                    this.validarPuntosCategorias(nuevaCategoria);
+                    this.arrayCategorias.splice(insertIndex, 0, nuevaCategoria);
+                    return;
+                }
+
+                if (i + 1 === this.arrayCategorias.length) {
+                    categoriaActual.puntosMaximo = 9999999;
+                }
+
+                insertIndex++;
+            }
+            this.validarPuntosCategorias(nuevaCategoria);
+
+           
+
+            this.arrayCategorias.push(nuevaCategoria);
+        },
+
     },
 };
 </script>
