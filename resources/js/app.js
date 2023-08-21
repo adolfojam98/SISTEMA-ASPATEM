@@ -62,7 +62,7 @@ Vue.component('agregar-jugador-torneo',             require('./components/CrearT
 Vue.component('buscar-jugador-torneo',              require('./components/CrearTorneo/BuscarJugadoresComponent.vue').default);
 Vue.component('crear-fecha',                        require('./components/FechaTorneo/CrearFechaTorneo/CrearFechaTorneoComponent.vue').default);
 Vue.component('agregar-jugador-torneo-fecha-modal', require('./components/FechaTorneo/AgregarJugadorTorneoComponent.vue').default);
-Vue.component('gestion-fechas',                     require('./components/FechaTorneo/GestionFechaTorneo/GestionFechaTorneoComponent.vue').default);
+Vue.component('gestion-fecha',                     require('./components/FechaTorneo/GestionFechaTorneo/GestionFechaJugadoresComponent.vue').default);
 Vue.component('gestion-fechas-jugadores',           require('./components/FechaTorneo/GestionFechaTorneo/GestionFechaJugadoresComponent.vue').default);
 Vue.component('grupos-categorias',                  require('./components/FechaTorneo/GestionGruposFechaTorneo/GruposCategoriasComponent.vue').default);
 Vue.component('partidos-categoria',                 require('./components/FechaTorneo/GestionGruposFechaTorneo/PartidosCategoriaComponent.vue').default);
