@@ -20,14 +20,14 @@
 
         </div>
 
-        <v-btn class="mx-4" @click="buscarCuotasUsuario" color="primary">
+        <v-btn class="mx-2" @click="buscarCuotasUsuario" color="primary">
           Buscar
         </v-btn>
 
-        <v-btn class="mx-4" @click="generarCuotasMasivas = true" color="primary">
+        <v-btn class="mr-5" @click="generarCuotasMasivas = true" color="primary">
           Generar cuotas masivamente
         </v-btn>
-        <div v-if="busco"  class="mr-8">
+        <div v-if="busco"  class="mr-5">
           <anular-cuotas @anularTodasLasCuotas="anularTodasLasCuotas"></anular-cuotas>
         </div>
         <div v-if="busco">
