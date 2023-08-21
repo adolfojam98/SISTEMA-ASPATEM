@@ -24,9 +24,10 @@
               </template>
               <span>Editar</span>
             </v-tooltip>
+
             <v-tooltip bottom v-if="!mostrarEliminados">
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" class="mr-1" right @click="gestionarRelaciones(item)"
+                <v-icon v-bind="attrs" v-on="on" class="mr-1" @click="gestionarRelaciones(item)"
                   color="primary">mdi-account-group</v-icon>
               </template>
               <span>Relaciones</span>
@@ -50,12 +51,7 @@
               <span>Recuperar eliminado</span>
             </v-tooltip>
 
-            <v-btn class="mx-2" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
-          </div>
-          <div v-else>
-            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">Edit?</v-btn>
-            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">Ver ultima fecha jugada
-              quizas?</v-btn>
+            <v-btn v-if="!mostrarEliminados" class="mx-2" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
           </div>
         </template>
 
@@ -112,10 +108,14 @@
         <relaciones-usuario :usuario="usuarioRelaciones"></relaciones-usuario>
       </v-dialog>
 
-      <v-dialog v-model="restaurarUsuarioModal" max-width="700px">
+      <v-dialog v-model="restaurarUsuarioModal" max-width="400px">
         <v-card>
           <v-card-title class="headline">Desea restaurar el usuario?</v-card-title>
-          <v-card-text>Este jugador recuperara bah nose que poner aca. ¿Desea continuar?.</v-card-text>
+          <v-card-text>
+            <h3>
+              motivo de baja: {{ usuarioRestaurar?.motivo_baja }}
+            </h3>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" outlined @click="[(restaurarUsuarioModal = false)]">CANCELAR</v-btn>
