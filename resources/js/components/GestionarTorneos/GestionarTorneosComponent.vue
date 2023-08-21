@@ -193,7 +193,7 @@
             <template v-slot:[`item.actions`]="{ item }">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn class="ml-4" v-bind="attrs" v-on="on" @click.stop="[$router.push({path: `/torneos/gestionFechas`, query: { torneoId: torneoSeleccionado.id, fechaId: item.id }})]"
+                  <v-btn small class="ml-4" v-bind="attrs" v-on="on" @click.stop="[$router.push({path: `/torneos/gestionFechas`, query: { torneoId: torneoSeleccionado.id, fechaId: item.id }})]"
                     color="success">Ver</v-btn>
                 </template>
                 <span>Eliminar</span>
