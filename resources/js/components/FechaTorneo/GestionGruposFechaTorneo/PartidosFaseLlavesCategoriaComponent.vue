@@ -12,8 +12,8 @@
                         <div class="ma-2" v-if="partido.fase == fase">
                             <v-card outlined flat max-width="374">
                                 <div class="d-flex container-group_player">
-                                    <div v-if="partido?.jugador1?.posicionGrupo" class="my-auto mr-1 container-group_position">
-                                        <span> {{partido?.jugador1?.posicionGrupo}}: </span>
+                                    <div class="my-auto mr-1 container-group_position">
+                                        <span v-if="partido?.jugador1?.posicionGrupo"> {{partido?.jugador1?.posicionGrupo}}: </span>
                                     </div>
 
                                     <div class="justify-space-between my-auto container-group_player_info">
@@ -39,8 +39,8 @@
                                 </div>
 
                                 <div class="d-flex container-group_player">
-                                     <div v-if="partido?.jugador2?.posicionGrupo" class="my-auto container-group_position">
-                                        <span> {{partido?.jugador2?.posicionGrupo}}: </span>
+                                     <div class="my-auto container-group_position">
+                                        <span v-if="partido?.jugador2?.posicionGrupo"> {{partido?.jugador2?.posicionGrupo}}: </span>
                                     </div>
 
                                     <div class="justify-space-between my-auto container-group_player_info">
@@ -164,6 +164,11 @@ export default {
             if (!(partido.setsJugador1 && partido.setsJugador2)) {
                 return;
             }
+
+            if(partido.setsJugador1 == partido.setsJugador2){
+                return;
+            }
+
             //saco el jugador ganador del partido
             const jugadorGanador = partido.setsJugador1 > partido.setsJugador2 ? partido.jugador1 : partido.jugador2;
             //saco el siguiente partido de la fase siguiente
