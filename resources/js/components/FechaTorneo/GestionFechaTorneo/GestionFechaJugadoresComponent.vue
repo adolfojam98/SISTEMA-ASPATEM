@@ -101,7 +101,7 @@
               <v-btn icon dark @click="modalPartidosCategoria = false">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
-              <v-toolbar-title>Partidos categoria : {{ categoriaSeleccionada.nombre }}</v-toolbar-title>
+              <v-toolbar-title>Partidos Categoría: {{ categoriaSeleccionada.nombre }}</v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
             <partidos-categoria :categoria="categoriaSeleccionada"></partidos-categoria>
@@ -138,7 +138,7 @@ export default {
         { text: "Nombre", value: "nombre", width: '175px' },
         { text: "DNI", value: "dni", width: '125px' },
         {
-          text: "Categoría Acual",
+          text: "Categoría Actual",
           value: "catActual",
           sortable: false,
           filterable: false,
@@ -210,12 +210,15 @@ export default {
           this.vaciarVariables();
           this.callSnackbar(['Fecha guardada correctamente', 'success']);
           this.getFechas();
-
+          this.cerrarDialog()
         })
       } catch (e) {
         this.callSnackbar([e, 'error'])
       }
 
+    },
+    cerrarDialog() {      
+      this.$emit('close');
     },
     validarGuardarFecha() {
       this.listaCategorias.forEach(categoria => {
@@ -324,8 +327,8 @@ export default {
       const { jugador1, jugador2 } = partido.jugadores;
       partido.setsJugador1 = jugador1?.sets;
       partido.setsJugador2 = jugador2?.sets;
-      partido.jugadores.jugador1 = listaJugadores.find(jugador => jugador.usuario_id == jugador1?.id);
-      partido.jugadores.jugador2 = listaJugadores.find(jugador => jugador.usuario_id == jugador2?.id);
+      partido.jugadores.jugador1 = listaJugadores?.find(jugador => jugador.usuario_id == jugador1?.id);
+      partido.jugadores.jugador2 = listaJugadores?.find(jugador => jugador.usuario_id == jugador2?.id);
     },
 
     mapearPartidosDeCategoria(partidos) {
@@ -474,6 +477,12 @@ export default {
         return;
       }
 
+      //nos aseguramos de que la categoria no tenga ningun partido sin guardar, debe quedar vacio si esta inscribiendo
+      //esto es por si deshace los grupos para anotar a alguien y no guarda, al recargar traeria los partidos de nuevo y generaria inconsistencia
+      axios.post(`/fechas/${this.fechaId}/categoria/${categoriaJugador.id}`, {
+        'partidos': []
+      });
+
       if (estadoJugador.categoria_menor_id) {
         estadoJugador.categoria_menor_id = null
       } else {
@@ -492,6 +501,12 @@ export default {
         this.callSnackbar(['No se puede realizar el cambio ya que se esta jugando la categoria', 'error']);
         return;
       }
+
+      //nos aseguramos de que la categoria no tenga ningun partido sin guardar, debe quedar vacio si esta inscribiendo
+      //esto es por si deshace los grupos para anotar a alguien y no guarda, al recargar traeria los partidos de nuevo y generaria inconsistencia
+      axios.post(`/fechas/${this.fechaId}/categoria/${categoriaSuperiorJugador.id}`, {
+        'partidos': []
+      });
 
       if (estadoJugador.categoria_mayor_id) {
         estadoJugador.categoria_mayor_id = null

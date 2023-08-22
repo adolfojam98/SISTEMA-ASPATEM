@@ -215,10 +215,10 @@
               <v-btn icon dark @click="modalGestionFecha = false">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
-              <v-toolbar-title>Fecha : {{ fechaNombre }}</v-toolbar-title>
+              <v-toolbar-title>Fecha: {{ fechaNombre }}</v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
-            <gestion-fecha :torneoId="this.torneoSeleccionado?.id" :fechaId="fechaId" />
+            <gestion-fecha v-if="fechaId" @close="modalGestionFecha = !modalGestionFecha" :torneoId="this.torneoSeleccionado?.id" :fechaId="fechaId" />
           </v-card>
         </v-dialog>
 
@@ -298,7 +298,12 @@ export default {
     },
 
     goToViewResumenFecha(fecha) {
-      this.$router.push({ path: `/resumen/torneo/fecha/${fecha.id}` });
+      if(!fecha.vigencia) {
+        this.$router.push({ path: `/resumen/torneo/fecha/${fecha.id}` });
+      }
+      else {
+        this.callSnackbar(['El resumen de la fecha será accesible una vez cerrada la fecha.', 'info']);
+      }
     },
     async cargarJugadoresImportados(jugadores){
       try{
@@ -367,5 +372,22 @@ export default {
       this.setTorneos(res.data);
     });
   },
+
+  watch: {
+    modalGestionFecha() {
+      if(!this.modalGestionFecha) {
+        this.fechaId = null
+        this.getFechas()
+        this.getInfoGraficasCategorias()
+      }
+    },
+    
+    nuevaFecha() {
+      if(!this.nuevaFecha) {
+        this.getFechas()
+        this.getInfoGraficasCategorias()
+      }
+    }
+  }
 };
 </script>
