@@ -12,7 +12,7 @@
             </v-tooltip>
           </div>
 
-          <div class="my-auto">
+          <div class="ml-1 my-auto">
             <v-text-field label="Sets" class="input-sets" v-model="partido.setsJugador1" type="number"></v-text-field>
           </div>
         </div>
@@ -28,7 +28,7 @@
             </v-tooltip>
           </div>
 
-          <div cols="3" class="my-auto">
+          <div cols="3" class="ml-1 my-auto">
             <v-text-field label="Sets" class="input-sets" v-model="partido.setsJugador2" type="number"></v-text-field>
           </div>
         </div>

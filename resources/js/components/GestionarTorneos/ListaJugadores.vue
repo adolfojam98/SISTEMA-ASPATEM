@@ -58,13 +58,13 @@ export default {
     return {
       search: "",
       headers: [
-        { text: "Nombre", value: "nombre" },
-        { text: "Apellido", value: "apellido" },
+        { text: "Nombre", value: "nombre", width: "100px" },
+        { text: "Apellido", value: "apellido", width: "100px" },
         { text: "DNI", value: "dni" },
         { text: "Telefono", value: "telefono" },
-        { text: "Puntos", value: "pivot.puntos" },
-        { text: "Categoria", value: "pivot.categoria.nombre" },
-        { text: "Monto Pagado", value: "montoPagado" },
+        { text: "Puntos", value: "pivot.puntos", width: "95px" },
+        { text: "Categoria", value: "pivot.categoria.nombre", width: "110px" },
+        { text: "Monto Pagado", value: "montoPagado", width: "95px" },
         {
           text: "Socio",
           value: "socio",

@@ -264,9 +264,9 @@ class FechaController extends ApiController
         try
             {
                 $request->validate([
-                    'partidos' => 'required|array',
-                    'partidos.*' => 'required',
-                    'partidos.*.fase' => 'required | string',
+                    // 'partidos' => 'required|array',
+                    // 'partidos.*' => 'required',
+                    // 'partidos.*.fase' => 'required | string',
                     // 'partidos.*.id_jugador1' => 'required',
                     // 'partidos.*.id_jugador2' => 'required',
                     // 'partidos.*.set_jugador1' => 'required',

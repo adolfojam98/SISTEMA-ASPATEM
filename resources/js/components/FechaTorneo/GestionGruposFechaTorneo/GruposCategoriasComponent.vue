@@ -29,7 +29,7 @@
               <v-btn icon dark @click="modalPartidosCategoria = false">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
-              <v-toolbar-title>Partidos categoria : {{ categoriaSeleccionada.nombre }}</v-toolbar-title>
+              <v-toolbar-title>Partidos Categoría: {{ categoriaSeleccionada.nombre }}</v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
             <partidos-categoria :categoria="categoriaSeleccionada"></partidos-categoria>

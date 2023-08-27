@@ -31,7 +31,7 @@
       <div v-if="llavesGeneradas" class="mt-3">
         <v-btn class='ml-7' @click="[confirmModalDeshacerLlaves = true]" color="primary">Deshacer
           llaves</v-btn>
-        <resultados-grupos :categoria="categoria">
+        <resultados-grupos v-if="llavesGeneradas" :categoria="categoria">
         </resultados-grupos>
         <partidos-fase-llaves :categoria="categoria"></partidos-fase-llaves>
       </div>

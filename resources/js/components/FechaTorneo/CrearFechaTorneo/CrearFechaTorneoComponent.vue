@@ -130,8 +130,15 @@ export default {
         montoNoSociosUnaCategoria: this.montoNoSociosUnaCategoria,
         montoNoSociosDosCategorias: this.montoNoSociosDosCategorias,
         torneoId: this.torneoSeleccionado.id,
-      });
-      this.callSnackbar(["Fecha generada exitosamente", "success"]);
+      })
+      .then(res=> {
+        this.cerrarDialog()
+        this.callSnackbar(["Fecha generada exitosamente", "success"]);
+      })
+      .catch((e) =>
+        this.callSnackbar("Hubo un error al guardar la fecha. " + e, "error")
+      );
+      
     },
 
     validarFormulario() {
@@ -146,7 +153,7 @@ export default {
           this.setListaJugadores(res.data);
         })
         .catch((e) =>
-          this.callSnackbar("No se pudieron traer jugadores. " + error, "error")
+          this.callSnackbar("No se pudieron traer jugadores. " + e, "error")
         );
     },
 

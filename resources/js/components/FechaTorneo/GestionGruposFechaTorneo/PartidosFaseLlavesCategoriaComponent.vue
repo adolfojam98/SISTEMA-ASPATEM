@@ -423,6 +423,10 @@ export default {
         },
         
         ordenarPartidosParaAsignacion(arr) { //ordena/vuelve a como estaban antes los partidos, asi se hacen bien las asignaciones de los jugadores
+            if(arr?.length < 2) {
+                return arr
+            }
+
             let A = [arr[0]]
             let B = [arr[1]]
             let direccionA = false
@@ -490,36 +494,64 @@ export default {
 
             // ordenamos
             jugadores.sort((jugadorA, jugadorB) => {
-            // ordenar por partidosGanados (mayor a menor)
+            // ordenar por partidosGanados (mayor a menor) 
                 if (jugadorB.partidosGanados !== jugadorA.partidosGanados) {
                     return jugadorB.partidosGanados - jugadorA.partidosGanados;
                 } 
-                else {
-                    let setGanadosJugadorA = this.getSetGanados(jugadorA, grupo.partidos);
-                    let setGanadosJugadorB = this.getSetGanados(jugadorB, grupo.partidos);
-
-                    if(setGanadosJugadorA != setGanadosJugadorB){ // si tienen la misma cantidad de partidosGanados, ordenamos por cantidad de set ganados
-                        return setGanadosJugadorB - setGanadosJugadorA;
-                    }
                     else {
-                        // si tienen la misma cantidad de partidosGanados y setsGanados, ordenamos por el resultado del partido entre ellos
-                        const partidoEntreJugadores = grupo.partidos.find(partido =>
-                            (partido.jugador1.usuario_id === jugadorA.usuario_id && partido.jugador2.usuario_id === jugadorB.usuario_id) ||
-                            (partido.jugador1.usuario_id === jugadorB.usuario_id && partido.jugador2.usuario_id === jugadorA.usuario_id)
-                        );
+                        if(this.esEmpateDoble(jugadores, jugadorA.partidosGanados)) {
+                            console.log('empate doble')
+                            // si tienen la misma cantidad de partidosGanados y solo empataron estos dos jugadores, nos fijamos el ganador
+                                const partidoEntreJugadores = grupo.partidos.find(partido =>
+                                    (partido.jugador1.usuario_id === jugadorA.usuario_id && partido.jugador2.usuario_id === jugadorB.usuario_id) ||
+                                    (partido.jugador1.usuario_id === jugadorB.usuario_id && partido.jugador2.usuario_id === jugadorA.usuario_id)
+                                );
 
-                        // ordenamos por resultado del partido (mayor a menor)
-                        return this.getIdGanadorPartido(partidoEntreJugadores) === jugadorA.usuario_id ? -1 : 1;
+                                // ordenamos por resultado del partido (mayor a menor)
+                                return this.getIdGanadorPartido(partidoEntreJugadores) === jugadorA.usuario_id ? -1 : 1;
+                            } 
+                            else {
+                            console.log('empate triple o mayor')
+                            //calculamos el coeficinte y pasa primero el de mayor coeficiente
+                            const coeficienteJugadorA = this.getCoeficiente(jugadorA, grupo.partidos)
+                            const coeficienteJugadorB = this.getCoeficiente(jugadorB, grupo.partidos)
+                            console.log(coeficienteJugadorA, coeficienteJugadorB, jugadorA, jugadorB)
+
+                            // ordenamos por coeficiente (mayor a menor)
+                            return coeficienteJugadorA > coeficienteJugadorB ? -1 : 1;
+                        }
                     }
-                }
             });
 
             return jugadores
         },
 
-        getSetGanados(jugador, partidos) {
+        esEmpateDoble(jugadores, partidosGanados) {
+            let jugadoresEmpatados = 0;
+
+            jugadores?.forEach(jugador => {
+                if(jugador.partidosGanados == partidosGanados) {
+                    jugadoresEmpatados++
+                }
+            })
+
+            if(jugadoresEmpatados == 2) {
+                return true
+            }
+
+            return false
+        },
+
+        getCoeficiente(jugador, partidos) {
+            const setGanados = this.getSetGanados(jugador, partidos);
+            const setPerdidos = this.getSetPerdidos(jugador, partidos);
+
+            return setPerdidos == 0 ? setGanados : (setGanados / setPerdidos)
+        },
+
+        getSetGanados(jugador, partidos) {console.log(partidos)
             let totalSetsGanados = 0
-            partidos.forEach(partido => {
+            partidos?.forEach(partido => {
                 if(jugador.usuario_id == partido.jugador1.usuario_id) {
                     totalSetsGanados += parseInt(partido.setsJugador1)
                 }
@@ -530,6 +562,21 @@ export default {
             });
 
             return totalSetsGanados;
+        },
+
+        getSetPerdidos(jugador, partidos) {
+            let totalSetsPerdidos = 0
+            partidos?.forEach(partido => {
+                if(jugador.usuario_id == partido.jugador1.usuario_id) {
+                    totalSetsPerdidos += parseInt(partido.setsJugador2) //los sets perdidos serian los del otro jugador
+                }
+
+                if(jugador.usuario_id == partido.jugador2.usuario_id) {
+                    totalSetsPerdidos += parseInt(partido.setsJugador1)
+                }
+            });
+
+            return totalSetsPerdidos;
         },
 
         getIdGanadorPartido(partido) {

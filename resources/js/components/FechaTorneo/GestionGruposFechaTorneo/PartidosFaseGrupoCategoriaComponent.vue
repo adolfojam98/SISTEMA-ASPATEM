@@ -5,7 +5,7 @@
         <h2>Fase de grupos</h2>
       </center>
       <v-card-text>
-          <v-row v-for="grupo in categoria.listaGrupos" :key="grupo.nombre">
+          <v-row v-for="grupo in categoria?.listaGrupos" :key="grupo.nombre">
             <v-col>
               <h3>Grupo {{ grupo.nombre }}</h3>
               <v-row cols="12" class="d-flex">
