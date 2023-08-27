@@ -1,7 +1,7 @@
 <template>
   <div class="body">
-    <div class="container">
-      <v-row class="fill-height" align="center" justify="center">
+    <div class="container mt-2">
+      <v-row class="fill-height justify-content-space-evenly" align="center">
         <v-card
           flat
           class="lista-grupos rounded-0"
@@ -25,8 +25,9 @@
                     <li>
                       {{ jugador.nombre }}
                       {{ jugador.apellido }}
+                    </li>
 
-                      <v-tooltip bottom>
+                    <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-icon
                             v-if="jugador.dni"
@@ -41,7 +42,6 @@
                           {{ partidosGanados(grupo, jugador) }}</span
                         >
                       </v-tooltip>
-                    </li>
                   </div>
                 </ol>
               </div>
@@ -52,6 +52,18 @@
     </div>
   </div>
 </template>
+<style>
+  .justify-content-space-evenly {
+    justify-content: space-evenly;
+  }
+
+  .lista-jugadores {
+    display: flex;
+    min-width: 80px;
+    justify-content: space-between;
+  }
+
+</style>
 
 <script>
 import { mapState } from "vuex";
@@ -68,37 +80,84 @@ export default {
   methods: {
     ordenar() {
       let self = this;
-      self.categoria.listaGrupos.forEach((grupo) => {
-        grupo.jugadoresDelGrupo.sort(function (jugador1, jugador2) {
-          if (
-            self.partidosGanados(grupo, jugador1) >
-            self.partidosGanados(grupo, jugador2)
-          ) {
-            return -1;
-          } else if (
-            self.partidosGanados(grupo, jugador1) <
-            self.partidosGanados(grupo, jugador2)
-          ) {
-            return 1;
-          } else if (self.calcularGanadorEntre(grupo, jugador1, jugador2)) {
-            return -1;
-          } else {
-            return 1;
-          }
-        });
+      self.categoria.listaGrupos.forEach((grupo) => { //TODO se usan los mismos criterios que en PartidosFaseLlaveCategoriaComponent pero anda mal aca
+        let jugadores = grupo.jugadoresDelGrupo.map(jugador => {
+                return { ...jugador, partidosGanados: 0 };
+            });
+
+            grupo.partidos.forEach(partido => {
+                const idGanador = this.getIdGanadorPartido(partido);
+                let jugadorGanador = jugadores.find(jugador => jugador.usuario_id == idGanador);
+                jugadorGanador.partidosGanados++;
+            });
+            // ordenamos
+            jugadores.sort((jugadorA, jugadorB) => {
+            // ordenar por partidosGanados (mayor a menor)
+                if (jugadorB.partidosGanados !== jugadorA.partidosGanados) {console.log('1')
+                    return jugadorB.partidosGanados - jugadorA.partidosGanados;
+                } 
+                else {
+                    let setGanadosJugadorA = this.getSetGanados(jugadorA, grupo.partidos);
+                    let setGanadosJugadorB = this.getSetGanados(jugadorB, grupo.partidos);
+
+                    if(setGanadosJugadorA != setGanadosJugadorB){ // si tienen la misma cantidad de partidosGanados, ordenamos por cantidad de set ganados
+                        return setGanadosJugadorB - setGanadosJugadorA;
+                    }
+                    else {console.log('3')
+                        // si tienen la misma cantidad de partidosGanados y setsGanados, ordenamos por el resultado del partido entre ellos
+                        const partidoEntreJugadores = grupo.partidos.find(partido =>
+                            (partido.jugador1.usuario_id === jugadorA.usuario_id && partido.jugador2.usuario_id === jugadorB.usuario_id) ||
+                            (partido.jugador1.usuario_id === jugadorB.usuario_id && partido.jugador2.usuario_id === jugadorA.usuario_id)
+                        );
+
+                        // ordenamos por resultado del partido (mayor a menor)
+                        return this.getIdGanadorPartido(partidoEntreJugadores) === jugadorA.usuario_id ? -1 : 1;
+                    }
+                }
+            });
+
+            grupo.jugadoresDelGrupo = jugadores
       });
+
+      return self.categoria.listaGrupos;
     },
+
+    getIdGanadorPartido(partido) {
+            const setsJugador1 = parseInt(partido.setsJugador1);
+            const setsJugador2 = parseInt(partido.setsJugador2);
+
+            if(setsJugador1 > setsJugador2) {
+                return partido.jugador1.usuario_id;
+            } else {
+                return partido.jugador2.usuario_id;
+            }
+        },
+
+        getSetGanados(jugador, partidos) {
+            let totalSetsGanados = 0
+            partidos.forEach(partido => {
+                if(jugador.usuario_id == partido.jugador1.usuario_id) {
+                    totalSetsGanados += parseInt(partido.setsJugador1)
+                }
+
+                if(jugador.usuario_id == partido.jugador2.usuario_id) {
+                    totalSetsGanados += parseInt(partido.setsJugador2)
+                }
+            });
+
+            return totalSetsGanados;
+        },
 
     partidosGanados(grupo, jugador) {
       let count = 0;
       grupo.partidos.forEach((partido) => {
         if (
-          partido.jugador1 == jugador &&
+          partido.jugador1.usuario_id == jugador.usuario_id &&
           partido.setsJugador1 > partido.setsJugador2
         ) {
           count++;
         } else if (
-          partido.jugador2 == jugador &&
+          partido.jugador2.usuario_id == jugador.usuario_id &&
           partido.setsJugador2 > partido.setsJugador1
         ) {
           count++;

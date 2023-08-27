@@ -16,7 +16,7 @@
       </div>
       <v-btn class="mx-6" @click="cargarFecha()" color="primary">BUSCAR</v-btn>
       <agregar-jugador-torneo-fecha-modal
-        @agregar-jugador="agregarNuevoJugadorTorneo" v-if="busquedaRealizada"></agregar-jugador-torneo-fecha-modal>
+        @agregar-jugador="agregarNuevoJugadorTorneo" v-if="busquedaRealizada" :categorias="listaCategorias"></agregar-jugador-torneo-fecha-modal>
     </v-row>
 
     <div class="d-flex" style="justify-content: center;">
@@ -75,6 +75,8 @@ import { mapActions } from 'vuex';
 export default {
   data() {
     return {
+      torneoId: this.$route.query.torneoId,
+      fechaId: this.$route.query.fechaId,
       busquedaRealizada: false,
       torneos: [],
       torneoSeleccionado: null,
@@ -108,17 +110,32 @@ export default {
   created() {
     axios.get("/torneos").then((res) => {
       this.torneos = res.data;
+
+      if(this.torneoId) {
+        let torneo = this.torneos.find(torneo => torneo.id == this.torneoId)
+        this.torneoSeleccionado = torneo
+      }
+
+      if(this.fechaId) {
+        this.getFechas(this.fechaId)
+      }
     });
   },
   methods: {
     ...mapActions(['callSnackbar']),
     nombreTorneo: (item) => item.nombre,
     nombreFecha: (item) => item.nombre,
-    getFechas() {
+    getFechas(defaultFechaId) {console.log(defaultFechaId)
       this.vaciarVariables();
       if (this.torneoSeleccionado) {
         axios.get(`/torneo/${this.torneoSeleccionado.id}/fechas`).then((res) => {
           this.fechas = this.filtarFechasCerradas(res.data);
+
+          if(defaultFechaId) {
+            let fecha = this.fechas.find(fecha => fecha.id == defaultFechaId)
+            this.fechaSeleccionada = fecha
+            this.cargarFecha()
+          }
         })
         axios.get(`/torneos/${this.torneoSeleccionado.id}/categorias`).then((res) => {
           this.listaCategorias = res.data;

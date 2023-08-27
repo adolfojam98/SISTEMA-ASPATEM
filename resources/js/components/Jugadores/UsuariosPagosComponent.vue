@@ -27,8 +27,11 @@
         <v-btn class="mx-4" @click="generarCuotasMasivas = true" color="primary">
           Generar cuotas masivamente
         </v-btn>
-        <div v-if="busco">
+        <div v-if="busco"  class="mr-8">
           <anular-cuotas @anularTodasLasCuotas="anularTodasLasCuotas"></anular-cuotas>
+        </div>
+        <div v-if="busco">
+          <generar-cuota-socio :usuario="usuarioSeleccionado" @recargarCuotas="recargarCuotas = $event"></generar-cuota-socio>
         </div>
 
       </div>
@@ -145,7 +148,7 @@
             Cancelar
           </v-btn>
           <v-btn @click="[modalAnularCuota = false, anularCuota()]">
-            ANULAR
+            APLICAR
           </v-btn>
         </v-card-actions>
       </v-card>

@@ -8,7 +8,7 @@
                         <importar-jugadores
                             @nuevosJugadores="nuevosJugadores = $event"
                             @cargar-jugadores="cargarJugadoresImportados"
-
+                            :categorias="arrayCategorias"
                         ></importar-jugadores>
                        
                     </v-container>
@@ -35,7 +35,8 @@ export default {
   components: { AgregarJugadorTorneoComponent, TablaJugadoresTorneoComponent },
   
   computed: {
-      ...mapState('CrerTorneo',['listaJugadores']),
+    ...mapState("CrearTorneo", ['listaJugadores',"arrayCategorias"])
+
   },
   methods: {
       ...mapMutations('CrearTorneo',['setStep',"pushJugadorTorneo"]),

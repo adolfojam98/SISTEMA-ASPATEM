@@ -6,35 +6,56 @@
     </div>
     <v-card>
       <div class="mx-2">
+        <v-switch v-model="mostrarEliminados" :label="`Mostrar jugadores eliminados`"></v-switch>
+      </div>
+
+      <div class="mx-2">
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line hide-details></v-text-field>
       </div>
 
-      <v-data-table :headers="headers" :items="usuarios" 
-      :options.sync="options"
-      :server-items-length="totalUsuarios" 
-      :search="search"
-      >
+      <v-data-table :headers="headers" :items="usuarios" :options.sync="options" :server-items-length="totalUsuarios"
+        :search="search">
         <!-- :custom-filter="filtrarPorSocio" -->
         <template v-slot:[`item.actions`]="{ item }">
           <div v-if="isListaSocios">
-            <v-tooltip bottom>
+            <v-tooltip bottom v-if="!mostrarEliminados">
               <template v-slot:activator="{ on, attrs }">
                 <v-icon v-bind="attrs" v-on="on" class="mr-1" @click="editItem(item)" color="success">mdi-pencil</v-icon>
               </template>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom v-if="!mostrarEliminados">
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" class="mr-4" right @click="gestionarRelaciones(item)"
+                <v-icon v-bind="attrs" v-on="on" class="mr-1" right @click="gestionarRelaciones(item)"
                   color="primary">mdi-account-group</v-icon>
               </template>
               <span>Relaciones</span>
             </v-tooltip>
-            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
+
+            <v-tooltip bottom v-if="!mostrarEliminados">
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" v-on="on" @click="
+                  [(eliminarUsuarioModal = true), (usuarioEliminar = item)]
+                  " color="error">mdi-delete</v-icon>
+              </template>
+              <span>Eliminar</span>
+            </v-tooltip>
+
+            <v-tooltip bottom v-if="mostrarEliminados">
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" v-on="on" class="mr-1"
+                  @click="[(restaurarUsuarioModal = true), (usuarioRestaurar = item)]"
+                  color="success">mdi-backup-restore</v-icon>
+              </template>
+              <span>Recuperar eliminado</span>
+            </v-tooltip>
+
+            <v-btn class="mx-2" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">ver cuotas</v-btn>
           </div>
           <div v-else>
             <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">Edit?</v-btn>
-            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">Ver ultima fecha jugada quizas?</v-btn>
+            <v-btn class="" color="primary" small @click="mostrarDetalleCuotasAdeudadas(item)">Ver ultima fecha jugada
+              quizas?</v-btn>
           </div>
         </template>
 
@@ -90,6 +111,19 @@
       <v-dialog v-model="usuarioRelacionesModal" id="adddd" max-width="700px">
         <relaciones-usuario :usuario="usuarioRelaciones"></relaciones-usuario>
       </v-dialog>
+
+      <v-dialog v-model="restaurarUsuarioModal" max-width="700px">
+        <v-card>
+          <v-card-title class="headline">Desea restaurar el usuario?</v-card-title>
+          <v-card-text>Este jugador recuperara bah nose que poner aca. ¿Desea continuar?.</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" outlined @click="[(restaurarUsuarioModal = false)]">CANCELAR</v-btn>
+            <v-btn color="error" @click="[(restaurarJugador()), (restaurarUsuarioModal = false)]">RESTAURAR</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
     </v-card>
   </v-container>
 </template>
@@ -103,15 +137,18 @@ export default {
   name: "vm",
   data() {
     return {
-    //data-table
+      //data-table
       options: {},
       totalUsuarios: 0,
       reFiltrar: false,
       verSocios: true,
       verNoSocios: false,
+      mostrarEliminados: false,
       usuarios: [],
       usuariosFiltrados: [],
       search: "",
+      usuarioRestaurar: null,
+      restaurarUsuarioModal: false,
       headers: [
         { text: "Apellido", value: "apellido", width: '150px' },
         { text: "Nombre", value: "nombre", width: '150px' },
@@ -120,19 +157,19 @@ export default {
         { text: "Telefono", value: "telefono", sortable: false, filterable: false, width: this.isListaSocios ? '' : '150px' },
         { text: "Fecha de alta", value: "fechaAlta", sortable: true, filterable: false, width: '130px' }
       ].concat(
-        this.isListaSocios ? 
-        [
-          { text: "Cuotas adeudadas", value: "cuotasAdeudadas", sortable: true, width: '160px', sort: (a, b) => { return a - b; } },
-          { text: "Socio", value: "isSocio", sortable: false, filterable: false, width: '100px' },
-          { text: "Acciones", value: "actions", sortable: false, filterable: false },
-        ]
+        this.isListaSocios ?
+          [
+            { text: "Cuotas adeudadas", value: "cuotasAdeudadas", sortable: true, width: '160px', sort: (a, b) => { return a - b; } },
+            { text: "Socio", value: "isSocio", sortable: false, filterable: false, width: '100px' },
+            { text: "Acciones", value: "actions", sortable: false, filterable: false },
+          ]
 
-      : 
+          :
 
-        [
-          { text: "Total torneos anotados", value: "totalTorneos", width: '100px' },
-          { text: "Total fechas jugadas", value: "totalFechas", width: '100px' },
-        ]),
+          [
+            { text: "Total torneos anotados", value: "totalTorneos", width: '100px' },
+            { text: "Total fechas jugadas", value: "totalFechas", width: '100px' },
+          ]),
 
       usuarioEditar: [],
       usuarioVerDetalleCuotas: null,
@@ -151,7 +188,7 @@ export default {
       const params = this.crearParametrosPaginado();
 
       await axios
-        .get("/usuario", {params})
+        .get("/usuario", { params })
         .then((res) => {
           this.usuarios = res.data.usuarios.data;
           this.totalUsuarios = parseInt(res.data.usuarios.total);
@@ -172,44 +209,55 @@ export default {
         .catch((error) => console.log(error));
     },
     crearParametrosPaginado() {
-  const params = new URLSearchParams([
-    ['perPage', this.options.itemsPerPage == -1 ? this.totalUsuarios : this.options.itemsPerPage],
-    ['page', this.options.page],
-    ['socio', this.isListaSocios],
-    ['orderBy', this.options.sortBy],
-    ['orderByDesc', this.options.sortDesc],
-  ]);
+      const params = new URLSearchParams([
+        ['perPage', this.options.itemsPerPage == -1 ? this.totalUsuarios : this.options.itemsPerPage],
+        ['page', this.options.page],
+        ['socio', this.isListaSocios],
+        ['orderBy', this.options.sortBy],
+        ['orderByDesc', this.options.sortDesc,],
+        ['includeDeleted', this.mostrarEliminados]
+      ]);
 
-  if (this.search) {
-    params.append("search", this.search);
-  }
+      if (this.search) {
+        params.append("search", this.search);
+      }
 
-  return params;
-},
+      return params;
+    },
+    async restaurarJugador() {
+try{
+      const resp = await axios.post(`/usuario/${this.usuarioRestaurar.id}/restaurar`);
+      this.callSnackbar([resp.data.message,'success']);
+      this.getUsuarios();
+}catch(e){
+  console.error(e);
+}
+
+    },
     //TODO hay que arreglar el tema de las cuotas
     ...mapActions(["callSnackbar"]),
     async deleteItem() {
       let me = this;
-
-      if (this.motivoBaja.length >= 5) {
-        try {
-          const resp = await axios.delete(`/usuario/${me.usuarioEliminar.id}`, {
-            data: { motivo: this.motivoBaja },
-          });
-          console.log(resp);
-          me.created();
-          me.usuarioEliminar = [];
-          this.eliminarUsuarioModal = false;
-          this.motivoBaja = "";
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        this.eliminarUsuarioModal = true;
+      if (this.motivoBaja.length < 5) {
         this.callSnackbar([
           "El motivo debe ser de al menos 5 caracteres",
           "error",
         ]);
+        return;
+      }
+
+      try {
+        const resp = await axios.delete(`/usuario/${me.usuarioEliminar.id}`, {
+          data: { motivo: this.motivoBaja },
+        });
+        console.log(resp);
+        me.usuarioEliminar = [];
+        this.eliminarUsuarioModal = false;
+        this.motivoBaja = "";
+        this.getUsuarios();
+        this.callSnackbar([resp.data.message, 'success']);
+      } catch (error) {
+        console.log(error);
       }
     },
     mostrarDetalleCuotasAdeudadas(item) {
@@ -275,25 +323,28 @@ export default {
   },
 
   watch: {
+    mostrarEliminados: function () {
+      this.getUsuarios();
+    },
     reFiltrar: function () {
       this.filtrar();
       this.reFiltrar = false;
     },
     options: {
-        handler () {
-          console.log('optionas:', this.options);
-          this.getUsuarios();
-        },
-        deep: true,
+      handler() {
+        console.log('optionas:', this.options);
+        this.getUsuarios();
       },
-      search: {
-    handler() {
-      this.options.page = 1;
-      this.getUsuarios();
-
+      deep: true,
     },
-    deep: true,
-  },
+    search: {
+      handler() {
+        this.options.page = 1;
+        this.getUsuarios();
+
+      },
+      deep: true,
+    },
   },
 
 };
