@@ -1,48 +1,72 @@
 
 <template>
-  <div class="ma-9 mt-0">
-    <div class="d-flex mx-auto mb-9" style="justify-content: center;">
-      <h2>Gestion de fechas</h2>
-    </div>
+  <div class="ma-9 mt-3">
+    <!-- <div class="d-flex mx-auto mb-9" style="justify-content: center;"> -->
+      <center><h2>Gestion de fechas</h2></center>
+      
+    <!-- </div> -->
 
-    <v-row class="align-center">
-      <div class="mr-6" style="width: 300px;">
-        <v-autocomplete return-object :items="torneos" :item-text="nombreTorneo" v-model="torneoSeleccionado"
-          label="Buscar Torneo" @change="getFechas()"></v-autocomplete>
-      </div>
-      <div class="mx-6" style="width: 300px;">
-        <v-autocomplete return-object :items="fechas" :item-text="nombreFecha" v-model="fechaSeleccionada"
-          label="Buscar Fecha"></v-autocomplete>
-      </div>
-      <v-btn class="mx-6" @click="cargarFecha()" color="primary">BUSCAR</v-btn>
+    <v-row class="align-center ml-3 mb-3">
       <agregar-jugador-torneo-fecha-modal
         @agregar-jugador="agregarNuevoJugadorTorneo" v-if="busquedaRealizada" :categorias="listaCategorias"></agregar-jugador-torneo-fecha-modal>
     </v-row>
 
-    <div class="d-flex" style="justify-content: center;">
-        <v-card class="mt-6" style="width: max-content;">
-          <v-data-table dense :headers="headers" :items="listaJugadores" item-key="dni" :items-per-page="15" :search="search">
-            <template v-slot:[`item.actions`]="{ item }">
-                <v-tooltip bottom v-if="mensajeAgregarCategoria(item) !== ''">
-                  <template v-slot:activator="{ on, attrs }">
-                    <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarJugadorEnSuCategoria(item)]" :class="{'add-category': mensajeAgregarCategoria(item).includes('Agregar'), 'remove-category': mensajeAgregarCategoria(item).includes('Quitar')}">{{mensajeAgregarCategoria(item).replace('Quitar de la categoria: ','').replace('Agregar a la categoria: ','')}}</small>                  </template>
-                  <span>{{ mensajeAgregarCategoria(item) }}</span>
-                </v-tooltip>
-
-                <v-tooltip bottom v-if="!mensajeAgregarCategoriaSuperior(item).includes('No hay una categoria superior')">
-                  <template v-slot:activator="{ on, attrs }">
-                    <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarJugadorEnLaCategoriaSuperior(item)]" :class="{'add-category': mensajeAgregarCategoriaSuperior(item).includes('Agregar'), 'remove-category': mensajeAgregarCategoriaSuperior(item).includes('Quitar')}">{{mensajeAgregarCategoriaSuperior(item).replace('Quitar de la categoria superior: ','').replace('Agregar en la categoria superior: ','')}}</small>
+  <div class="">
+    <div class="d-flex" style="justify-content: space-evenly;">
+        <div class="d-flex" style="justify-content: center;">
+          <v-card class="mt-6" style="width: max-content;">
+            <v-data-table dense :headers="headers" :items="listaJugadores" item-key="dni" :items-per-page="15" :search="search">
+              <template v-slot:[`item.catActual`]="{ item }">
+                  <v-tooltip bottom v-if="mensajeAgregarCategoria(item) !== ''">
+                    <template v-slot:activator="{ on, attrs }">
+                      <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarJugadorEnSuCategoria(item)]" :class="{'add-category': mensajeAgregarCategoria(item).includes('Agregar'), 'remove-category': mensajeAgregarCategoria(item).includes('Quitar')}">{{mensajeAgregarCategoria(item).replace('Quitar de la categoria: ','').replace('Agregar a la categoria: ','')}}</small>                  </template>
+                    <span>{{ mensajeAgregarCategoria(item) }}</span>
+                  </v-tooltip>
+                </template>
+                <template v-slot:[`item.catSuperior`]="{ item }">
+                  <v-tooltip bottom v-if="!mensajeAgregarCategoriaSuperior(item).includes('No hay una categoria superior')">
+                    <template v-slot:activator="{ on, attrs }">
+                      <small class="mt-1" v-bind="attrs" v-on="on" @click="[agregarJugadorEnLaCategoriaSuperior(item)]" :class="{'add-category': mensajeAgregarCategoriaSuperior(item).includes('Agregar'), 'remove-category': mensajeAgregarCategoriaSuperior(item).includes('Quitar')}">{{mensajeAgregarCategoriaSuperior(item).replace('Quitar de la categoria superior: ','').replace('Agregar en la categoria superior: ','')}}</small>
+                    </template>
+                    <span>{{ mensajeAgregarCategoriaSuperior(item)}}</span>
+                  </v-tooltip>
+                </template>
+            </v-data-table>
+          </v-card>
+        </div>
+        <div class="d-flex" style="justify-content: center;">
+          <v-card class="mt-6" style="width: max-content; height: max-content;">
+            <v-simple-table dense>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Categoría</th>
+                        <th class="text-left">Estado</th>
+                        <th class="text-left" style="width: 100px;">Jugadores Anotados</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="categoria in listaCategorias"
+                        :key="categoria.id"
+                      >
+                        <td>{{ categoria.nombre }}</td>
+                        <td>{{ categoria.partidosLlaves.length ? 'Llaves' : categoria.listaGrupos.length ? 'Grupos' : 'Inscripciones' }}</td>
+                        <td>{{ categoria.jugadoresAnotados.length }}</td>
+                        <td> 
+                          <v-btn x-small color="success" @click="abrirModalCategoria(categoria)"> Ver </v-btn>
+                        </td>
+                      </tr>
+                    </tbody>
                   </template>
-                  <span>{{ mensajeAgregarCategoriaSuperior(item)}}</span>
-                </v-tooltip>
-              </template>
-          </v-data-table>
-        </v-card>
-      </div>
+                </v-simple-table>
+          </v-card>
+        </div>
+    </div>
+    </div>
 
     <div class="mt-6" v-if="busquedaRealizada">
-      <grupos-categorias :categorias="listaCategorias" :listaJugadores="listaJugadores"></grupos-categorias>
-
       <v-btn class="mt-6" color="primary" dark @click="confirmarGuardarFecha = true">
         GUARDAR FECHA
       </v-btn>
@@ -66,6 +90,25 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- CATEGORIA -->
+    <div v-if="categoriaSeleccionada">
+      <v-row justify="center">
+        <v-dialog v-model="modalPartidosCategoria" persistent fullscreen hide-overlay
+          transition="dialog-bottom-transition">
+          <v-card>
+            <v-toolbar dark color="primary">
+              <v-btn icon dark @click="modalPartidosCategoria = false">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <v-toolbar-title>Partidos Categoría: {{ categoriaSeleccionada.nombre }}</v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-toolbar>
+            <partidos-categoria :categoria="categoriaSeleccionada"></partidos-categoria>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </div>
   </div>
 </template>
 
@@ -73,10 +116,9 @@
 <script>
 import { mapActions } from 'vuex';
 export default {
+  props: ["torneoId", "fechaId"],
   data() {
     return {
-      torneoId: this.$route.query.torneoId,
-      fechaId: this.$route.query.fechaId,
       busquedaRealizada: false,
       torneos: [],
       torneoSeleccionado: null,
@@ -88,19 +130,28 @@ export default {
       jugadoresAnotados: [],
       confirmarGuardarFecha: false,
       agregarNuevoJugadorModel: false,
+      modalPartidosCategoria: false,
+      categoriaSeleccionada: null,
 
       headers: [
         { text: "Apellido", value: "apellido", width: '175px' },
         { text: "Nombre", value: "nombre", width: '175px' },
-        { text: "DNI", value: "dni", width: '175px' },
+        { text: "DNI", value: "dni", width: '125px' },
         {
-          text: "Categorias",
-          value: "actions",
+          text: "Categoría Actual",
+          value: "catActual",
           sortable: false,
           filterable: false,
-          width: '325px'
+          width: '162px'
         },
-        { text: "Puntos", value: "puntos", width: '175px' },
+        {
+          text: "Categoría Superior",
+          value: "catSuperior",
+          sortable: false,
+          filterable: false,
+          width: '162px'
+        },
+        { text: "Puntos", value: "puntos", width: '100px' },
 
         { text: "Monto", value: "monto_pagado" },
       ],
@@ -125,6 +176,10 @@ export default {
     ...mapActions(['callSnackbar']),
     nombreTorneo: (item) => item.nombre,
     nombreFecha: (item) => item.nombre,
+    abrirModalCategoria(categoria) {
+      this.categoriaSeleccionada = categoria;
+      this.modalPartidosCategoria = true;
+    },
     getFechas(defaultFechaId) {console.log(defaultFechaId)
       this.vaciarVariables();
       if (this.torneoSeleccionado) {
@@ -155,12 +210,15 @@ export default {
           this.vaciarVariables();
           this.callSnackbar(['Fecha guardada correctamente', 'success']);
           this.getFechas();
-
+          this.cerrarDialog()
         })
       } catch (e) {
         this.callSnackbar([e, 'error'])
       }
 
+    },
+    cerrarDialog() {      
+      this.$emit('close');
     },
     validarGuardarFecha() {
       this.listaCategorias.forEach(categoria => {
@@ -179,6 +237,10 @@ export default {
         }
 
         //validar partidos llaves
+        if(categoria.jugadoresAnotados.length > 0 && !categoria.partidosLlaves?.length) {
+          throw `No se han generado las llaves para la categoria ${categoria.nombre}`;
+        }
+        
         const isPartidosLlaveValid = categoria.partidosLlaves.every(partido => this.validarPartido(partido));
         if (!isPartidosLlaveValid) {
           throw `Hay al menos un partido sin cargar o en empate en la llave en la categoria ${categoria.nombre}`;
@@ -262,11 +324,18 @@ export default {
       });
     },
     mapearJugadoresDePartido(partido, listaJugadores) {
-      const { jugador1, jugador2 } = partido.jugadores;
+      const { jugador1 = null, jugador2 = null } = partido?.jugadores || {};
       partido.setsJugador1 = jugador1?.sets;
       partido.setsJugador2 = jugador2?.sets;
-      partido.jugadores.jugador1 = listaJugadores.find(jugador => jugador.usuario_id == jugador1?.id);
-      partido.jugadores.jugador2 = listaJugadores.find(jugador => jugador.usuario_id == jugador2?.id);
+
+      if(!partido.jugadores) {
+        partido.jugadores = {
+          jugador1: null,
+          jugador2: null
+        }
+      }
+      partido.jugadores.jugador1 = listaJugadores?.find(jugador => jugador.usuario_id == jugador1?.id);
+      partido.jugadores.jugador2 = listaJugadores?.find(jugador => jugador.usuario_id == jugador2?.id);
     },
 
     mapearPartidosDeCategoria(partidos) {
@@ -276,7 +345,7 @@ export default {
 
       const gruposDePartidos = partidos.reduce((grupos, partido) => {
         if (partido.grupo) {
-          const { id, jugadores, setsJugador1, setsJugador2 } = partido;
+          const { id, jugadores = {jugador1 : null, jugador2: null}, setsJugador1, setsJugador2 } = partido;
           const { nombre } = partido.grupo;
           const nuevoPartido = { id, jugador1: jugadores.jugador1, jugador2: jugadores.jugador2, setsJugador1, setsJugador2 };
 
@@ -308,7 +377,7 @@ export default {
       let partidosLlaves = [];
       partidos.forEach((partido) => {
         if (!partido.grupo) {
-          const { id, jugadores, setsJugador1, setsJugador2, sig_partido_id, fase } = partido;
+          const { id, jugadores = [jugador1 = null, jugador2 = null], setsJugador1, setsJugador2, sig_partido_id, fase } = partido;
           const nuevoPartido = { id, jugador1: jugadores.jugador1, jugador2: jugadores.jugador2, setsJugador1, setsJugador2, idPartidoPadre: sig_partido_id, fase: fase.nombre };
           partidosLlaves.push(nuevoPartido);
         }
@@ -415,6 +484,12 @@ export default {
         return;
       }
 
+      //nos aseguramos de que la categoria no tenga ningun partido sin guardar, debe quedar vacio si esta inscribiendo
+      //esto es por si deshace los grupos para anotar a alguien y no guarda, al recargar traeria los partidos de nuevo y generaria inconsistencia
+      axios.post(`/fechas/${this.fechaId}/categoria/${categoriaJugador.id}`, {
+        'partidos': []
+      });
+
       if (estadoJugador.categoria_menor_id) {
         estadoJugador.categoria_menor_id = null
       } else {
@@ -433,6 +508,12 @@ export default {
         this.callSnackbar(['No se puede realizar el cambio ya que se esta jugando la categoria', 'error']);
         return;
       }
+
+      //nos aseguramos de que la categoria no tenga ningun partido sin guardar, debe quedar vacio si esta inscribiendo
+      //esto es por si deshace los grupos para anotar a alguien y no guarda, al recargar traeria los partidos de nuevo y generaria inconsistencia
+      axios.post(`/fechas/${this.fechaId}/categoria/${categoriaSuperiorJugador.id}`, {
+        'partidos': []
+      });
 
       if (estadoJugador.categoria_mayor_id) {
         estadoJugador.categoria_mayor_id = null

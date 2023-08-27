@@ -174,7 +174,7 @@
     </v-card>
 
     <v-row>
-      <v-col cols="6">
+      <v-col cols="5">
         <v-card class="ma-4" v-if="torneoSeleccionado">
           <v-text-field class="ma-2" v-model="search" append-icon="mdi-magnify" label="Buscar fecha" :items="torneos"
             single-line hide-details></v-text-field>
@@ -186,27 +186,42 @@
               <p />
             </template>
             <template v-slot:[`item.date`]="{ item }">
-              <p class="mt-4">{{ item.vigencia == 0 ? 'vigente' : 'no vigente' }}</p>
+              <p class="mt-4">{{ item.vigencia == 0 ? 'no vigente' : 'vigente' }}</p>
 
               <p />
             </template>
             <template v-slot:[`item.actions`]="{ item }">
-              <v-tooltip bottom>
+              <v-tooltip bottom v-if="item.vigencia">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn class="ml-4" v-bind="attrs" v-on="on" @click.stop="[$router.push({path: `/torneos/gestionFechas`, query: { torneoId: torneoSeleccionado.id, fechaId: item.id }})]"
+                  <v-btn small class="ml-4" v-bind="attrs" v-on="on" @click.stop="[fechaId=item.id, fechaNombre=item.nombre, modalGestionFecha=true]"
                     color="success">Ver</v-btn>
                 </template>
-                <span>Eliminar</span>
+                <span>Ver</span>
               </v-tooltip>
             </template>
           </v-data-table>
         </v-card>
       </v-col>
 
-      <v-col cols="6">
+      <v-col cols="7">
         <torneo-lista-jugadores v-if="torneoSeleccionado" />
       </v-col>
     </v-row>
+
+    <v-dialog v-model="modalGestionFecha" persistent fullscreen hide-overlay
+          transition="dialog-bottom-transition">
+
+          <v-card>
+            <v-toolbar dark color="primary">
+              <v-btn icon dark @click="modalGestionFecha = false">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <v-toolbar-title>Fecha: {{ fechaNombre }}</v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-toolbar>
+            <gestion-fecha v-if="fechaId" @close="modalGestionFecha = !modalGestionFecha" :torneoId="this.torneoSeleccionado?.id" :fechaId="fechaId" />
+          </v-card>
+        </v-dialog>
 
     <grafico-donut v-if="renderComponent &&
       infoGraficas.data &&
@@ -231,7 +246,9 @@ export default {
       nuevaFecha: false,
       categorias : [],
       editPuntos: false,
-      verFechaModal: false,
+      modalGestionFecha: false,
+      fechaNombre: "",
+      fechaId: null,
       search: "",
       headers: [
         { text: "Nombre", value: "nombre" },
@@ -286,7 +303,12 @@ export default {
     },
 
     goToViewResumenFecha(fecha) {
-      this.$router.push({ path: `/resumen/torneo/fecha/${fecha.id}` });
+      if(!fecha.vigencia) {
+        this.$router.push({ path: `/resumen/torneo/fecha/${fecha.id}` });
+      }
+      else {
+        this.callSnackbar(['El resumen de la fecha será accesible una vez cerrada la fecha.', 'info']);
+      }
     },
     async cargarJugadoresImportados(jugadores){
       try{
@@ -355,5 +377,22 @@ export default {
       this.setTorneos(res.data);
     });
   },
+
+  watch: {
+    modalGestionFecha() {
+      if(!this.modalGestionFecha) {
+        this.fechaId = null
+        this.getFechas()
+        this.getInfoGraficasCategorias()
+      }
+    },
+    
+    nuevaFecha() {
+      if(!this.nuevaFecha) {
+        this.getFechas()
+        this.getInfoGraficasCategorias()
+      }
+    }
+  }
 };
 </script>
