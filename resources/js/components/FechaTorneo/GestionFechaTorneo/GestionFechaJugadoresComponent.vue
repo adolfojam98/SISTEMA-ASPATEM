@@ -324,9 +324,16 @@ export default {
       });
     },
     mapearJugadoresDePartido(partido, listaJugadores) {
-      const { jugador1, jugador2 } = partido.jugadores;
+      const { jugador1 = null, jugador2 = null } = partido?.jugadores || {};
       partido.setsJugador1 = jugador1?.sets;
       partido.setsJugador2 = jugador2?.sets;
+
+      if(!partido.jugadores) {
+        partido.jugadores = {
+          jugador1: null,
+          jugador2: null
+        }
+      }
       partido.jugadores.jugador1 = listaJugadores?.find(jugador => jugador.usuario_id == jugador1?.id);
       partido.jugadores.jugador2 = listaJugadores?.find(jugador => jugador.usuario_id == jugador2?.id);
     },
@@ -338,7 +345,7 @@ export default {
 
       const gruposDePartidos = partidos.reduce((grupos, partido) => {
         if (partido.grupo) {
-          const { id, jugadores, setsJugador1, setsJugador2 } = partido;
+          const { id, jugadores = {jugador1 : null, jugador2: null}, setsJugador1, setsJugador2 } = partido;
           const { nombre } = partido.grupo;
           const nuevoPartido = { id, jugador1: jugadores.jugador1, jugador2: jugadores.jugador2, setsJugador1, setsJugador2 };
 
@@ -370,7 +377,7 @@ export default {
       let partidosLlaves = [];
       partidos.forEach((partido) => {
         if (!partido.grupo) {
-          const { id, jugadores, setsJugador1, setsJugador2, sig_partido_id, fase } = partido;
+          const { id, jugadores = [jugador1 = null, jugador2 = null], setsJugador1, setsJugador2, sig_partido_id, fase } = partido;
           const nuevoPartido = { id, jugador1: jugadores.jugador1, jugador2: jugadores.jugador2, setsJugador1, setsJugador2, idPartidoPadre: sig_partido_id, fase: fase.nombre };
           partidosLlaves.push(nuevoPartido);
         }
