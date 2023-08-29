@@ -132,6 +132,7 @@ export default {
         torneoId: this.torneoSeleccionado.id,
       })
       .then(res=> {
+        this.reiniciarFormulario();
         this.cerrarDialog()
         this.callSnackbar(["Fecha generada exitosamente", "success"]);
       })
@@ -140,7 +141,15 @@ export default {
       );
       
     },
-
+    reiniciarFormulario(){
+      this.$refs.form.reset();
+      this.torneoSeleccionado = null;
+      this.nombreFecha = null;
+      this.montoSociosUnaCategoria = null;
+      this.montoSociosDosCategorias = null;
+      this.montoNoSociosUnaCategoria = null;
+      this.montoNoSociosDosCategorias = null;
+    },
     validarFormulario() {
       return this.$refs.form.validate();
     },
