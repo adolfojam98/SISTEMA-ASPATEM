@@ -29,20 +29,39 @@ class Fecha extends Model
             ->where('fechas.created_at', '<', $this->created_at) //traigo todas las fechas anteriores
             ->where('fecha_usuario.usuario_id', $torneo_usuario->id)
             ->get();
+        $torneo_usuario->puntos = 0;
 
             foreach ($fechas_usuarios as $key => $fecha_usuario) {
                 $torneo_usuario->puntos += $fecha_usuario->puntos;
             }
-            
-            $jugador = [//TODO hacer el resource
+
+            $jugador = [
                 "usuario_id" => $torneo_usuario->pivot->usuario_id,
                 "dni" => $torneo_usuario->dni,
                 "nombre" => $torneo_usuario->nombre,
                 "apellido" => $torneo_usuario->apellido,
-                "puntos" => $torneo_usuario->pivot->puntos + $torneo_usuario->puntos,
-                "puntos_ultima_fecha" => $this->fecha_usuario($torneo_usuario->pivot->usuario_id)->first()->puntos ?? 0, //si tengo una fecha abierta aqui se van a mostrar los puntos actuales, se deben ignorar por parte del front
-                "categoria" => $this->calcularCategoria($categorias, $torneo_usuario->pivot->puntos)
+                "puntos" => 0, // Valor predeterminado
+                "puntos_ultima_fecha" => 0, // Valor predeterminado
+                "categoria" => ""
             ];
+            
+            // Validar y asignar puntos si son valores numéricos
+            if (is_numeric($torneo_usuario->pivot->puntos) && is_numeric($torneo_usuario->puntos)) {
+                $jugador["puntos"] = $torneo_usuario->pivot->puntos + $torneo_usuario->puntos;
+            }
+            
+            // Validar y asignar puntos de última fecha si son valores numéricos
+            $ultimaFechaPuntos = $this->fecha_usuario($torneo_usuario->pivot->usuario_id)->first()->puntos ?? 0;
+            if (is_numeric($ultimaFechaPuntos)) {
+                $jugador["puntos_ultima_fecha"] = $ultimaFechaPuntos;
+            }
+            
+            // Asignar la categoría si es un valor válido
+            $categoria = $this->calcularCategoria($categorias, $torneo_usuario->pivot->puntos);
+            if ($categoria !== null) {
+                $jugador["categoria"] = $categoria;
+            }
+            
                 
             array_push($ranking_hasta_esta_fecha, $jugador);
                 
