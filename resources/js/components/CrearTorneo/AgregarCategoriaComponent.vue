@@ -98,8 +98,8 @@ export default {
 
             for (const categoriaActual of this.arrayCategorias) {
         if (
-            categoria.puntosMinimo <= categoriaActual.puntosBase &&
-            categoria.puntosMaximo >= categoriaActual.puntosBase
+            (categoria.puntosMinimo <= categoriaActual.puntosBase &&
+            categoria.puntosMaximo >= categoriaActual.puntosBase) && categoriaActual.puntosBase < categoria.puntosBase
         ) {
             throw new Error("Ya existe una categoría con puntos base dentro del intervalo.");
         }
@@ -119,13 +119,15 @@ export default {
 
                 if (categoriaActual.puntosMinimo > nuevaCategoria.puntosMinimo) {
                     nuevaCategoria.puntosMaximo = categoriaActual.puntosMinimo - 1;
+                    this.arrayCategorias[i - 1].puntosMaximo = nuevaCategoria.puntosMinimo - 1;
                     this.validarPuntosCategorias(nuevaCategoria);
                     this.arrayCategorias.splice(insertIndex, 0, nuevaCategoria);
                     return;
                 }
 
                 if (i + 1 === this.arrayCategorias.length) {
-                    categoriaActual.puntosMaximo = 9999999;
+                    categoriaActual.puntosMaximo = nuevaCategoria.puntosMinimo - 1;
+                    nuevaCategoria.puntosMaximo = 9999999;
                 }
 
                 insertIndex++;
