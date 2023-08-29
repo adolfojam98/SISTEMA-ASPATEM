@@ -191,7 +191,7 @@
               <p />
             </template>
             <template v-slot:[`item.actions`]="{ item }">
-              <v-tooltip bottom v-if="item.vigencia">
+              <v-tooltip bottom v-if="item.vigencia == '1'">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn small class="ml-4" v-bind="attrs" v-on="on" @click.stop="[fechaId=item.id, fechaNombre=item.nombre, modalGestionFecha=true]"
                     color="success">Ver</v-btn>
@@ -303,7 +303,7 @@ export default {
     },
 
     goToViewResumenFecha(fecha) {
-      if(!fecha.vigencia) {
+      if(fecha.vigencia == '0') {
         this.$router.push({ path: `/resumen/torneo/fecha/${fecha.id}` });
       }
       else {
