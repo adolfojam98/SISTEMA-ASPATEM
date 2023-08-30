@@ -136,6 +136,10 @@ class Usuario extends Model
             $state->activo = true;
         }
 
+        if($this->deleted_at){
+        $state->activo = false;
+        }
+
         return $state;
     }
 }
