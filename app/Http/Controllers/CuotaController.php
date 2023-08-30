@@ -49,7 +49,6 @@ class CuotaController extends ApiController
      */
     public function create()
     {
-
     }
 
     /**
@@ -113,7 +112,6 @@ class CuotaController extends ApiController
             }
 
             return $this->sendResponse(new CuotaResource($cuota), 'Cuota generada con exito');
-
         } catch (Exception $e) {
             return $this->sendError($e->errorInfo[2]);
         }
@@ -139,8 +137,8 @@ class CuotaController extends ApiController
 
             $sociosActivos = [];
             //filtramos ya por socios, ahora por aquellos activos
-            foreach($usuarios as $key => $usuario) {
-                if(Usuario::whereId($usuario->id)->first()->socio()->activo) {
+            foreach ($usuarios as $key => $usuario) {
+                if (Usuario::whereId($usuario->id)->first()->socio()->activo) {
                     array_push($sociosActivos, $usuario);
                 }
             }
@@ -153,7 +151,7 @@ class CuotaController extends ApiController
                 return $this->sendError("No existe un detalle de cuota 'Precio Base'");
             }
 
-            if (!count($usuarios))  {
+            if (!count($usuarios)) {
                 return $this->sendError("No se encontraron cuotas para generar en el periodo", "No se encontraron cuotas para generar en el periodo");
             }
 
@@ -179,7 +177,7 @@ class CuotaController extends ApiController
                 }
 
                 //creamos el detalle de relacion si corresponde
-                if($usuario->hasRelacionesWithSocios()) {
+                if ($usuario->hasRelacionesWithSocios()) {
                     $cuotaDetalleTipoRelaciones = CuotaDetalleTipo::where('codigo', 'relaciones')->first();
                     if (!$cuotaDetalleTipoRelaciones) {
                         return $this->sendError("No existe un detalle de cuota 'Relaciones'");
@@ -193,7 +191,6 @@ class CuotaController extends ApiController
             }
 
             return $this->sendResponse(null, 'Cuotas generadas correctamente');
-
         } catch (Exception $e) {
             return $this->sendError($e->errorInfo[2]);
         }
@@ -308,24 +305,25 @@ class CuotaController extends ApiController
             $fecha = $request->get('fecha');
             $fecha = date("Y-m-d H:i:s", strtotime($fecha));
 
-            $usuarios = Usuario::leftJoin('cuotas', 'usuario_id', 'usuarios.id')
-                ->where('socio', 1)
-                ->where('usuarios.id',$request->id)
-                ->where(function ($query) use ($fecha) {
-                    $query->whereNull('cuotas.id');
-                    $query->orWhereRaw('usuario_id not in (select usuario_id from cuotas where periodo = ? )', [$fecha]);
-                })->distinct()
-                ->get('usuarios.id');
+            $usuario = Usuario::leftJoin('cuotas', 'cuotas.usuario_id', 'usuarios.id')
+            ->where('usuarios.socio', 1)
+            ->where('usuarios.id', $request->id)
+            ->where(function ($query) use ($fecha) {
+                $query->whereNull('cuotas.id');
+                $query->orWhereRaw('usuario_id not in (select usuario_id from cuotas where periodo = ? )', [$fecha]);
+            })
+            ->first();
 
-            $sociosActivos = [];
-            //filtramos ya por socios, ahora por aquellos activos
-            foreach($usuarios as $key => $usuario) {
-                if(Usuario::whereId($usuario->id)->first()->socio()->activo) {
-                    array_push($sociosActivos, $usuario);
-                }
+
+            if (!$usuario) {
+                return $this->sendError("La cuota de este periodo ya fue generada", "La cuota de este periodo ya fue generada");
             }
+
+            if (!$usuario->socio()->activo) {
+                return $this->sendError("Esta persona es socio inactivo, por favor anule las cuotas e intente de nuevo");
+            }
+
             //ahora pisamos los usuarios con este ultimo filtro de activos
-            $usuarios = $sociosActivos;
 
             $cuotaDetalleTipoPrecioBase = CuotaDetalleTipo::where('codigo', 'precio_base')->first();
 
@@ -333,25 +331,20 @@ class CuotaController extends ApiController
                 return $this->sendError("No existe un detalle de cuota 'Precio Base'");
             }
 
-            if (!count($usuarios))  {
-                return $this->sendError("La cuota de este periodo ya fue generada", "La cuota de este periodo ya fue generada");
-            }
 
             $service = new CuotaService();
             $service->validateCuotaDetalleTiposDefaults();
-            //$service->updateLatePayment(); //TODO: hora se esta usando en los getters y el crone esta, pero molesta la consola saliendo cada min asi que lo saque
 
             if ($service->hasErrors()) {
                 return $this->sendServiceError($service->getLastError());
             }
 
-            foreach ($usuarios as $usuario) {
+
                 //creamos la cuota
-                $cuota = $service->createCuota($usuario->id, $fecha);
+                $cuota = $service->createCuota($usuario->usuario_id, $fecha);
                 if ($service->hasErrors()) {
                     return $this->sendServiceError($service->getLastError());
                 }
-
                 //creamos el detalle precio base
                 $service->createCuotaDetalle($cuota->id, $cuotaDetalleTipoPrecioBase->id, $cuotaDetalleTipoPrecioBase->valor);
                 if ($service->hasErrors()) {
@@ -359,7 +352,7 @@ class CuotaController extends ApiController
                 }
 
                 //creamos el detalle de relacion si corresponde
-                if($usuario->hasRelacionesWithSocios()) {
+                if ($usuario->hasRelacionesWithSocios()) {
                     $cuotaDetalleTipoRelaciones = CuotaDetalleTipo::where('codigo', 'relaciones')->first();
                     if (!$cuotaDetalleTipoRelaciones) {
                         return $this->sendError("No existe un detalle de cuota 'Relaciones'");
@@ -370,10 +363,8 @@ class CuotaController extends ApiController
                         return $this->sendServiceError($service->getLastError());
                     }
                 }
-            }
 
             return $this->sendResponse(null, 'Cuotas generadas correctamente');
-
         } catch (Exception $e) {
             return $this->sendError($e->errorInfo[2]);
         }
@@ -400,13 +391,13 @@ class CuotaController extends ApiController
         $usuario->save();
     }
 
-    public function cancelar(Request $request, $id) { 
-        try
-        {
+    public function cancelar(Request $request, $id)
+    {
+        try {
             $request->validate([
                 'descripcion' => 'string|nullable',
             ]);
-            
+
             $fechaPago = carbon::now();
             $cuota = Cuota::whereId($id)->first();
             $service = new CuotaService();
@@ -437,12 +428,9 @@ class CuotaController extends ApiController
             if ($service->hasErrors()) {
                 return $this->sendServiceError($service->getLastError());
             }
-            
+
             return $this->sendResponse(new PagoResource($newPago), 'Cuota cancelada con exito.');
-            
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             return $this->sendError($e->errorInfo[2]);
         }
     }
