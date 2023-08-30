@@ -1,8 +1,9 @@
 <template>
   <v-container fluid>
     <div class="d-flex mx-auto mb-9" style="justify-content: center">
-      <h2 v-if="isListaSocios">Lista socios</h2>
-      <h2 v-else>Listado de todos los jugadores</h2>
+      <h2 v-if="isListaSocios && !mostrarEliminados">Lista socios</h2>
+      <h2 v-if="!isListaSocios">Listado de todos los jugadores</h2>
+      <h2 v-if="isListaSocios && mostrarEliminados">Lista socios eliminados</h2>
     </div>
     <v-card>
       <div class="mx-2">
@@ -150,26 +151,7 @@ export default {
       usuarioRestaurar: null,
       restaurarUsuarioModal: false,
       headers: [
-        { text: "Apellido", value: "apellido", width: '150px' },
-        { text: "Nombre", value: "nombre", width: '150px' },
-        { text: "DNI", value: "dni", width: '100px' },
-        { text: "Mail", value: "mail", sortable: true, filterable: false, width: this.isListaSocios ? '' : '200px' },
-        { text: "Telefono", value: "telefono", sortable: false, filterable: false, width: this.isListaSocios ? '' : '150px' },
-        { text: "Fecha de alta", value: "fechaAlta", sortable: true, filterable: false, width: '130px' }
-      ].concat(
-        this.isListaSocios ?
-          [
-            { text: "Cuotas adeudadas", value: "cuotasAdeudadas", sortable: true, width: '160px', sort: (a, b) => { return a - b; } },
-            { text: "Socio", value: "isSocio", sortable: false, filterable: false, width: '100px' },
-            { text: "Acciones", value: "actions", sortable: false, filterable: false },
-          ]
-
-          :
-
-          [
-            { text: "Total torneos anotados", value: "totalTorneos", width: '100px' },
-            { text: "Total fechas jugadas", value: "totalFechas", width: '100px' },
-          ]),
+    ],
 
       usuarioEditar: [],
       usuarioVerDetalleCuotas: null,
@@ -181,6 +163,9 @@ export default {
       usuarioRelaciones: [],
       usuarioRelacionesModal: false,
     };
+  },
+  created(){
+    this.actualizarHeaderTabla();
   },
 
   methods: {
@@ -194,6 +179,7 @@ export default {
           this.totalUsuarios = parseInt(res.data.usuarios.total);
           this.usuarios.forEach((usuario) => {
             usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
+            usuario.fechaBaja = this.darFormatoFecha(usuario.deleted_at);
             usuario.cuotasAdeudadas = usuario.cuotas_adeudadas;
             usuario.totalTorneos = usuario.torneos?.length
             usuario.totalFechas = usuario.fechas?.length
@@ -310,6 +296,37 @@ try{
       const [anio, mes, dia] = fecha.split("-");
       return `${dia}/${mes}/${anio}`;
     },
+
+    actualizarHeaderTabla(){
+      this.headers = [        { text: "Apellido", value: "apellido", width: '150px' },
+        { text: "Nombre", value: "nombre", width: '150px' },
+        { text: "DNI", value: "dni", width: '100px' },
+        { text: "Mail", value: "mail", sortable: true, filterable: false, width: this.isListaSocios ? '' : '200px' },
+        { text: "Telefono", value: "telefono", sortable: false, filterable: false, width: this.isListaSocios ? '' : '150px' },
+
+      ]
+      .concat(this.mostrarEliminados ? 
+     [ { text: "Fecha de baja", value: "fechaBaja", sortable: true, filterable: false, width: '130px' }]
+      :
+      [{ text: "Fecha de alta", value: "fechaAlta", sortable: true, filterable: false, width: '130px' }]
+   
+      )     
+      .concat(
+        this.isListaSocios ?
+          [
+            { text: "Cuotas adeudadas", value: "cuotasAdeudadas", sortable: true, width: '160px', sort: (a, b) => { return a - b; } },
+            { text: "Socio", value: "isSocio", sortable: false, filterable: false, width: '100px' },
+            { text: "Acciones", value: "actions", sortable: false, filterable: false },
+          ]
+
+          :
+
+          [
+            { text: "Total torneos anotados", value: "totalTorneos", width: '100px' },
+            { text: "Total fechas jugadas", value: "totalFechas", width: '100px' },
+          ]);
+
+    }
     // filtrar() {
     //   this.usuariosFiltrados = [];
     //   this.usuarios.forEach((usuario) => {
@@ -325,6 +342,7 @@ try{
   watch: {
     mostrarEliminados: function () {
       this.getUsuarios();
+      this.actualizarHeaderTabla();
     },
     reFiltrar: function () {
       this.filtrar();
