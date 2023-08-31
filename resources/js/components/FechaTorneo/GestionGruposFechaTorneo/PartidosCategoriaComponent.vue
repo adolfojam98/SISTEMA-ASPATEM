@@ -20,7 +20,7 @@
         </v-col>
       </v-form>
 
-      <div v-if="gruposGenerados && !llavesGeneradas" class="mt-3">
+      <div v-if="gruposGenerados && !llavesGeneradas" class="mt-3 ml-1">
         <v-btn class='ml-4' @click="[confirmModalDeshacerGrupos = true]" color="primary">Deshacer
           grupos</v-btn>
           
@@ -29,7 +29,7 @@
 
       </div>
       <div v-if="llavesGeneradas" class="mt-3">
-        <v-btn class='ml-7' @click="[confirmModalDeshacerLlaves = true]" color="primary">Deshacer
+        <v-btn class='ml-5' @click="[confirmModalDeshacerLlaves = true]" color="primary">Deshacer
           llaves</v-btn>
         <resultados-grupos v-if="llavesGeneradas" :categoria="categoria">
         </resultados-grupos>
@@ -37,7 +37,7 @@
       </div>
       <br>
 
-         <v-btn  class="mx-6" color="success" @click='guardarFecha()'>Guardar partidos</v-btn>
+         <v-btn  class="mx-5" color="success" @click='guardarFecha()'>Guardar partidos</v-btn>
     </div>
 
     <!-- DIALOGS -->
@@ -198,7 +198,7 @@ export default {
       this.llavesGeneradas = true;
     },
     validarPartidos() {
-      const setsCargados = this.categoria.listaGrupos.every(grupo => grupo.partidos.every(partido => partido.setsJugador1 !== null && partido.setsJugador2 !== null));
+      const setsCargados = this.categoria.listaGrupos.every(grupo => grupo.partidos.every(partido => parseInt(partido.setsJugador1) >=0 && parseInt(partido.setsJugador2) >=0));
       const hayEmpates = this.categoria.listaGrupos.some(grupo => grupo.partidos.some(partido => partido.setsJugador1 == partido.setsJugador2));
 
       if (!setsCargados) {
@@ -227,7 +227,7 @@ export default {
       axios.post(`/fechas/${this.categoria.fecha_id}/categoria/${this.categoria.id}`, {
         'partidos': partidosRequest
       }).then(res => {
-        this.callSnackbar(["categoria guardada correctamente", "success"]);
+        this.callSnackbar(["Categoria guardada correctamente", "success"]);
       });
     },
 

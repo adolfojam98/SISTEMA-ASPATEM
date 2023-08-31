@@ -13,7 +13,7 @@
           </div>
 
           <div class="ml-1 my-auto">
-            <v-text-field label="Sets" class="input-sets" v-model="partido.setsJugador1" type="number"></v-text-field>
+            <v-text-field label="Sets" class="input-sets" v-model="partido.setsJugador1" @change="(v) => changeSets(v, 1)" type="text"></v-text-field>
           </div>
         </div>
 
@@ -29,7 +29,7 @@
           </div>
 
           <div cols="3" class="ml-1 my-auto">
-            <v-text-field label="Sets" class="input-sets" v-model="partido.setsJugador2" type="number"></v-text-field>
+            <v-text-field label="Sets" class="input-sets" v-model="partido.setsJugador2" @change="(v) => changeSets(v, 2)" type="text"></v-text-field>
           </div>
         </div>
     </v-card>
@@ -38,7 +38,30 @@
 
 <script>
 export default {
-  props: ["partido"]
+  props: ["partido"],
+  methods: {
+    changeSets(value, nroJugador) {
+      let newValue = parseInt(value)
+
+      if(!isNaN(newValue)) {
+        newValue = newValue < 0 ? newValue * -1 : newValue
+        if(nroJugador == 1) {
+          this.partido.setsJugador1 = newValue
+        } 
+        else {
+          this.partido.setsJugador2 = newValue
+        }
+      } 
+      else {
+        if(nroJugador == 1) {
+          this.partido.setsJugador1 = ''
+        } 
+        else {
+          this.partido.setsJugador2 = ''
+        }
+      }
+    }
+  }
 };
 </script>
 

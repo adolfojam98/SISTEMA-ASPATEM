@@ -18,8 +18,8 @@
             </v-col>
 
           </v-row>
-        <v-switch v-model="categoria.gruposConEliminatoria" label="Pasan todos a las llaves" class="ml-2 mt-0"></v-switch>
-        <v-btn class="ml-2 mr-4" @click="[generarLlaves()]" color="primary">Generar
+        <v-switch v-model="categoria.gruposConEliminatoria" label="Pasan todos a las llaves" class="mt-4"></v-switch>
+        <v-btn @click="[generarLlaves()]" color="primary">Generar
           llaves</v-btn>
       </v-card-text>
     </v-card>

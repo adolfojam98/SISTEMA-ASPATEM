@@ -13,6 +13,7 @@ use App\Pago;
 use App\Cuota;
 use App\Fecha;
 use App\Torneo;
+use App\Usuario;
 use Carbon\Carbon;
 
 class IngresosExternosController extends Controller
@@ -58,16 +59,18 @@ class IngresosExternosController extends Controller
 
             $pagos = $query_cuotas->get();
             foreach ($pagos as $key => $pago) {
-               $socio = $pago->cuota->usuario;
-               $nombreApellidoSocio = "{$socio->nombre} {$socio->apellido} - {$socio->dni}";
-                $cuota_xd = (object)[
-                    'id' => $pago->id,
-                    'tipo' => 'Cuota',
-                    'monto' => (float) $pago->monto_total,
-                    'descripcion' => "Cuota de: {$nombreApellidoSocio}",
-                    'fecha' => date("Y-m-d", strtotime($pago->fecha_pago))
-                ];
-                array_push($informe, $cuota_xd);
+               $socio = Usuario::withTrashed()->find($pago->cuota->usuario_id);
+               if(isset($socio)) {
+                    $nombreApellidoSocio = "{$socio->nombre} {$socio->apellido} - {$socio->dni}";
+                    $cuota_xd = (object)[
+                        'id' => $pago->id,
+                        'tipo' => 'Cuota',
+                        'monto' => (float) $pago->monto_total,
+                        'descripcion' => "Cuota de: {$nombreApellidoSocio}",
+                        'fecha' => date("Y-m-d", strtotime($pago->fecha_pago))
+                    ];
+                    array_push($informe, $cuota_xd);
+                }
             }
         }
         //Torneo

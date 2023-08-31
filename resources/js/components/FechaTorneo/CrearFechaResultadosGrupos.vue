@@ -1,7 +1,7 @@
 <template>
   <div class="body">
-    <div class="container mt-2">
-      <v-row class="fill-height justify-content-space-evenly" align="center">
+    <div class="container mt-2 ml-2">
+      <v-row class="fill-height justify-center">
         <v-card
           flat
           class="lista-grupos rounded-0"

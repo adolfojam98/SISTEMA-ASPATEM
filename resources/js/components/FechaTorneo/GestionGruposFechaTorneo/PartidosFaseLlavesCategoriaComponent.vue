@@ -1,11 +1,12 @@
 <template>
     <div>
-        <div class="d-flex">
+        <hr>
+        <div class="d-flex justify-center">
             <div v-for="fase in FASES_REVERSE" v-bind:key="fase" class="align-self-center">
                 <v-col v-if="faseTienePartidos(fase)" class="d-flex flex-column">
                     <v-row>
                         <v-col>
-                            <h3>{{ fase }}</h3>
+                            <h3 class="ml-2">{{ fase }}</h3>
                         </v-col>
                     </v-row>
                     <div v-for="partido in categoria.partidosLlaves" :key="partido.id">
@@ -31,8 +32,8 @@
                                         <v-text-field
                                         label="Sets"
                                         v-model="partido.setsJugador1"
-                                        @change="asingarGanadorASiguientePartido(partido)"
-                                        type="number"
+                                        @change="(v) => changeSets(v, 1, partido)"
+                                        type="text"
                                         style="width: 36px"
                                         ></v-text-field>
                                     </div>
@@ -61,8 +62,8 @@
                                         <v-text-field
                                         label="Sets"
                                         v-model="partido.setsJugador2"
-                                        @change="asingarGanadorASiguientePartido(partido)"
-                                        type="number"
+                                        @change="(v) => changeSets(v, 2, partido)"
+                                        type="text"
                                         style="width: 36px"
                                         ></v-text-field>
                                     </div>
@@ -147,8 +148,56 @@ export default {
                 this.categoria.partidosLlaves.push(...partidos[fase]);
             }
         }
+        // else {
+        //     let gruposConJugadoresOrdenados = [];
+        //     //ordenamos cada grupo
+        //     this.categoria.listaGrupos.forEach(grupo => {
+        //         gruposConJugadoresOrdenados.push({ ...grupo, jugadoresOrdenados: this.getJugadoresOrdenadosPorGrupo(grupo) });
+        //     });
+
+        //     //ordenamos todos los grupos juntos
+        //     let jugadoresOrdenados = this.getJugadoresOrdenadosFromGrupos(gruposConJugadoresOrdenados);
+
+        //     this.categoria.partidosLlaves.forEach(partido => {
+        //         if(partido.jugador1) {
+        //             let jugador = jugadoresOrdenados?.find(jugador => partido.jugador1?.usuario_id == jugador.usuario_id)
+        //             partido.jugador1 = jugador
+        //         }
+
+        //         if(partido.jugador2) {
+        //             let jugador = jugadoresOrdenados?.find(jugador => partido.jugador2?.usuario_id == jugador.usuario_id)
+        //             partido.jugador2 = jugador
+        //         }
+        //     })
+        // }
     },
     methods: {
+        getPosicionGrupo(jugador) {
+
+        },
+        changeSets(value, nroJugador, partido) {
+            let newValue = parseInt(value)
+
+            if(!isNaN(newValue)) {
+                newValue = newValue < 0 ? newValue * -1 : newValue
+                if(nroJugador == 1) {
+                    partido.setsJugador1 = newValue
+                } 
+                else {
+                    partido.setsJugador2 = newValue
+                }
+            } 
+            else {
+                if(nroJugador == 1) {
+                    partido.setsJugador1 = ''
+                } 
+                else {
+                    partido.setsJugador2 = ''
+                }
+            }
+
+            this.asingarGanadorASiguientePartido(partido)
+        },
         tienePartidoAnterior(partido, nroJugador) {
             //recibe el partido y el nro de jugador(1 o 2)
             //dependiendo de cuantos partidos tiene como hijos,
@@ -161,7 +210,7 @@ export default {
                 return;
             }
 
-            if (!(partido.setsJugador1 && partido.setsJugador2)) {
+            if (!(partido.setsJugador1 != null && partido.setsJugador2 != null)) {
                 return;
             }
 
