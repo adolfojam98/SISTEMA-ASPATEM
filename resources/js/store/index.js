@@ -32,7 +32,8 @@ export default new Vuex.Store({
         count: 10,
         snackbar: false,
         message: "",
-        colorSnackBar: ""
+        colorSnackBar: "",
+        isLoading: false,
     },
     getters: {
         getCount(state) {
@@ -50,7 +51,11 @@ export default new Vuex.Store({
         },
         setSnackBarColor(state, data) {
             state.colorSnackBar = data;
+        },
+        setIsLoading(state, data){
+            state.isLoading = data;
         }
+
     },
 
     actions: {
@@ -64,6 +69,12 @@ export default new Vuex.Store({
             setTimeout(function(){
                 action.commit('setSnackBar',false)
             },5000);
+        },
+        showSpinner(action){
+            action.commit("setIsLoading", true);
+        },
+        hideSpinner(action){
+            action.commit("setIsLoading", false);
         }
     }
 });

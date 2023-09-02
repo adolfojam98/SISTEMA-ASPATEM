@@ -43,7 +43,7 @@ export default {
   computed: {
   },
   methods: {
-    ...mapActions(["callSnackbar"]),
+    ...mapActions(["callSnackbar", "showSpinner", "hideSpinner"]),
     exportarExcelEjemplo() {
       const jsonData = [
         {
@@ -78,6 +78,7 @@ export default {
     async excelExport(e) {
       if (e.target.files.length > 0) {
         try {
+          this.showSpinner();
           let file = e.target.files[0];
           let reader = new FileReader();
 
@@ -94,6 +95,7 @@ export default {
           reader.readAsArrayBuffer(file);
         } catch (exception) {
           console.log(exception);
+          this.hideSpinner();
         }
       } else {
         toast("No files found", { type: "error" });
@@ -102,7 +104,7 @@ export default {
       this.$refs.input.files = null;
     },
 
-    armarJson(data) {
+   async armarJson(data) {
       try {
         let cabecera = data.shift();
 
@@ -127,9 +129,9 @@ export default {
           });
           console.log("Emitiendo");
           json = this.sacarJugadoresRepetidos(json);
-          this.validarJugadoresImportados(json);
+          await this.validarJugadoresImportados(json);
 
-          this.callSnackbar(["Jugadores agregados correctamente", "success"]);
+
         } else {
           this.callSnackbar([
             "Excel subido no cumple con las especificaciones",
@@ -139,10 +141,12 @@ export default {
       } catch (error) {
         this.callSnackbar(["Error al leer Archivo. " + error, "error"]);
       }
-
+      finally {
       this.excelData = [];
       this.prueba = [];
       this.json = [];
+      this.hideSpinner();
+      }
     },
     sacarJugadoresRepetidos(json) {
       const jugadoresSinRepetir = [];
@@ -186,6 +190,7 @@ export default {
 
         }
       }
+      this.callSnackbar(["Jugadores agregados correctamente", "success"]);
       this.$emit("cargar-jugadores", jugadores);
     },
     calcularPuntosBaseSegunCategoria(puntos){
