@@ -88,8 +88,8 @@ export default {
 
             this.resetearFormulario();
         },
-        validarPuntosCategorias(categoria){
-            if(categoria.puntosMinimo > this.puntosBase){
+        validarPuntosCategorias(categoria) {
+            if (categoria.puntosMinimo > this.puntosBase) {
                 throw new Error("No se permite poner puntos base menor a puntos minimos")
             }
             if (categoria.puntosBase < categoria.puntosMinimo || categoria.puntosBase > categoria.puntosMaximo) {
@@ -97,13 +97,17 @@ export default {
             }
 
             for (const categoriaActual of this.arrayCategorias) {
-        if (
-            (categoria.puntosMinimo <= categoriaActual.puntosBase &&
-            categoria.puntosMaximo >= categoriaActual.puntosBase) && categoriaActual.puntosBase < categoria.puntosBase
-        ) {
-            throw new Error("Ya existe una categoría con puntos base dentro del intervalo.");
-        }
-    }
+                if (categoriaActual.puntosMaximo < categoria.puntosMinimo) {
+                    continue;
+                }
+                if (categoriaActual.puntosMinimo > categoria.puntosMinimo) {
+                    continue;
+                }
+                if (categoriaActual.puntosBase >= categoria.puntosMinimo) {
+                    throw new Error("Ya existe una categoría con puntos base dentro del intervalo.");
+                }
+
+            }
         },
 
         insertarCategoriaOrdenada(nuevaCategoria) {
@@ -119,7 +123,9 @@ export default {
 
                 if (categoriaActual.puntosMinimo > nuevaCategoria.puntosMinimo) {
                     nuevaCategoria.puntosMaximo = categoriaActual.puntosMinimo - 1;
-                    this.arrayCategorias[i - 1].puntosMaximo = nuevaCategoria.puntosMinimo - 1;
+                    if (i != 0) {
+                        this.arrayCategorias[i - 1].puntosMaximo = nuevaCategoria.puntosMinimo - 1;
+                    }
                     this.validarPuntosCategorias(nuevaCategoria);
                     this.arrayCategorias.splice(insertIndex, 0, nuevaCategoria);
                     return;
@@ -134,7 +140,7 @@ export default {
             }
             this.validarPuntosCategorias(nuevaCategoria);
 
-           
+
 
             this.arrayCategorias.push(nuevaCategoria);
         },
