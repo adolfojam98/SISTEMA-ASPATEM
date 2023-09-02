@@ -16,10 +16,8 @@
             required></v-text-field>
           <v-text-field class="ml-2 mr-2" v-model="dniJugador" :rules="dniRules" label="DNI del jugador"
             required></v-text-field>
-            <v-select label="Seleccione una categoria" :items="categorias" item-text="nombre" v-model="categoriaJugadorSeleccionada" return-object></v-select>
+            <v-select class="ml-2 mr-2" label="Seleccione una categoria" :items="categorias" item-text="nombre" v-model="categoriaJugadorSeleccionada" return-object></v-select>
 
-          <v-text-field class="ml-2 mr-2" v-model="categoriaJugador" label="Puntos del jugador" :rules="puntosRules"
-            required></v-text-field>
         </v-form>
 
         <v-card-actions>
@@ -78,7 +76,7 @@ export default {
         nombre: this.nombreJugador,
         apellido: this.apellidoJugador,
         dni: this.dniJugador,
-        puntos: this.categoriaJugadorSeleccionada.puntosBase,
+        puntos: this.categoriaJugadorSeleccionada.puntos_base,
       });      
       this.$refs.form.reset();
     },

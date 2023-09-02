@@ -189,6 +189,8 @@ export default {
       this.$emit("cargar-jugadores", jugadores);
     },
     calcularPuntosBaseSegunCategoria(puntos){
+      console.log(this.categorias);
+      console.log(puntos)
     return this.categorias.find((categoria) =>  categoria.puntosMinimo <= puntos && categoria.puntosMaximo >= puntos)?.puntosBase?? puntos;
     },
     esDniValido(dni) {
