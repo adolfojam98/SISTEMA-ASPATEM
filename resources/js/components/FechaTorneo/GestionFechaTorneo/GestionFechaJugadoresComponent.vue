@@ -15,6 +15,7 @@
     <div class="d-flex" style="justify-content: space-evenly;">
         <div class="d-flex" style="justify-content: center;">
           <v-card class="mt-6" style="width: max-content;">
+            <v-text-field class="ma-2" v-model="search" append-icon="mdi-magnify" label="Buscar" :items="listaJugadores" single-line hide-details></v-text-field>
             <v-data-table dense :headers="headers" :items="listaJugadores" item-key="dni" :items-per-page="15" :search="search">
               <template v-slot:[`item.catActual`]="{ item }">
                   <v-tooltip bottom v-if="mensajeAgregarCategoria(item) !== ''">
@@ -180,7 +181,7 @@ export default {
       this.categoriaSeleccionada = categoria;
       this.modalPartidosCategoria = true;
     },
-    getFechas(defaultFechaId) {console.log(defaultFechaId)
+    getFechas(defaultFechaId) {
       this.vaciarVariables();
       if (this.torneoSeleccionado) {
         axios.get(`/torneo/${this.torneoSeleccionado.id}/fechas`).then((res) => {
@@ -231,7 +232,6 @@ export default {
         }
         const isPartidosGruposValid = categoria.listaGrupos.every(grupo => grupo.partidos.every(partido => this.validarPartido(partido)));
 
-        console.log(categoria);
         if (!isPartidosGruposValid) {
           throw `Hay al menos un partido sin cargar o en empate en los grupos en la categoria ${categoria.nombre}`;
         }
@@ -250,10 +250,10 @@ export default {
     },
 
     validarPartido(partido) {
-      if (!partido.jugador1 || !partido.jugador2) {
+      if (!partido.jugador1 || !partido.jugador2) {console.log(partido)
         return false;
       }
-      if (!partido.setsJugador1 || !partido.setsJugador2) {
+      if ((!partido.setsJugador1 && partido.setsJugador1 !== 0) || (!partido.setsJugador2 && partido.setsJugador2 !== 0)) {console.log(partido)
         return false;
       }
       const setsJugador1 = parseInt(partido.setsJugador1);

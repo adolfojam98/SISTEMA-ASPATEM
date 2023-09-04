@@ -20,6 +20,7 @@ class FechaService extends BaseService
 
         $this->errorDefinitions[] = new Error("FEC0001", "Unespected error", "Unespected", 500);
         $this->errorDefinitions[] = new Error("FEC0002", "Hay partidos sin usuarios asignados.", "Unespected", 500);
+        $this->errorDefinitions[] = new Error("FEC0003", "Error al actualizar los puntos.", "Unespected", 500);
     }
 
     function fechaUsuarioDelete($fecha_id, $usuario_id)
@@ -77,6 +78,8 @@ class FechaService extends BaseService
             if(!$partidosValidos) {
                 $this->setError("FEC0002");
             }
+
+            $this->updatePuntos($fecha_id);
         }
         if(isset($monto_no_socios_dos_categorias))
             $fecha->monto_no_socios_dos_categorias = $monto_no_socios_dos_categorias;
@@ -106,8 +109,8 @@ class FechaService extends BaseService
         if ($fecha_id && $usuario_id) { //TODO esto que borro para volver a agregar se puede arreglar como la funcion de arriba "resetPuntosFecha"
 
             if ($fecha_usuario) { //guardamos los datos que necesitamos antes de borrar
-                $categoria_menor_id = $categoria_menor_id !== false ? $categoria_menor_id  :  $fecha_usuario->categoria_menor_id;
-                $categoria_mayor_id = $categoria_mayor_id !== false ? $categoria_mayor_id :  $fecha_usuario->categoria_mayor_id;
+                $categoria_menor_id = $categoria_menor_id !== false ? $categoria_menor_id : $fecha_usuario->categoria_menor_id;
+                $categoria_mayor_id = $categoria_mayor_id !== false ? $categoria_mayor_id : $fecha_usuario->categoria_mayor_id;
                 $puntos = $fecha_usuario->puntos + $puntos ?? 0; //voy sumando los puntos
                 $this->fechaUsuarioDelete($fecha_id, $usuario_id);
             }
@@ -127,7 +130,24 @@ class FechaService extends BaseService
 
             $fecha_usuario->monto_pagado = $this->calculateMonto($fecha_id, $usuario_id, $numCategorias) ?? 0;
 
+            if(isset($puntos)) {
+                $torneo_usuario = $fecha->torneo->jugadores()->where('usuario_id', $usuario_id)->first();
+                $nuevosPuntos = $torneo_usuario->pivot->puntos + $puntos;
+
+                if($nuevosPuntos < 0) {
+                    $puntos += abs($nuevosPuntos);
+                }
+            }
+            
             $fecha_usuario->puntos = $puntos ?? 0;
+ 
+            if($fecha_usuario->categoria_menor_id === false) {
+                $fecha_usuario->categoria_menor_id = null;
+            }
+
+            if($fecha_usuario->categoria_menor_id === false) {
+                $fecha_usuario->categoria_mayor_id = null;
+            }
 
             $fecha_usuario->save();
 

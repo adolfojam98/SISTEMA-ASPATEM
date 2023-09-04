@@ -6,11 +6,11 @@
       <v-form v-model="valid" lazy-validation v-if="!gruposGenerados">
         <v-col>
           <v-text-field label="Cantidad de Grupos" v-model="categoria.cantidadGrupos" :rules="cantidadGruposRules"
-            required class="mb-0 ml-2"></v-text-field>
-          <p class="text--secondary d-flex justify-end">
+            required class="mb-0 ml-2" style="width: 250px" ></v-text-field>
+          <p class="text--secondary ml-2">
             Jugadores anotados: {{ categoria.jugadoresAnotados.length }}
           </p>
-          <p class="text--secondary d-flex justify-end"
+          <p class="text--secondary ml-2"
             v-if="categoria.cantidadGrupos && categoria.cantidadGrupos % 1 == 0">
             Cantidad minima de jugadores: {{ categoria.cantidadGrupos * 3 }}
           </p>

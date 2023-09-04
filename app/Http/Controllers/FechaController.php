@@ -311,13 +311,20 @@ class FechaController extends ApiController
                     return $this->sendServiceError($servicePartido->getLastError());
                 }
 
+                //actualizamos los puntos al cerrar la fecha no los partidos
+                // $serviceFecha = new FechaService();
+                // $serviceFecha->updatePuntos($id);
 
-                $serviceFecha = new FechaService();
-                $serviceFecha->updatePuntos($id);
+                // if ($serviceFecha->hasErrors()) {
+                //     return $this->sendServiceError($serviceFecha->getLastError());
+                // }
 
-                if ($serviceFecha->hasErrors()) {
-                    return $this->sendServiceError($serviceFecha->getLastError());
-                }
+                // $serviceFecha = new FechaService();
+                // $serviceFecha->updatePuntos($id);
+
+                // if ($serviceFecha->hasErrors()) {
+                //     return $this->sendServiceError($serviceFecha->getLastError());
+                // }
 
                 return $this->sendOK();
             }

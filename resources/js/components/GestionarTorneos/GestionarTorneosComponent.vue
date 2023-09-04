@@ -303,7 +303,7 @@ export default {
     },
 
     goToViewResumenFecha(fecha) {
-      if(fecha.vigencia == '0') {
+      if(fecha.vigencia == '0') {//fecha.vigencia == '0'
         this.$router.push({ path: `/resumen/torneo/fecha/${fecha.id}` });
       }
       else {
