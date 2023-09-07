@@ -89,6 +89,7 @@
     methods: {
       ...mapActions(["callSnackbar"]),
       cerrarDialog() {
+        this.dialog = false;
         return this.$emit("cerrarDialog");
       },
       async generarCuota() {
@@ -103,10 +104,10 @@
           const nuevaCuota = await axios.post(`/generarCuota/${this.usuario.id}`, {
             fecha: fecha,
           });
-          this.cerrarDialog();
           console.log("->nueva cuota: ", nuevaCuota);
           this.callSnackbar([nuevaCuota.data.message, "success"]);
-          this.$emit("recargarCuotas", true);
+          this.$emit("recargarCuotas", true)
+          this.cerrarDialog();;
           this.dialog = false;
         } catch (e) {
           this.callSnackbar([e.response.data.message, "error"]);
