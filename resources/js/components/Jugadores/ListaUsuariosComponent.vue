@@ -306,9 +306,9 @@ try{
 
       ]
       .concat(this.mostrarEliminados ? 
-     [ { text: "Fecha de baja", value: "fechaBaja", sortable: true, filterable: false, width: '130px' }]
+     [ { text: "Fecha de baja", value: "fechaBaja", sortable: false, filterable: false, width: '130px' }]
       :
-      [{ text: "Fecha de alta", value: "fechaAlta", sortable: true, filterable: false, width: '130px' }]
+      [{ text: "Fecha de alta", value: "fechaAlta", sortable: false, filterable: false, width: '130px' }]
    
       )     
       .concat(
@@ -322,8 +322,8 @@ try{
           :
 
           [
-            { text: "Total torneos anotados", value: "totalTorneos", width: '100px' },
-            { text: "Total fechas jugadas", value: "totalFechas", width: '100px' },
+            { text: "Total torneos anotados", value: "totalTorneos", width: '100px', sortable: false, filterable: false },
+            { text: "Total fechas jugadas", value: "totalFechas", width: '100px', sortable: false, filterable: false },
           ]);
 
     }
