@@ -32,7 +32,7 @@
                                         <v-text-field
                                         label="Sets"
                                         v-model="partido.setsJugador1"
-                                        @change="(v) => changeSets(v, 1, partido)"
+                                        @input="(v) => changeSets(v, 1, partido)"
                                         type="text"
                                         style="width: 36px"
                                         ></v-text-field>
@@ -62,7 +62,7 @@
                                         <v-text-field
                                         label="Sets"
                                         v-model="partido.setsJugador2"
-                                        @change="(v) => changeSets(v, 2, partido)"
+                                        @input="(v) => changeSets(v, 2, partido)"
                                         type="text"
                                         style="width: 36px"
                                         ></v-text-field>
@@ -176,25 +176,15 @@ export default {
 
         },
         changeSets(value, nroJugador, partido) {
-            let newValue = parseInt(value)
+            let newValue = parseInt(value.replace(/\D/g, ''))
 
-            if(!isNaN(newValue)) {
-                newValue = newValue < 0 ? newValue * -1 : newValue
-                if(nroJugador == 1) {
-                    partido.setsJugador1 = newValue
-                } 
-                else {
-                    partido.setsJugador2 = newValue
-                }
+            if (isNaN(newValue) || newValue < 0) {
+                newValue = null;
             } 
-            else {
-                if(nroJugador == 1) {
-                    partido.setsJugador1 = ''
-                } 
-                else {
-                    partido.setsJugador2 = ''
-                }
-            }
+
+            setTimeout(() => {
+                nroJugador == 1 ? (partido.setsJugador1 = newValue) : (partido.setsJugador2 = newValue);
+            }, 0)
 
             this.asingarGanadorASiguientePartido(partido)
         },
