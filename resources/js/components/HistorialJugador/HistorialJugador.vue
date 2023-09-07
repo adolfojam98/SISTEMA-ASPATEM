@@ -28,7 +28,7 @@
           <center>Esta persona aun no ha jugado ningun torneo </center>
         </h4>
       </div>
-      <div v-if="history">
+      <div v-if="history?.length">
         <v-toolbar>
           <v-tabs v-model="tab" align-with-title>
             <v-tabs-slider color="yellow"></v-tabs-slider>
