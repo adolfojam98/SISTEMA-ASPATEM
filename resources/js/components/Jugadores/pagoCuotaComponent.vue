@@ -227,18 +227,14 @@ export default {
       const detalleBase = this.tipoCuotasDetalles.find(
         (tipo) => tipo.codigo == "precio_base"
       );
-      console.log(detalleBase);
       if (!this.detalleSeleccionado) return null;
-      console.log("->detallBase", detalleBase);
-      console.log("->detalleSeleccionado", this.detalleSeleccionado);
       if (this.detalleSeleccionado.porcentaje) {
-        console.log("->porcentaje", this.detalleSeleccionado.porcentaje);
         return Number.parseFloat(
           detalleBase.valor * (this.detalleSeleccionado.porcentaje / 100)
         ).toFixed(2);
       }
       if (this.detalleSeleccionado.valor) {
-        console.log("->monto", this.detalleSeleccionado.valor);
+
         return this.detalleSeleccionado.valor;
       }
 
