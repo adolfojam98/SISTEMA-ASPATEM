@@ -178,8 +178,9 @@ export default {
           this.usuarios = res.data.usuarios.data;
           this.totalUsuarios = parseInt(res.data.usuarios.total);
           this.usuarios.forEach((usuario) => {
-            usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
-            usuario.fechaBaja = this.darFormatoFecha(usuario.deleted_at);
+            usuario.created_at = this.darFormatoFecha(usuario.created_at);
+            usuario.deleted_at = this.darFormatoFecha(usuario.deleted_at);
+
             usuario.cuotas_adeudadas = usuario.cuotas_adeudadas;
             usuario.totalTorneos = usuario.torneos?.length
             usuario.totalFechas = usuario.fechas?.length
@@ -306,9 +307,9 @@ try{
 
       ]
       .concat(this.mostrarEliminados ? 
-     [ { text: "Fecha de baja", value: "fechaBaja", sortable: false, filterable: false, width: '130px' }]
+     [ { text: "Fecha de baja", value: "deleted_at", sortable: true, filterable: false, width: '130px' }]
       :
-      [{ text: "Fecha de alta", value: "fechaAlta", sortable: false, filterable: false, width: '130px' }]
+      [{ text: "Fecha de alta", value: "created_at", sortable: true, filterable: false, width: '130px' }]
    
       )     
       .concat(
