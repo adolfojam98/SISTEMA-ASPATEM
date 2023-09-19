@@ -58,6 +58,12 @@ class UsuarioController extends ApiController
             });
         }
     
+        $query->addSelect([
+            'cuotas_adeudadas' => Cuota::selectRaw('COUNT(*)')
+                ->whereColumn('usuario_id', 'usuarios.id')
+                ->where('periodo', '<=', new Carbon())
+                ->whereDoesntHave('pago')
+        ]);
         $query->orderBy($orderBy, $orderByDesc ? 'desc' : 'asc');
     
         if ($includeDeleted) {
@@ -67,11 +73,9 @@ class UsuarioController extends ApiController
         }
     
         $usuarios = $query->paginate($perPage, ['*'], 'page', $page);
-    
         // Carga relaciones adicionales
         foreach ($usuarios as $key => $usuario) {
             $usuario->socio = $usuario->socio();
-            $usuario->cuotas_adeudadas = $usuario->cuotasAdeudadas();
             $usuario->torneos = $usuario->torneos()->get();
             $usuario->fechas = $usuario->fechas()->get();
     

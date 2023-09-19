@@ -180,7 +180,7 @@ export default {
           this.usuarios.forEach((usuario) => {
             usuario.fechaAlta = this.darFormatoFecha(usuario.created_at);
             usuario.fechaBaja = this.darFormatoFecha(usuario.deleted_at);
-            usuario.cuotasAdeudadas = usuario.cuotas_adeudadas;
+            usuario.cuotas_adeudadas = usuario.cuotas_adeudadas;
             usuario.totalTorneos = usuario.torneos?.length
             usuario.totalFechas = usuario.fechas?.length
           });
@@ -314,7 +314,7 @@ try{
       .concat(
         this.isListaSocios ?
           [
-            { text: "Cuotas adeudadas", value: "cuotasAdeudadas", sortable: true, width: '160px', sort: (a, b) => { return a - b; } },
+            { text: "Cuotas adeudadas", value: "cuotas_adeudadas", sortable: true, width: '160px', sort: (a, b) => { return a - b; } },
             { text: "Socio", value: "isSocio", sortable: false, filterable: false, width: '100px' },
             { text: "Acciones", value: "actions", sortable: false, filterable: false },
           ]
