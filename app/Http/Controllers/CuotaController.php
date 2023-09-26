@@ -312,8 +312,8 @@ class CuotaController extends ApiController
                 $query->whereNull('cuotas.id');
                 $query->orWhereRaw('usuario_id not in (select usuario_id from cuotas where periodo = ? )', [$fecha]);
             })
+            ->select('*', 'usuarios.id')
             ->first();
-
 
             if (!$usuario) {
                 return $this->sendError("La cuota de este periodo ya fue generada", "La cuota de este periodo ya fue generada");
@@ -341,7 +341,7 @@ class CuotaController extends ApiController
 
 
                 //creamos la cuota
-                $cuota = $service->createCuota($usuario->usuario_id, $fecha);
+                $cuota = $service->createCuota($usuario->id, $fecha);
                 if ($service->hasErrors()) {
                     return $this->sendServiceError($service->getLastError());
                 }
