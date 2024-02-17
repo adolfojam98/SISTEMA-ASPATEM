@@ -88,8 +88,8 @@
 
       <v-dialog v-model="eliminarUsuarioModal" max-width="400">
         <v-card>
-          <v-card-title class="headline">Desea borrar el usuario?</v-card-title>
-          <v-card-text>Este usuario no podra participar de ningun torneo, no saldrá en el
+          <v-card-title class="headline">Desea borrar al jugador?</v-card-title>
+          <v-card-text>Este jugador no podra participar de ningun torneo, no saldrá en el
             ranking pero seguirá quedando registro de sus participaciones en
             torneos. ¿Desea continuar?.</v-card-text>
           <v-container>
@@ -111,7 +111,7 @@
 
       <v-dialog v-model="restaurarUsuarioModal" max-width="400px">
         <v-card>
-          <v-card-title class="headline">Desea restaurar el usuario?</v-card-title>
+          <v-card-title class="headline">Desea restaurar el jugador?</v-card-title>
           <v-card-text>
             <h3>
               motivo de baja: {{ usuarioRestaurar?.motivo_baja }}

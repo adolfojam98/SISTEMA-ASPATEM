@@ -4,8 +4,8 @@
       <v-app>
         <v-container fill-height>
           <v-row justify="center" align="center">
-            <v-col cols="12" sm="4">
-              <v-card style="width: 600px; padding: 30px; margin-bottom: 200px">
+            <v-col cols="12" xl="4" md="8" lg="6" sm="8" >
+              <v-card style="width: 90%; padding: 30px; margin-bottom: 200px">
                 <div
                   class="pa-2"
                   outlined

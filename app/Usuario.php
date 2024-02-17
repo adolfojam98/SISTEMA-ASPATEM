@@ -28,10 +28,12 @@ class Usuario extends Model
         $hasRelacionesWithSocios = false;
         foreach ($relaciones as $relacion) {
             $relacion->usuario = $relacion->usuarios->firstWhere('id', '!=', $this->id);
-
-            if($relacion->usuario->socio()->activo){
+if($relacion->usuario){
+       if($relacion->usuario->socio()->activo){
                 $hasRelacionesWithSocios = true;
-            }
+            }   
+}
+      
         }
         return $hasRelacionesWithSocios;
     }

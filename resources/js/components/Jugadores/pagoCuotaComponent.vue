@@ -230,7 +230,7 @@ export default {
       if (!this.detalleSeleccionado) return null;
       if (this.detalleSeleccionado.porcentaje) {
         return Number.parseFloat(
-          detalleBase.valor * (this.detalleSeleccionado.porcentaje / 100)
+          detalleBase.valor * (this.detalleSeleccionado.porcentaje)
         ).toFixed(2);
       }
       if (this.detalleSeleccionado.valor) {

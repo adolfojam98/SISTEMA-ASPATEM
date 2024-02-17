@@ -8,16 +8,15 @@
         <div>
         <div class="d-block" style="width: 380px">
           <v-file-input
-            label="Seleccione un archivo para realizar backup"
+            label="Seleccione un archivo para realizar copia de seguridad"
             accept=".sqlite"
             @change="archivoElegido"
           ></v-file-input>
           <v-btn
           width="100%"
           @click="guardarBD()"
-          :disabled="archivoDB == null"
           color="primary"
-          >Guardar
+          >cargar Copia de seguridad
         </v-btn>
         </div>
         
@@ -28,7 +27,7 @@
 
         <div class="d-flex align-center">
           <v-btn class="primary" href="/base/descargar"
-            >DESCARGAR backup</v-btn
+            >DESCARGAR copia de seguridad</v-btn
           >
         </div>
       </div>

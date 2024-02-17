@@ -1,7 +1,7 @@
 <template>
 <div>
   <v-card> 
-    <h2 class="pa-3"> <center>Modificar usuario</center></h2>
+    <h2 class="pa-3"> <center>Modificar jugador</center></h2>
 
   <v-form v-model="valid" ref="form" lazy-validation>
     <v-container>

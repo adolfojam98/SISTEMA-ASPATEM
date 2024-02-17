@@ -3,7 +3,7 @@
     <v-container grid-list-xs>
       <h2 class="ma-5 mt-2">
         <center>
-          Gestionar relaciones del usuario: {{ usuario.nombre }}
+          Gestionar relaciones de jugadores: {{ usuario.nombre }}
           {{ usuario.apellido }}
         </center>
       </h2>

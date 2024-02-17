@@ -169,7 +169,7 @@ export default {
       let jugadores = [];
       for (let jugador of json) {
         if (this.esDniValido(jugador.dni)) {
-          jugador.puntos = this.calcularPuntosBaseSegunCategoria(jugador.puntos);
+          // jugador.puntos = this.calcularPuntosBaseSegunCategoria(jugador.puntos);
           const resp = await axios.get("/usuario", {
             params: {
               dni: jugador.dni,
